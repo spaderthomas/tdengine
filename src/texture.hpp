@@ -1,4 +1,4 @@
-struct Texture {
+struct Texture : Asset {
 	GLuint handle;
 	
 	unsigned char* data;
@@ -32,8 +32,15 @@ struct Texture {
 
 	}
 
+	// Sets the active texture to this texture's image data
 	void bind() {
 		glActiveTexture(GL_TEXTURE0);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		if (num_channels == 4) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		} else if (num_channels == 3) {
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+		}
 	}
 };
+
+

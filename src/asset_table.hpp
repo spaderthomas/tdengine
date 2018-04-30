@@ -1,6 +1,19 @@
-#if 0
-struct {
-	<template asset_type>
-	create
-} asset_table;
-#endif
+struct Asset {
+	string name;
+};
+
+struct Texture;
+struct Mesh;
+struct Shader;
+struct Animation;
+struct Asset_Table {
+	vector<Texture*> textures;
+	vector<Mesh*> meshes;
+	vector<Shader*> shaders;
+	vector<Animation*> animations;
+
+	Texture* get_texture(string id);
+	Animation* get_animation(string id);
+};
+
+Asset_Table asset_table;

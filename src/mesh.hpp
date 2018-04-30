@@ -1,4 +1,4 @@
-struct Mesh {
+struct Mesh : Asset {
 	vector<float> verts;
 	vector<uint> indices;
 	vector<float> tex_coords;
