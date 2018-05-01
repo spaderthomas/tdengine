@@ -34,3 +34,15 @@ glm::mat3 mat3_from_transform(SRT transform) {
 
 	return trans_mat * rot_mat * scale_mat;
 }
+
+SRT srt_from_grid_pos(glm::ivec2 grid_pos) {
+	SRT grid_pos_transform = SRT::no_transform();
+	grid_pos_transform.scale = glm::vec2(SCR_TILESIZE_X, SCR_TILESIZE_Y);
+
+	// Starting at -1, move grid_pos tiles forward
+	grid_pos_transform.translate = glm::vec2(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y);
+
+	// Since tile was centered before, it'll be halfway between the tile, so correct that
+	grid_pos_transform.translate += glm::vec2(.5f * GLSCR_TILESIZE_X, .5f * GLSCR_TILESIZE_Y);
+	return grid_pos_transform;
+}

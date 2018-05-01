@@ -1,15 +1,15 @@
 struct {
-	vector<Entity*> entities;
+	vector<Entity_Visible*> entities;
 
-	Entity* get_entity(string id) {
+	Entity_Visible* get_entity(string id) {
 		fox_for(ient, entities.size()) {
-			Entity* cur_ent = entities[ient];
+			Entity_Visible* cur_ent = entities[ient];
 			if (cur_ent->id == id) {
 				return cur_ent;
 			}
 		}
 
-		Entity* new_ent = new Entity;
+		Entity_Visible* new_ent = new Entity_Visible;
 		new_ent->id = id;
 		entities.push_back(new_ent);
 		return new_ent;

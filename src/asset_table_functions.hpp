@@ -27,3 +27,17 @@ Animation* Asset_Table::get_animation(string id) {
 	animations.push_back(new_animation);
 	return new_animation;
 }
+
+Mesh* Asset_Table::get_mesh(string id) {
+	fox_for(imesh, meshes.size()) {
+		Mesh* cur_mesh = meshes[imesh];
+		if (cur_mesh->name == id) {
+			return cur_mesh;
+		}
+	}
+
+	Mesh* new_mesh = new Mesh;
+	new_mesh->name = id;
+	meshes.push_back(new_mesh);
+	return new_mesh;
+}

@@ -53,6 +53,16 @@ struct Shader {
 		return glGetUniformLocation(id, name);
 	}
 
+	void set_vec4(const char* name, glm::vec4& vec) {
+		glUniform4f(get_uniform_loc(name), vec.x, vec.y, vec.z, vec.w);
+	}
+	void set_mat3(const char* name, glm::mat3& mat) {
+		glUniformMatrix3fv(get_uniform_loc(name), 1, GL_FALSE, glm::value_ptr(mat));
+	}
+	void set_int(const char* name, GLint val) {
+		glUniform1i(get_uniform_loc(name), val);
+	}
+
 	void bind() {
 		glUseProgram(id);
 	}

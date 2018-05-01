@@ -4,6 +4,7 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
+#include <glm/gtc/type_ptr.hpp>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 
@@ -13,7 +14,10 @@
 #include <vector>
 #include <string>
 #include <algorithm>
+#include <cmath>
 using namespace std;
+
+
 
 #include "utils.hpp"
 #include "log.hpp"
@@ -27,6 +31,12 @@ using namespace std;
 #include "entity.hpp"
 #include "entity_table.hpp"
 #include "asset_table_functions.hpp"
+#include "input.hpp"
+#include "assets.hpp"
+#include "draw.hpp"
+#include "player.hpp"
+#include "game.hpp"
+
 
 int main() {
 	tdns_log.init();
@@ -37,7 +47,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	GLFWwindow* window = glfwCreateWindow(320, 240, "demo", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "demo", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -50,78 +60,59 @@ int main() {
 		return -1;
 	}
 	
-	glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	//glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+	glfwSetCursorPosCallback(window, cursor_pos_callback);
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+	glfwSetKeyCallback(window, key_callback);
 
-	
-	// SHADER INIT
-    Shader basic_shader;
-    basic_shader.init("../../shaders/basic.vs", "../../shaders/basic.fs");
+	init_assets();
 
-	
-	// ENTITY INIT
-	glGenVertexArrays(1, &Entity::vao);
-	glGenBuffers(1, &Entity::vert_buffer);
-	glGenBuffers(1, &Entity::elem_buffer);
-	
-	glBindVertexArray(Entity::vao);
+
+	// OPENGL INIT
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glGenVertexArrays(1, &Entity_Visible::vao);
+	glGenBuffers(1, &Entity_Visible::vert_buffer);
+	glGenBuffers(1, &Entity_Visible::elem_buffer);
+	glGenVertexArrays(1, &Mesh::vao);
+	glGenBuffers(1, &Mesh::vert_buffer);
+	glGenBuffers(1, &Mesh::elem_buffer);
+
+	glBindVertexArray(Entity_Visible::vao);
 	fill_gpu_sprite_buffers();
-	
-	Texture* wall_texture = asset_table.get_texture("wall_tex");
-	Texture* octopus_texture = asset_table.get_texture("octopus_tex");
-	wall_texture->init("../../textures/wall.jpg");
-	octopus_texture->init("../../textures/octopus.png");
-	
-	Entity* wall = entity_table.get_entity("wall");
-	Entity* octopus = entity_table.get_entity("octopus");
+	glBindVertexArray(Mesh::vao);
+	fill_gpu_mesh_buffers();
 
-	Animation* wall_anim = asset_table.get_animation("wall_anim");
-	wall_anim->add_frame("wall_tex");
 
-	Entity* ball = entity_table.get_entity("ball");
+	// GAME INIT
+	game_layer.init();
 
-	Texture* ball_anim1 = asset_table.get_texture("ball1");
-	Texture* ball_anim2 = asset_table.get_texture("ball2");
-	Texture* ball_anim3 = asset_table.get_texture("ball3");
-	Texture* ball_anim4 = asset_table.get_texture("ball4");
-	Texture* ball_anim5 = asset_table.get_texture("ball5");
-	ball_anim1->init("../../textures/animation_test1.png");
-	ball_anim2->init("../../textures/animation_test2.png");
-	ball_anim3->init("../../textures/animation_test3.png");
-	ball_anim4->init("../../textures/animation_test4.png");
-	ball_anim5->init("../../textures/animation_test5.png");
-	
-	Animation* ball_anim = asset_table.get_animation("ball_anim");
-	ball_anim->add_frame(ball_anim1);
-	ball_anim->add_frame(ball_anim2);
-	ball_anim->add_frame(ball_anim3);
-	ball_anim->add_frame(ball_anim4);
-	ball_anim->add_frame(ball_anim5);
 
-	ball->animation_ids.push_back("ball_anim");
-	ball->start_animation("ball_anim");
-
-	SRT transform;
-	transform.translate = glm::vec2(2.3, 3.1);
-	mat3_from_transform(transform);
-	
 	// MAIN LOOP
 	float spf = 1.f / 10.f;
 	while(!glfwWindowShouldClose(window)) {
 		double frame_start_time = glfwGetTime();
-		process_input(window);
+
+		// This will call all of our callbacks, giving us all the input for this frame
+		glfwPollEvents();
+		if (game_input_active) { copy_input(global_input, game_input); }
+
+		if (global_input.was_pressed(TDNS_KEY_1)) { use_640_360(window); }
+		if (global_input.was_pressed(TDNS_KEY_2)) { use_720p(window); }
+		if (global_input.was_pressed(TDNS_KEY_3)) { use_1080p(window); }
 
 		// Note: Hannah's favorite three floating point numbers. Do not remove!
 		glClearColor(.82f, .77f, 0.57f, 1.0f);
+		if (global_input.is_down[TDNS_MOUSE_LEFT]) {
+			glClearColor(0.f, .77f, 0.57f, 1.0f);
+		}
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		// Render
-		basic_shader.bind();
-		ball->bind();
-		glUniform1i(basic_shader.get_uniform_loc("sampler1"), 0);
-		ball->draw(GL_TRIANGLES);
-			
+		game_layer.update();
+		game_layer.render();
+
 		glfwSwapBuffers(window);
-		glfwPollEvents();
+		global_input.reset_for_next_frame();
+
 
 		// Wait until we hit the next frame time
 		while (glfwGetTime() - frame_start_time < spf) {}

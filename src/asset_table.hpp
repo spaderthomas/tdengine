@@ -14,6 +14,7 @@ struct Asset_Table {
 
 	Texture* get_texture(string id);
 	Animation* get_animation(string id);
+	Mesh* get_mesh(string id);
 };
 
 Asset_Table asset_table;

@@ -3,11 +3,11 @@ layout (location = 0) in vec3 pos;
 layout (location = 1) in vec2 tex_coord;
 
 out vec2 frag_tex_coord;
-out float mix;
+
+uniform mat3 transform;
 
 void main() {
-	float dist = distance(pos, vec3(vec2(1.f), 0.f));
-	mix = dist * dist / 4.f;
-    gl_Position = vec4(pos, 1.f);
+    vec3 xy_pos = vec3(vec2(pos), 1.f);
+	gl_Position = vec4(vec2(transform * xy_pos), pos.z, 1.f);
 	frag_tex_coord = tex_coord;
 }

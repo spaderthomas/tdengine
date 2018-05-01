@@ -1,4 +1,4 @@
-struct Entity {
+struct Entity_Visible {
 	// We're only painting squares, so this is the data for the square that all Entities use
 	static GLuint vert_buffer;
 	static GLuint elem_buffer;
@@ -24,16 +24,16 @@ struct Entity {
 
 	void bind() {
 		// If the animation we're using isn't valid, just return
-		if (icur_anim < 0 || icur_anim >= animation_ids.size()) { 
+		if (icur_anim < 0 || icur_anim >= (int)animation_ids.size()) { 
 			cout << "Failed to load texture!";
 			tdns_log.write("Failed to load texture!");
 			return;
 		}
 
 		// Otherwise, bind all the OpenGL stuff
-		glBindVertexArray(Entity::vao);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Entity::elem_buffer);
-		glBindBuffer(GL_ARRAY_BUFFER, Entity::vert_buffer);
+		glBindVertexArray(Entity_Visible::vao);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Entity_Visible::elem_buffer);
+		glBindBuffer(GL_ARRAY_BUFFER, Entity_Visible::vert_buffer);
 
 		// 0: Vertices
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
@@ -54,32 +54,25 @@ struct Entity {
 	}
 
 };
-GLuint Entity::vert_buffer;
-GLuint Entity::elem_buffer;
-GLuint Entity::vao;
-vector<float> Entity::square_verts = {
+GLuint Entity_Visible::vert_buffer;
+GLuint Entity_Visible::elem_buffer;
+GLuint Entity_Visible::vao;
+vector<float> Entity_Visible::square_verts = {
 	1.f,  1.f, 0.0f,
 	1.f, -1.f, 0.0f,
 	-1.f, -1.f, 0.0f,
-	-1.f,  1.f, 0.0f 
+	-1.f,  1.f, 0.0f
 };
-vector<uint> Entity::square_indices = {
+vector<uint> Entity_Visible::square_indices = {
 	0, 1, 2,
 	2, 0, 3
 };
-vector<float> Entity::square_tex_coords = {
-	1.f, 1.f, 
+vector<float> Entity_Visible::square_tex_coords = {
+	1.f, 1.f,
 	1.f, 0.0f,
 	0.f, 0.f,
 	0.f, 1.f,
 };
-vector<float> square_verts_temp = {
-	.5f,  .5f, 0.0f,
-	.5f, -.5f, 0.0f,
-	-.5f, -.5f, 0.0f,
-	-.5f,  .5f, 0.0f 
-};
-
 
 // Just gives OpenGL the data needed to draw a texture-mapped square
 void fill_gpu_sprite_buffers() {
@@ -87,15 +80,15 @@ void fill_gpu_sprite_buffers() {
 	vector<uint> indx_buffer;
 
 	// Vertex buffer gets verts and indices for a square
-	concat(vert_buffer, Entity::square_verts);
-	concat(vert_buffer, Entity::square_tex_coords);
-	concat(indx_buffer, Entity::square_indices);
+	concat(vert_buffer, Entity_Visible::square_verts);
+	concat(vert_buffer, Entity_Visible::square_tex_coords);
+	concat(indx_buffer, Entity_Visible::square_indices);
 	
 	// Give them to the OpenGL buffer
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Entity::elem_buffer);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Entity_Visible::elem_buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indx_buffer.size() * sizeof(uint), indx_buffer.data(), GL_STATIC_DRAW);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, Entity::vert_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, Entity_Visible::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
 	gl_unbind_buffer();	
 }
