@@ -70,6 +70,8 @@ int main() {
 
 	// OPENGL INIT
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glGenVertexArrays(1, &Entity_Visible::vao);
 	glGenBuffers(1, &Entity_Visible::vert_buffer);
 	glGenBuffers(1, &Entity_Visible::elem_buffer);
@@ -88,7 +90,6 @@ int main() {
 
 
 	// MAIN LOOP
-	float spf = 1.f / 10.f;
 	while(!glfwWindowShouldClose(window)) {
 		double frame_start_time = glfwGetTime();
 
@@ -107,7 +108,7 @@ int main() {
 		}
 		glClear(GL_COLOR_BUFFER_BIT);
 		
-		game_layer.update();
+		game_layer.update(seconds_per_update);
 		game_layer.render();
 
 		glfwSwapBuffers(window);
@@ -115,7 +116,7 @@ int main() {
 
 
 		// Wait until we hit the next frame time
-		while (glfwGetTime() - frame_start_time < spf) {}
+		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
 	}
 	glfwTerminate();
     return 0;

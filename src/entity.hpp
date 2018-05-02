@@ -11,6 +11,8 @@ struct Entity_Visible {
 	string id;
 	vector<string> animation_ids;
 	int icur_anim = -1;
+	float time_to_next_frame;
+	float seconds_per_sprite_update = 1.f / 8.f;
 
 	void start_animation(string anim_name) {
 		// If the name is a valid animation for this entity, set our index to point to it and reset the animation's frame
@@ -19,7 +21,25 @@ struct Entity_Visible {
 			icur_anim = iter - animation_ids.begin();
 			Animation* cur_anim = asset_table.get_animation(anim_name);
 			cur_anim->reset();
+			time_to_next_frame = seconds_per_sprite_update;
 		}
+		else {
+			cout << "Asked to start an animation that you didn't have!\n";
+			cout << "Animation name was: " << anim_name;
+			tdns_log.write("Asked to start an animation that you didn't have! Animation name was: ");
+			tdns_log.write(anim_name.c_str());
+			exit(1);
+		}
+	}
+
+	bool update(float dt) {
+		time_to_next_frame -= dt;
+		if (time_to_next_frame <= 0.f) {
+			Animation* active_animation = asset_table.get_animation(animation_ids[icur_anim]);
+			active_animation->next_frame();
+			time_to_next_frame = seconds_per_sprite_update;
+		}
+		return false;
 	}
 
 	void bind() {
@@ -49,8 +69,6 @@ struct Entity_Visible {
 	
 	void draw(GLuint mode) {
 		glDrawElements(mode, (GLsizei)square_indices.size(), GL_UNSIGNED_INT, 0);
-		Animation* active_animation = asset_table.get_animation(animation_ids[icur_anim]);
-		active_animation->next_frame();
 	}
 
 };

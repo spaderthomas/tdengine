@@ -17,6 +17,8 @@ void gl_bind_buffer(GLint buf) {
 	glBindBuffer(GL_ARRAY_BUFFER, buf);
 }
 
+float seconds_per_update = 1.f / 60.f;
+
 // Default to half of 720p
 float SCREEN_X = 640.f;
 float SCREEN_Y = 360.f;

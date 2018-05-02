@@ -1,18 +1,21 @@
 struct {
 	Player player;
+	vector<glm::ivec2> filled_tiles;
 
 	void init() {
 		player.init();
-		player.animator->start_animation("octopus_anim");
+		player.animator->start_animation("boon_walk");
 	}
 
-	void update() {
+	void update(float dt) {
 		if (game_input.is_down[TDNS_KEY_UP]) { player.transform.translate.y += player.move_speed_y; }
 		if (game_input.is_down[TDNS_KEY_DOWN]) { player.transform.translate.y -= player.move_speed_y; }
 		if (game_input.is_down[TDNS_KEY_RIGHT]) { player.transform.translate.x += player.move_speed_x; }
 		if (game_input.is_down[TDNS_KEY_LEFT]) { player.transform.translate.x -= player.move_speed_x; }
 
-		player.update();
+		if (game_input.was_pressed(TDNS_MOUSE_LEFT)) { filled_tiles.push_back(game_input.grid_pos()); }
+
+		player.update(dt);
 	}
 
 	void render() {
@@ -24,8 +27,10 @@ struct {
 			draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 1.f));
 		}
 
-		glm::ivec2 grid_pos = game_input.grid_pos();
-		auto grid_pos_transform = srt_from_grid_pos(grid_pos);
+		for (auto& tile : filled_tiles) {
+			draw_square(srt_from_grid_pos(tile), glm::vec4(.46f, .21f, .13f, 1.f));
+		}
+		auto grid_pos_transform = srt_from_grid_pos(game_input.grid_pos());
 		draw_square(grid_pos_transform, glm::vec4(0.f, .4f, .2f, 1.f));
 
 
