@@ -9,25 +9,34 @@ struct Entity_Visible {
 	static vector<float> square_tex_coords;
 
 	string id;
-	vector<string> animation_ids;
-	int icur_anim = -1;
-	float time_to_next_frame;
-	float seconds_per_sprite_update = 1.f / 8.f;
+	vector<Animation*> animations;
+	Animation* active_animation;
+	float time_to_next_frame; 
+	float seconds_per_sprite_update = 1.f / 8.f; // How often animations move between frames
+	glm::vec2 tilesize;
 
-	void start_animation(string anim_name) {
-		// If the name is a valid animation for this entity, set our index to point to it and reset the animation's frame
-		auto iter = find(animation_ids.begin(), animation_ids.end(), anim_name);
-		if (iter != animation_ids.end()) {
-			icur_anim = iter - animation_ids.begin();
-			Animation* cur_anim = asset_table.get_animation(anim_name);
-			cur_anim->reset();
+	void start_animation(string wish_anim_name) {
+		// Find the animation in the entity's list 
+		Animation* wish_anim = nullptr;
+		fox_for(ianim, animations.size()) {
+			Animation* cur_anim = animations[ianim];
+			if (cur_anim->name == wish_anim_name) {
+				wish_anim = cur_anim;
+				break;
+			}
+		}
+
+		// If we can find it, go ahead and mark it as the entity's current animation
+		if (wish_anim) {
+			wish_anim->reset();
+			active_animation = wish_anim;
 			time_to_next_frame = seconds_per_sprite_update;
 		}
 		else {
 			cout << "Asked to start an animation that you didn't have!\n";
-			cout << "Animation name was: " << anim_name;
-			tdns_log.write("Asked to start an animation that you didn't have! Animation name was: ");
-			tdns_log.write(anim_name.c_str());
+			cout << "Animation name was: " << wish_anim_name;
+			string msg = "Asked to start an animation that you didn't have! Animation name was: " + wish_anim_name;
+			tdns_log.write(msg.c_str());
 			exit(1);
 		}
 	}
@@ -35,7 +44,6 @@ struct Entity_Visible {
 	bool update(float dt) {
 		time_to_next_frame -= dt;
 		if (time_to_next_frame <= 0.f) {
-			Animation* active_animation = asset_table.get_animation(animation_ids[icur_anim]);
 			active_animation->next_frame();
 			time_to_next_frame = seconds_per_sprite_update;
 		}
@@ -44,10 +52,10 @@ struct Entity_Visible {
 
 	void bind() {
 		// If the animation we're using isn't valid, just return
-		if (icur_anim < 0 || icur_anim >= (int)animation_ids.size()) { 
-			cout << "Failed to load texture!";
-			tdns_log.write("Failed to load texture!");
-			return;
+		if (!active_animation) { 
+			string msg = "There is no active animation set on " + id + ", but bind() was called";
+			tdns_log.write(msg.c_str());
+			exit(1);
 		}
 
 		// Otherwise, bind all the OpenGL stuff
@@ -63,7 +71,6 @@ struct Entity_Visible {
 		glEnableVertexAttribArray(1);
 
 		// Use the correct texture
-		Animation* active_animation = asset_table.get_animation(animation_ids[icur_anim]);
 		active_animation->bind();
 	}
 	

@@ -7,6 +7,7 @@ enum Input_ID {
 	TDNS_KEY_1,
 	TDNS_KEY_2,
 	TDNS_KEY_3,
+	TDNS_KEY_TAB,
 	COUNT_INPUT_IDS,
 };
 
@@ -32,14 +33,6 @@ struct Input {
 		return glm::vec2(screen_pos.x * 2 - 1, 1 - screen_pos.y * 2);
 	}
 
-	/*
-	 __ __ __ __          <---- this row is row 0
-	|__ __ __ __|
-	|__ __ __ __|
-	|__ __ __ __|
-	|__ __ __ __|
-	 
-	*/
 	glm::ivec2 grid_pos() {
 		int closest_x = floor(px_pos.x / CELL_SIZE);
 		int closest_y = ceil(px_pos.y / CELL_SIZE);
@@ -83,4 +76,5 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	activate_key(key, GLFW_KEY_1, TDNS_KEY_1)
 	activate_key(key, GLFW_KEY_2, TDNS_KEY_2)
 	activate_key(key, GLFW_KEY_3, TDNS_KEY_3)
+	activate_key(key, GLFW_KEY_TAB, TDNS_KEY_TAB)
 }

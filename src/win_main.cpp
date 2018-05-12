@@ -32,6 +32,8 @@ using namespace std;
 #include "entity_table.hpp"
 #include "asset_table_functions.hpp"
 #include "input.hpp"
+#include "environment_assets.hpp"
+#include "character_assets.hpp"
 #include "assets.hpp"
 #include "draw.hpp"
 #include "player.hpp"

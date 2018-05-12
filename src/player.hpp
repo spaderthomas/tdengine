@@ -6,7 +6,7 @@ struct Player {
 	float move_speed_y = GLSCR_TILESIZE_Y * seconds_per_update * 4;
 
 	void init() {
-		animator = boon;
+		animator = entity_table.get_entity("boon");
 		transform = SRT::no_transform();
 		transform.scale = glm::vec2(GLSCR_TILESIZE_X, GLSCR_TILESIZE_Y);
 		transform.translate = glm::vec2(-1.f + GLSCR_TILESIZE_X, 1.f - GLSCR_TILESIZE_Y); // To tile-align the player

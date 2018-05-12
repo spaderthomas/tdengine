@@ -26,8 +26,10 @@ struct Texture : Asset {
 			glGenerateMipmap(GL_TEXTURE_2D);
 			//stbi_image_free(img_data);
 		} else {
-			cout << "Failed to load texture!";
-			tdns_log.write("Failed to load texture!");
+			string path_as_string(path);
+			string msg = "Failed to load texture from path: " + path_as_string;
+			cout << msg;
+			tdns_log.write(msg.c_str());
 		}
 
 	}

@@ -1,0 +1,3 @@
+- experiment with more cycle animations
+- tile editor
+- imgui (along with tile editor -- tile selector)

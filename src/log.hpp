@@ -6,6 +6,7 @@ struct {
 	}
 
 	void write(const char* message) {
+		cout << message;
 		while(*message) { log_stream.put(*message); message++; }
 		log_stream.put('\n');
 	}
