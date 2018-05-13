@@ -1,5 +1,6 @@
 #define fox_for(iterName, iterCount) for (unsigned int iterName = 0; iterName < (iterCount); ++iterName)
 typedef unsigned int uint;
+typedef int32_t int32;
 
 template<typename vec_type>
 void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {

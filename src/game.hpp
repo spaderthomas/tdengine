@@ -46,6 +46,7 @@ struct {
 	}
 
 	void render() {
+
 		// Render the grid
 		// We have to multiply by two because OpenGL uses -1 to 1
 		for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {
@@ -55,6 +56,7 @@ struct {
 			draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 1.f));
 		}
 
+		/*
 		// Render the tile map
 		fox_for (itile, filled_tiles.size()) {
 			glm::ivec2& tile_pos = filled_tiles[itile];
@@ -68,6 +70,7 @@ struct {
 			textured_shader.set_mat3("transform", transform_mat);
 			entity_table.get_entity("test_entity")->draw(GL_TRIANGLES);
 		}
+		
 		auto grid_pos_transform = srt_from_grid_pos(game_input.grid_pos());
 		if (indx_active_tile != -1) {
 			Entity_Visible* active_tile = entity_table.entities[indx_active_tile];
@@ -79,13 +82,16 @@ struct {
 			textured_shader.set_mat3("transform", transform_mat);
 			active_tile->draw(GL_TRIANGLES);
 		}
+		*/
 
-
+		asset_table.get_texture_atlas("boon.png")->bind();
 		textured_shader.bind();
-		player.bind();
+		player.animator->bind();
 		textured_shader.set_int("sampler1", 0);
 		auto transform_mat = mat3_from_transform(player.transform);
 		textured_shader.set_mat3("transform", transform_mat);
 		player.draw(GL_TRIANGLES);
+
+		//draw_square(SRT::no_transform(), blue);
 	}
 } game_layer;

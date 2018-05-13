@@ -1,17 +1,33 @@
-Texture* Asset_Table::get_texture(string id) {
+Texture_Atlas* Asset_Table::get_texture_atlas(string id) {
 	// If we can find it in our current list, return it
-	fox_for(itex, textures.size()) {
-		Texture* cur_tex = textures[itex];
-		if (cur_tex->name == id) {
-			return cur_tex;
+	fox_for(iatlas, atlases.size()) {
+		Texture_Atlas* cur_atlas = atlases[iatlas];
+		if (cur_atlas->name == id) {
+			return cur_atlas;
 		}
 	}
 
 	// Otherwise, make a new one and return that
-	Texture* new_tex = new Texture;
-	new_tex->name = id;
-	textures.push_back(new_tex);
-	return new_tex;
+	Texture_Atlas* new_atlas = new Texture_Atlas;
+	new_atlas->name = id;
+	atlases.push_back(new_atlas);
+	return new_atlas;
+}
+
+Sprite* Asset_Table::get_sprite(string id) {
+	// If we can find it in our current list, return it
+	fox_for(isprite, sprites.size()) {
+		Sprite* cur_sprite = sprites[isprite];
+		if (cur_sprite->name == id) {
+			return cur_sprite;
+		}
+	}
+
+	// Otherwise, make a new one and return that
+	Sprite* new_sprite = new Sprite;
+	new_sprite->name = id;
+	sprites.push_back(new_sprite);
+	return new_sprite;
 }
 
 Animation* Asset_Table::get_animation(string id) {

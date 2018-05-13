@@ -7,6 +7,10 @@
 #include <glm/gtc/type_ptr.hpp>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
+#define STB_RECT_PACK_IMPLEMENTATION
+#include "stb/stb_rect_pack.h"
+#define STB_IMAGE_WRITE_IMPLEMENTATION
+#include "stb/stb_image_write.h"
 
 // STL
 #include <iostream>
@@ -15,9 +19,8 @@
 #include <string>
 #include <algorithm>
 #include <cmath>
+#include <experimental/filesystem>
 using namespace std;
-
-
 
 #include "utils.hpp"
 #include "log.hpp"
@@ -25,6 +28,8 @@ using namespace std;
 #include "asset_table.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
+#include "sprite.hpp"
+#include "texture_atlas.hpp"
 #include "mesh.hpp"
 #include "animation.hpp"
 #include "transform.hpp"
@@ -69,19 +74,21 @@ int main() {
 
 	init_assets();
 
-
 	// OPENGL INIT
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	glGenVertexArrays(1, &Entity_Visible::vao);
-	glGenBuffers(1, &Entity_Visible::vert_buffer);
-	glGenBuffers(1, &Entity_Visible::elem_buffer);
+	glEnable(GL_BLEND);
+	glEnable(GL_TEXTURE_2D);
+
+	glGenVertexArrays(1, &Sprite::vao);
+	glGenBuffers(1, &Sprite::vert_buffer);
+	glGenBuffers(1, &Sprite::elem_buffer);
 	glGenVertexArrays(1, &Mesh::vao);
 	glGenBuffers(1, &Mesh::vert_buffer);
 	glGenBuffers(1, &Mesh::elem_buffer);
 
-	glBindVertexArray(Entity_Visible::vao);
+
+	glBindVertexArray(Sprite::vao);
 	fill_gpu_sprite_buffers();
 	glBindVertexArray(Mesh::vao);
 	fill_gpu_mesh_buffers();
@@ -89,7 +96,6 @@ int main() {
 
 	// GAME INIT
 	game_layer.init();
-
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {

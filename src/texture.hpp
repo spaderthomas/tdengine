@@ -9,7 +9,7 @@ struct Texture : Asset {
 	void init(const char* path) {
 		// Generate OpenGL stuff
 		glGenTextures(1, &handle);
-		glActiveTexture(GL_TEXTURE0);
+		//glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, handle);
 
 		// Some sane defaults
@@ -19,7 +19,7 @@ struct Texture : Asset {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 		// Load image data
-		stbi_set_flip_vertically_on_load(true);
+		//stbi_set_flip_vertically_on_load(true);
 		unsigned char *img_data = stbi_load(path, &width, &height, &num_channels, 0);
 		if (img_data) {
 			data = img_data;
