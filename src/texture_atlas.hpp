@@ -10,14 +10,10 @@ string atlas_folders[] = {"../../textures/boon/",
 struct Texture_Atlas : Asset {
 	GLuint handle;
 
-	int width;
-	int height;
-	int num_channels;
+	int width, height, num_channels;
 
 	void bind() {
-		//glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, handle);
-		glEnable(GL_TEXTURE_2D);
 	}
 };
 
@@ -27,18 +23,27 @@ struct Name_And_ID {
 	int id;
 };
 void create_texture_atlas(string dir) {
+	// Create some memory for our atlas
 	stbi_set_flip_vertically_on_load(false);
 	int32* atlas_data = (int32*)malloc(REGULAR_ATLAS_SIZE * REGULAR_ATLAS_SIZE * sizeof(int32));
 	memset(atlas_data, 0x0, sizeof(int32) * REGULAR_ATLAS_SIZE * REGULAR_ATLAS_SIZE);
 	
+	// Extract name of the atlas png from the dir name
+	string atlas_name;
+	for (int ichar = dir.size() - 2; ichar > -1; ichar--) { // Start at -2 to throw away trailing /
+		if (dir.at(ichar) == '/') { break; }
+		atlas_name.insert(atlas_name.begin(), dir.at(ichar));
+	}
+	atlas_name += ".png";
+	Texture_Atlas* atlas = asset_table.get_texture_atlas(atlas_name);
+
 	const stdfs::directory_iterator end{};
 	vector<stbrp_rect> rects;
 	vector<Name_And_ID> sprite_ids;
 	vector<unsigned char*> image_data;
 
-	// Create entries in the asset table for each sprite, and create rectangles so we can pack them
+	// Go through each sprite, register it in the asset table, and collect its rect data
 	int rect_id = 0;
-	vector<Sprite*> sprites;
 	for(stdfs::directory_iterator iter{dir} ; iter != end ; ++iter ) {
 		string path = iter->path().string();
 
@@ -52,7 +57,9 @@ void create_texture_atlas(string dir) {
 			asset_name.insert(asset_name.begin(), path.at(ichar));
 		}
 		Sprite* sprite = asset_table.get_sprite(asset_name);
+		sprite->atlas = atlas;
 
+		// Load the image data, create a rectangle for it
 		unsigned char* data = stbi_load(path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
 		if (data) {
 			image_data.push_back(data);
@@ -93,6 +100,8 @@ void create_texture_atlas(string dir) {
 				break;
 			}
 		}
+
+		// Copy the sprite into the image buffer
 		int32* image_cur_row = (int32*)image_data[irect];
 		int32* atlas_cur_row = atlas_data + rect.x + REGULAR_ATLAS_SIZE * rect.y;
 
@@ -104,18 +113,12 @@ void create_texture_atlas(string dir) {
 	}
 
 	// Write the atlas itself, with the same name as the folder it was created from	
-	string atlas_name;
-	for (int ichar = dir.size() - 2; ichar > -1; ichar--) { // Start at -2 to throw away trailing /
-		if (dir.at(ichar) == '/') { break; }
-		atlas_name.insert(atlas_name.begin(), dir.at(ichar));
-	}
-	atlas_name += ".png";
-	string atlas_path = "../../textures/atlases/" + atlas_name;
+	
+	string atlas_path = "../../textures/atlases/" + atlas->name;
 	stbi_write_png(atlas_path.c_str(), REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 4, atlas_data, 0);
 
 
 	// Now, create all the OpenGL internals and point it to the newly created atlas
-	Texture_Atlas* atlas = asset_table.get_texture_atlas(atlas_name);
 	glGenTextures(1, &atlas->handle);
 	glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
 	glBindTexture(GL_TEXTURE_2D, atlas->handle);
@@ -123,10 +126,11 @@ void create_texture_atlas(string dir) {
 	// Some sane defaults
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas_data);
+	glGenerateMipmap(GL_TEXTURE_2D);
 
 	// Give it the image data
 	atlas->width = REGULAR_ATLAS_SIZE;

@@ -12,6 +12,7 @@ vector<float> triangle_tex_coords = {
     1.f, 0.0f,
     0.5f, 1.0f,
 };
+
 // @todo: Merge these with the Entity_Visible version?
 vector<float> square_verts = {
 	1.f,  1.f, 0.0f,
@@ -19,6 +20,19 @@ vector<float> square_verts = {
 	-1.f, -1.f, 0.0f,
 	-1.f,  1.f, 0.0f
 };
+vector<float> background_square_verts = {
+	1.f,  1.f, 0.0f,
+	1.f, -1.f, 0.0f,
+	-1.f, -1.f, 0.0f,
+	-1.f,  1.f, 0.0f
+};
+vector<float> foreground_square_verts = {
+	1.f,  1.f, -1.f,
+	1.f, -1.f, -1.f,
+	-1.f, -1.f, -1.f,
+	-1.f,  1.f, -1.f
+};
+
 vector<uint> square_indices = {
 	0, 1, 2,
 	2, 0, 3

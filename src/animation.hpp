@@ -1,11 +1,11 @@
-	struct Animation : Asset {
+struct Animation : Asset {
 	vector<Sprite*> frames;
 	int icur_frame = -1;
 
-	void bind() {
+	void draw(GLenum mode, SRT transform) {
 		if (icur_frame > -1) {
 			Sprite* cur_frame = frames[icur_frame];
-			cur_frame->bind();
+			renderer.draw_sprite(cur_frame, transform);
 		}
 		else {
 			string msg = "Invalid frame index (less than 0!). Animation name: " + this->name;

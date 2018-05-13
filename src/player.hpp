@@ -16,6 +16,6 @@ struct Player {
 		transform.scale = glm::vec2(GLSCR_TILESIZE_X, GLSCR_TILESIZE_Y);
 		animator->update(dt);
 	}
-	void bind() { animator->bind(); }
-	void draw(GLuint mode) { animator->draw(mode); }
+
+	void draw(GLuint mode) { animator->draw(mode, transform); }
 };

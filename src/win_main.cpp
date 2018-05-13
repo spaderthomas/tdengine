@@ -16,6 +16,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
+#include <unordered_map>
 #include <string>
 #include <algorithm>
 #include <cmath>
@@ -31,17 +32,17 @@ using namespace std;
 #include "sprite.hpp"
 #include "texture_atlas.hpp"
 #include "mesh.hpp"
-#include "animation.hpp"
 #include "transform.hpp"
+#include "renderer.hpp"
+#include "animation.hpp"
 #include "entity.hpp"
 #include "entity_table.hpp"
 #include "asset_table_functions.hpp"
 #include "input.hpp"
-#include "environment_assets.hpp"
-#include "character_assets.hpp"
 #include "assets.hpp"
 #include "draw.hpp"
 #include "player.hpp"
+#include "renderer_functions.hpp"
 #include "game.hpp"
 
 
@@ -75,10 +76,10 @@ int main() {
 	init_assets();
 
 	// OPENGL INIT
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_DEPTH_TEST);
 
 	glGenVertexArrays(1, &Sprite::vao);
 	glGenBuffers(1, &Sprite::vert_buffer);
@@ -114,7 +115,7 @@ int main() {
 		if (global_input.is_down[TDNS_MOUSE_LEFT]) {
 			glClearColor(0.f, .77f, 0.57f, 1.0f);
 		}
-		glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
 		
 		game_layer.update(seconds_per_update);
 		game_layer.render();
