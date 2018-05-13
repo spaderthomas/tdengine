@@ -23,18 +23,16 @@ void init_assets() {
 		test_entity->tilesize = glm::vec2(16, 16);
 		{
 			Sprite* test_entity_sprite = asset_table.get_sprite("building.png");
-			test_entity_sprite->layer = FOREGROUND;
 			Animation* test_animation = asset_table.get_animation("test_animation");
 			test_animation->add_frame(test_entity_sprite);
 			test_entity->animations.push_back(test_animation);
 			test_entity->start_animation("test_animation");
 		}
 
-		Entity_Visible* grass = entity_table.get_entity("grass");
+		Entity_Visible* grass = entity_table.get_background_tile("grass");
 		grass->tilesize = glm::vec2(1, 1);
 		{
 			Sprite* texture = asset_table.get_sprite("grass1.png");
-			texture->layer = BACKGROUND;
 			Animation* animation = asset_table.get_animation("sand");
 			animation->add_frame(texture);
 			grass->animations.push_back(animation);
@@ -58,15 +56,10 @@ void init_assets() {
 
 			// 1: Add all the textures that comprise the frames
 			Sprite* wilson_walk1 = asset_table.get_sprite("wilson_walk1.png");
-			wilson_walk1->layer = FOREGROUND;
 			Sprite* wilson_walk2 = asset_table.get_sprite("wilson_walk2.png");
-			wilson_walk2->layer = FOREGROUND;
 			Sprite* wilson_walk3 = asset_table.get_sprite("wilson_walk3.png");
-			wilson_walk3->layer = FOREGROUND;
 			Sprite* wilson_walk4 = asset_table.get_sprite("wilson_walk4.png");
-			wilson_walk4->layer = FOREGROUND;
 			Sprite* wilson_walk5 = asset_table.get_sprite("wilson_walk5.png");
-			wilson_walk5->layer = FOREGROUND;
 			// 2: Add the frames to it, in order
 			wilson_walk->add_frame(wilson_walk1);
 			wilson_walk->add_frame(wilson_walk2);
@@ -90,15 +83,10 @@ void init_assets() {
 				boon->animations.push_back(boon_walk);
 
 				Sprite* boon_walk1 = asset_table.get_sprite("boon_walk1.png");
-				boon_walk1->layer = FOREGROUND;
 				Sprite* boon_walk2 = asset_table.get_sprite("boon_walk2.png");
-				boon_walk2->layer = FOREGROUND;
 				Sprite* boon_walk3 = asset_table.get_sprite("boon_walk3.png");
-				boon_walk3->layer = FOREGROUND;
 				Sprite* boon_walk4 = asset_table.get_sprite("boon_walk4.png");
-				boon_walk4->layer = FOREGROUND;
 				Sprite* boon_walk5 = asset_table.get_sprite("boon_walk5.png");
-				boon_walk5->layer = FOREGROUND;
 
 				boon_walk->add_frame(boon_walk1);
 				boon_walk->add_frame(boon_walk2);

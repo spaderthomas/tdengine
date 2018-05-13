@@ -2,10 +2,15 @@ struct Entity_Visible {
 	string id;
 	vector<Animation*> animations;
 	Animation* active_animation;
-
+	Render_Layer layer;
+	
 	float time_to_next_frame; 
 	float seconds_per_sprite_update = 1.f / 8.f; // How often animations move between frames
 	glm::vec2 tilesize;
+
+	glm::vec2 get_scaling() {
+		return glm::vec2(tilesize.x * SCR_TILESIZE_X, tilesize.y * SCR_TILESIZE_Y);
+	}
 
 	void start_animation(string wish_anim_name) {
 		// Find the animation in the entity's list 
@@ -40,8 +45,19 @@ struct Entity_Visible {
 		return false;
 	}
 
-	void draw(GLuint mode, SRT transform) {
-		active_animation->draw(GL_TRIANGLES, transform);
+	void draw(SRT transform) {
+		Sprite* active_sprite = active_animation->get_active_sprite();
+		if (active_sprite) {
+			renderer.draw_sprite(active_sprite, transform, layer);
+		}
+	}
+	void draw(glm::ivec2 grid_pos) {
+		Sprite* active_sprite = active_animation->get_active_sprite();
+		SRT transform = srt_from_grid_pos(grid_pos);
+		transform.scale = get_scaling();
+		if (active_sprite) {
+			renderer.draw_sprite(active_sprite, transform, layer);
+		}
 	}
 
 };

@@ -28,12 +28,12 @@ using namespace std;
 #include "data.hpp"
 #include "asset_table.hpp"
 #include "shader.hpp"
+#include "transform.hpp"
+#include "renderer.hpp"
 #include "texture.hpp"
 #include "sprite.hpp"
 #include "texture_atlas.hpp"
 #include "mesh.hpp"
-#include "transform.hpp"
-#include "renderer.hpp"
 #include "animation.hpp"
 #include "entity.hpp"
 #include "entity_table.hpp"
@@ -79,7 +79,7 @@ int main() {
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 
 	glGenVertexArrays(1, &Sprite::vao);
 	glGenBuffers(1, &Sprite::vert_buffer);

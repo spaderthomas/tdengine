@@ -2,16 +2,16 @@ struct Animation : Asset {
 	vector<Sprite*> frames;
 	int icur_frame = -1;
 
-	void draw(GLenum mode, SRT transform) {
+	Sprite* get_active_sprite() {
 		if (icur_frame > -1) {
-			Sprite* cur_frame = frames[icur_frame];
-			renderer.draw_sprite(cur_frame, transform);
+			return frames[icur_frame];
 		}
 		else {
 			string msg = "Invalid frame index (less than 0!). Animation name: " + this->name;
 			cout << msg;
 			tdns_log.write(msg.c_str());
 		}
+		return 0;
 	}
 
 	void add_frame(Sprite* frame) {

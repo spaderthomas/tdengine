@@ -1,10 +1,8 @@
-enum Layer { BACKGROUND, FOREGROUND };
 
 struct Sprite : Asset {
 	int height, width, num_channels;
 	Texture_Atlas* atlas;
 	vector<float> tex_coords;
-	Layer layer;
 
 	GLvoid* vert_offset;
 	GLvoid* indices_offset;
@@ -13,8 +11,13 @@ struct Sprite : Asset {
 	static GLuint vert_buffer;
 	static GLuint elem_buffer;
 	static GLuint vao;
+	static GLvoid* background_vert_offset;
+	static GLvoid* foreground_vert_offset;
 
-	void bind() {
+	void bind(Render_Layer layer) {
+		if (layer == BACKGROUND) { vert_offset = background_vert_offset; }
+		if (layer == FOREGROUND) { vert_offset = foreground_vert_offset; }
+
 		// 0: Vertices
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), vert_offset);
 		glEnableVertexAttribArray(0);
@@ -23,14 +26,14 @@ struct Sprite : Asset {
 		glEnableVertexAttribArray(1);
 	}	
 
-	void draw(GLenum mode) {
-		glDrawElements(mode, (GLsizei)6, GL_UNSIGNED_INT, 0);
-	}
 };
 
 GLuint Sprite::vert_buffer;
 GLuint Sprite::elem_buffer;
 GLuint Sprite::vao;
+GLvoid* Sprite::background_vert_offset;
+GLvoid* Sprite::foreground_vert_offset;
+
 void bind_sprite_buffers() {
 	glBindVertexArray(Sprite::vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Sprite::elem_buffer);
@@ -42,15 +45,13 @@ void fill_gpu_sprite_buffers() {
 	vector<float> tex_coords;
 
 	// Push each layer of square verts into the buffer, and mark offsets
+	Sprite::background_vert_offset = 0;
 	concat(vert_data, background_square_verts);
-	GLvoid* foreground_offset = (GLvoid*)(sizeof(float) * vert_data.size());
+	Sprite::foreground_vert_offset = (GLvoid*)(sizeof(float) * vert_data.size());
 	concat(vert_data, foreground_square_verts);
 
-	// Give sprites their vertex offsets & fill tex coordinate buffer
+	// Fill tex coordinate buffer
 	for (auto sprite : asset_table.sprites) {
-		if (sprite->layer == BACKGROUND) { sprite->vert_offset = (GLvoid*)0; }
-		else if (sprite->layer == FOREGROUND) { sprite->vert_offset = foreground_offset; }
-
 		sprite->indices_offset = 0;
 		sprite->tex_coord_offset = (GLvoid*)(sizeof(float) * vert_data.size());
 		concat(vert_data, sprite->tex_coords);

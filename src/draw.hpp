@@ -28,12 +28,3 @@ void draw_square(SRT transform, glm::vec4 color) {
 	square->bind();
 	square->draw(GL_TRIANGLES);
 }
-void draw_tile(SRT transform, Sprite* texture) {
-	auto trans_mat = mat3_from_transform(transform);
-	textured_shader.bind();
-	textured_shader.set_mat3("transform", trans_mat);
-	texture->bind();
-	textured_shader.set_int("sampler1", 0);
-	square->bind();
-	square->draw(GL_TRIANGLES);
-}
