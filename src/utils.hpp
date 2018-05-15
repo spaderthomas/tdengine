@@ -10,13 +10,7 @@ void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
 }
-
-void gl_unbind_buffer() {
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-}
-void gl_bind_buffer(GLint buf) {
-	glBindBuffer(GL_ARRAY_BUFFER, buf);
-}
+GLuint last_bound_texture;
 
 float seconds_per_update = 1.f / 60.f;
 
@@ -71,3 +65,4 @@ glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
 glm::vec4 green = glm::vec4(0.f, 1.f, 0.f, 1.f);
 glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
 
+glm::vec3 camera_pos = glm::vec3(0.f);

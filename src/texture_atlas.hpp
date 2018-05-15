@@ -14,6 +14,7 @@ struct Texture_Atlas : Asset {
 
 	void bind() {
 		glBindTexture(GL_TEXTURE_2D, handle);
+		last_bound_texture = handle;
 	}
 };
 

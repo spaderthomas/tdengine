@@ -23,6 +23,7 @@
 #include <experimental/filesystem>
 using namespace std;
 
+
 #include "utils.hpp"
 #include "log.hpp"
 #include "data.hpp"
@@ -30,18 +31,18 @@ using namespace std;
 #include "shader.hpp"
 #include "transform.hpp"
 #include "renderer.hpp"
-#include "texture.hpp"
 #include "sprite.hpp"
 #include "texture_atlas.hpp"
 #include "mesh.hpp"
 #include "animation.hpp"
+#include "component.hpp"
 #include "entity.hpp"
+#include "tilemap.hpp"
 #include "entity_table.hpp"
 #include "asset_table_functions.hpp"
 #include "input.hpp"
 #include "assets.hpp"
 #include "draw.hpp"
-#include "player.hpp"
 #include "renderer_functions.hpp"
 #include "game.hpp"
 
@@ -94,8 +95,6 @@ int main() {
 	glBindVertexArray(Mesh::vao);
 	fill_gpu_mesh_buffers();
 
-
-	// GAME INIT
 	game_layer.init();
 
 	// MAIN LOOP
@@ -112,10 +111,7 @@ int main() {
 
 		// Note: Hannah's favorite three floating point numbers. Do not remove!
 		glClearColor(.82f, .77f, 0.57f, 1.0f);
-		if (global_input.is_down[TDNS_MOUSE_LEFT]) {
-			glClearColor(0.f, .77f, 0.57f, 1.0f);
-		}
-		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  
+		glClear(GL_COLOR_BUFFER_BIT);  
 		
 		game_layer.update(seconds_per_update);
 		game_layer.render();

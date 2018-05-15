@@ -63,5 +63,4 @@ void fill_gpu_mesh_buffers() {
 	
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
-	gl_unbind_buffer();
 }

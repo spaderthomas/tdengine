@@ -1,48 +1,55 @@
 struct {
-	Player player;
-	vector<glm::ivec2> filled_tiles;
-	vector<Entity_Visible*> tiles;
+	Player* player;
 	int indx_active_tile = -1;
+	Tilemap level;
 
 	void init() {
-		player.init();
-		player.entity_visible->start_animation("boon_walk");
+		player = (Player*)entity_table.get_entity("boon");
+		level.tiles[2][1] = entity_table.get_entity("grass");
+
 	}
 
 	void update(float dt) {
-		if (game_input.is_down[TDNS_KEY_UP]) { player.transform.translate.y += player.move_speed_y; }
-		if (game_input.is_down[TDNS_KEY_DOWN]) { player.transform.translate.y -= player.move_speed_y; }
-		if (game_input.is_down[TDNS_KEY_RIGHT]) { player.transform.translate.x += player.move_speed_x; }
-		if (game_input.is_down[TDNS_KEY_LEFT]) { player.transform.translate.x -= player.move_speed_x; }
+		if (game_input.is_down[TDNS_KEY_UP]) {
+			player->transform.translate.y += player->move_speed_y;
+			camera_pos.y -= player->move_speed_y;
+		}
+		if (game_input.is_down[TDNS_KEY_DOWN]) {
+			player->transform.translate.y -= player->move_speed_y;
+			camera_pos.y += player->move_speed_y;
+		}
+		if (game_input.is_down[TDNS_KEY_RIGHT]) {
+			player->transform.translate.x += player->move_speed_x;
+			camera_pos.x -= player->move_speed_x;
+		}
+		if (game_input.is_down[TDNS_KEY_LEFT]) {
+			player->transform.translate.x -= player->move_speed_x;
+			camera_pos.x += player->move_speed_x;
+		}
 
 		if (game_input.is_down[TDNS_MOUSE_LEFT]) {
 			if (indx_active_tile != -1) {
 				auto grid_pos = game_input.grid_pos();
-				auto iter = find(filled_tiles.begin(), filled_tiles.end(), grid_pos);
-				if (iter == filled_tiles.end()) {
-					filled_tiles.push_back(grid_pos);
-					tiles.push_back(entity_table.entities[indx_active_tile]);
-				} else {
-					int index = iter - filled_tiles.begin();
-					tiles[index] = entity_table.entities[indx_active_tile];
+				if (indx_active_tile != -1) {
+					level.tiles[grid_pos.x][grid_pos.y] = entity_table.entities[indx_active_tile];
 				}
 			}
 		}
 
 		if (game_input.was_pressed(TDNS_KEY_TAB)) { 
 			indx_active_tile = (indx_active_tile + 1) % entity_table.entities.size();
-			if (player.entity_visible == entity_table.get_entity("boon")) {
-				player.entity_visible = entity_table.get_entity("wilson");
-				player.entity_visible->start_animation("wilson_walk");
+			if (player == entity_table.get_entity("boon")) {
+				player = (Player*)entity_table.get_entity("wilson");
+				player->graphic_component->start_animation("wilson_walk");
 			}
 			else {
-				player.entity_visible = entity_table.get_entity("boon");
-				player.entity_visible->start_animation("boon_walk");
+				player = (Player*)entity_table.get_entity("boon");
+				player->graphic_component->start_animation("boon_walk");
 			}
 
 		}
 
-		player.update(dt);
+		player->update(dt);
 	}
 
 	void render() {
@@ -57,18 +64,17 @@ struct {
 			}
 		}
 
-		// Render the tile map
-		fox_for (itile, filled_tiles.size()) {
-			tiles[itile]->draw(filled_tiles[itile]);
-		}
-
 		// Render the currently chosen entity
 		if (indx_active_tile != -1) {
-			Entity_Visible* active_tile = entity_table.entities[indx_active_tile];
-			active_tile->draw(game_input.grid_pos());
+			Background_Tile* active_tile = (Background_Tile*)entity_table.entities[indx_active_tile];
+			SRT transform = srt_from_grid_pos(game_input.grid_pos());
+			transform.scale = active_tile->graphic_component->get_scaling();
+			transform.translate -= glm::vec2(camera_pos.x, camera_pos.y);
+			active_tile->draw(transform);
 		}
 
-		player.draw(GL_TRIANGLES);
+		player->draw(player->transform);
+		level.draw();
 		renderer.render_for_frame();
 
 	}

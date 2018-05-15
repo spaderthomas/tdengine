@@ -43,6 +43,6 @@ SRT srt_from_grid_pos(glm::ivec2 grid_pos) {
 	grid_pos_transform.translate = glm::vec2(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y);
 
 	// Since tile was centered before, it'll be halfway between the tile, so correct that
-	grid_pos_transform.translate += glm::vec2(.5f * GLSCR_TILESIZE_X, .5f * GLSCR_TILESIZE_Y);
+	grid_pos_transform.translate += glm::vec2(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y);
 	return grid_pos_transform;
 }
