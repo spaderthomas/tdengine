@@ -31,6 +31,7 @@ struct Background_Tile : Entity {
 	
 	void init() {
 		graphic_component = new Graphic_Component;
+		graphic_component->layer = BACKGROUND;
 	}
 	void draw(SRT transform) override { graphic_component->draw(transform); }
 	void draw(glm::ivec2 grid_pos) override { graphic_component->draw(grid_pos); }

@@ -33,18 +33,98 @@ void init_assets() {
 			test_entity->graphic_component->start_animation("test_animation");
 		}
 
+		Background_Tile* tree = new Background_Tile;
+		tree->init();
+		tree->id = "tree";
+		tree->graphic_component->tilesize = glm::vec2(8, 8);
+		tree->graphic_component->layer = FOREGROUND;
+		entity_table.add_entity(tree);
+		{
+			Sprite* texture = asset_table.get_sprite("tree1.png");
+			Animation* animation = asset_table.get_animation("tree");
+			animation->add_frame(texture);
+			tree->graphic_component->animations.push_back(animation);
+			tree->graphic_component->start_animation("tree");
+		}
+
+		Background_Tile* fence = new Background_Tile;
+		fence->init();
+		fence->id = "fence";
+		fence->graphic_component->tilesize = glm::vec2(2, 2);
+		fence->graphic_component->layer = FOREGROUND;
+		entity_table.add_entity(fence);
+		{
+			Sprite* texture = asset_table.get_sprite("fence.png");
+			Animation* animation = asset_table.get_animation("fence");
+			animation->add_frame(texture);
+			fence->graphic_component->animations.push_back(animation);
+			fence->graphic_component->start_animation("fence");
+		}
+
+		Background_Tile* fence_side = new Background_Tile;
+		fence_side->init();
+		fence_side->id = "fence_side";
+		fence_side->graphic_component->tilesize = glm::vec2(2, 2);
+		fence_side->graphic_component->layer = FOREGROUND;
+		entity_table.add_entity(fence_side);
+		{
+			Sprite* texture = asset_table.get_sprite("fence_side.png");
+			Animation* animation = asset_table.get_animation("fence_side");
+			animation->add_frame(texture);
+			fence_side->graphic_component->animations.push_back(animation);
+			fence_side->graphic_component->start_animation("fence_side");
+		}
+
 		Background_Tile* grass = new Background_Tile;
 		grass->init();
 		grass->id = "grass";
 		grass->graphic_component->tilesize = glm::vec2(1, 1);
-		grass->graphic_component->layer = BACKGROUND;
 		entity_table.add_entity(grass);
 		{
-			Sprite* texture = asset_table.get_sprite("grass1.png");
-			Animation* animation = asset_table.get_animation("sand");
+			Sprite* texture = asset_table.get_sprite("grass.png");
+			Animation* animation = asset_table.get_animation("grass");
 			animation->add_frame(texture);
 			grass->graphic_component->animations.push_back(animation);
-			grass->graphic_component->start_animation("sand");
+			grass->graphic_component->start_animation("grass");
+		}
+
+		Background_Tile* grass_flower = new Background_Tile;
+		grass_flower->init();
+		grass_flower->id = "grass_flower";
+		grass_flower->graphic_component->tilesize = glm::vec2(1, 1);
+		entity_table.add_entity(grass_flower);
+		{
+			Sprite* texture = asset_table.get_sprite("grass_flower.png");
+			Animation* animation = asset_table.get_animation("grass_flower");
+			animation->add_frame(texture);
+			grass_flower->graphic_component->animations.push_back(animation);
+			grass_flower->graphic_component->start_animation("grass_flower");
+		}
+
+		Background_Tile* grass_flower2 = new Background_Tile;
+		grass_flower2->init();
+		grass_flower2->id = "grass_flower2";
+		grass_flower2->graphic_component->tilesize = glm::vec2(1, 1);
+		entity_table.add_entity(grass_flower2);
+		{
+			Sprite* texture = asset_table.get_sprite("grass_flower2.png");
+			Animation* animation = asset_table.get_animation("grass_flower2");
+			animation->add_frame(texture);
+			grass_flower2->graphic_component->animations.push_back(animation);
+			grass_flower2->graphic_component->start_animation("grass_flower2");
+		}
+
+		Background_Tile* grass_flower3 = new Background_Tile;
+		grass_flower3->init();
+		grass_flower3->id = "grass_flower3";
+		grass_flower3->graphic_component->tilesize = glm::vec2(1, 1);
+		entity_table.add_entity(grass_flower3);
+		{
+			Sprite* texture = asset_table.get_sprite("grass_flower3.png");
+			Animation* animation = asset_table.get_animation("grass_flower3");
+			animation->add_frame(texture);
+			grass_flower3->graphic_component->animations.push_back(animation);
+			grass_flower3->graphic_component->start_animation("grass_flower3");
 		}
 	}
 

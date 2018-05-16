@@ -12,6 +12,7 @@ enum Input_ID {
 	TDNS_KEY_A,
 	TDNS_KEY_S,
 	TDNS_KEY_D,
+	TDNS_KEY_T,
 	COUNT_INPUT_IDS,
 };
 
@@ -37,11 +38,7 @@ struct Input {
 		return glm::vec2(screen_pos.x * 2 - 1, 1 - screen_pos.y * 2);
 	}
 
-	glm::ivec2 grid_pos() {
-		int closest_x = floor(px_pos.x / CELL_SIZE);
-		int closest_y = floor(px_pos.y / CELL_SIZE);
-		return glm::ivec2(closest_x, closest_y);
-	}
+	
 };
 Input global_input;
 Input game_input;
@@ -65,11 +62,11 @@ static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
                                                          if (action == GLFW_PRESS) { global_input.is_down[tdns_key] = true; } \
                                                          if (action == GLFW_RELEASE) { global_input.is_down[tdns_key] = false; } \
                                                      }
+
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
 	if (0) {}
 	activate_key(button, GLFW_MOUSE_BUTTON_LEFT, TDNS_MOUSE_LEFT)
 }
-
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (0) {} // Just for the above macro
@@ -85,4 +82,5 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	activate_key(key, GLFW_KEY_A, TDNS_KEY_A)
 	activate_key(key, GLFW_KEY_S, TDNS_KEY_S)
 	activate_key(key, GLFW_KEY_D, TDNS_KEY_D)
+	activate_key(key, GLFW_KEY_T, TDNS_KEY_T)
 }

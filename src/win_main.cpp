@@ -11,6 +11,8 @@
 #include "stb/stb_rect_pack.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
+#include "nlohmann/json.hpp"
+using json = nlohmann::json;
 
 // STL
 #include <iostream>
@@ -37,8 +39,8 @@ using namespace std;
 #include "animation.hpp"
 #include "component.hpp"
 #include "entity.hpp"
-#include "tilemap.hpp"
 #include "entity_table.hpp"
+#include "tilemap.hpp"
 #include "asset_table_functions.hpp"
 #include "input.hpp"
 #include "assets.hpp"

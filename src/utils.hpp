@@ -65,4 +65,25 @@ glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
 glm::vec4 green = glm::vec4(0.f, 1.f, 0.f, 1.f);
 glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
 
+// GL screen coordinates
 glm::vec3 camera_pos = glm::vec3(0.f);
+
+glm::vec2 px_offset_from_camera_pos() {
+	return glm::vec2(SCREEN_X * camera_pos.x, SCREEN_Y * camera_pos.y);
+}
+
+glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
+	int closest_x = floor(px_pos.x / CELL_SIZE);
+	int closest_y = floor(px_pos.y / CELL_SIZE);
+	return glm::ivec2(closest_x, closest_y);
+}
+
+glm::vec3 round_camera_to_nearest_grid() {
+#if 0
+	turn - 1 to 1 into pixels
+		round pixels to grid coordinates
+		turn pixels back into GL
+#endif
+	auto as_pixels = px_offset_from_camera_pos();
+	return glm::vec3(1.f);
+}
