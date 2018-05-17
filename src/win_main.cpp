@@ -14,6 +14,9 @@
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
+#include "lua/lua.hpp"
+#include "LuaBridge/LuaBridge.h"
+
 // STL
 #include <iostream>
 #include <fstream>
@@ -99,6 +102,18 @@ int main() {
 
 	game_layer.init();
 
+	lua_State* L = luaL_newstate();
+	auto status = luaL_dofile(L, "../../src/scripts/first.lua");
+	cout << "Couldn't load file: %s\n", lua_tostring(L, -1);
+    luaL_openlibs(L);
+    lua_pcall(L, 0, 0, 0);
+    luabridge::LuaRef s = luabridge::getGlobal(L, "testString");
+    luabridge::LuaRef n = luabridge::getGlobal(L, "number");
+    string luaString = s.cast<std::string>();
+    int answer = n.cast<int>();
+    std::cout << luaString << std::endl;
+    std::cout << "And here's our number:" << answer << std::endl;
+	
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
 		double frame_start_time = glfwGetTime();

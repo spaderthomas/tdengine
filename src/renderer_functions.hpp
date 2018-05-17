@@ -38,7 +38,8 @@ void Renderer::render_for_frame() {
 			sprite->bind((Render_Layer)ilayer);
 			auto transform_mat = mat3_from_transform(render_element.transform);
 			textured_shader.set_mat3("transform", transform_mat);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, sprite->indices_offset);
+			textured_shader.set_float("z", 0.f);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
 	}
 

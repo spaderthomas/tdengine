@@ -65,6 +65,9 @@ struct Shader {
 	void set_int(const char* name, GLint val) {
 		glUniform1i(get_uniform_loc(name), val);
 	}
+	void set_float(const char* name, GLfloat val) {
+		glUniform1f(get_uniform_loc(name), val);
+	}
 
 	void bind() {
 		glUseProgram(id);
