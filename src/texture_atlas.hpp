@@ -23,7 +23,7 @@ struct Name_And_ID {
 	string name;
 	int id;
 };
-void create_texture_atlas(string dir) {
+void create_texture_atlas(string relative_dir) {
 	// Create some memory for our atlas
 	stbi_set_flip_vertically_on_load(false);
 	int32* atlas_data = (int32*)malloc(REGULAR_ATLAS_SIZE * REGULAR_ATLAS_SIZE * sizeof(int32));
@@ -31,12 +31,12 @@ void create_texture_atlas(string dir) {
 	
 	// Extract name of the atlas png from the dir name
 	string atlas_name;
-	for (int ichar = dir.size() - 2; ichar > -1; ichar--) { // Start at -2 to throw away trailing /
-		if (dir.at(ichar) == '/') { break; }
-		atlas_name.insert(atlas_name.begin(), dir.at(ichar));
+	for (int ichar = relative_dir.size() - 1; ichar > -1; ichar--) { // Start at -2 to throw away trailing /
+		if (relative_dir.at(ichar) == '/') { break; }
+		atlas_name.insert(atlas_name.begin(), relative_dir.at(ichar));
 	}
 	atlas_name += ".png";
-	Texture_Atlas* atlas = asset_table.get_texture_atlas(atlas_name);
+	Texture_Atlas* atlas = asset_table.get_asset<Texture_Atlas>(atlas_name);
 
 	const stdfs::directory_iterator end{};
 	vector<stbrp_rect> rects;
@@ -45,7 +45,7 @@ void create_texture_atlas(string dir) {
 
 	// Go through each sprite, register it in the asset table, and collect its rect data
 	int rect_id = 0;
-	for(stdfs::directory_iterator iter{dir} ; iter != end ; ++iter ) {
+	for(stdfs::directory_iterator iter{relative_dir} ; iter != end ; ++iter ) {
 		string path = iter->path().string();
 
 		// Make sure it's actually a PNG (probably a magic number for this, but meh)
@@ -57,7 +57,7 @@ void create_texture_atlas(string dir) {
 			if (path.at(ichar) == '\\') { break; }
 			asset_name.insert(asset_name.begin(), path.at(ichar));
 		}
-		Sprite* sprite = asset_table.get_sprite(asset_name);
+		Sprite* sprite = asset_table.get_asset<Sprite>(asset_name);
 		sprite->atlas = atlas;
 
 		// Load the image data, create a rectangle for it
@@ -85,7 +85,7 @@ void create_texture_atlas(string dir) {
 		auto& rect = rects[irect];
 		for (auto& name_and_id : sprite_ids) {
 			if (rect.id == name_and_id.id) {
-				Sprite* sprite = asset_table.get_sprite(name_and_id.name);
+				Sprite* sprite = asset_table.get_asset<Sprite>(name_and_id.name);
 				// top right
 				sprite->tex_coords.push_back((rect.x + rect.w) / 1024.f);
 				sprite->tex_coords.push_back((rect.y) / 1024.f);

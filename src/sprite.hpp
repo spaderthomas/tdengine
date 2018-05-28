@@ -1,4 +1,3 @@
-
 struct Sprite : Asset {
 	int height, width, num_channels;
 	Texture_Atlas* atlas;
@@ -10,7 +9,7 @@ struct Sprite : Asset {
 	static GLuint elem_buffer;
 	static GLuint vao;
 
-	void bind(Render_Layer layer) {
+	void bind() {
 		// 0: Vertices
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 		glEnableVertexAttribArray(0);
@@ -21,6 +20,7 @@ struct Sprite : Asset {
 
 };
 
+// OpenGL 
 GLuint Sprite::vert_buffer;
 GLuint Sprite::elem_buffer;
 GLuint Sprite::vao;
@@ -39,9 +39,12 @@ void fill_gpu_sprite_buffers() {
 	concat(vert_data, square_verts);
 
 	// Fill tex coordinate buffer
-	for (auto sprite : asset_table.sprites) {
-		sprite->tex_coord_offset = (GLvoid*)(sizeof(float) * vert_data.size());
-		concat(vert_data, sprite->tex_coords);
+	for (auto asset : asset_table.assets) {
+		Sprite* sprite = dynamic_cast<Sprite*>(asset);
+		if (sprite) {
+			sprite->tex_coord_offset = (GLvoid*)(sizeof(float) * vert_data.size());
+			concat(vert_data, sprite->tex_coords);
+		}
 	}
 
 	// Send all the data to OpenGL buffers

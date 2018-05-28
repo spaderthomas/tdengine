@@ -87,3 +87,13 @@ glm::vec3 round_camera_to_nearest_grid() {
 	auto as_pixels = px_offset_from_camera_pos();
 	return glm::vec3(1.f);
 }
+
+// Pointers and const etc are part of the type, but we don't want that,
+// so we fix up type names before we save them
+void fixup_type_name(string& type_name) {
+	vector<string> extraneous = { " *", " const" };
+	for (auto& str : extraneous) {
+		int erase_pos = type_name.find(str);
+		type_name.erase(erase_pos, str.length());
+	}
+}

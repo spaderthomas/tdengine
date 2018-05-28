@@ -1,84 +1,43 @@
 struct {
-	Player* player;
 	int indx_active_tile = -1;
-	Tilemap level;
 	enum {
 		FREE,
 		TILE_EDITING,
 	} mode;
 	glm::ivec2 top_left_tile_index;
+	Tree* tree;
+	Tilemap t;
 
 	void init() {
-		player = (Player*)entity_table.get_entity("boon");
-		level.tiles[2][1] = entity_table.get_entity("grass");
 		mode = TILE_EDITING;
 		top_left_tile_index = glm::ivec2(0);
+		Entity* (*create_func)() = (Entity* (*)())create_methods[typeid(Tree).name()];
+		Entity* what = create_func();
+		t.name = "level_one";
+		t.load();
 	}
 
 	void update(float dt) {
-		if (mode == FREE) {
-			if (game_input.is_down[TDNS_KEY_UP]) {
-				player->transform.translate.y += player->move_speed_y;
-				camera_pos.y -= player->move_speed_y;
-			}
-			if (game_input.is_down[TDNS_KEY_DOWN]) {
-				player->transform.translate.y -= player->move_speed_y;
-				camera_pos.y += player->move_speed_y;
-			}
-			if (game_input.is_down[TDNS_KEY_RIGHT]) {
-				player->transform.translate.x += player->move_speed_x;
-				camera_pos.x -= player->move_speed_x;
-			}
-			if (game_input.is_down[TDNS_KEY_LEFT]) {
-				player->transform.translate.x -= player->move_speed_x;
-				camera_pos.x += player->move_speed_x;
-			}
-			if (game_input.was_pressed(TDNS_KEY_T)) {
-			}
-			
-			if (camera_pos.x > 0) { camera_pos.x = 0; }
-			if (camera_pos.y > 0) { camera_pos.y = 0; }
-			player->update(dt);
-		}
-		else if (mode == TILE_EDITING) {
-			if (game_input.was_pressed(TDNS_KEY_UP)) {
+		if (mode == TILE_EDITING) {
+			if (game_input.was_pressed(GLFW_KEY_UP)) {
 				camera_pos.y -= GLSCR_TILESIZE_Y;
 				top_left_tile_index.y -= 1;
 			}
-			if (game_input.was_pressed(TDNS_KEY_DOWN)) {
+			if (game_input.was_pressed(GLFW_KEY_DOWN)) {
 				camera_pos.y += GLSCR_TILESIZE_Y;
 				top_left_tile_index.y += 1;
 			}
-			if (game_input.was_pressed(TDNS_KEY_RIGHT)) {
+			if (game_input.was_pressed(GLFW_KEY_RIGHT)) {
 				camera_pos.x -= GLSCR_TILESIZE_X;
 				top_left_tile_index.x += 1;
 			}
-			if (game_input.was_pressed(TDNS_KEY_LEFT)) {
+			if (game_input.was_pressed(GLFW_KEY_LEFT)) {
 				camera_pos.x += GLSCR_TILESIZE_X;
 				top_left_tile_index.x -= 1;
 			}
-			if (game_input.is_down[TDNS_MOUSE_LEFT]) {
-				if (indx_active_tile != -1) {
-					auto screen_grid_pos = grid_pos_from_px_pos(game_input.px_pos);
-					auto tilemap_pos = glm::ivec2(screen_grid_pos.x + top_left_tile_index.x, screen_grid_pos.y + top_left_tile_index.y);
-					if (tilemap_pos.x > -1 && tilemap_pos.y < 128 && tilemap_pos.y > -1 && tilemap_pos.y < 128) {
-						level.tiles[tilemap_pos.x][tilemap_pos.y] = entity_table.entities[indx_active_tile];
-					}
-				}
-			}
-			if (game_input.was_pressed(TDNS_KEY_S)) { level.save(); }
-			if (game_input.was_pressed(TDNS_KEY_W)) { level.load(); }
 
-			if (game_input.was_pressed(TDNS_KEY_TAB)) {
-				indx_active_tile = (indx_active_tile + 1) % entity_table.entities.size();
-				if (player == entity_table.get_entity("boon")) {
-					player = (Player*)entity_table.get_entity("wilson");
-					player->graphic_component->start_animation("wilson_walk");
-				}
-				else {
-					player = (Player*)entity_table.get_entity("boon");
-					player->graphic_component->start_animation("boon_walk");
-				}
+			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+				t.load();
 			}
 		}
 	}
@@ -96,17 +55,18 @@ struct {
 		}
 
 		// Render the currently chosen entity
-		if (indx_active_tile != -1) {
-			Background_Tile* active_tile = (Background_Tile*)entity_table.entities[indx_active_tile];
-			SRT transform = srt_from_grid_pos(grid_pos_from_px_pos(game_input.px_pos));
-			transform.scale = active_tile->graphic_component->get_scaling();
-			transform.translate -= glm::vec2(camera_pos.x, camera_pos.y);
-			active_tile->draw(transform);
+		//t.draw();
+		Sprite* my_sprite = asset_table.get_asset<Sprite>("boon_walk1.png");
+		ImGuiIO& io = ImGui::GetIO();
+		ImTextureID my_tex_id = io.Fonts->TexID;
+		float my_tex_w = (float)io.Fonts->TexWidth;
+		float my_tex_h = (float)io.Fonts->TexHeight;
+
+		fox_for(ient, template_entities.size()) {
+			Entity* ent = template_entities[ient];
+			ImGui::ImageButton((ImTextureID)my_sprite->atlas->handle, ImVec2(my_sprite->width, my_sprite->height),
+				ImVec2(my_sprite->tex_coords[0], my_sprite->tex_coords[1]), ImVec2(my_sprite->tex_coords[4], my_sprite->tex_coords[5]));
 		}
-
-		player->draw(player->transform);
-		level.draw();
 		renderer.render_for_frame();
-
 	}
 } game_layer;

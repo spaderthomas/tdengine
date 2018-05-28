@@ -2,7 +2,7 @@ struct Mesh : Asset {
 	vector<float> verts;
 	vector<uint> indices;
 	vector<float> tex_coords;
-	
+
 	GLvoid* vert_offset;
 	GLvoid* indices_offset;
 	GLvoid* tex_coord_offset;
@@ -35,13 +35,24 @@ GLuint Mesh::vert_buffer;
 GLuint Mesh::elem_buffer;
 GLuint Mesh::vao;
 
+Mesh* line;
+Mesh* square;
+
+void init_mesh() {
+	line = asset_table.get_asset<Mesh>("line");
+	line->verts = line_verts;
+	line->indices = line_indices;
+	square = asset_table.get_asset<Mesh>("square");
+	square->verts = square_verts;
+	square->indices = square_indices;
+}
 
 // Fill all_meshes with all game meshes, then call this
 void fill_gpu_mesh_buffers() {
-	vector<Mesh*>& all_meshes = asset_table.meshes;
+	vector<Mesh*> all_meshes = asset_table.get_all<Mesh>();
 	vector<float> vert_buffer;
 	vector<uint> indx_buffer;
-	
+
 	// Collect all vertices and indices
 	fox_for(imesh, all_meshes.size()) {
 		Mesh* mesh = all_meshes[imesh];
@@ -56,11 +67,11 @@ void fill_gpu_mesh_buffers() {
 		mesh->tex_coord_offset = (GLvoid*)(sizeof(float) * vert_buffer.size());
 		vert_buffer.insert(vert_buffer.end(), mesh->tex_coords.begin(), mesh->tex_coords.end());
 	}
-	
+
 	// Give them to the OpenGL buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh::elem_buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indx_buffer.size() * sizeof(uint), indx_buffer.data(), GL_STATIC_DRAW);
-	
+
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
 }

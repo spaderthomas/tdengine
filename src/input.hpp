@@ -1,35 +1,20 @@
-enum Input_ID {
-	TDNS_MOUSE_LEFT,
-	TDNS_KEY_UP,
-	TDNS_KEY_DOWN,
-	TDNS_KEY_LEFT,
-	TDNS_KEY_RIGHT,
-	TDNS_KEY_1,
-	TDNS_KEY_2,
-	TDNS_KEY_3,
-	TDNS_KEY_TAB,
-	TDNS_KEY_W,
-	TDNS_KEY_A,
-	TDNS_KEY_S,
-	TDNS_KEY_D,
-	TDNS_KEY_T,
-	COUNT_INPUT_IDS,
-};
-
+typedef int GLFW_KEY_TYPE;
 struct Input {
 	bool should_update;
 	glm::vec2 px_pos;
 	glm::vec2 screen_pos; // Top left is (0,0), bottom right is (1,1)
+	bool mouse_left_down;
+	bool mouse_right_down;
 
-	bool is_down[COUNT_INPUT_IDS];
-	bool was_down[COUNT_INPUT_IDS];
+	bool is_down[GLFW_KEY_LAST];
+	bool was_down[GLFW_KEY_LAST];
 
-	bool was_pressed(Input_ID id) {
+	bool was_pressed(GLFW_KEY_TYPE id) {
 		return is_down[id] && !was_down[id];
 	}
 
 	void reset_for_next_frame() {
-		fox_for(input_id, COUNT_INPUT_IDS) {
+		fox_for(input_id, GLFW_KEY_LAST) {
 			was_down[input_id] = is_down[input_id];
 		}
 	}
@@ -37,50 +22,79 @@ struct Input {
 	glm::vec2 screen_pos_as_gl_coords() {
 		return glm::vec2(screen_pos.x * 2 - 1, 1 - screen_pos.y * 2);
 	}
-
-	
 };
 Input global_input;
 Input game_input;
-Input gui_input;
 bool game_input_active = true;
 
-void copy_input(Input& source_input, Input& dest_input) {
-	memcpy(dest_input.is_down, source_input.is_down, COUNT_INPUT_IDS);
-	memcpy(dest_input.was_down, source_input.was_down, COUNT_INPUT_IDS);
-	dest_input.screen_pos = source_input.screen_pos;
-	dest_input.px_pos = source_input.px_pos;
+void fill_imgui_input() {
+	ImGuiIO& io = ImGui::GetIO();
+	// Mouse
+	io.MousePos = ImVec2((float)global_input.px_pos.x, (float)global_input.px_pos.y);
+	io.MouseDown[0] = global_input.mouse_left_down;
+	io.MouseDown[1] = global_input.mouse_right_down;
+
+	// Fill in the raw ImGui buffer
+	for (int key = 0; key < GLFW_KEY_LAST; key++) {
+		io.KeysDown[key] = global_input.is_down[key];
+	}
+	// Fill in the input characters
+	for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
+		if (global_input.was_pressed(key)) {
+			// GLFW character keys are the same as ASCII, so we can do this (convert to lowercase)
+			io.AddInputCharacter(key + 0x20);
+		}
+	}
+
+	// Add controller keys
+	io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];
+	io.KeyShift = io.KeysDown[GLFW_KEY_LEFT_SHIFT] || io.KeysDown[GLFW_KEY_RIGHT_SHIFT];
+	io.KeyAlt = io.KeysDown[GLFW_KEY_LEFT_ALT] || io.KeysDown[GLFW_KEY_RIGHT_ALT];
+	io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 }
 
 // GLFW Callbacks
-static void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
+static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypos) {
 	global_input.px_pos = glm::vec2(xpos, ypos);
 	global_input.screen_pos = glm::vec2(xpos / SCREEN_X, ypos / SCREEN_Y);
 }
 
-#define activate_key(btn_or_key, glfw_key, tdns_key) else if (btn_or_key == glfw_key) { \
-                                                         if (action == GLFW_PRESS) { global_input.is_down[tdns_key] = true; } \
-                                                         if (action == GLFW_RELEASE) { global_input.is_down[tdns_key] = false; } \
-                                                     }
-
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-	if (0) {}
-	activate_key(button, GLFW_MOUSE_BUTTON_LEFT, TDNS_MOUSE_LEFT)
+void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int mods) {
+	if (button == GLFW_MOUSE_BUTTON_LEFT) {
+		if (action == GLFW_PRESS) {
+			global_input.mouse_left_down = true;
+		}
+		if (action == GLFW_RELEASE) {
+			global_input.mouse_left_down = false;
+		}
+	}
+	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+		if (action == GLFW_PRESS) {
+			global_input.mouse_right_down = true;
+		}
+		if (action == GLFW_RELEASE) {
+			global_input.mouse_right_down = false;
+		}
+}
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+#define activate_key(key, key_to_check) else if (key == key_to_check) { \
+                                                         if (action == GLFW_PRESS) { global_input.is_down[key] = true; } \
+                                                         if (action == GLFW_RELEASE) { global_input.is_down[key] = false; } \
+                                                     }
+void GLFW_Key_Callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (0) {} // Just for the above macro
-	activate_key(key, GLFW_KEY_UP, TDNS_KEY_UP)
-	activate_key(key, GLFW_KEY_DOWN, TDNS_KEY_DOWN)
-	activate_key(key, GLFW_KEY_LEFT, TDNS_KEY_LEFT)
-	activate_key(key, GLFW_KEY_RIGHT, TDNS_KEY_RIGHT)
-	activate_key(key, GLFW_KEY_1, TDNS_KEY_1)
-	activate_key(key, GLFW_KEY_2, TDNS_KEY_2)
-	activate_key(key, GLFW_KEY_3, TDNS_KEY_3)
-	activate_key(key, GLFW_KEY_TAB, TDNS_KEY_TAB)
-	activate_key(key, GLFW_KEY_W, TDNS_KEY_W)
-	activate_key(key, GLFW_KEY_A, TDNS_KEY_A)
-	activate_key(key, GLFW_KEY_S, TDNS_KEY_S)
-	activate_key(key, GLFW_KEY_D, TDNS_KEY_D)
-	activate_key(key, GLFW_KEY_T, TDNS_KEY_T)
+	activate_key(key, GLFW_KEY_UP)
+	activate_key(key, GLFW_KEY_DOWN)
+	activate_key(key, GLFW_KEY_LEFT)
+	activate_key(key, GLFW_KEY_RIGHT)
+	activate_key(key, GLFW_KEY_1)
+	activate_key(key, GLFW_KEY_2)
+	activate_key(key, GLFW_KEY_3)
+	activate_key(key, GLFW_KEY_TAB)
+	activate_key(key, GLFW_KEY_W)
+	activate_key(key, GLFW_KEY_A)
+	activate_key(key, GLFW_KEY_S)
+	activate_key(key, GLFW_KEY_D)
+	activate_key(key, GLFW_KEY_T)
 }

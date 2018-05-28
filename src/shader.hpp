@@ -73,3 +73,10 @@ struct Shader {
 		glUseProgram(id);
 	}
 };
+
+Shader textured_shader;
+Shader solid_shader;
+void init_shaders() {
+	textured_shader.init("../../shaders/textured.vs", "../../shaders/textured.fs");
+	solid_shader.init("../../shaders/solid.vs", "../../shaders/solid.fs");
+}

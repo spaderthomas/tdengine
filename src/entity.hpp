@@ -1,39 +1,63 @@
 struct Entity {
-	string id;
+	int id;
+	static int next_id;
+	vector<Component*> components;
 
-	virtual void draw(SRT transform) {};
-	virtual void draw(glm::ivec2 grid_pos) {};
+	void add_component(Component* c) {
+		components.push_back(c);
+	}
+
+	virtual void draw() const {};
+	virtual void save(json& j) const {};
+	virtual void load(json& j) {};
 };
-struct Player : Entity {
-	Graphic_Component* graphic_component;
+int Entity::next_id = 0;
+
+struct Tree : Entity {
+	Graphic_Component* gc;
 	SRT transform;
 	
-	float move_speed_x = GLSCR_TILESIZE_X * seconds_per_update * 4;
-	float move_speed_y = GLSCR_TILESIZE_Y * seconds_per_update * 4;
+	static Tree* create() {
+		Tree* new_tree = new Tree;
+		new_tree->id = Entity::next_id++;
+		new_tree->transform = SRT::no_transform();
+		new_tree->gc = new Graphic_Component;
+		new_tree->gc->load_animations_from_lua(Lua.state["tree"]["Graphic_Component"]);
+		return new_tree;
+	}
 
-	void init() {
-		graphic_component = new Graphic_Component;
-		transform = SRT::no_transform();
-		transform.scale = glm::vec2(GLSCR_TILESIZE_X, GLSCR_TILESIZE_Y);
+	void draw() const override { renderer.draw(gc->get_current_frame(), transform); }
+
+	void save(json& j) const override {
+		string type_name = string(typeid(this).name());
+		fixup_type_name(type_name);
+		j["type"] = type_name;
+		transform.save(j["transform"]);
 	}
-	void update(float dt) {
-		// To handle window resizing
-		transform.scale = glm::vec2(GLSCR_TILESIZE_X, GLSCR_TILESIZE_Y);
-		graphic_component->update(dt);
+
+	void load(json& j) override {
+		transform.translate.x = j["transform"]["translate.x"];
+		transform.translate.y = j["transform"]["translate.y"];
+		transform.translate.x = j["transform"]["translate.z"];
+
+		transform.scale.x = j["transform"]["scale.x"];
+		transform.scale.y = j["transform"]["scale.y"];
+
+		transform.rad_rot = j["transform"]["rad_rot"];
 	}
-	
-	void draw(SRT transform) override { graphic_component->draw(transform); }
-	void draw(glm::ivec2 grid_pos) override { graphic_component->draw(grid_pos); }
 };
 
-struct Background_Tile : Entity {
-	Graphic_Component* graphic_component;
-	
-	void init() {
-		graphic_component = new Graphic_Component;
-		graphic_component->layer = BACKGROUND;
+struct Player {
+	Graphic_Component* gc;
+	SRT transform;
+
+	static Player* create() {
+		Player* new_player = new Player;
+		new_player->gc = new Graphic_Component;
+		new_player->transform = SRT::no_transform();
+
+		sol::table animations = Lua.state["boon"]["Graphic_Component"]["Animations"];
+
 	}
-	void draw(SRT transform) override { graphic_component->draw(transform); }
-	void draw(glm::ivec2 grid_pos) override { graphic_component->draw(grid_pos); }
 };
-	
+

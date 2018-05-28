@@ -5,10 +5,9 @@ struct {
 		log_stream.open("../../log.txt", ofstream::out | ofstream::trunc);
 	}
 
-	void write(const char* message) {
-		cout << message;
-		while(*message) { log_stream.put(*message); message++; }
-		log_stream.put('\n');
+	void write(string message) {
+		cout << message << endl;
+		log_stream << message << endl;
 	}
 	
 } tdns_log;

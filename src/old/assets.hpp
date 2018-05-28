@@ -23,7 +23,7 @@ void init_assets() {
 		test_entity->init();
 		test_entity->id = "test_entity";
 		test_entity->graphic_component->tilesize = glm::vec2(16, 16);
-		test_entity->graphic_component->layer = FOREGROUND;
+		test_entity->graphic_component->z = FOREGROUND;
 		entity_table.add_entity(test_entity);
 		{
 			Sprite* test_entity_sprite = asset_table.get_sprite("building.png");
@@ -33,11 +33,10 @@ void init_assets() {
 			test_entity->graphic_component->start_animation("test_animation");
 		}
 
-		Background_Tile* tree = new Background_Tile;
+		Prop* tree = new Prop;
 		tree->init();
 		tree->id = "tree";
 		tree->graphic_component->tilesize = glm::vec2(8, 8);
-		tree->graphic_component->layer = FOREGROUND;
 		entity_table.add_entity(tree);
 		{
 			Sprite* texture = asset_table.get_sprite("tree1.png");
@@ -51,7 +50,7 @@ void init_assets() {
 		fence->init();
 		fence->id = "fence";
 		fence->graphic_component->tilesize = glm::vec2(2, 2);
-		fence->graphic_component->layer = FOREGROUND;
+		fence->graphic_component->z = FOREGROUND;
 		entity_table.add_entity(fence);
 		{
 			Sprite* texture = asset_table.get_sprite("fence.png");
@@ -65,7 +64,7 @@ void init_assets() {
 		fence_side->init();
 		fence_side->id = "fence_side";
 		fence_side->graphic_component->tilesize = glm::vec2(2, 2);
-		fence_side->graphic_component->layer = FOREGROUND;
+		fence_side->graphic_component->z = FOREGROUND;
 		entity_table.add_entity(fence_side);
 		{
 			Sprite* texture = asset_table.get_sprite("fence_side.png");
@@ -137,7 +136,7 @@ void init_assets() {
 		wilson->init();
 		wilson->id = "wilson";
 		wilson->graphic_component->tilesize = glm::vec2(2, 2);
-		wilson->graphic_component->layer = FOREGROUND;
+		wilson->graphic_component->z = FOREGROUND;
 		entity_table.add_entity(wilson);
 		//walk
 		{
@@ -169,7 +168,7 @@ void init_assets() {
 		boon->init();
 		boon->id = "boon";
 		boon->graphic_component->tilesize = glm::vec2(2, 2);
-		boon->graphic_component->layer = FOREGROUND;
+		boon->graphic_component->z = FOREGROUND;
 		entity_table.add_entity(boon);
 		// walk
 		{

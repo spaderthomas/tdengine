@@ -1,5 +1,5 @@
 struct SRT {
-	glm::vec2 translate;
+	glm::vec3 translate;
 	glm::vec2 scale;
 	float rad_rot;
 	
@@ -7,8 +7,19 @@ struct SRT {
 		SRT t;
 		t.scale = glm::vec2(1.0f);
 		t.rad_rot = 0.f;
-		t.translate = glm::vec2(0.0f);
+		t.translate = glm::vec3(0.0f);
 		return t;
+	}
+
+	void save(json& j) const {
+		j["translate.x"] = translate.x;
+		j["translate.y"] = translate.y;
+		j["translate.z"] = translate.z;
+		j["scale.x"] = scale.x;
+		j["scale.y"] = scale.y;
+		j["rad_rot"] = rad_rot;
+
+
 	}
 };
 
@@ -40,9 +51,9 @@ SRT srt_from_grid_pos(glm::ivec2 grid_pos) {
 	grid_pos_transform.scale = glm::vec2(SCR_TILESIZE_X, SCR_TILESIZE_Y);
 
 	// Starting at -1, move grid_pos tiles forward
-	grid_pos_transform.translate = glm::vec2(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y);
+	grid_pos_transform.translate = glm::vec3(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y, 0.f);
 
 	// Since tile was centered before, it'll be halfway between the tile, so correct that
-	grid_pos_transform.translate += glm::vec2(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y);
+	grid_pos_transform.translate += glm::vec3(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y, 0.f);
 	return grid_pos_transform;
 }

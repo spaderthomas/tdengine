@@ -15,7 +15,9 @@
 using json = nlohmann::json;
 
 #include "lua/lua.hpp"
-#include "LuaBridge/LuaBridge.h"
+#include "sol/sol.hpp"
+
+#include "imgui/imgui.h"
 
 // STL
 #include <iostream>
@@ -26,27 +28,28 @@ using json = nlohmann::json;
 #include <algorithm>
 #include <cmath>
 #include <experimental/filesystem>
+#include <typeindex>
 using namespace std;
 
-
+#include "imgui_impl_glfw_gl3.hpp"
 #include "utils.hpp"
 #include "log.hpp"
+#include "tdns_lua.hpp"
 #include "data.hpp"
-#include "asset_table.hpp"
 #include "shader.hpp"
 #include "transform.hpp"
 #include "renderer.hpp"
+#include "asset_table.hpp"
 #include "sprite.hpp"
 #include "texture_atlas.hpp"
 #include "mesh.hpp"
 #include "animation.hpp"
 #include "component.hpp"
 #include "entity.hpp"
-#include "entity_table.hpp"
+#include "serialization.hpp"
+#include "template_entities.hpp"
 #include "tilemap.hpp"
-#include "asset_table_functions.hpp"
 #include "input.hpp"
-#include "assets.hpp"
 #include "draw.hpp"
 #include "renderer_functions.hpp"
 #include "game.hpp"
@@ -75,11 +78,23 @@ int main() {
 	}
 	
 	//glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-	glfwSetCursorPosCallback(window, cursor_pos_callback);
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-	glfwSetKeyCallback(window, key_callback);
+	glfwSetCursorPosCallback(window, GLFW_Cursor_Pos_Callback);
+	glfwSetMouseButtonCallback(window, GLFW_Mouse_Button_Callback);
+	glfwSetKeyCallback(window, GLFW_Key_Callback);
 
-	init_assets();
+	init_shaders();
+	init_mesh();
+	create_texture_atlas("../../textures/environment");
+	create_texture_atlas("../../textures/boon");
+	create_texture_atlas("../../textures/wilson");
+	Lua.init();
+	setup_create_method_mapping();
+	init_template_entities();
+
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplGlfwGL3_Init(window, false);
+	ImGui::StyleColorsDark();
 
 	// OPENGL INIT
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -94,7 +109,6 @@ int main() {
 	glGenBuffers(1, &Mesh::vert_buffer);
 	glGenBuffers(1, &Mesh::elem_buffer);
 
-
 	glBindVertexArray(Sprite::vao);
 	fill_gpu_sprite_buffers();
 	glBindVertexArray(Mesh::vao);
@@ -102,40 +116,35 @@ int main() {
 
 	game_layer.init();
 
-	lua_State* L = luaL_newstate();
-	auto status = luaL_dofile(L, "../../src/scripts/first.lua");
-	cout << "Couldn't load file: %s\n", lua_tostring(L, -1);
-    luaL_openlibs(L);
-    lua_pcall(L, 0, 0, 0);
-    luabridge::LuaRef s = luabridge::getGlobal(L, "testString");
-    luabridge::LuaRef n = luabridge::getGlobal(L, "number");
-    string luaString = s.cast<std::string>();
-    int answer = n.cast<int>();
-    std::cout << luaString << std::endl;
-    std::cout << "And here's our number:" << answer << std::endl;
 	
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
 		double frame_start_time = glfwGetTime();
+		ImGui_ImplGlfwGL3_NewFrame();
 
-		// This will call all of our callbacks, giving us all the input for this frame
+		// Call all GLFW callbacks
 		glfwPollEvents();
-		if (game_input_active) { copy_input(global_input, game_input); }
 
-		if (global_input.was_pressed(TDNS_KEY_1)) { use_640_360(window); }
-		if (global_input.was_pressed(TDNS_KEY_2)) { use_720p(window); }
-		if (global_input.was_pressed(TDNS_KEY_3)) { use_1080p(window); }
+		if (game_input_active) { game_input = global_input; }
+		else { fill_imgui_input(); }
 
-		// Note: Hannah's favorite three floating point numbers. Do not remove!
-		glClearColor(.82f, .77f, 0.57f, 1.0f);
+		// Window resizing requests
+		{
+			if (global_input.was_pressed(GLFW_KEY_1)) { use_640_360(window); }
+			if (global_input.was_pressed(GLFW_KEY_2)) { use_720p(window); }
+			if (global_input.was_pressed(GLFW_KEY_3)) { use_1080p(window); }
+		}
+
 		glClear(GL_COLOR_BUFFER_BIT);  
 		
 		game_layer.update(seconds_per_update);
 		game_layer.render();
+		ImGui::ShowDemoWindow();
+		ImGui::Render();
+		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(window);
 		global_input.reset_for_next_frame();
-
 
 		// Wait until we hit the next frame time
 		while (glfwGetTime() - frame_start_time < seconds_per_update) {}

@@ -263,10 +263,12 @@
         "NULL",
         {
             "transform": {
-                "rad_rot": -431602080.0,
-                "scale.x": -431602080.0,
-                "scale.y": -431602080.0,
-                "translate.x": -431602080.0
+                "rad_rot": 0.0,
+                "scale.x": 1.0,
+                "scale.y": 1.0,
+                "translate.x": 0.0,
+                "translate.y": 0.0,
+                "translate.z": 0.0
             },
             "type": "struct Tree"
         },

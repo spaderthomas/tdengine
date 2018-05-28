@@ -6,11 +6,13 @@ out vec2 frag_tex_coord;
 
 uniform mat3 transform;
 uniform vec3 camera_translation;
-uniform float z;
+uniform vec3 test;
 
 void main() {
-    vec3 xy_pos = vec3(pos, 1.f);
-	vec3 world_pos = vec3(vec2(transform * xy_pos), z);
+    vec3 xyz_pos = vec3(pos, 0.f);
+	xyz_pos = xyz_pos + test;
+	xyz_pos = xyz_pos - test;
+	vec3 world_pos = transform * xyz_pos;
 	vec3 screen_pos = world_pos + camera_translation;
 	gl_Position = vec4(screen_pos, 1.f);
 	

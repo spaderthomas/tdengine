@@ -50,4 +50,3 @@ vector<float> line_verts = {
 vector<uint> line_indices = {
 	0, 1,
 };
-
