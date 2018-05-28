@@ -1,5 +1,7 @@
-struct Component {};
-struct Graphic_Component {
+struct Component {
+	virtual void placeholder() {};
+};
+struct Graphic_Component : Component {
 	vector<Animation*> animations;
 	Animation* active_animation = nullptr;
 
@@ -56,4 +58,8 @@ struct Graphic_Component {
 		sol::object default_animation_name = gc["default_animation"];
 		set_animation(default_animation_name.as<string>());
 	}
+};
+
+struct Position_Component : Component {
+	SRT transform;
 };

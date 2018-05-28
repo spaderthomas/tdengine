@@ -13,6 +13,7 @@ struct {
 		top_left_tile_index = glm::ivec2(0);
 		Entity* (*create_func)() = (Entity* (*)())create_methods[typeid(Tree).name()];
 		Entity* what = create_func();
+		tree = dynamic_cast<Tree*>(what);
 		t.name = "level_one";
 		t.load();
 	}
@@ -64,9 +65,14 @@ struct {
 
 		fox_for(ient, template_entities.size()) {
 			Entity* ent = template_entities[ient];
-			ImGui::ImageButton((ImTextureID)my_sprite->atlas->handle, ImVec2(my_sprite->width, my_sprite->height),
-				ImVec2(my_sprite->tex_coords[0], my_sprite->tex_coords[1]), ImVec2(my_sprite->tex_coords[4], my_sprite->tex_coords[5]));
+			Graphic_Component* gc = ent->get_component<Graphic_Component>();
+			if (gc) {
+				Sprite* my_sprite = gc->get_current_frame();
+				ImGui::ImageButton((ImTextureID)my_sprite->atlas->handle, ImVec2(32, 32),
+					ImVec2(my_sprite->tex_coords[0], my_sprite->tex_coords[1]), ImVec2(my_sprite->tex_coords[4], my_sprite->tex_coords[5]));
+			}
 		}
+		tree->draw();
 		renderer.render_for_frame();
 	}
 } game_layer;
