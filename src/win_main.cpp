@@ -115,7 +115,6 @@ int main() {
 	fill_gpu_mesh_buffers();
 
 	game_layer.init();
-
 	
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
@@ -125,8 +124,10 @@ int main() {
 		// Call all GLFW callbacks
 		glfwPollEvents();
 
-		if (game_input_active) { game_input = global_input; }
-		else { fill_imgui_input(); }
+		auto io = ImGui::GetIO();
+		give_imgui_mouse_input();
+		if (io.WantCaptureKeyboard || io.WantCaptureMouse) { fill_imgui_input(); } 
+		else { game_input = global_input; }
 
 		// Window resizing requests
 		{
@@ -139,7 +140,7 @@ int main() {
 		
 		game_layer.update(seconds_per_update);
 		game_layer.render();
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

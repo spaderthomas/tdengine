@@ -4,6 +4,7 @@ struct Component {
 struct Graphic_Component : Component {
 	vector<Animation*> animations;
 	Animation* active_animation = nullptr;
+	int z;
 
 	void set_animation(const string wish_name) {
 		for (auto& animation : animations) {
@@ -36,8 +37,10 @@ struct Graphic_Component : Component {
 		return active_animation->frames[active_animation->icur_frame];
 	}
 
+	//@leak Never free old animations if we call this twice
 	void load_animations_from_lua(sol::table gc) {
 		sol::table animations = gc["Animations"];
+		this->animations.clear();
 
 		// Loop through the mappings from names of animations to lists of frames
 		animations.for_each([this](sol::object const& name, sol::object const& frames) {

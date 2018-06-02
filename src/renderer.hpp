@@ -1,18 +1,14 @@
-struct Sprite;
-struct Texture_Atlas;
-struct Render_Element {
-	Sprite* sprite;
-	SRT transform;
+struct Graphic_Component;
+struct Position_Component;
 
-	// We want to render in Y-descending order so everything overlaps properly
-	bool operator < (const Render_Element& elem) const {
-		return transform.translate.y > elem.transform.translate.y;
-	}
+struct Render_Element {
+	Graphic_Component* gc;
+	Position_Component* pc;
 };
 enum Render_Layer { BACKGROUND, FOREGROUND, NUM_LAYERS };
 
 struct Renderer {
 	vector<Render_Element> render_list;
-	void draw(Sprite* sprite, SRT transform);
+	void draw(Graphic_Component* gc, Position_Component* pc);
 	void render_for_frame();
 } renderer;

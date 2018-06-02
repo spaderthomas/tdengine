@@ -570,8 +570,8 @@ void ImGui::ShowDemoWindow(bool* p_open)
 
         if (ImGui::TreeNode("Images"))
         {
-			ImGuiIO& io = ImGui::GetIO();
-			ImGui::TextWrapped("Below we are displaying the font texture (which is the only texture we have access to in this demo). Use the 'ImTextureID' type as storage to pass pointers or identifier to your own texture data. Hover the texture for a zoomed view!");
+            ImGuiIO& io = ImGui::GetIO();
+            ImGui::TextWrapped("Below we are displaying the font texture (which is the only texture we have access to in this demo). Use the 'ImTextureID' type as storage to pass pointers or identifier to your own texture data. Hover the texture for a zoomed view!");
 
             // Here we are grabbing the font texture because that's the only one we have access to inside the demo code.
             // Remember that ImTextureID is just storage for whatever you want it to be, it is essentially a value that will be passed to the render function inside the ImDrawCmd structure.
@@ -607,8 +607,8 @@ void ImGui::ShowDemoWindow(bool* p_open)
             {
                 ImGui::PushID(i);
                 int frame_padding = -1 + i;     // -1 = uses default padding
-				if (ImGui::ImageButton(my_tex_id, ImVec2(32, 32), ImVec2(0, 0), ImVec2(32.0f / my_tex_w, 32 / my_tex_h), frame_padding, ImColor(0, 0, 0, 255)))
-					pressed_count += 1;
+                if (ImGui::ImageButton(my_tex_id, ImVec2(32,32), ImVec2(0,0), ImVec2(32.0f/my_tex_w,32/my_tex_h), frame_padding, ImColor(0,0,0,255)))
+                    pressed_count += 1;
                 ImGui::PopID();
                 ImGui::SameLine();
             }

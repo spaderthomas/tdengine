@@ -24,11 +24,12 @@ struct Tilemap {
 			}
 		}
 
-		string path = "../../save/" + name + ".json";
+		string path = string("../../save/") + name + string(".json");
 		ofstream save_file(path);
 		save_file << std::setw(4) << j << std::endl;
 	}
 
+	//@leak We never free up any tiles that were previously allocated.
 	void load() {
 		string path = "../../save/" + name + ".json";
 		ifstream load_file(path);
@@ -46,6 +47,8 @@ struct Tilemap {
 					// Load in the specific instance's information from JSON
 					new_ent->load(tile_json);
 					tiles[itilex][itiley] = new_ent;
+				} else {
+					tiles[itilex][itiley] = nullptr;
 				}
 			}
 		}

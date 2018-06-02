@@ -26,6 +26,8 @@ struct SRT {
 glm::mat3 identity_mat3() {
 	return glm::mat3(1.f);
 }
+glm::vec2 one_by_one_scale = glm::vec2(GLSCR_TILESIZE_X, GLSCR_TILESIZE_Y);
+
 
 // glm is column then row (array of columns_
 glm::mat3 mat3_from_transform(SRT transform) {

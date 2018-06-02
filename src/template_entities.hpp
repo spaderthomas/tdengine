@@ -1,8 +1,10 @@
-vector<Entity*> template_entities;
+// We use this to store a basic entity of each kind loaded from Lua, and the create function needed to copy it.
+// We need the basic entity so we know what to render to ImGui buttons
+vector<pair<Entity*, void*>> template_entities;
 void init_template_entities() {
 	for (auto it = create_methods.begin(); it != create_methods.end(); ++it) {
 		Entity* (*create_func)() = (Entity* (*)())it->second;
-		template_entities.push_back(create_func());
+		template_entities.push_back(pair<Entity*, void*>(create_func(), create_func));
 	}
 }
 

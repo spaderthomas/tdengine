@@ -3,8 +3,6 @@ struct Input {
 	bool should_update;
 	glm::vec2 px_pos;
 	glm::vec2 screen_pos; // Top left is (0,0), bottom right is (1,1)
-	bool mouse_left_down;
-	bool mouse_right_down;
 
 	bool is_down[GLFW_KEY_LAST];
 	bool was_down[GLFW_KEY_LAST];
@@ -27,12 +25,16 @@ Input global_input;
 Input game_input;
 bool game_input_active = true;
 
+// ImGui gets the mouse coordinates every frame, so it knows if we're hovering it
+void give_imgui_mouse_input() {
+	ImGuiIO& io = ImGui::GetIO();
+	io.MousePos = ImVec2((float)global_input.px_pos.x, (float)global_input.px_pos.y);
+	io.MouseDown[0] = global_input.is_down[GLFW_MOUSE_BUTTON_LEFT];
+	io.MouseDown[1] = global_input.is_down[GLFW_MOUSE_BUTTON_RIGHT];
+}
+// If ImGui says it wants our input, then this will give it the rest
 void fill_imgui_input() {
 	ImGuiIO& io = ImGui::GetIO();
-	// Mouse
-	io.MousePos = ImVec2((float)global_input.px_pos.x, (float)global_input.px_pos.y);
-	io.MouseDown[0] = global_input.mouse_left_down;
-	io.MouseDown[1] = global_input.mouse_right_down;
 
 	// Fill in the raw ImGui buffer
 	for (int key = 0; key < GLFW_KEY_LAST; key++) {
@@ -62,18 +64,18 @@ static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypo
 void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int mods) {
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		if (action == GLFW_PRESS) {
-			global_input.mouse_left_down = true;
+			global_input.is_down[GLFW_MOUSE_BUTTON_LEFT] = true;
 		}
 		if (action == GLFW_RELEASE) {
-			global_input.mouse_left_down = false;
+			global_input.is_down[GLFW_MOUSE_BUTTON_LEFT] = false;
 		}
 	}
 	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
 		if (action == GLFW_PRESS) {
-			global_input.mouse_right_down = true;
+			global_input.is_down[GLFW_MOUSE_BUTTON_RIGHT] = true;
 		}
 		if (action == GLFW_RELEASE) {
-			global_input.mouse_right_down = false;
+			global_input.is_down[GLFW_MOUSE_BUTTON_RIGHT] = false;
 		}
 }
 }
@@ -92,9 +94,11 @@ void GLFW_Key_Callback(GLFWwindow* window, int key, int scancode, int action, in
 	activate_key(key, GLFW_KEY_2)
 	activate_key(key, GLFW_KEY_3)
 	activate_key(key, GLFW_KEY_TAB)
+	activate_key(key, GLFW_KEY_LEFT_CONTROL)
 	activate_key(key, GLFW_KEY_W)
 	activate_key(key, GLFW_KEY_A)
 	activate_key(key, GLFW_KEY_S)
 	activate_key(key, GLFW_KEY_D)
-	activate_key(key, GLFW_KEY_T)
+	activate_key(key, GLFW_KEY_L)
+	activate_key(key, GLFW_KEY_Z)
 }

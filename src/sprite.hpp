@@ -1,3 +1,4 @@
+struct Texture_Atlas;
 struct Sprite : Asset {
 	int height, width, num_channels;
 	Texture_Atlas* atlas;

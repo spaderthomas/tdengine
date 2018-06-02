@@ -7,4 +7,11 @@ void register_type() {
 
 void setup_create_method_mapping() {
 	register_type<Tree>();
+	register_type<Grass>();
+	register_type<GrassFlower1>();
+	register_type<GrassFlower2>();
+	register_type<GrassFlower3>();
+	register_type<Fence>();
+	register_type<Sand>();
+	register_type<Sand_Cracked>();
 }
