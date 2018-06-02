@@ -88,7 +88,6 @@ int main() {
 	create_texture_atlas("../../textures/boon");
 	create_texture_atlas("../../textures/wilson");
 	Lua.init();
-	setup_create_method_mapping();
 	init_template_entities();
 
 	IMGUI_CHECKVERSION();

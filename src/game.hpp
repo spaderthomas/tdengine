@@ -12,7 +12,7 @@ struct {
 		CREATING_ENTITY
 	} editing_state;
 	Entity* draggable_entity = nullptr;
-	Entity* (*entity_create_func)() = nullptr;
+	string id_selected_entity;
 
 	void init() {
 		editing_state = IDLE;
@@ -54,7 +54,6 @@ struct {
 				undo();
 			}
 		}
-#if 0
 		if (game_input.was_pressed(GLFW_KEY_R)) {
 			// Reload all graphics components
 			fox_for(x, MAP_SIZE) {
@@ -62,20 +61,19 @@ struct {
 					Entity* cur = layers[indx_active_layer]->tiles[x][y];
 					Graphic_Component* gc = cur->get_component<Graphic_Component>();
 					if (gc) {
-						gc->load_animations_from_lua();
+						gc->load_animations_from_lua(Lua.state[cur->lua_id]["Graphic_Component"]);
 					}
 				}
 			}
 		}
-#endif 
 
 		// Tile Selector GUI
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize;
 		ImGui::Begin("Tile Editor", 0, flags);
 		ImGui::Text("Layer %i of %i", indx_active_layer + 1, layers.size());
-		fox_for(indx, template_entities.size()) {
-			pair<Entity*, void*> ent_and_create_func = template_entities[indx];
-			Graphic_Component* gc = ent_and_create_func.first->get_component<Graphic_Component>();
+		fox_for(indx, template_tiles.size()) {
+			Entity* template_tile = template_tiles[indx];
+			Graphic_Component* gc = template_tile->get_component<Graphic_Component>();
 			if (gc) {
 				Sprite* ent_sprite = gc->get_current_frame();
 
@@ -86,8 +84,8 @@ struct {
 				if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle, 
 										button_size,
 										top_right_tex_coords, bottom_left_tex_coords)) {
-					entity_create_func = (Entity* (*)())ent_and_create_func.second;
-					draggable_entity = entity_create_func();
+					draggable_entity = Basic_Tile::create(template_tile->lua_id);
+					id_selected_entity = template_tile->lua_id;
 					editing_state = CREATING_ENTITY;
 				}
 				ImGui::PopID();
@@ -126,7 +124,7 @@ struct {
 					Position_Component* pc = draggable_entity->get_component<Position_Component>();
 					pc->transform.translate = transform.translate;
 					layers[indx_active_layer]->tiles[grid_pos.x][grid_pos.y] = draggable_entity;
-					draggable_entity = entity_create_func();
+					draggable_entity = Basic_Tile::create(id_selected_entity);
 
 					// Update so we only paint one entity per tile
 					last_grid_pos_drawn = grid_pos;

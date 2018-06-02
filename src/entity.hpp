@@ -42,6 +42,14 @@ int Entity::next_id = 0;
 // or as narrow as you want (e.g. a struct to represent one single character).
 // In general, though, inheritance isn't going past Entity -> Standard Thing -> Standard Thing with slight modification
 struct Basic_Tile : Entity {
+	static Basic_Tile* create(string lua_id) {
+		Basic_Tile* new_tile = new Basic_Tile;
+		new_tile->id = next_id++;
+		new_tile->lua_id = lua_id;
+		new_tile->init(lua_id);
+		return new_tile;
+	}
+
 	void init(string lua_id) {
 		Graphic_Component* graphic_component = new Graphic_Component;
 		graphic_component->load_animations_from_lua(Lua.state[lua_id]["Graphic_Component"]);
@@ -58,6 +66,7 @@ struct Basic_Tile : Entity {
 		pos->transform.scale = glm::vec2(tilesize_x * SCR_TILESIZE_X, tilesize_y * SCR_TILESIZE_Y);
 		this->add_component(pos);
 	}
+
 	void save(json& j) const override {
 
 		auto position_component = get_component<Position_Component>();
@@ -89,161 +98,3 @@ struct Basic_Tile : Entity {
 		}
 	}
 };
-
-// Each of these basic tiles needs a custom save to mark down the subclass, then it just 
-// calls into Basic_Tile::save() for the standard stuff 
-#define DEFINE_TILE(Type, lua_id) struct Type : Basic_Tile { \
-	static Type* create() { \
-		Type* new_ent = new Type; \
-		new_ent->id = Entity::next_id++; \
-		new_ent->init(lua_id); \
-		return new_ent; \
-	} \
-    \
-	void save(json& j) const override { \
-		string type_name = string(typeid(this).name()); \
-		fixup_type_name(type_name); \
-		j["type"] = type_name; \
-		\
-		Basic_Tile::save(j); \
-	} \
-};
-
-DEFINE_TILE(Tree, "tree")
-DEFINE_TILE(Grass, "grass")
-DEFINE_TILE(GrassFlower1, "grass_flower1")
-DEFINE_TILE(GrassFlower2, "grass_flower2")
-DEFINE_TILE(GrassFlower3, "grass_flower3")
-DEFINE_TILE(Fence, "fence")
-DEFINE_TILE(Sand, "sand")
-DEFINE_TILE(Sand_Cracked, "sand_cracked")
-#if 0
-struct Tree : Basic_Tile {
- 	static Tree* create() {
-		Tree* new_tree = new Tree;
-		new_tree->id = Entity::next_id++;
-		new_tree->init("tree");
-		return new_tree;
-	}
-
-	void save(json& j) const override {
-		string type_name = string(typeid(this).name());
-		fixup_type_name(type_name);
-		j["type"] = type_name;
-
-		Basic_Tile::save(j);
-	}
-};
-struct Grass : Basic_Tile {
-	static Grass* create() {
-		Grass* grass = new Grass;
-		grass->id = Entity::next_id++;
-		grass->init("grass");
-		return grass;
-	}
-
-	void save(json& j) const override {
-		string type_name = string(typeid(this).name());
-		fixup_type_name(type_name);
-		j["type"] = type_name;
-
-		Basic_Tile::save(j);
-	}
-};
-struct GrassFlower1 : Basic_Tile {
-	static GrassFlower1* create() {
-		GrassFlower1* grass = new GrassFlower1;
-		grass->id = Entity::next_id++;
-		grass->init("grass_flower1");
-		return grass;
-	}
-
-	void save(json& j) const override {
-		string type_name = string(typeid(this).name());
-		fixup_type_name(type_name);
-		j["type"] = type_name;
-
-		Basic_Tile::save(j);
-	}
-};
-struct GrassFlower2 : Basic_Tile {
-	static GrassFlower2* create() {
-		GrassFlower2* grass = new GrassFlower2;
-		grass->id = Entity::next_id++;
-		grass->init("grass_flower2");
-		return grass;
-	}
-
-	void save(json& j) const override {
-		string type_name = string(typeid(this).name());
-		fixup_type_name(type_name);
-		j["type"] = type_name;
-
-		Basic_Tile::save(j);
-	}
-};
-struct GrassFlower3 : Basic_Tile {
-	static GrassFlower3* create() {
-		GrassFlower3 *grass = new GrassFlower3;
-		grass->id = Entity::next_id++;
-		grass->init("grass_flower3");
-		return grass;
-	}
-
-	void save(json& j) const override {
-		string type_name = string(typeid(this).name());
-		fixup_type_name(type_name);
-		j["type"] = type_name;
-
-		Basic_Tile::save(j);
-	}
-};
-struct Fence : Basic_Tile {
-	static Fence* create() {
-		Fence* new_ent = new Fence;
-		new_ent->id = Entity::next_id++;
-		new_ent->init("fence");
-		return new_ent;
-	}
-
-	void save(json& j) const override {
-		string type_name = string(typeid(this).name());
-		fixup_type_name(type_name);
-		j["type"] = type_name;
-
-		Basic_Tile::save(j);
-	}
-};
-struct Sand : Basic_Tile {
-	static Sand* create() {
-		Sand* new_ent = new Sand;
-		new_ent->id = Entity::next_id++;
-		new_ent->init("sand");
-		return new_ent;
-	}
-
-	void save(json& j) const override {
-		string type_name = string(typeid(this).name());
-		fixup_type_name(type_name);
-		j["type"] = type_name;
-
-		Basic_Tile::save(j);
-	}
-};
-struct Sand_Cracked : Basic_Tile {
-	static Sand_Cracked* create() {
-		Sand_Cracked* new_ent = new Sand_Cracked;
-		new_ent->id = Entity::next_id++;
-		new_ent->init("sand_cracked");
-		return new_ent;
-	}
-
-	void save(json& j) const override {
-		string type_name = string(typeid(this).name());
-		fixup_type_name(type_name);
-		j["type"] = type_name;
-
-		Basic_Tile::save(j);
-	}
-};
-#endif

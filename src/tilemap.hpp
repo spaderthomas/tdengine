@@ -43,7 +43,7 @@ struct Tilemap {
 				if (tile_json != "NULL") {
 					// Get the correct subclass create method from the table, call it to get a new template entity
 					string type_name = tile_json["type"];
-					Entity* new_ent = ((Entity* (*)())create_methods[type_name])();
+					Entity* new_ent = Basic_Tile::create(type_name);
 					// Load in the specific instance's information from JSON
 					new_ent->load(tile_json);
 					tiles[itilex][itiley] = new_ent;
