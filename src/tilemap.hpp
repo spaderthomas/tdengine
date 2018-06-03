@@ -1,7 +1,7 @@
 #define MAP_SIZE 128
 struct Tilemap {
 	string name;
-	Entity* tiles[MAP_SIZE][MAP_SIZE] = { 0 };
+	Entity* tiles[MAP_SIZE][MAP_SIZE] = { nullptr };
 
 	void draw() {
 		fox_for(itilex, MAP_SIZE) {
@@ -19,7 +19,7 @@ struct Tilemap {
 		fox_for(itilex, MAP_SIZE) {
 			fox_for(itiley, MAP_SIZE) {
 				Entity* tile = tiles[itilex][itiley];
-				if (tile) { tile->save(j[itilex][itiley]); }
+				if (tile != nullptr) { tile->save(j[itilex][itiley]); }
 				else { j[itilex][itiley] = "NULL"; }
 			}
 		}
@@ -42,7 +42,7 @@ struct Tilemap {
 				auto tile_json = j[itilex][itiley];
 				if (tile_json != "NULL") {
 					// Get the correct subclass create method from the table, call it to get a new template entity
-					string type_name = tile_json["type"];
+					string type_name = tile_json["lua_id"];
 					Entity* new_ent = Basic_Tile::create(type_name);
 					// Load in the specific instance's information from JSON
 					new_ent->load(tile_json);

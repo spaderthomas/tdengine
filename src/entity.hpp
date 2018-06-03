@@ -68,7 +68,7 @@ struct Basic_Tile : Entity {
 	}
 
 	void save(json& j) const override {
-
+		j["lua_id"] = lua_id;
 		auto position_component = get_component<Position_Component>();
 		if (position_component) {
 			position_component->transform.save(j["transform"]);

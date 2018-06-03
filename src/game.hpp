@@ -97,14 +97,17 @@ struct {
 			// Add a new entity to the tilemap!
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
+				if (grid_pos.x < 0 || grid_pos.y < 0) {
+					int x = 1;
+				}
 				Entity* current_entity = layers[indx_active_layer]->tiles[grid_pos.x][grid_pos.y];
 
 				// We don't want to double paint, so check to make sure we're not doing that
 				bool okay_to_create = true;
 
 				// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
-				if (current_entity != nullptr) {
-					if (typeid(*current_entity) == typeid(*draggable_entity)) {
+				if (current_entity) {
+					if (current_entity->lua_id == draggable_entity->lua_id) {
 						okay_to_create = false;
 					}
 				}
