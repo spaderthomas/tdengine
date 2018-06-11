@@ -41,9 +41,14 @@ void fill_imgui_input() {
 		io.KeysDown[key] = global_input.is_down[key];
 	}
 	// Fill in the input characters
+	for (int key = GLFW_KEY_SPACE; key < GLFW_KEY_A; key++) {
+		if (global_input.was_pressed(key)) {
+			io.AddInputCharacter(key);
+		}
+	}
 	for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
 		if (global_input.was_pressed(key)) {
-			// GLFW character keys are the same as ASCII, so we can do this (convert to lowercase)
+			// GLFW character keys are the same as ASCII, so we can do this (also convert to lowercase)
 			io.AddInputCharacter(key + 0x20);
 		}
 	}
@@ -78,28 +83,10 @@ void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int 
 		if (action == GLFW_RELEASE) {
 			global_input.is_down[GLFW_MOUSE_BUTTON_RIGHT] = false;
 		}
-}
+	}
 }
 
-#define activate_key(key, key_to_check) else if (key == key_to_check) { \
-                                                         if (action == GLFW_PRESS) { global_input.is_down[key] = true; } \
-                                                         if (action == GLFW_RELEASE) { global_input.is_down[key] = false; } \
-                                                     }
 void GLFW_Key_Callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (0) {} // Just for the above macro
-	activate_key(key, GLFW_KEY_UP)
-	activate_key(key, GLFW_KEY_DOWN)
-	activate_key(key, GLFW_KEY_LEFT)
-	activate_key(key, GLFW_KEY_RIGHT)
-	activate_key(key, GLFW_KEY_1)
-	activate_key(key, GLFW_KEY_2)
-	activate_key(key, GLFW_KEY_3)
-	activate_key(key, GLFW_KEY_TAB)
-	activate_key(key, GLFW_KEY_LEFT_CONTROL)
-	activate_key(key, GLFW_KEY_W)
-	activate_key(key, GLFW_KEY_A)
-	activate_key(key, GLFW_KEY_S)
-	activate_key(key, GLFW_KEY_D)
-	activate_key(key, GLFW_KEY_L)
-	activate_key(key, GLFW_KEY_Z)
+	if (action == GLFW_PRESS) { global_input.is_down[key] = true; }
+    if (action == GLFW_RELEASE) { global_input.is_down[key] = false; } 
 }

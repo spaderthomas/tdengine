@@ -9,10 +9,16 @@ vector<string> tile_lua_ids = {
 	"grass_flower3",
 	"fence",
 	"sand",
-	"sand_cracked"
+	"sand_cracked",
+	"cactus",
+	"bush",
+	"solar_panel",
+	"windmill",
 };
 
+//@leak hotloading
 void init_template_entities() {
+	template_tiles.clear();
 	for (auto it = tile_lua_ids.begin(); it != tile_lua_ids.end(); ++it) {
 		template_tiles.push_back(Basic_Tile::create(*it));
 	}
@@ -24,4 +30,6 @@ Basic_Tile* get_template_tile(string lua_id) {
 			return (Basic_Tile*)(*it);
 		}
 	}
+
+	return nullptr;
 }
