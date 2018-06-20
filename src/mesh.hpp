@@ -25,6 +25,9 @@ struct Mesh : Asset {
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), tex_coord_offset);
 			glEnableVertexAttribArray(1);
 		}
+		else {
+			glDisableVertexAttribArray(1);
+		}
 	}
 
 	void draw(GLuint mode) {

@@ -10,10 +10,23 @@ vector<string> tile_lua_ids = {
 	"fence",
 	"sand",
 	"sand_cracked",
+	"sand_path_top",
+	"sand_path_bottom",
+	"sand_path_left",
+	"sand_path_right",
+	"sand_path_topleft_inner",
+	"sand_path_topright_inner",
+	"sand_path_bottomleft_inner",
+	"sand_path_bottomright_inner",
+	"sand_path_topleft_outer",
+	"sand_path_topright_outer",
+	"sand_path_bottomleft_outer",
+	"sand_path_bottomright_outer",
 	"cactus",
 	"bush",
 	"solar_panel",
 	"windmill",
+	"building",
 };
 
 //@leak hotloading

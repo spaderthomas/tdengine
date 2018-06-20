@@ -26,8 +26,6 @@ struct SRT {
 glm::mat3 identity_mat3() {
 	return glm::mat3(1.f);
 }
-glm::vec2 one_by_one_scale = glm::vec2(GLSCR_TILESIZE_X, GLSCR_TILESIZE_Y);
-
 
 // glm is column then row (array of columns_
 glm::mat3 mat3_from_transform(SRT transform) {
@@ -58,4 +56,19 @@ SRT srt_from_grid_pos(glm::ivec2 grid_pos) {
 	// Since tile was centered before, it'll be halfway between the tile, so correct that
 	grid_pos_transform.translate += glm::vec3(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y, 0.f);
 	return grid_pos_transform;
+}
+
+// Grid position is the same as a 2D array. 
+
+bool is_point_inside_aligned_rectangle(glm::vec2 point, SRT rect_transform) {
+	// @note: All these are really vec3s, but the conversion drops the Z coordinate like we want
+	glm::vec2 top_left = mat3_from_transform(rect_transform) * screen_top_left;
+	glm::vec2 bottom_right = mat3_from_transform(rect_transform) * screen_bottom_right;
+
+	// These seem weird but it's because OpenGL has Y opposite of cartesian
+	return (top_left.x < point.x &&
+			top_left.y < point.y &&
+			bottom_right.x > point.x &&
+			bottom_right.y > point.y);
+
 }

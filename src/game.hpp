@@ -259,7 +259,8 @@ struct {
 	glm::ivec2 last_grid_pos_drawn;
 	enum {
 		IDLE,
-		CREATING_ENTITY
+		INSERT,
+		SELECT
 	} editing_state;
 	Entity* draggable_entity = nullptr;
 	string id_selected_entity;
@@ -313,18 +314,12 @@ struct {
 				}
 			}
 		}
-		else if (console.Stricmp(command_line, "CLEAR") == 0) {
-			console.ClearLog();
-		}
-		else if (console.Stricmp(command_line, "HELP") == 0) {
-			console.AddLog("Commands:");
-			for (int i = 0; i < console.Commands.Size; i++)
-				console.AddLog("- %s", console.Commands[i]);
-		}
-		else if (console.Stricmp(command_line, "HISTORY") == 0) {
-			int first = console.History.Size - 10;
-			for (int i = first > 0 ? first : 0; i < console.History.Size; i++)
-				console.AddLog("%3d: %s\n", i, console.History[i]);
+		else if (console.Stricmp(command_line, "CLEAN") == 0) {
+			fox_for(x, MAP_SIZE) {
+				fox_for(y, MAP_SIZE) {
+					layers[indx_active_layer]->tiles[x][y] = nullptr;
+				}
+			}
 		}
 		else {
 			console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);
@@ -335,13 +330,14 @@ struct {
 		editing_state = IDLE;
 		layers.push_back(new Tilemap);
 		layers.push_back(new Tilemap);
+		layers.push_back(new Tilemap);
 		layers[0]->name = "layer_one";
 		layers[1]->name = "layer_two";
+		layers[2]->name = "pathtest";
 		indx_active_layer = 0;
 	}
 	
 	void update(float dt) {
-		ImGui::ShowDemoWindow();
 		if (game_input.was_pressed(GLFW_KEY_UP)) {
 				camera_pos.y -= GLSCR_TILESIZE_Y;
 			}
@@ -357,7 +353,7 @@ struct {
 		if (game_input.was_pressed(GLFW_KEY_TAB)) {
 			indx_active_layer = (indx_active_layer + 1) % layers.size();
 		}
-		if (game_input.is_down[GLFW_KEY_LEFT_CONTROL] &&
+		if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
 			game_input.was_pressed(GLFW_KEY_Z)) 
 		{
 			if (stack.size()) {
@@ -366,7 +362,15 @@ struct {
 				undo();
 			}
 		}
-
+		if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
+			if (editing_state == SELECT) {
+				editing_state = INSERT;
+			}
+			else {
+				editing_state = SELECT;
+			}
+		}
+		
 		// Toggle the console on control
 		static bool show_console = true;
 		static bool console_close = false;
@@ -386,25 +390,28 @@ struct {
 			if (gc) {
 				Sprite* ent_sprite = gc->get_current_frame();
 
- 				ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[0], ent_sprite->tex_coords[1]);
-				ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[4], ent_sprite->tex_coords[5]);
+ 				ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
+				ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
 				ImVec2 button_size = ImVec2(32, 32);
 				ImGui::PushID(indx);
 				if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle, 
 										button_size,
-										top_right_tex_coords, bottom_left_tex_coords))
+										bottom_left_tex_coords, top_right_tex_coords))
 				{
 					draggable_entity = Basic_Tile::create(template_tile->lua_id);
 					id_selected_entity = template_tile->lua_id;
-					editing_state = CREATING_ENTITY;
+					editing_state = INSERT;
 				}
 				ImGui::PopID();
-				if ((indx+1) % 6) { ImGui::SameLine(); }
+				bool is_end_of_row = !((indx + 1) % 6);
+				bool is_last_element = indx == (template_tiles.size() - 1);
+				if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
 			}
 		}
 
-		if (editing_state == CREATING_ENTITY) {
-			// Add a new entity to the tilemap!
+		if (!draggable_entity) { editing_state = IDLE;  }
+		if (editing_state == INSERT) {
+			// Add a new entity to the tilemap on click
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
 				Entity* current_entity = layers[indx_active_layer]->tiles[grid_pos.x][grid_pos.y];
@@ -441,23 +448,25 @@ struct {
 				}
 			}
 
-			// Correctly translate current selected tile to be under the mouse & scale it
+			// Correctly translate current selected tile to be under the mouse & scale it otherwise
 			Position_Component* position_component = draggable_entity->get_component<Position_Component>();
 			if (position_component) {
 				Graphic_Component* graphic_component = draggable_entity->get_component<Graphic_Component>();
 				if (graphic_component) {
+					glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
 					SRT transform = srt_from_grid_pos(grid_pos_from_px_pos(game_input.px_pos));
 					position_component->transform.translate = transform.translate;
 				}
 			}
-			
 		}
+		
 		ImGui::End();
 	}
 
 	void render() {
 		static bool* show_layers = (bool*)calloc(sizeof(bool), 128); // @hack; // For ImGui checkboxes to show layers
-
+		
+		// Render the layer selector and chosen layers
 		ImGui::Begin("Tile Editor", 0, 0);
 		if (ImGui::CollapsingHeader("Layers")) {
 			ImGui::Text("Editing layer: %s", layers[indx_active_layer]->name.c_str());
@@ -466,22 +475,66 @@ struct {
 				if (show_layers[indx_layer]) { layers[indx_layer]->draw(); }
 			}
 		}
-		ImGui::End();
 			
 		if (draggable_entity) { draggable_entity->draw(); }
+
+		// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
 		renderer.render_for_frame();
+
+		// If we're in selection mode, paint outlines over all the tiles we can select
+		static SRT cur_hovered_tile_transform = SRT::no_transform();
+		static glm::vec4 cur_hovered_color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+		static glm::ivec2 last_grid_pos_hovered = glm::ivec2(0);
+
+		if (editing_state == SELECT) {
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			for (auto& layer : layers) {
+				fox_for(x, MAP_SIZE) {
+					fox_for(y, MAP_SIZE) {
+						Entity* tile = layer->tiles[x][y];
+						if (tile) {
+							Position_Component* pc = tile->get_component<Position_Component>();
+							if (pc) {
+								if (is_point_inside_aligned_rectangle(game_input.screen_pos_as_gl_coords(), pc->transform)) {
+									glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
+									if (grid_pos != last_grid_pos_hovered) {
+										cur_hovered_color = glm::vec4(0.f, 1.f, 0.f, 1.f);
+										cur_hovered_tile_transform = pc->transform;
+									}
+								}
+								else {
+									draw_square_outline(pc->transform, glm::vec4(0.f, 1.f, 0.f, 1.f));
+								}
+							}
+						}
+					}
+				}
+			}
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+
+		glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
+		last_grid_pos_hovered = grid_pos;
+
+		cur_hovered_color = glm::mix(cur_hovered_color, glm::vec4(1.f, 0.f, 0.f, 1.f), .1f);
+		draw_square_outline(cur_hovered_tile_transform, cur_hovered_color);
 
 		// Render the grid
 		{
-			// We have to multiply by two because OpenGL uses -1 to 1
-			for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {
-				draw_line_from_points(glm::vec2(col_offset, -1.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.2f));
-			}
-			for (float row_offset = 1; row_offset >= -1; row_offset -= GLSCR_TILESIZE_Y) {
-				draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.2f));
+			static bool show_grid;
+			ImGui::Checkbox("Show grid", &show_grid);
+			if (show_grid) {
+				// We have to multiply by two because OpenGL uses -1 to 1
+				for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {
+					draw_line_from_points(glm::vec2(col_offset, -1.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.2f));
+				}
+				for (float row_offset = 1; row_offset >= -1; row_offset -= GLSCR_TILESIZE_Y) {
+					draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.2f));
+				}
 			}
 		}
 
+		ImGui::End();
 	}
 } game_layer;
 

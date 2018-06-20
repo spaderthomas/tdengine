@@ -9,16 +9,6 @@ struct Sprite : Asset {
 	static GLuint vert_buffer;
 	static GLuint elem_buffer;
 	static GLuint vao;
-
-	void bind() {
-		// 0: Vertices
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-		glEnableVertexAttribArray(0);
-		// 1: Texture coordinates
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), tex_coord_offset);
-		glEnableVertexAttribArray(1);
-	}	
-
 };
 
 // OpenGL 

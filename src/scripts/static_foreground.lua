@@ -65,5 +65,15 @@ windmill = {
         z = 1
     }
 }
- 
+building = {
+    Graphic_Component = {
+        Animations = {
+            building = {
+                "building.png"
+            }
+        },
+        default_animation = "building",
+        z = 1
+    }
+} 
 

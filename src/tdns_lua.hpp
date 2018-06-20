@@ -10,7 +10,6 @@ struct {
 		vector<string> scripts = {
 			"../../src/scripts/static_background.lua",
 			"../../src/scripts/static_foreground.lua",
-			"../../src/scripts/boon.lua"
 		};
 		auto error_handler = [](lua_State*, sol::protected_function_result pfr) {
 			sol::error err = pfr;

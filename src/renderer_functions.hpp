@@ -10,7 +10,7 @@ void Renderer::draw(Graphic_Component* gc, Position_Component* pc) {
 void Renderer::render_for_frame() {
 	bind_sprite_buffers();
 	textured_shader.bind();
-	textured_shader.set_int("sampler1", 0);
+	textured_shader.set_int("sampler", 0);
 	textured_shader.set_vec3("camera_translation", camera_pos);
 
 	// Algorithm:
@@ -35,15 +35,23 @@ void Renderer::render_for_frame() {
 				return a.pc->transform.translate.y > b.pc->transform.translate.y; 
 			});
 
+		// Draw the correctly sorted elements for a depth level
 		for (auto& render_element : depth_level_render_elements) {
 			Sprite* sprite = render_element.gc->get_current_frame();
-			sprite->atlas->bind();
+			if (sprite) {
+				sprite->atlas->bind();
 
-			sprite->bind();
-			auto transform_mat = mat3_from_transform(render_element.pc->transform);
-			textured_shader.set_mat3("transform", transform_mat);
-			textured_shader.set_int("z", render_element.gc->z);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+				// 0: vertices, 1: texcoords
+				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+				glEnableVertexAttribArray(0);
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), sprite->tex_coord_offset);
+				glEnableVertexAttribArray(1);
+				
+				auto transform_mat = mat3_from_transform(render_element.pc->transform);
+				textured_shader.set_mat3("transform", transform_mat);
+				textured_shader.set_int("z", render_element.gc->z);
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			}
 		}
 	}
 

@@ -93,3 +93,4 @@ void fixup_type_name(string& type_name) {
 		type_name.erase(erase_pos, str.length());
 	}
 }
+

@@ -1,4 +1,3 @@
-// In-program shapes
 vector<float> triangle_verts = {
     -0.5f, -0.5f, 0.0f,
      0.5f, -0.5f, 0.0f,
@@ -13,25 +12,16 @@ vector<float> triangle_tex_coords = {
     0.5f, 1.0f,
 };
 
-// @todo: Merge these with the Entity_Visible version?
 vector<float> square_verts = {
-	1.f,  1.f,
-	1.f, -1.f,
-	-1.f, -1.f,
-	-1.f,  1.f,
+	1.f,  1.f, 1.f,
+	1.f, -1.f, 1.f,
+	-1.f, -1.f, 1.f,
+	-1.f,  1.f, 1.f
 };
-vector<float> background_square_verts = {
-	1.f,  1.f, 0.0f,
-	1.f, -1.f, 0.0f,
-	-1.f, -1.f, 0.0f,
-	-1.f,  1.f, 0.0f
-};
-vector<float> foreground_square_verts = {
-	1.f,  1.f, -1.f,
-	1.f, -1.f, -1.f,
-	-1.f, -1.f, -1.f,
-	-1.f,  1.f, -1.f
-};
+glm::vec3 screen_bottom_right = glm::vec3(1.f, 1.f, 1.f);
+glm::vec3 screen_top_right = glm::vec3(1.f, -1.f, 1.f);
+glm::vec3 screen_top_left = glm::vec3(-1.f, -1.f, 1.f);
+glm::vec3 screen_bottom_left = glm::vec3(-1.f, 1.f, 1.f);
 
 vector<uint> square_indices = {
 	0, 1, 2,
@@ -44,8 +34,8 @@ vector<float> square_tex_coords = {
 	0.f, 1.f,
 };
 vector<float> line_verts = {
-	0.f, 0.f, 0.f,
-	1.f, 1.f, 0.f,
+	0.f, 0.f, 1.f,
+	1.f, 1.f, 1.f,
 };
 vector<uint> line_indices = {
 	0, 1,
