@@ -1475,9 +1475,39 @@
                 "translate.z": 0.0
             }
         },
-        "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.4749999940395355,
+                "translate.y": -0.3777778148651123,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.4749999940395355,
+                "translate.y": -0.46666669845581055,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.4749999940395355,
+                "translate.y": -0.5555555820465088,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -1625,9 +1655,39 @@
                 "translate.z": 0.0
             }
         },
-        "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.3777778148651123,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass_flower1",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.46666669845581055,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.5555555820465088,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -1775,9 +1835,39 @@
                 "translate.z": 0.0
             }
         },
-        "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.3749999701976776,
+                "translate.y": -0.3777778148651123,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass_flower2",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.3749999701976776,
+                "translate.y": -0.46666669845581055,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.3749999701976776,
+                "translate.y": -0.5555555820465088,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -1925,9 +2015,39 @@
                 "translate.z": 0.0
             }
         },
-        "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.32499995827674866,
+                "translate.y": -0.3777778148651123,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass_flower1",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.32499995827674866,
+                "translate.y": -0.46666669845581055,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.32499995827674866,
+                "translate.y": -0.5555555820465088,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -2075,9 +2195,39 @@
                 "translate.z": 0.0
             }
         },
-        "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.2750000059604645,
+                "translate.y": -0.3777778148651123,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.2750000059604645,
+                "translate.y": -0.46666669845581055,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.2750000059604645,
+                "translate.y": -0.5555555820465088,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",

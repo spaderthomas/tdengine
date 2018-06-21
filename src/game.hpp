@@ -481,12 +481,33 @@ struct {
 		// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
 		renderer.render_for_frame();
 
-		// If we're in selection mode, paint outlines over all the tiles we can select
-		static SRT cur_hovered_tile_transform = SRT::no_transform();
-		static glm::vec4 cur_hovered_color = glm::vec4(0.f, 1.f, 0.f, 1.f);
-		static glm::ivec2 last_grid_pos_hovered = glm::ivec2(0);
+		// Render the grid
+		{
+			static bool show_grid;
+			ImGui::Checkbox("Show grid", &show_grid);
+			if (show_grid) {
+				// We have to multiply by two because OpenGL uses -1 to 1
+				for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {
+					draw_line_from_points(glm::vec2(col_offset, -1.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.5f));
+				}
+				for (float row_offset = 1; row_offset >= -1; row_offset -= GLSCR_TILESIZE_Y) {
+					draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
+				}
+			}
+		}
 
+		// If we're in selection mode, paint outlines over all the tiles we can select
+		static glm::ivec2 hovered = glm::vec2(0);
+		static glm::vec4 hovered_color = green;
 		if (editing_state == SELECT) {
+			// If we change what tile we are hovering over, fade the new tile from green to red and the old tile from red to green
+			glm::ivec2 this_frame_hovered = grid_pos_from_px_pos(game_input.px_pos);
+			if (this_frame_hovered != hovered) {
+				hovered_color = green;
+				hovered = this_frame_hovered;
+			}
+
+			// Draw bounding boxes on all the tiles
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 			for (auto& layer : layers) {
 				fox_for(x, MAP_SIZE) {
@@ -495,43 +516,17 @@ struct {
 						if (tile) {
 							Position_Component* pc = tile->get_component<Position_Component>();
 							if (pc) {
-								if (is_point_inside_aligned_rectangle(game_input.screen_pos_as_gl_coords(), pc->transform)) {
-									glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
-									if (grid_pos != last_grid_pos_hovered) {
-										cur_hovered_color = glm::vec4(0.f, 1.f, 0.f, 1.f);
-										cur_hovered_tile_transform = pc->transform;
-									}
-								}
-								else {
-									draw_square_outline(pc->transform, glm::vec4(0.f, 1.f, 0.f, 1.f));
-								}
+								draw_square_outline(pc->transform, glm::vec4(0.f, 1.f, 0.f, 1.f));
 							}
 						}
 					}
 				}
 			}
+
+			// Draw the tile that's hovered 
+			hovered_color = glm::mix(hovered_color, red, .1f);
+			draw_square_outline(srt_from_grid_pos(hovered), hovered_color);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
-
-		glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
-		last_grid_pos_hovered = grid_pos;
-
-		cur_hovered_color = glm::mix(cur_hovered_color, glm::vec4(1.f, 0.f, 0.f, 1.f), .1f);
-		draw_square_outline(cur_hovered_tile_transform, cur_hovered_color);
-
-		// Render the grid
-		{
-			static bool show_grid;
-			ImGui::Checkbox("Show grid", &show_grid);
-			if (show_grid) {
-				// We have to multiply by two because OpenGL uses -1 to 1
-				for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {
-					draw_line_from_points(glm::vec2(col_offset, -1.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.2f));
-				}
-				for (float row_offset = 1; row_offset >= -1; row_offset -= GLSCR_TILESIZE_Y) {
-					draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.2f));
-				}
-			}
 		}
 
 		ImGui::End();
