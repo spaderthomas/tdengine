@@ -66,3 +66,10 @@ struct Graphic_Component : Component {
 struct Position_Component : Component {
 	SRT transform;
 };
+
+struct Collision_Component : Component {
+	float top;
+	float bottom;
+	float left;
+	float right;
+};

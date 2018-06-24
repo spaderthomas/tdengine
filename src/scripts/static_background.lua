@@ -185,6 +185,17 @@ sand_path_bottomleft_outer = {
 	z = 0
 	}
 }
+fence_top = {
+	Graphic_Component = {
+		Animations = {
+			fence_top= {
+				"fence_top.png"
+			}
+		},
+	default_animation = "fence_top",
+	z = 0
+	}
+}
 sand_path_bottomright_outer = {
 	Graphic_Component = {
 		Animations = {

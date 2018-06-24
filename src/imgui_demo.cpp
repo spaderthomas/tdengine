@@ -235,8 +235,8 @@ void ImGui::ShowDemoWindow(bool* p_open)
     }
 
     ImGui::Spacing();
-    if (ImGui::CollapsingHeader("Help"))
-    {
+	if (ImGui::CollapsingHeader("Help"))
+	{
         ImGui::TextWrapped("This window is being created by the ShowDemoWindow() function. Please refer to the code in imgui_demo.cpp for reference.\n\n");
         ImGui::Text("USER GUIDE:");
         ImGui::ShowUserGuide();

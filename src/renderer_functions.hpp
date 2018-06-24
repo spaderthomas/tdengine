@@ -11,7 +11,8 @@ void Renderer::render_for_frame() {
 	bind_sprite_buffers();
 	textured_shader.bind();
 	textured_shader.set_int("sampler", 0);
-	textured_shader.set_vec3("camera_translation", camera_pos);
+	glm::vec2 camera_pos = glm::vec2(camera_top_left.x * GLSCR_TILESIZE_X, -1.f * camera_top_left.y * GLSCR_TILESIZE_Y);
+	textured_shader.set_vec2("camera_pos", camera_pos);
 
 	// Algorithm:
 	// Sort by Z-position (as if you were going to do the Painter's algorithm

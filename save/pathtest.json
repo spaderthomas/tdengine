@@ -394,13 +394,83 @@
         "NULL",
         "NULL",
         "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.8250000476837158,
+                "translate.y": 0.6000000238418579,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.8250000476837158,
+                "translate.y": 0.5111111402511597,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.8250000476837158,
+                "translate.y": 0.42222219705581665,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.8250000476837158,
+                "translate.y": 0.3333333134651184,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.8250000476837158,
+                "translate.y": 0.24444442987442017,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.8250000476837158,
+                "translate.y": 0.15555554628372192,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.8250000476837158,
+                "translate.y": 0.06666666269302368,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -524,13 +594,33 @@
         "NULL",
         "NULL",
         "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.7750000357627869,
+                "translate.y": 0.6000000238418579,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
         "NULL",
         "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.7750000357627869,
+                "translate.y": 0.06666666269302368,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -654,13 +744,33 @@
         "NULL",
         "NULL",
         "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.7250000238418579,
+                "translate.y": 0.6000000238418579,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
         "NULL",
         "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.7250000238418579,
+                "translate.y": 0.06666666269302368,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -784,13 +894,33 @@
         "NULL",
         "NULL",
         "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.675000011920929,
+                "translate.y": 0.6000000238418579,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
         "NULL",
         "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.675000011920929,
+                "translate.y": 0.06666666269302368,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -914,13 +1044,43 @@
         "NULL",
         "NULL",
         "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.625,
+                "translate.y": 0.6000000238418579,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
+        {
+            "lua_id": "building",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.20000000298023224,
+                "scale.y": 0.35555556416511536,
+                "translate.x": -0.625,
+                "translate.y": 0.3333333134651184,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.625,
+                "translate.y": 0.06666666269302368,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -1044,13 +1204,33 @@
         "NULL",
         "NULL",
         "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.5750000476837158,
+                "translate.y": 0.6000000238418579,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
         "NULL",
         "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.5750000476837158,
+                "translate.y": 0.06666666269302368,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         {
@@ -1244,13 +1424,33 @@
         "NULL",
         "NULL",
         "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.5249999761581421,
+                "translate.y": 0.6000000238418579,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
         "NULL",
         "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.5249999761581421,
+                "translate.y": 0.06666666269302368,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         {
@@ -1444,13 +1644,33 @@
         "NULL",
         "NULL",
         "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.4749999940395355,
+                "translate.y": 0.6000000238418579,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
         "NULL",
         "NULL",
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.4749999940395355,
+                "translate.y": 0.06666666269302368,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         {
@@ -1508,8 +1728,298 @@
                 "translate.z": 0.0
             }
         },
+        {
+            "lua_id": "sand_path_top",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.4749999940395355,
+                "translate.y": -0.644444465637207,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "sand_path_bottom",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.4749999940395355,
+                "translate.y": -0.7333333492279053,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL"
+    ],
+    [
+        "NULL",
+        "NULL",
+        "NULL",
+        "NULL",
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": 0.6000000238418579,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": 0.5111111402511597,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": 0.42222219705581665,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": 0.3333333134651184,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": 0.24444442987442017,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": 0.15555554628372192,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "fence",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": 0.06666666269302368,
+                "translate.z": 0.0
+            }
+        },
+        "NULL",
+        "NULL",
+        {
+            "lua_id": "sand_path_top",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.20000004768371582,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "sand_path_bottom",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.28888893127441406,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.3777778148651123,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.46666669845581055,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "grass",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.5555555820465088,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "sand_path_top",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.644444465637207,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "sand_path_bottom",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.42499998211860657,
+                "translate.y": -0.7333333492279053,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -1639,7 +2149,7 @@
                 "rad_rot": 0.0,
                 "scale.x": 0.02500000037252903,
                 "scale.y": 0.04444444552063942,
-                "translate.x": -0.42499998211860657,
+                "translate.x": -0.3749999701976776,
                 "translate.y": -0.20000004768371582,
                 "translate.z": 0.0
             }
@@ -1650,7 +2160,7 @@
                 "rad_rot": 0.0,
                 "scale.x": 0.02500000037252903,
                 "scale.y": 0.04444444552063942,
-                "translate.x": -0.42499998211860657,
+                "translate.x": -0.3749999701976776,
                 "translate.y": -0.28888893127441406,
                 "translate.z": 0.0
             }
@@ -1661,18 +2171,18 @@
                 "rad_rot": 0.0,
                 "scale.x": 0.02500000037252903,
                 "scale.y": 0.04444444552063942,
-                "translate.x": -0.42499998211860657,
+                "translate.x": -0.3749999701976776,
                 "translate.y": -0.3777778148651123,
                 "translate.z": 0.0
             }
         },
         {
-            "lua_id": "grass_flower1",
+            "lua_id": "grass",
             "transform": {
                 "rad_rot": 0.0,
                 "scale.x": 0.02500000037252903,
                 "scale.y": 0.04444444552063942,
-                "translate.x": -0.42499998211860657,
+                "translate.x": -0.3749999701976776,
                 "translate.y": -0.46666669845581055,
                 "translate.z": 0.0
             }
@@ -1683,136 +2193,11 @@
                 "rad_rot": 0.0,
                 "scale.x": 0.02500000037252903,
                 "scale.y": 0.04444444552063942,
-                "translate.x": -0.42499998211860657,
+                "translate.x": -0.3749999701976776,
                 "translate.y": -0.5555555820465088,
                 "translate.z": 0.0
             }
         },
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL"
-    ],
-    [
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
-        "NULL",
         {
             "lua_id": "sand_path_top",
             "transform": {
@@ -1820,7 +2205,7 @@
                 "scale.x": 0.02500000037252903,
                 "scale.y": 0.04444444552063942,
                 "translate.x": -0.3749999701976776,
-                "translate.y": -0.20000004768371582,
+                "translate.y": -0.644444465637207,
                 "translate.z": 0.0
             }
         },
@@ -1831,45 +2216,10 @@
                 "scale.x": 0.02500000037252903,
                 "scale.y": 0.04444444552063942,
                 "translate.x": -0.3749999701976776,
-                "translate.y": -0.28888893127441406,
+                "translate.y": -0.7333333492279053,
                 "translate.z": 0.0
             }
         },
-        {
-            "lua_id": "grass",
-            "transform": {
-                "rad_rot": 0.0,
-                "scale.x": 0.02500000037252903,
-                "scale.y": 0.04444444552063942,
-                "translate.x": -0.3749999701976776,
-                "translate.y": -0.3777778148651123,
-                "translate.z": 0.0
-            }
-        },
-        {
-            "lua_id": "grass_flower2",
-            "transform": {
-                "rad_rot": 0.0,
-                "scale.x": 0.02500000037252903,
-                "scale.y": 0.04444444552063942,
-                "translate.x": -0.3749999701976776,
-                "translate.y": -0.46666669845581055,
-                "translate.z": 0.0
-            }
-        },
-        {
-            "lua_id": "grass",
-            "transform": {
-                "rad_rot": 0.0,
-                "scale.x": 0.02500000037252903,
-                "scale.y": 0.04444444552063942,
-                "translate.x": -0.3749999701976776,
-                "translate.y": -0.5555555820465088,
-                "translate.z": 0.0
-            }
-        },
-        "NULL",
-        "NULL",
         "NULL",
         "NULL",
         "NULL",
@@ -2027,7 +2377,7 @@
             }
         },
         {
-            "lua_id": "grass_flower1",
+            "lua_id": "grass",
             "transform": {
                 "rad_rot": 0.0,
                 "scale.x": 0.02500000037252903,
@@ -2048,8 +2398,28 @@
                 "translate.z": 0.0
             }
         },
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "sand_path_top",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.32499995827674866,
+                "translate.y": -0.644444465637207,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "sand_path_bottom",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.32499995827674866,
+                "translate.y": -0.7333333492279053,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",
@@ -2228,8 +2598,28 @@
                 "translate.z": 0.0
             }
         },
-        "NULL",
-        "NULL",
+        {
+            "lua_id": "sand_path_top",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.2750000059604645,
+                "translate.y": -0.644444465637207,
+                "translate.z": 0.0
+            }
+        },
+        {
+            "lua_id": "sand_path_bottom",
+            "transform": {
+                "rad_rot": 0.0,
+                "scale.x": 0.02500000037252903,
+                "scale.y": 0.04444444552063942,
+                "translate.x": -0.2750000059604645,
+                "translate.y": -0.7333333492279053,
+                "translate.z": 0.0
+            }
+        },
         "NULL",
         "NULL",
         "NULL",

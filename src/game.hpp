@@ -254,8 +254,6 @@ struct Console {
 
 vector<function<void()>> stack;
 struct {
-	vector<Tilemap*> layers;
-	int indx_active_layer = -1;
 	glm::ivec2 last_grid_pos_drawn;
 	enum {
 		IDLE,
@@ -264,60 +262,38 @@ struct {
 	} editing_state;
 	Entity* draggable_entity = nullptr;
 	string id_selected_entity;
+	Level dude_ranch;
 
 	Console console;
 
 	void exec_console_command(const char* command_line) {
-		// addlayer layername
-		// Creates a new tilemap named layername and adds it to the current level
-		if (console.Strnicmp(command_line, "ADDLAYER", 8) == 0) {
-			Tilemap* new_layer = new Tilemap;
-			
-			// Pars
-			const char* c = &command_line[9]; 
-			while (*c) {
-				new_layer->name += *c;
-				c++;
-			}
-
-			layers.push_back(new_layer);
-		}
-		else if (console.Stricmp(command_line, "SAVE") == 0) {
-			if (indx_active_layer > -1) {
-				layers[indx_active_layer]->save();
-			}
+		if (console.Stricmp(command_line, "SAVE") == 0) {
+			dude_ranch.save();
 		}
 		else if (console.Stricmp(command_line, "LOAD") == 0) {
-			if (indx_active_layer > -1) {
-				layers[indx_active_layer]->load();
-			}
+			dude_ranch.load();
 		}
 		else if (console.Stricmp(command_line, "RELOAD") == 0) {
 			init_template_entities();
 
 			//@leak this one is quite big 
-			create_texture_atlas("../../textures/environment");
-			create_texture_atlas("../../textures/boon");
-			create_texture_atlas("../../textures/wilson");
-
+			for (auto dirname : atlas_folders) {
+				create_texture_atlas(dirname);
+			}
 			Lua.load_scripts();
 			// Reload all graphics components
-			fox_for(x, MAP_SIZE) {
-				fox_for(y, MAP_SIZE) {
-					Entity* cur = layers[indx_active_layer]->tiles[x][y];
-					if (cur != nullptr) {
-						Graphic_Component* gc = cur->get_component<Graphic_Component>();
-						if (gc) {
-							gc->load_animations_from_lua(Lua.state[cur->lua_id]["Graphic_Component"]);
+			for (auto it : dude_ranch.chunks) {
+				Chunk& chunk = it.second;
+				fox_for(x, CHUNK_SIZE) {
+					fox_for(y, CHUNK_SIZE) {
+						Entity* cur = chunk.tiles[x][y];
+						if (cur != nullptr) {
+							Graphic_Component* gc = cur->get_component<Graphic_Component>();
+							if (gc) {
+								gc->load_animations_from_lua(Lua.state[cur->lua_id]["Graphic_Component"]);
+							}
 						}
 					}
-				}
-			}
-		}
-		else if (console.Stricmp(command_line, "CLEAN") == 0) {
-			fox_for(x, MAP_SIZE) {
-				fox_for(y, MAP_SIZE) {
-					layers[indx_active_layer]->tiles[x][y] = nullptr;
 				}
 			}
 		}
@@ -328,30 +304,21 @@ struct {
 
 	void init() {
 		editing_state = IDLE;
-		layers.push_back(new Tilemap);
-		layers.push_back(new Tilemap);
-		layers.push_back(new Tilemap);
-		layers[0]->name = "layer_one";
-		layers[1]->name = "layer_two";
-		layers[2]->name = "pathtest";
-		indx_active_layer = 0;
+		dude_ranch.name = "dude_ranch";
 	}
 	
 	void update(float dt) {
-		if (game_input.was_pressed(GLFW_KEY_UP)) {
-				camera_pos.y -= GLSCR_TILESIZE_Y;
-			}
-		if (game_input.was_pressed(GLFW_KEY_DOWN)) {
-				camera_pos.y += GLSCR_TILESIZE_Y;
-			}
-		if (game_input.was_pressed(GLFW_KEY_RIGHT)) {
-				camera_pos.x -= GLSCR_TILESIZE_X;
-			}
-		if (game_input.was_pressed(GLFW_KEY_LEFT)) {
-			camera_pos.x += GLSCR_TILESIZE_X;
+		if (game_input.is_down[GLFW_KEY_UP]) {
+			camera_top_left.y = fox_max(0, camera_top_left.y - 1);
 		}
-		if (game_input.was_pressed(GLFW_KEY_TAB)) {
-			indx_active_layer = (indx_active_layer + 1) % layers.size();
+		if (game_input.is_down[GLFW_KEY_DOWN]) {
+			camera_top_left.y = camera_top_left.y + 1;
+		}
+		if (game_input.is_down[GLFW_KEY_RIGHT]) {
+				camera_top_left.x += 1;
+			}
+		if (game_input.is_down[GLFW_KEY_LEFT]) {
+			camera_top_left.x = fox_max(0, camera_top_left.x - 1);
 		}
 		if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
 			game_input.was_pressed(GLFW_KEY_Z)) 
@@ -408,13 +375,33 @@ struct {
 				if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
 			}
 		}
+		if (ImGui::CollapsingHeader("Entities")) {
+			static Tree* template_tree = Tree::create();
+			Graphic_Component* gc = template_tree->get_component<Graphic_Component>();
+			if (gc) {
+				Sprite* sprite = gc->get_current_frame();
+
+				ImVec2 top_right_tex_coords = ImVec2(sprite->tex_coords[2], sprite->tex_coords[3]);
+				ImVec2 bottom_left_tex_coords = ImVec2(sprite->tex_coords[6], sprite->tex_coords[7]);
+				ImVec2 button_size = ImVec2(32, 32);
+				if (ImGui::ImageButton((ImTextureID)sprite->atlas->handle,
+					button_size,
+					bottom_left_tex_coords, top_right_tex_coords))
+				{
+					draggable_entity = Tree::create();
+					id_selected_entity = template_tree->lua_id;
+					editing_state = INSERT;
+				}
+			}
+		}
+
 
 		if (!draggable_entity) { editing_state = IDLE;  }
 		if (editing_state == INSERT) {
 			// Add a new entity to the tilemap on click
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
-				Entity* current_entity = layers[indx_active_layer]->tiles[grid_pos.x][grid_pos.y];
+				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
+				Entity* current_entity = dude_ranch.get_tile(grid_pos.x, grid_pos.y);
 
 				// We don't want to double paint, so check to make sure we're not doing that
 				bool okay_to_create = true;
@@ -428,19 +415,19 @@ struct {
 
 				if (okay_to_create) {
 					// Create a lambda which will undo the tile placement we're about to do
-					auto my_lambda = [map = layers[indx_active_layer],
+					auto my_lambda = [&dude_ranch = dude_ranch,
 						x = grid_pos.x, y = grid_pos.y,
-						ent = layers[indx_active_layer]->tiles[grid_pos.x][grid_pos.y]]()
+						ent = dude_ranch.get_tile(grid_pos.x, grid_pos.y)]
 					{
-						map->tiles[x][y] = ent;
+						dude_ranch.set_tile(ent, x, y);
 					};
 					stack.push_back(my_lambda);
 
 					// Grab the translation from the mouse position and add the tile to tilemap
-					SRT transform = srt_from_grid_pos(grid_pos_from_px_pos(game_input.px_pos));
+					SRT transform = srt_from_grid_pos(grid_pos);
 					Position_Component* pc = draggable_entity->get_component<Position_Component>();
 					pc->transform.translate = transform.translate;
-					layers[indx_active_layer]->tiles[grid_pos.x][grid_pos.y] = draggable_entity;
+					dude_ranch.set_tile(draggable_entity, grid_pos.x, grid_pos.y);
 					draggable_entity = Basic_Tile::create(id_selected_entity);
 
 					// Update so we only paint one entity per tile
@@ -453,8 +440,8 @@ struct {
 			if (position_component) {
 				Graphic_Component* graphic_component = draggable_entity->get_component<Graphic_Component>();
 				if (graphic_component) {
-					glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
-					SRT transform = srt_from_grid_pos(grid_pos_from_px_pos(game_input.px_pos));
+					glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
+					SRT transform = srt_from_grid_pos(grid_pos);
 					position_component->transform.translate = transform.translate;
 				}
 			}
@@ -468,14 +455,8 @@ struct {
 		
 		// Render the layer selector and chosen layers
 		ImGui::Begin("Tile Editor", 0, 0);
-		if (ImGui::CollapsingHeader("Layers")) {
-			ImGui::Text("Editing layer: %s", layers[indx_active_layer]->name.c_str());
-			fox_for(indx_layer, layers.size()) {
-				ImGui::Checkbox(layers[indx_layer]->name.c_str(), &show_layers[indx_layer]);
-				if (show_layers[indx_layer]) { layers[indx_layer]->draw(); }
-			}
-		}
-			
+		
+		dude_ranch.draw();
 		if (draggable_entity) { draggable_entity->draw(); }
 
 		// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
@@ -505,22 +486,6 @@ struct {
 			if (this_frame_hovered != hovered) {
 				hovered_color = green;
 				hovered = this_frame_hovered;
-			}
-
-			// Draw bounding boxes on all the tiles
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			for (auto& layer : layers) {
-				fox_for(x, MAP_SIZE) {
-					fox_for(y, MAP_SIZE) {
-						Entity* tile = layer->tiles[x][y];
-						if (tile) {
-							Position_Component* pc = tile->get_component<Position_Component>();
-							if (pc) {
-								draw_square_outline(pc->transform, glm::vec4(0.f, 1.f, 0.f, 1.f));
-							}
-						}
-					}
-				}
 			}
 
 			// Draw the tile that's hovered 

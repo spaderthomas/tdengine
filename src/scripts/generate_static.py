@@ -17,6 +17,7 @@ static_things = [
     "sand_path_topleft_outer", \
     "sand_path_topright_outer", \
     "sand_path_bottomleft_outer", \
+    "fence_top", \
     "sand_path_bottomright_outer"]
 
 with open("static_background.lua", "w") as file:

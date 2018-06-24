@@ -67,10 +67,11 @@ glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
 
 
 // GL screen coordinates
-glm::vec3 camera_pos = glm::vec3(0.f);
+//glm::vec3 camera_pos = glm::vec3(0.f);
+glm::ivec2 camera_top_left = glm::vec2(0.f);
 
 glm::vec2 px_offset_from_camera_pos() {
-	return glm::vec2(SCREEN_X * camera_pos.x, SCREEN_Y * camera_pos.y);
+	return glm::vec2(SCREEN_X * camera_top_left.x, SCREEN_Y * camera_top_left.y);
 }
 
 glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
@@ -94,3 +95,4 @@ void fixup_type_name(string& type_name) {
 	}
 }
 
+#define fox_max(a, b) (a) > (b) ? (a) : (b)

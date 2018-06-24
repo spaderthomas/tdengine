@@ -2,7 +2,7 @@ namespace stdfs = std::experimental::filesystem;
 
 string atlas_folders[] = {"../../textures/boon/",
 						  "../../textures/wilson/",	
-						  "../../textures/environmentt/",	
+						  "../../textures/environment/",	
 						 };
 
 #define REGULAR_ATLAS_SIZE 1024

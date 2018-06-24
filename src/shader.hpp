@@ -59,6 +59,9 @@ struct Shader {
 	void set_vec3(const char* name, glm::vec3& vec) {
 		glUniform3f(get_uniform_loc(name), vec.x, vec.y, vec.z);
 	}
+	void set_vec2(const char* name, glm::vec2& vec) {
+		glUniform2f(get_uniform_loc(name), vec.x, vec.y);
+	}
 	void set_mat3(const char* name, glm::mat3& mat) {
 		auto x = get_uniform_loc(name);
 		glUniformMatrix3fv(get_uniform_loc(name), 1, GL_FALSE, glm::value_ptr(mat));

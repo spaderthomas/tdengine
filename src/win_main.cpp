@@ -25,6 +25,7 @@ using json = nlohmann::json;
 #include <vector>
 #include <unordered_map>
 #include <string>
+#include <sstream>
 #include <algorithm>
 #include <cmath>
 #include <experimental/filesystem>
@@ -84,9 +85,9 @@ int main() {
 
 	init_shaders();
 	init_mesh();
-	create_texture_atlas("../../textures/environment");
-	create_texture_atlas("../../textures/boon");
-	create_texture_atlas("../../textures/wilson");
+	for (auto dirname : atlas_folders) {
+		create_texture_atlas(dirname);
+	}
 	Lua.init();
 	init_template_entities();
 
@@ -139,7 +140,7 @@ int main() {
 		
 		game_layer.update(seconds_per_update);
 		game_layer.render();
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

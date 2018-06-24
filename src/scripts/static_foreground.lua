@@ -6,8 +6,14 @@ tree = {
 		 }
 	  },
 	  default_animation = "tree",
-	  z = 1,
-   },
+      z = 1,
+    },
+    Collision_Component = {
+        top = .5,
+        bottom = 0,
+        left = 0, 
+        right = 1
+    }
 }
 
 fence = {

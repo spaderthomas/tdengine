@@ -27,6 +27,7 @@ vector<string> tile_lua_ids = {
 	"solar_panel",
 	"windmill",
 	"building",
+	"fence_top",
 };
 
 //@leak hotloading

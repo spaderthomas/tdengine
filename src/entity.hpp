@@ -36,11 +36,39 @@ struct Entity {
 };
 int Entity::next_id = 0;
 
-// @note
-// I was thinking we'd have one such struct for every class of tile
-// It could be as broad as you want (e.g. a struct to represent every kind of background tile)
-// or as narrow as you want (e.g. a struct to represent one single character).
-// In general, though, inheritance isn't going past Entity -> Standard Thing -> Standard Thing with slight modification
+struct Tree : Entity {
+	static Tree* create() {
+		Tree* new_tree = new Tree;
+		new_tree->id = next_id++;
+		new_tree->lua_id = "tree";
+		new_tree->init();
+		return new_tree;
+	}
+
+	void init() {
+		Graphic_Component* graphic_component = new Graphic_Component;
+		graphic_component->load_animations_from_lua(Lua.state["tree"]["Graphic_Component"]);
+		graphic_component->z = Lua.state[lua_id]["Graphic_Component"]["z"];
+		this->add_component(graphic_component);
+
+		// We have to do this after GC so we can grab a sprite and use its size
+		// @hack Works on the assumptions that all sprites are same dimensions
+		Position_Component* pos = new Position_Component;
+		pos->transform = SRT::no_transform();
+		Sprite* sprite = graphic_component->get_current_frame();
+		int tilesize_y = sprite->height / 16;
+		int tilesize_x = sprite->width / 16;
+		pos->transform.scale = glm::vec2(tilesize_x * SCR_TILESIZE_X, tilesize_y * SCR_TILESIZE_Y);
+		this->add_component(pos);
+
+		Collision_Component* cc = new Collision_Component;
+		cc->top = Lua.state["tree"]["Collision_Component"]["top"];
+		cc->bottom = Lua.state["tree"]["Collision_Component"]["bottom"];
+		cc->left = Lua.state["tree"]["Collision_Component"]["left"];
+		cc->right = Lua.state["tree"]["Collision_Component"]["right"];
+	}
+};
+
 struct Basic_Tile : Entity {
 	static Basic_Tile* create(string lua_id) {
 		Basic_Tile* new_tile = new Basic_Tile;
