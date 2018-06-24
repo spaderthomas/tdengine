@@ -1,7 +1,8 @@
 struct Entity {
 	int id;
 	static int next_id;
-	vector<Component*> components;
+	vector<Component*> components;	
+
 	string lua_id; // The global Lua object which defines this entity
 
 	void add_component(Component* c) {
@@ -21,6 +22,35 @@ struct Entity {
 		return nullptr;
 	}
 
+	static Entity* create(string lua_id) {
+		Entity* entity = new Entity;
+		entity->id = next_id++;
+		entity->lua_id = lua_id;
+		
+		sol::table lua_components = Lua.state[lua_id];
+		for (auto it : lua_components) {
+			string component_type = it.first.as<string>();
+			sol::table table = it.second.as<sol::table>();
+			if (component_type == "Graphic_Component") {
+				Graphic_Component* gc = new Graphic_Component;
+				gc->init_from_table(table);
+				entity->add_component(gc);
+			}
+			else if (component_type == "Collision_Component") {
+				Collision_Component* cc = new Collision_Component;
+				cc->init_from_table(table);
+				entity->add_component(cc);
+			}
+			else if (component_type == "Position_Component") {
+				Position_Component* pc = new Position_Component;
+				pc->init_from_table(table);
+				entity->add_component(pc);
+			}
+		}
+
+		return entity;
+	}
+
 	virtual void draw() const {
 		auto graphic_component = get_component<Graphic_Component>();
 		auto position_component = get_component<Position_Component>();
@@ -31,98 +61,15 @@ struct Entity {
 			tdns_log.write(msg);
 		}
 	};
+
+	void save(json& j) {
+		for (auto& component : components) {
+			component->save(j);
+		}
+	}
+
 	virtual void save(json& j) const {};
 	virtual void load(json& j) {};
 };
+
 int Entity::next_id = 0;
-
-struct Tree : Entity {
-	static Tree* create() {
-		Tree* new_tree = new Tree;
-		new_tree->id = next_id++;
-		new_tree->lua_id = "tree";
-		new_tree->init();
-		return new_tree;
-	}
-
-	void init() {
-		Graphic_Component* graphic_component = new Graphic_Component;
-		graphic_component->load_animations_from_lua(Lua.state["tree"]["Graphic_Component"]);
-		graphic_component->z = Lua.state[lua_id]["Graphic_Component"]["z"];
-		this->add_component(graphic_component);
-
-		// We have to do this after GC so we can grab a sprite and use its size
-		// @hack Works on the assumptions that all sprites are same dimensions
-		Position_Component* pos = new Position_Component;
-		pos->transform = SRT::no_transform();
-		Sprite* sprite = graphic_component->get_current_frame();
-		int tilesize_y = sprite->height / 16;
-		int tilesize_x = sprite->width / 16;
-		pos->transform.scale = glm::vec2(tilesize_x * SCR_TILESIZE_X, tilesize_y * SCR_TILESIZE_Y);
-		this->add_component(pos);
-
-		Collision_Component* cc = new Collision_Component;
-		cc->top = Lua.state["tree"]["Collision_Component"]["top"];
-		cc->bottom = Lua.state["tree"]["Collision_Component"]["bottom"];
-		cc->left = Lua.state["tree"]["Collision_Component"]["left"];
-		cc->right = Lua.state["tree"]["Collision_Component"]["right"];
-	}
-};
-
-struct Basic_Tile : Entity {
-	static Basic_Tile* create(string lua_id) {
-		Basic_Tile* new_tile = new Basic_Tile;
-		new_tile->id = next_id++;
-		new_tile->lua_id = lua_id;
-		new_tile->init(lua_id);
-		return new_tile;
-	}
-
-	void init(string lua_id) {
-		Graphic_Component* graphic_component = new Graphic_Component;
-		graphic_component->load_animations_from_lua(Lua.state[lua_id]["Graphic_Component"]);
-		graphic_component->z = Lua.state[lua_id]["Graphic_Component"]["z"];
-		this->add_component(graphic_component);
-
-		// We have to do this after GC so we can grab a sprite and use its size
-		// @hack Works on the assumptions that all sprites are same dimensions
-		Position_Component* pos = new Position_Component;
-		pos->transform = SRT::no_transform();
-		Sprite* sprite = graphic_component->get_current_frame();
-		int tilesize_y = sprite->height / 16;
-		int tilesize_x = sprite->width / 16;
-		pos->transform.scale = glm::vec2(tilesize_x * SCR_TILESIZE_X, tilesize_y * SCR_TILESIZE_Y);
-		this->add_component(pos);
-	}
-
-	void save(json& j) const override {
-		j["lua_id"] = lua_id;
-		auto position_component = get_component<Position_Component>();
-		if (position_component) {
-			position_component->transform.save(j["transform"]);
-		}
-		else {
-			string msg = "Tried to a save a position component, but component was null. Entity ID: " + to_string(id);
-			tdns_log.write(msg);
-		}
-	}
-
-	void load(json& j) override {
-		auto position_component = get_component<Position_Component>();
-
-		if (position_component) {
-			position_component->transform.translate.x = j["transform"]["translate.x"];
-			position_component->transform.translate.y = j["transform"]["translate.y"];
-			position_component->transform.translate.z = j["transform"]["translate.z"];
-
-			position_component->transform.scale.x = j["transform"]["scale.x"];
-			position_component->transform.scale.y = j["transform"]["scale.y"];
-
-			position_component->transform.rad_rot = j["transform"]["rad_rot"];
-		}
-		else {
-			string msg = "Tried to a load a position component, but component was null. Entity ID: " + to_string(id);
-			tdns_log.write(msg);
-		}
-	}
-};

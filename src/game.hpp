@@ -260,7 +260,7 @@ struct {
 		INSERT,
 		SELECT
 	} editing_state;
-	Entity* draggable_entity = nullptr;
+	Entity* selected = nullptr;
 	string id_selected_entity;
 	Level dude_ranch;
 
@@ -290,7 +290,7 @@ struct {
 						if (cur != nullptr) {
 							Graphic_Component* gc = cur->get_component<Graphic_Component>();
 							if (gc) {
-								gc->load_animations_from_lua(Lua.state[cur->lua_id]["Graphic_Component"]);
+								gc->init_from_table(Lua.state[cur->lua_id]["Graphic_Component"]);
 							}
 						}
 					}
@@ -348,55 +348,65 @@ struct {
 			console.Draw("tdnsconsole", &console_close);
 		}
 
+
 		// Tile Selector GUI
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize;
-		ImGui::Begin("Tile Editor", 0, flags);
-		fox_for(indx, template_tiles.size()) {
-			Entity* template_tile = template_tiles[indx];
-			Graphic_Component* gc = template_tile->get_component<Graphic_Component>();
-			if (gc) {
-				Sprite* ent_sprite = gc->get_current_frame();
+		ImGui::Begin("Level Editor", 0, flags);
+		if (ImGui::CollapsingHeader("Tiles")) {
+			fox_for(indx, template_tiles.size()) {
+				Entity* template_tile = template_tiles[indx];
+				Graphic_Component* gc = template_tile->get_component<Graphic_Component>();
+				if (gc) {
+					Sprite* ent_sprite = gc->get_current_frame();
 
- 				ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
-				ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
-				ImVec2 button_size = ImVec2(32, 32);
-				ImGui::PushID(indx);
-				if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle, 
-										button_size,
-										bottom_left_tex_coords, top_right_tex_coords))
-				{
-					draggable_entity = Basic_Tile::create(template_tile->lua_id);
-					id_selected_entity = template_tile->lua_id;
-					editing_state = INSERT;
+					ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
+					ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
+					ImVec2 button_size = ImVec2(32, 32);
+					ImGui::PushID(indx);
+					if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle,
+						button_size,
+						bottom_left_tex_coords, top_right_tex_coords))
+					{
+						selected = Entity::create(template_tile->lua_id);
+						id_selected_entity = template_tile->lua_id;
+						editing_state = INSERT;
+					}
+					ImGui::PopID();
+					bool is_end_of_row = !((indx + 1) % 6);
+					bool is_last_element = indx == (template_tiles.size() - 1);
+					if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
 				}
-				ImGui::PopID();
-				bool is_end_of_row = !((indx + 1) % 6);
-				bool is_last_element = indx == (template_tiles.size() - 1);
-				if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
 			}
 		}
 		if (ImGui::CollapsingHeader("Entities")) {
-			static Tree* template_tree = Tree::create();
-			Graphic_Component* gc = template_tree->get_component<Graphic_Component>();
-			if (gc) {
-				Sprite* sprite = gc->get_current_frame();
+			fox_for(indx, template_entities.size()) {
+				Entity* entity = template_entities[indx];
+				Graphic_Component* gc = entity->get_component<Graphic_Component>();
+				if (gc) {
+					Sprite* ent_sprite = gc->get_current_frame();
 
-				ImVec2 top_right_tex_coords = ImVec2(sprite->tex_coords[2], sprite->tex_coords[3]);
-				ImVec2 bottom_left_tex_coords = ImVec2(sprite->tex_coords[6], sprite->tex_coords[7]);
-				ImVec2 button_size = ImVec2(32, 32);
-				if (ImGui::ImageButton((ImTextureID)sprite->atlas->handle,
-					button_size,
-					bottom_left_tex_coords, top_right_tex_coords))
-				{
-					draggable_entity = Tree::create();
-					id_selected_entity = template_tree->lua_id;
-					editing_state = INSERT;
+					ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
+					ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
+					ImVec2 button_size = ImVec2(32, 32);
+					ImGui::PushID(indx);
+					if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle,
+						button_size,
+						bottom_left_tex_coords, top_right_tex_coords))
+					{
+						selected = Entity::create(entity->lua_id);
+						id_selected_entity = entity->lua_id;
+						editing_state = INSERT;
+					}
+					ImGui::PopID();
+					bool is_end_of_row = !((indx + 1) % 6);
+					bool is_last_element = indx == (template_entities.size() - 1);
+					if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
 				}
 			}
 		}
 
 
-		if (!draggable_entity) { editing_state = IDLE;  }
+		if (!selected) { editing_state = IDLE;  }
 		if (editing_state == INSERT) {
 			// Add a new entity to the tilemap on click
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
@@ -408,7 +418,7 @@ struct {
 
 				// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
 				if (current_entity) {
-					if (current_entity->lua_id == draggable_entity->lua_id) {
+					if (current_entity->lua_id == selected->lua_id) {
 						okay_to_create = false;
 					}
 				}
@@ -425,10 +435,10 @@ struct {
 
 					// Grab the translation from the mouse position and add the tile to tilemap
 					SRT transform = srt_from_grid_pos(grid_pos);
-					Position_Component* pc = draggable_entity->get_component<Position_Component>();
+					Position_Component* pc = selected->get_component<Position_Component>();
 					pc->transform.translate = transform.translate;
-					dude_ranch.set_tile(draggable_entity, grid_pos.x, grid_pos.y);
-					draggable_entity = Basic_Tile::create(id_selected_entity);
+					dude_ranch.set_tile(selected, grid_pos.x, grid_pos.y);
+					selected = Entity::create(id_selected_entity);
 
 					// Update so we only paint one entity per tile
 					last_grid_pos_drawn = grid_pos;
@@ -436,9 +446,9 @@ struct {
 			}
 
 			// Correctly translate current selected tile to be under the mouse & scale it otherwise
-			Position_Component* position_component = draggable_entity->get_component<Position_Component>();
+			Position_Component* position_component = selected->get_component<Position_Component>();
 			if (position_component) {
-				Graphic_Component* graphic_component = draggable_entity->get_component<Graphic_Component>();
+				Graphic_Component* graphic_component = selected->get_component<Graphic_Component>();
 				if (graphic_component) {
 					glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
 					SRT transform = srt_from_grid_pos(grid_pos);
@@ -454,10 +464,10 @@ struct {
 		static bool* show_layers = (bool*)calloc(sizeof(bool), 128); // @hack; // For ImGui checkboxes to show layers
 		
 		// Render the layer selector and chosen layers
-		ImGui::Begin("Tile Editor", 0, 0);
+		ImGui::Begin("Level Editor", 0, 0);
 		
 		dude_ranch.draw();
-		if (draggable_entity) { draggable_entity->draw(); }
+		if (selected) { selected->draw(); }
 
 		// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
 		renderer.render_for_frame();

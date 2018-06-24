@@ -1,5 +1,6 @@
 struct Component {
-	virtual void placeholder() {};
+	virtual void save(json& j) {};
+	virtual void init_from_table(sol::table table) {};
 };
 struct Graphic_Component : Component {
 	vector<Animation*> animations;
@@ -38,7 +39,7 @@ struct Graphic_Component : Component {
 	}
 
 	//@leak Never free old animations if we call this twice
-	void load_animations_from_lua(sol::table gc) {
+	void init_from_table(sol::table gc) override {
 		sol::table animations = gc["Animations"];
 		this->animations.clear();
 
@@ -60,11 +61,27 @@ struct Graphic_Component : Component {
 
 		sol::object default_animation_name = gc["default_animation"];
 		set_animation(default_animation_name.as<string>());
+
+		this->z = gc["z"];
 	}
 };
 
 struct Position_Component : Component {
 	SRT transform;
+
+	void init_from_table(sol::table pc) override {
+		transform.translate.x = pc["translate"]["x"];
+		transform.translate.y = pc["translate"]["y"];
+		transform.translate.z = pc["translate"]["z"];
+	
+		//@hack I feel like there's a way to auto-detect this
+		int px_size_x = pc["scale"]["x"];
+		int px_size_y = pc["scale"]["y"];
+		transform.scale.x = (px_size_x / 16) * SCR_TILESIZE_X;
+		transform.scale.y = (px_size_y / 16) * SCR_TILESIZE_Y;
+
+		transform.rad_rot = pc["rad_rot"];
+	}
 };
 
 struct Collision_Component : Component {
@@ -72,4 +89,11 @@ struct Collision_Component : Component {
 	float bottom;
 	float left;
 	float right;
+
+	void init_from_table(sol::table table) override {
+		top = table["top"];
+		bottom = table["bottom"];
+		left = table["left"];
+		right = table["right"];
+	};
 };

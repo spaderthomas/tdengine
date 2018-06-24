@@ -1,5 +1,5 @@
 # The dumbest script ever for generating tile definitions in Lua, where the tile is always just one static image
-static_things = [
+tiles = [
     "grass", \
     "grass_flower1", \
     "grass_flower2", \
@@ -21,8 +21,31 @@ static_things = [
     "sand_path_bottomright_outer"]
 
 with open("static_background.lua", "w") as file:
-    for static_thing in static_things:
-        path = static_thing + '.png'
-        lua_def = static_thing + ' = {\n\tGraphic_Component = {\n\t\tAnimations = {\n\t\t\t' + static_thing + '= {\n\t\t\t\t\"' + path + "\"\n\t\t\t}\n\t\t},\n\tdefault_animation = \"" + static_thing + "\",\n\tz = 0\n\t}\n}\n"
+    for tile in tiles:
+        path = tile + '.png'
+        lua_def = '''
+%s = {
+    Graphic_Component = {
+        Animations = {
+            %s = {
+                "%s.png"
+            }
+        },
+        default_animation = "%s",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        ''' % (tile, tile, tile, tile)
         file.write(lua_def)
-        

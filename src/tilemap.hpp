@@ -103,7 +103,7 @@ struct Level {
 					if (tile_json != "NULL") {
 						// Get the tile type, use it to create a new template entity
 						string type_name = tile_json["lua_id"];
-						Entity* new_ent = Basic_Tile::create(type_name);
+						Entity* new_ent = Entity::create(type_name);
 						// Load in the specific instance's information from JSON
 						new_ent->load(tile_json);
 						chunk.tiles[itilex][itiley] = new_ent;
