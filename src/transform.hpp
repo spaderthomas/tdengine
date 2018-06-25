@@ -46,7 +46,8 @@ glm::mat3 mat3_from_transform(SRT transform) {
 	return trans_mat * rot_mat * scale_mat;
 }
 
-SRT srt_from_grid_pos(glm::ivec2 grid_pos) {
+// Single-tile scaled SRT centered at grid_pos. 
+SRT srt_from_grid_pos(glm::ivec2& grid_pos) {
 	SRT grid_pos_transform = SRT::no_transform();
 	grid_pos_transform.scale = glm::vec2(SCR_TILESIZE_X, SCR_TILESIZE_Y);
 
@@ -58,7 +59,17 @@ SRT srt_from_grid_pos(glm::ivec2 grid_pos) {
 	return grid_pos_transform;
 }
 
-// Grid position is the same as a 2D array. 
+glm::vec3 translation_from_grid_pos(glm::ivec2& grid_pos) {
+	glm::vec3 translation = glm::vec3(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y, 0.f);
+	translation += glm::vec3(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y, 0.f);
+	return translation;
+}
+
+glm::vec3 translation_from_px_pos(glm::vec2& px_pos) {
+	glm::vec2 screen_coords = glm::vec2(px_pos.x / SCREEN_X, px_pos.y / SCREEN_Y);
+	glm::vec2 gl_coords = gl_coords_from_screen_coords(screen_coords);
+	return glm::vec3(gl_coords, 0);
+}
 
 bool is_point_inside_aligned_rectangle(glm::vec2 point, SRT rect_transform) {
 	// @note: All these are really vec3s, but the conversion drops the Z coordinate like we want

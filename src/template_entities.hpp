@@ -28,8 +28,6 @@ vector<string> entities = {
 	"fence_top",
 	"cactus",
 	"bush",
-	"solar_panel",
-	"windmill",
 	"building",
 };
 

@@ -82,6 +82,7 @@ int main() {
 	glfwSetCursorPosCallback(window, GLFW_Cursor_Pos_Callback);
 	glfwSetMouseButtonCallback(window, GLFW_Mouse_Button_Callback);
 	glfwSetKeyCallback(window, GLFW_Key_Callback);
+	glfwSetScrollCallback(window, GLFW_Scroll_Callback);
 
 	init_shaders();
 	init_mesh();

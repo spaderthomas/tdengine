@@ -34,7 +34,6 @@ void use_640_360(GLFWwindow* window) {
 	glfwSetWindowSize(window, 640, 360);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
 }
-
 void use_720p(GLFWwindow* window) {
 	SCREEN_X = 1280.f;                     
 	SCREEN_Y = 720.f;                     
@@ -46,7 +45,6 @@ void use_720p(GLFWwindow* window) {
 	glfwSetWindowSize(window, 1280, 720);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
 }
-
 void use_1080p(GLFWwindow* window) {
 	SCREEN_X = 1920.f;                     
 	SCREEN_Y = 1080.f;                     
@@ -59,6 +57,8 @@ void use_1080p(GLFWwindow* window) {
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
 }
 
+
+// Colors
 // Note: Hannah's favorite three floating point numbers. Do not remove!
 glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f);
 glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
@@ -66,33 +66,21 @@ glm::vec4 green = glm::vec4(0.f, 1.f, 0.f, 1.f);
 glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
 
 
-// GL screen coordinates
-//glm::vec3 camera_pos = glm::vec3(0.f);
-glm::ivec2 camera_top_left = glm::vec2(0.f);
+// This defines which tile is on the upper left of the screen
+glm::ivec2 camera_top_left = glm::ivec2(0.f);
 
-glm::vec2 px_offset_from_camera_pos() {
-	return glm::vec2(SCREEN_X * camera_top_left.x, SCREEN_Y * camera_top_left.y);
-}
 
+// Functions to convert between units
 glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
 	int closest_x = floor(px_pos.x / CELL_SIZE);
 	int closest_y = floor(px_pos.y / CELL_SIZE);
 	return glm::ivec2(closest_x, closest_y);
 }
-
-glm::vec3 round_camera_to_nearest_grid() {
-	auto as_pixels = px_offset_from_camera_pos();
-	return glm::vec3(1.f);
+glm::vec2 gl_coords_from_screen_coords(glm::vec2 screen_coords) {
+	return glm::vec2(screen_coords.x * 2 - 1, 1 - screen_coords.y * 2);
 }
 
-// Pointers and const etc are part of the type, but we don't want that,
-// so we fix up type names before we save them
-void fixup_type_name(string& type_name) {
-	vector<string> extraneous = { " *", " const" };
-	for (auto& str : extraneous) {
-		int erase_pos = type_name.find(str);
-		type_name.erase(erase_pos, str.length());
-	}
-}
+
+
 
 #define fox_max(a, b) (a) > (b) ? (a) : (b)

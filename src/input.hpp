@@ -3,6 +3,7 @@ struct Input {
 	bool should_update;
 	glm::vec2 px_pos;
 	glm::vec2 screen_pos; // Top left is (0,0), bottom right is (1,1)
+	glm::vec2 scroll;
 
 	bool is_down[GLFW_KEY_LAST];
 	bool was_down[GLFW_KEY_LAST];
@@ -17,9 +18,7 @@ struct Input {
 		}
 	}
 
-	glm::vec2 screen_pos_as_gl_coords() {
-		return glm::vec2(screen_pos.x * 2 - 1, 1 - screen_pos.y * 2);
-	}
+	
 };
 Input global_input;
 Input game_input;
@@ -89,4 +88,11 @@ void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int 
 void GLFW_Key_Callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
 	if (action == GLFW_PRESS) { global_input.is_down[key] = true; }
     if (action == GLFW_RELEASE) { global_input.is_down[key] = false; } 
+}
+
+void GLFW_Scroll_Callback(GLFWwindow* window, double xoffset, double yoffset) {
+	global_input.scroll = glm::vec2((float)xoffset, (float)yoffset);
+	ImGuiIO& io = ImGui::GetIO();
+	io.MouseWheelH += (float)xoffset;
+	io.MouseWheel += (float)yoffset;
 }

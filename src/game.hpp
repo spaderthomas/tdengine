@@ -262,6 +262,9 @@ struct {
 	} editing_state;
 	Entity* selected = nullptr;
 	string id_selected_entity;
+	bool show_grid;
+	bool snap_to_grid;
+
 	Level dude_ranch;
 
 	Console console;
@@ -339,7 +342,7 @@ struct {
 		}
 		
 		// Toggle the console on control
-		static bool show_console = true;
+		static bool show_console = false;
 		static bool console_close = false;
 		if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 			show_console = !show_console;
@@ -348,10 +351,16 @@ struct {
 			console.Draw("tdnsconsole", &console_close);
 		}
 
-
-		// Tile Selector GUI
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize;
 		ImGui::Begin("Level Editor", 0, flags);
+		
+		if (ImGui::CollapsingHeader("Options")) {
+			ImGui::Checkbox("Show grid", &show_grid);
+			ImGui::Checkbox("Snap to grid", &snap_to_grid);
+		}
+
+		// Tile Selector GUI
+		int unique_button_index = 0;
 		if (ImGui::CollapsingHeader("Tiles")) {
 			fox_for(indx, template_tiles.size()) {
 				Entity* template_tile = template_tiles[indx];
@@ -362,7 +371,7 @@ struct {
 					ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
 					ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
 					ImVec2 button_size = ImVec2(32, 32);
-					ImGui::PushID(indx);
+					ImGui::PushID(unique_button_index++);
 					if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle,
 						button_size,
 						bottom_left_tex_coords, top_right_tex_coords))
@@ -388,7 +397,7 @@ struct {
 					ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
 					ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
 					ImVec2 button_size = ImVec2(32, 32);
-					ImGui::PushID(indx);
+					ImGui::PushID(unique_button_index++);
 					if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle,
 						button_size,
 						bottom_left_tex_coords, top_right_tex_coords))
@@ -433,12 +442,24 @@ struct {
 					};
 					stack.push_back(my_lambda);
 
-					// Grab the translation from the mouse position and add the tile to tilemap
-					SRT transform = srt_from_grid_pos(grid_pos);
-					Position_Component* pc = selected->get_component<Position_Component>();
-					pc->transform.translate = transform.translate;
-					dude_ranch.set_tile(selected, grid_pos.x, grid_pos.y);
-					selected = Entity::create(id_selected_entity);
+					// Grab the translation from the mouse position and figure out whether its a tile or an entity
+					Entity* new_entity = Entity::create(selected->lua_id);
+					glm::vec3 translation;
+					if (snap_to_grid) {
+						translation = translation_from_grid_pos(grid_pos);
+					} else {
+						translation = translation_from_px_pos(game_input.px_pos);
+					}
+
+					if (find(tiles.begin(), tiles.end(), selected->lua_id) != tiles.end()) {
+						Position_Component* pc = new_entity->get_component<Position_Component>();
+						pc->transform.translate = translation;
+						dude_ranch.set_tile(new_entity, grid_pos.x, grid_pos.y);
+					} else if (find(entities.begin(), entities.end(), selected->lua_id) != entities.end()) {
+						Position_Component* pc = new_entity->get_component<Position_Component>();
+						pc->transform.translate = translation; 
+						dude_ranch.entities.push_back(new_entity);
+					}
 
 					// Update so we only paint one entity per tile
 					last_grid_pos_drawn = grid_pos;
@@ -446,14 +467,14 @@ struct {
 			}
 
 			// Correctly translate current selected tile to be under the mouse & scale it otherwise
-			Position_Component* position_component = selected->get_component<Position_Component>();
-			if (position_component) {
-				Graphic_Component* graphic_component = selected->get_component<Graphic_Component>();
-				if (graphic_component) {
+			Position_Component* pc = selected->get_component<Position_Component>();
+			if (pc) {
 					glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
-					SRT transform = srt_from_grid_pos(grid_pos);
-					position_component->transform.translate = transform.translate;
-				}
+					if (snap_to_grid) {
+						pc->transform.translate = translation_from_grid_pos(grid_pos);
+					} else {
+						pc->transform.translate = translation_from_px_pos(game_input.px_pos);
+					}
 			}
 		}
 		
@@ -474,8 +495,6 @@ struct {
 
 		// Render the grid
 		{
-			static bool show_grid;
-			ImGui::Checkbox("Show grid", &show_grid);
 			if (show_grid) {
 				// We have to multiply by two because OpenGL uses -1 to 1
 				for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {

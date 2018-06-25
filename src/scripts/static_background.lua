@@ -407,30 +407,6 @@ sand_path_bottomleft_outer = {
     }
 }
         
-fence_top = {
-    Graphic_Component = {
-        Animations = {
-            fence_top = {
-                "fence_top.png"
-            }
-        },
-        default_animation = "fence_top",
-        z = 0
-    },
-    Position_Component = {
-        translate = {
-            x = 0,
-            y = 0,
-            z = 0
-        },
-        scale = {
-            x = 16,
-            y = 16
-        },
-        rad_rot = 0
-    }
-}
-        
 sand_path_bottomright_outer = {
     Graphic_Component = {
         Animations = {

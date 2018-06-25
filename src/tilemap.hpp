@@ -55,6 +55,10 @@ struct Level {
 				}
 			}
 		}
+
+		for (auto entity : entities) {
+			entity->draw();
+		}
 	}
 
 	// The chunk index is used as an index into the JSON save object

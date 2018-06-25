@@ -21,8 +21,8 @@ tree = {
             z = 0
         },
         scale = {
-            x = 32,
-            y = 32
+            x = 64,
+            y = 64
         },
         rad_rot = 0
     }
@@ -38,7 +38,56 @@ fence = {
 	   default_animation = "fence",
 	   z = 1,
 	},
+    Collision_Component = {
+        top = .5,
+        bottom = 0,
+        left = 0, 
+        right = 1
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 32,
+            y = 32
+        },
+        rad_rot = 0
+    }
  }
+         
+fence_top = {
+    Graphic_Component = {
+        Animations = {
+            fence_top = {
+                "fence_top.png"
+            }
+        },
+        default_animation = "fence_top",
+        z = 1
+    },
+    Collision_Component = {
+        top = .5,
+        bottom = 0,
+        left = 0, 
+        right = 1
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 32,
+            y = 64
+        },
+        rad_rot = 0
+    }
+}
+
  cactus = {
     Graphic_Component = {
         Animations = {
@@ -48,8 +97,27 @@ fence = {
         },
         default_animation = "cactus",
         z = 1
+    },
+    Collision_Component = {
+        top = .5,
+        bottom = 0,
+        left = 0, 
+        right = 1
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 32,
+            y = 32
+        },
+        rad_rot = 0
     }
 }
+
 bush = {
     Graphic_Component = {
         Animations = {
@@ -59,30 +127,27 @@ bush = {
         },
         default_animation = "bush",
         z = 1
-    }
-}
-solar_panel = {
-    Graphic_Component = {
-        Animations = {
-            solar_panel = {
-                "solar_panel.png"
-            }
+    },
+    Collision_Component = {
+        top = .5,
+        bottom = 0,
+        left = 0, 
+        right = 1
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
         },
-        default_animation = "solar_panel",
-        z = 1
-    }
-}
-windmill = {
-    Graphic_Component = {
-        Animations = {
-            windmill = {
-                "windmill.png"
-            }
+        scale = {
+            x = 16,
+            y = 16
         },
-        default_animation = "windmill",
-        z = 1
+        rad_rot = 0
     }
 }
+
 building = {
     Graphic_Component = {
         Animations = {
@@ -92,6 +157,24 @@ building = {
         },
         default_animation = "building",
         z = 1
+    },
+    Collision_Component = {
+        top = .5,
+        bottom = 0,
+        left = 0, 
+        right = 1
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 128,
+            y = 128
+        },
+        rad_rot = 0
     }
 } 
 
