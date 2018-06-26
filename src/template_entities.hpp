@@ -1,5 +1,5 @@
-// We use this to store a basic entity of each kind loaded from Lua, and the create function needed to copy it.
 // We need the basic entity so we know what to render to ImGui buttons
+// We don't -need- to split these up, but we're doing so now to differentiate for the editor
 vector<Entity*> template_tiles;
 vector<Entity*> template_entities;
 vector<string> tiles = {
@@ -21,6 +21,14 @@ vector<string> tiles = {
 	"sand_path_topright_outer",
 	"sand_path_bottomleft_outer",
 	"sand_path_bottomright_outer",
+	"border_bottom_sand_grass",
+	"border_left_sand_grass",
+	"border_top_sand_grass",
+	"border_right_sand_grass",
+	"border_bottom_right_sand_grass",
+    "border_bottom_left_sand_grass",
+    "border_top_left_sand_grass", 
+    "border_top_right_sand_grass",
 };
 vector<string> entities = {
 	"tree",

@@ -18,8 +18,15 @@ struct SRT {
 		j["scale.x"] = scale.x;
 		j["scale.y"] = scale.y;
 		j["rad_rot"] = rad_rot;
-
-
+	}
+	
+	void load(json& j) {
+		translate.x = j["translate.x"];
+		translate.y = j["translate.y"];
+		translate.z = j["translate.z"];
+		scale.x = j["scale.x"];
+		scale.y = j["scale.y"];
+		rad_rot = j["rad_rot"];
 	}
 };
 

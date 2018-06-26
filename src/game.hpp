@@ -333,12 +333,8 @@ struct {
 			}
 		}
 		if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
-			if (editing_state == SELECT) {
-				editing_state = INSERT;
-			}
-			else {
-				editing_state = SELECT;
-			}
+			selected = nullptr;
+			editing_state = IDLE;
 		}
 		
 		// Toggle the console on control
@@ -360,7 +356,7 @@ struct {
 		}
 
 		// Tile Selector GUI
-		int unique_button_index = 0;
+		int unique_button_index = 0; // Needed for ImGui
 		if (ImGui::CollapsingHeader("Tiles")) {
 			fox_for(indx, template_tiles.size()) {
 				Entity* template_tile = template_tiles[indx];
@@ -414,8 +410,10 @@ struct {
 			}
 		}
 
-
+		//@hack
 		if (!selected) { editing_state = IDLE;  }
+
+		// INSERT MODE: There is a selected tile or entity, and we can move it around and click to place it.
 		if (editing_state == INSERT) {
 			// Add a new entity to the tilemap on click
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
@@ -506,7 +504,7 @@ struct {
 			}
 		}
 
-		// If we're in selection mode, paint outlines over all the tiles we can select
+		// SELECT MODE: Lets you select previously placed tiles and edit them. Render a fade-in outline around selected tile.
 		static glm::ivec2 hovered = glm::vec2(0);
 		static glm::vec4 hovered_color = green;
 		if (editing_state == SELECT) {

@@ -109,7 +109,7 @@ struct Level {
 						string type_name = tile_json["lua_id"];
 						Entity* new_ent = Entity::create(type_name);
 						// Load in the specific instance's information from JSON
-						new_ent->load(tile_json);
+						new_ent->load(tile_json["Components"]);
 						chunk.tiles[itilex][itiley] = new_ent;
 					}
 					else {

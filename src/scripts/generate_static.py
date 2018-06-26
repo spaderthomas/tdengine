@@ -17,7 +17,16 @@ tiles = [
     "sand_path_topleft_outer", \
     "sand_path_topright_outer", \
     "sand_path_bottomleft_outer", \
-    "sand_path_bottomright_outer"]
+    "border_left_sand_grass", \
+    "sand_path_bottomright_outer", \
+    "border_bottom_sand_grass", \
+    "border_left_sand_grass", \
+    "border_top_sand_grass", \
+    "border_right_sand_grass", \
+    "border_bottom_right_sand_grass", \
+    "border_bottom_left_sand_grass", \
+    "border_top_left_sand_grass", \
+    "border_top_right_sand_grass",]
 
 with open("static_background.lua", "w") as file:
     for tile in tiles:

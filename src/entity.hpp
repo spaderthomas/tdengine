@@ -5,8 +5,22 @@ struct Entity {
 
 	string lua_id; // The global Lua object which defines this entity
 
-	void add_component(Component* c) {
+	template <typename Component_Type>
+	void add_component(Component_Type* c) {
+		this->remove_component<Component_Type>();
 		components.push_back(c);
+	}
+
+	template <typename Component_Type>
+	bool remove_component() {
+		for (auto it = components.begin(); it != components.end(); it++) {
+			if (dynamic_cast<Component_Type*>(*it)) {
+				components.erase(it);
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	template <typename Component_Type>
@@ -51,7 +65,7 @@ struct Entity {
 		return entity;
 	}
 
-	virtual void draw() const {
+	void draw() const {
 		auto graphic_component = get_component<Graphic_Component>();
 		auto position_component = get_component<Position_Component>();
 		if (graphic_component && position_component) {
@@ -63,13 +77,22 @@ struct Entity {
 	};
 
 	void save(json& j) {
+		j["lua_id"] = lua_id;
+		int icomponent = 0;
 		for (auto& component : components) {
-			component->save(j);
+			component->save(j["Components"][icomponent++]);
 		}
 	}
 
-	virtual void save(json& j) const {};
-	virtual void load(json& j) {};
+	void load(json& components_json) {
+		for (auto component : components_json) {
+			if (component["kind"] == "Position_Component") {
+				Position_Component* pc = new Position_Component;
+				pc->transform.load(component["transform"]);
+				this->add_component(pc);
+			}
+		}
+	}
 };
 
 int Entity::next_id = 0;

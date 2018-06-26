@@ -407,6 +407,30 @@ sand_path_bottomleft_outer = {
     }
 }
         
+border_left_sand_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_left_sand_grass = {
+                "border_left_sand_grass.png"
+            }
+        },
+        default_animation = "border_left_sand_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
 sand_path_bottomright_outer = {
     Graphic_Component = {
         Animations = {
@@ -415,6 +439,198 @@ sand_path_bottomright_outer = {
             }
         },
         default_animation = "sand_path_bottomright_outer",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_bottom_sand_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_bottom_sand_grass = {
+                "border_bottom_sand_grass.png"
+            }
+        },
+        default_animation = "border_bottom_sand_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_left_sand_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_left_sand_grass = {
+                "border_left_sand_grass.png"
+            }
+        },
+        default_animation = "border_left_sand_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_top_sand_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_top_sand_grass = {
+                "border_top_sand_grass.png"
+            }
+        },
+        default_animation = "border_top_sand_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_right_sand_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_right_sand_grass = {
+                "border_right_sand_grass.png"
+            }
+        },
+        default_animation = "border_right_sand_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_bottom_right_sand_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_bottom_right_sand_grass = {
+                "border_bottom_right_sand_grass.png"
+            }
+        },
+        default_animation = "border_bottom_right_sand_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_bottom_left_sand_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_bottom_left_sand_grass = {
+                "border_bottom_left_sand_grass.png"
+            }
+        },
+        default_animation = "border_bottom_left_sand_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_top_left_sand_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_top_left_sand_grass = {
+                "border_top_left_sand_grass.png"
+            }
+        },
+        default_animation = "border_top_left_sand_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_top_right_sand_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_top_right_sand_grass = {
+                "border_top_right_sand_grass.png"
+            }
+        },
+        default_animation = "border_top_right_sand_grass",
         z = 0
     },
     Position_Component = {

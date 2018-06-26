@@ -1,5 +1,7 @@
 struct Component {
-	virtual void save(json& j) {};
+	virtual void save(json& j) const {
+		j["kind"] = "NULL";
+	};
 	virtual void init_from_table(sol::table table) {};
 };
 struct Graphic_Component : Component {
@@ -81,6 +83,11 @@ struct Position_Component : Component {
 		transform.scale.y = (px_size_y / 16) * SCR_TILESIZE_Y;
 
 		transform.rad_rot = pc["rad_rot"];
+	}
+
+	void save(json& j) const override {
+		j["kind"] = "Position_Component";
+		transform.save(j["transform"]);
 	}
 };
 
