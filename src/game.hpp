@@ -1,3 +1,27 @@
+struct Tile_Tree {
+	string dir;
+	vector<Entity*> tiles;
+	vector<Tile_Tree*> children;
+}; 
+
+Tile_Tree* create_tile_tree(string dir) {
+	Tile_Tree* tree = new Tile_Tree;
+	tree->dir = name_from_full_path(dir);
+	for (auto it = directory_iterator(dir); it != directory_iterator(); ++it) {
+		string path = it->path().string();
+		if (is_regular_file(it->status())) {
+			string lua_id = strip_extension(name_from_full_path(path));
+			tree->tiles.push_back(Entity::create(lua_id));
+		}
+		else if (is_directory(it->status())) {
+			tree->children.push_back(create_tile_tree(path));
+		}
+	}
+
+	return tree;
+}
+
+
 struct Console {
     char                  InputBuf[256];
     ImVector<char*>       Items;
@@ -254,6 +278,7 @@ struct Console {
 
 vector<function<void()>> stack;
 struct {
+	Tile_Tree* tile_tree;
 	glm::ivec2 last_grid_pos_drawn;
 	enum {
 		IDLE,
@@ -307,6 +332,7 @@ struct {
 
 	void init() {
 		editing_state = IDLE;
+		tile_tree = create_tile_tree("..\\..\\textures\\tiles");
 		dude_ranch.name = "dude_ranch";
 	}
 	
@@ -357,6 +383,51 @@ struct {
 
 		// Tile Selector GUI
 		int unique_button_index = 0; // Needed for ImGui
+		
+		Tile_Tree* root = tile_tree;
+		auto draw_buttons = [&](Tile_Tree* root) -> void {
+			auto lambda = [&](Tile_Tree* root, const auto& lambda) -> void {
+				if (ImGui::TreeNode(root->dir.c_str())) {
+
+					// If expanded, draw this folder's tiles
+					int indx = 0;
+					for (auto tile : root->tiles) {
+						Graphic_Component* gc = tile->get_component<Graphic_Component>();
+						if (gc) {
+							Sprite* ent_sprite = gc->get_current_frame();
+
+							ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
+							ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
+							ImVec2 button_size = ImVec2(32, 32);
+							ImGui::PushID(unique_button_index++);
+							if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle,
+								button_size,
+								bottom_left_tex_coords, top_right_tex_coords))
+							{
+								selected = Entity::create(tile->lua_id);
+								id_selected_entity = tile->lua_id;
+								editing_state = INSERT;
+							}
+							ImGui::PopID();
+							bool is_end_of_row = !((indx + 1) % 6);
+							bool is_last_element = indx == (template_tiles.size() - 1);
+							if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
+							indx++;
+						}
+					}
+
+					// And draw dropdowns for any children
+					ImGui::NewLine();
+					for (auto child : root->children) {
+						lambda(child, lambda);
+					}
+
+					ImGui::TreePop();
+				}
+			};
+			lambda(root, lambda);
+		};
+		draw_buttons(root);
 		if (ImGui::CollapsingHeader("Tiles")) {
 			fox_for(indx, template_tiles.size()) {
 				Entity* template_tile = template_tiles[indx];

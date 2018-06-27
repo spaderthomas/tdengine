@@ -79,7 +79,7 @@ struct Level {
 
 		int indx = 0;
 		for (auto entity : entities) {
-			entity->save(j["entities"][indx]);
+			entity->save(j["entities"][indx++]);
 		}
 
 		string path = string("../../save/") + name + string(".json");
@@ -108,7 +108,7 @@ struct Level {
 			json chunk_as_json = it.value();
 			fox_for(itilex, CHUNK_SIZE) {
 				fox_for(itiley, CHUNK_SIZE) {
-					auto tile_json = chunk_as_json[itilex][itiley];
+					auto tile_json  = chunk_as_json[itilex][itiley];
 					if (tile_json != "NULL") {
 						Entity* new_ent = Entity::create(tile_json);
 						chunk.tiles[itilex][itiley] = new_ent;

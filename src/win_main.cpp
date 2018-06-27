@@ -33,8 +33,8 @@ using json = nlohmann::json;
 using namespace std;
 
 #include "imgui_impl_glfw_gl3.hpp"
-#include "utils.hpp"
 #include "log.hpp"
+#include "utils.hpp"
 #include "tdns_lua.hpp"
 #include "data.hpp"
 #include "shader.hpp"
@@ -141,7 +141,7 @@ int main() {
 		ImGui_ImplGlfwGL3_NewFrame();
 		game_layer.update(seconds_per_update);
 		game_layer.render();
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

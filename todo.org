@@ -1,5 +1,5 @@
 - Box-Box collision detection; line of sight detection; collision resolution; onCollide; visualizing bounding boxes; hitbox and hurtbox
-- Editing pre-existing tiles; Saving and loading entities
+- Editing pre-existing tiles; 
 - Hospital (reception desk, long beds, desks, drawers, floor) Tavern (bar, bottles, table, chair)
 - Plain grass edge; 
 - Side and back views; flash red on hurt; P. Silex

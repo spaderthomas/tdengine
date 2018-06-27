@@ -647,3 +647,99 @@ border_top_right_sand_grass = {
     }
 }
         
+border_bottom_right_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_bottom_right_grass = {
+                "border_bottom_right_grass.png"
+            }
+        },
+        default_animation = "border_bottom_right_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_bottom_left_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_bottom_left_grass = {
+                "border_bottom_left_grass.png"
+            }
+        },
+        default_animation = "border_bottom_left_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_top_left_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_top_left_grass = {
+                "border_top_left_grass.png"
+            }
+        },
+        default_animation = "border_top_left_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        
+border_top_right_grass = {
+    Graphic_Component = {
+        Animations = {
+            border_top_right_grass = {
+                "border_top_right_grass.png"
+            }
+        },
+        default_animation = "border_top_right_grass",
+        z = 0
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        

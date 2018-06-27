@@ -26,7 +26,13 @@ tiles = [
     "border_bottom_right_sand_grass", \
     "border_bottom_left_sand_grass", \
     "border_top_left_sand_grass", \
-    "border_top_right_sand_grass",]
+    "border_top_right_sand_grass", \
+    "border_bottom_right_grass", \
+    "border_bottom_left_grass", \
+    "border_top_left_grass", \
+    "border_top_right_grass", \
+    ]
+
 
 with open("static_background.lua", "w") as file:
     for tile in tiles:

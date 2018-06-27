@@ -28,14 +28,14 @@ tree = {
     }
 }
 
-fence = {
+fence_left = {
 	Graphic_Component = {
 	   Animations = {
-		  fence = {
-			 "fence.png",
+		  fence_left = {
+			 "fence_left.png",
 		  }
 	   },
-	   default_animation = "fence",
+	   default_animation = "fence_left",
 	   z = 1,
 	},
     Collision_Component = {
@@ -57,7 +57,93 @@ fence = {
         rad_rot = 0
     }
  }
-         
+ fence_middle = {
+	Graphic_Component = {
+	   Animations = {
+		  fence_middle = {
+			 "fence_middle.png",
+		  }
+	   },
+	   default_animation = "fence_middle",
+	   z = 1,
+	},
+    Collision_Component = {
+        top = .5,
+        bottom = 0,
+        left = 0, 
+        right = 1
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 32,
+            y = 32
+        },
+        rad_rot = 0
+    }
+ }
+ fence_right = {
+	Graphic_Component = {
+	   Animations = {
+		  fence_right = {
+			 "fence_right.png",
+		  }
+	   },
+	   default_animation = "fence_right",
+	   z = 1,
+	},
+    Collision_Component = {
+        top = .5,
+        bottom = 0,
+        left = 0, 
+        right = 1
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 32,
+            y = 32
+        },
+        rad_rot = 0
+    }
+ }
+ fence_post = {
+	Graphic_Component = {
+	   Animations = {
+		  fence_post = {
+			 "fence_post.png",
+		  }
+	   },
+	   default_animation = "fence_post",
+	   z = 1,
+	},
+    Collision_Component = {
+        top = .5,
+        bottom = 0,
+        left = 0, 
+        right = 1
+    },
+    Position_Component = {
+        translate = {
+            x = 0,
+            y = 0,
+            z = 0
+        },
+        scale = {
+            x = 32,
+            y = 32
+        },
+        rad_rot = 0
+    }
+ }
 fence_top = {
     Graphic_Component = {
         Animations = {

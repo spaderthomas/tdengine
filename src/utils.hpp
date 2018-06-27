@@ -81,6 +81,54 @@ glm::vec2 gl_coords_from_screen_coords(glm::vec2 screen_coords) {
 }
 
 
+string name_from_full_path(string path) {
+	// Extract the actual name of the .png from the path, put it in the asset table
+	string asset_name;
+	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
+		if (path.at(ichar) == '\\') { break; }
+		if (path.at(ichar) == '/') {
+			string msg = "Don't use forward slashes in your directory names. Failing path was: " + path;
+			tdns_log.write(msg);
+			exit(0);
+		}
+		asset_name.insert(asset_name.begin(), path.at(ichar));
+	}
 
+	return asset_name;
+}
+
+string strip_extension(string path) {
+	string stripped;
+	for (unsigned int ichar = 0; ichar < path.size(); ichar++) {
+		if (path.at(ichar) == '.') {
+			return stripped;
+		}
+		stripped.push_back(path.at(ichar));
+	}
+
+	return stripped;
+}
+
+bool is_alphanumeric(string& str) {
+	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
+	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
+
+	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
+		char c = str.at(ichar);
+		if (!(is_numeric(c) || is_alpha(c))) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+// @hack I'm sure there are PNG headers I could try parsing, but this works!
+bool is_png(string& asset_path) {
+	if (asset_path.size() < 5) { return false; } // "x.png" is the shortest name
+	string should_be_png_extension = asset_path.substr(asset_path.size() - 4, 4);
+	if (should_be_png_extension.compare(".png")) return false;
+	return true;
+}
 
 #define fox_max(a, b) (a) > (b) ? (a) : (b)
