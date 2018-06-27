@@ -35,6 +35,17 @@ struct Entity {
 		tdns_log.write(msg);
 		return nullptr;
 	}
+	
+	// Pulls defaults from Lua, then fills in whatever was saved
+	static Entity* create(json& entity_json) {
+		//@note 
+		// if you don't explicitly make this a string, it recursively calls
+		// this create (since the result is a json object), then promptly crashes
+		string lua_id = entity_json["lua_id"];
+		Entity* new_entity = Entity::create(lua_id);
+		new_entity->load(entity_json);
+		return new_entity;
+	}
 
 	static Entity* create(string lua_id) {
 		Entity* entity = new Entity;
@@ -84,11 +95,12 @@ struct Entity {
 		}
 	}
 
-	void load(json& components_json) {
+	void load(json& entity) {
+		auto components_json = entity["Components"];
 		for (auto component : components_json) {
 			if (component["kind"] == "Position_Component") {
 				Position_Component* pc = new Position_Component;
-				pc->transform.load(component["transform"]);
+				pc->load(component);
 				this->add_component(pc);
 			}
 		}

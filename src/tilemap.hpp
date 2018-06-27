@@ -71,10 +71,15 @@ struct Level {
 			fox_for(itilex, CHUNK_SIZE) {
 				fox_for(itiley, CHUNK_SIZE) {
 					Entity* tile = chunk.tiles[itilex][itiley];
-					if (tile != nullptr) { tile->save(j[index_key][itilex][itiley]); }
-					else { j[index_key][itilex][itiley] = "NULL"; }
+					if (tile != nullptr) { tile->save(j["chunks"][index_key][itilex][itiley]); }
+					else { j["chunks"][index_key][itilex][itiley] = "NULL"; }
 				}
 			}
+		}
+
+		int indx = 0;
+		for (auto entity : entities) {
+			entity->save(j["entities"][indx]);
 		}
 
 		string path = string("../../save/") + name + string(".json");
@@ -84,12 +89,13 @@ struct Level {
 
 	//@leak We never free up any tiles that were previously allocated.
 	void load() {
+		json j;
 		string path = "../../save/" + name + ".json";
 		ifstream load_file(path);
-		json j;
-
 		load_file >> j;
-		for (json::iterator it = j.begin(); it != j.end(); it++) {
+
+		// Load tile chunks
+		for (json::iterator it = j["chunks"].begin(); it != j["chunks"].end(); it++) {
 			// Parse the chunk indices out of the string (which is of the form "x,y"
 			stringstream index_stream = stringstream(it.key());
 			string index;
@@ -102,14 +108,9 @@ struct Level {
 			json chunk_as_json = it.value();
 			fox_for(itilex, CHUNK_SIZE) {
 				fox_for(itiley, CHUNK_SIZE) {
-					// Grab the entry and check if it's the special key we use for nonexistent entry
 					auto tile_json = chunk_as_json[itilex][itiley];
 					if (tile_json != "NULL") {
-						// Get the tile type, use it to create a new template entity
-						string type_name = tile_json["lua_id"];
-						Entity* new_ent = Entity::create(type_name);
-						// Load in the specific instance's information from JSON
-						new_ent->load(tile_json["Components"]);
+						Entity* new_ent = Entity::create(tile_json);
 						chunk.tiles[itilex][itiley] = new_ent;
 					}
 					else {
@@ -117,6 +118,14 @@ struct Level {
 					}
 				}
 			}
+		}
+
+		// Load entities
+		entities.clear();
+		for (unsigned int i = 0; i < j["entities"].size(); i++) {
+			json entity_as_json = j["entities"][i];
+			Entity* entity = Entity::create(entity_as_json);
+			entities.push_back(entity);
 		}
 	}
 };

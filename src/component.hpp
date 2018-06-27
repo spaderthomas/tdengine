@@ -89,6 +89,10 @@ struct Position_Component : Component {
 		j["kind"] = "Position_Component";
 		transform.save(j["transform"]);
 	}
+
+	void load(json& j) {
+		transform.load(j["transform"]);
+	}
 };
 
 struct Collision_Component : Component {

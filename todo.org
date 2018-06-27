@@ -1,26 +1,14 @@
-* RENDERER
-- information needed to render something: what sprite you're going to draw, and
-  where you're going to draw it.
-- the only thing that the renderer needs to have is a list of elements that
-  contain this information. it doesn't need to know anything about components,
-  and it shouldn't contain any logic for determining what to draw.
-- idea 1: base entity class has a virtual draw method that by default does
-  nothing. if an entity wants to be able to draw something, then it just
-  overrides that method. if it doesn't, it leaves the method blank. 
-- tilemap: a vector of Background_Tile, intended to be the static ground layer
-  beneath all of the foreground props.
-- propmap: a vector of random entities, intended to be all the things in the
-  foreground of a map. could be gently animated (dancing grass), or just stuff
-  like buildings, trees.
-* ASSETS
-- you define everything static in lua:
-  - defaults for different entities. e.g, for a tree, you store the path of the
-    default sprite, you store a bounding box, you store a z-coordinate.
-  - all the animations. maybe a large global table that maps animation names to
-    all the frames they contain? 
-- all the sprites are stored in c++ (because they are getting loaded in by
-  texture atlas
-- when you want to create an entity:
-  1. call into Lua to get the default information for that entity
-  2. fill in the information from the Lua table into a CPP object. do it in cpp
-     so that we can have proper error checking and keep our scripts simple.  
+- Box-Box collision detection; line of sight detection; collision resolution; onCollide; visualizing bounding boxes; hitbox and hurtbox
+- Editing pre-existing tiles; Saving and loading entities
+- Hospital (reception desk, long beds, desks, drawers, floor) Tavern (bar, bottles, table, chair)
+- Plain grass edge; 
+- Side and back views; flash red on hurt; P. Silex
+- Tile loading breaking when you change the directory; Adding files to directory should let you see them in-game
+- Text printing; Text popups; Speech system
+
+8:20
+droning strings
+overlaying constant rhythms (drums, bass, horns)
+layers of horns for texture, how to make horns sound good
+two or three themes, twice repeated in a loop (background music)
+old science fiction movies, radio, dissonance
