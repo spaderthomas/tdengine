@@ -132,3 +132,4 @@ bool is_png(string& asset_path) {
 }
 
 #define fox_max(a, b) (a) > (b) ? (a) : (b)
+#define fox_min(a, b) (a) > (b) ? (b) : (a)

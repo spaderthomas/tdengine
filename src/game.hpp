@@ -1,32 +1,48 @@
-struct Asset_Tree {
+struct Entity_Tree {
 	string dir;
-	vector<Entity*> tiles;
-	vector<Asset_Tree*> children;
+	vector<Entity*> entities;
+	vector<Entity_Tree*> children;
 
 	int size;
 
-	static Asset_Tree* create(string dir);
-}; 
-
-Asset_Tree* Asset_Tree::create(string dir) {
-	Asset_Tree* tree = new Asset_Tree;
-	tree->dir = name_from_full_path(dir);
-	for (auto it = directory_iterator(dir); it != directory_iterator(); ++it) {
-		string path = it->path().string();
-		if (is_regular_file(it->status())) {
-			if (is_png(path)) {
-				string lua_id = strip_extension(name_from_full_path(path));
-				tree->tiles.push_back(Entity::create(lua_id));
-				tree->size++;
+	static Entity_Tree* create(string dir) {
+		Entity_Tree* tree = new Entity_Tree;
+		tree->dir = name_from_full_path(dir);
+		for (auto it = directory_iterator(dir); it != directory_iterator(); ++it) {
+			string path = it->path().string();
+			if (is_regular_file(it->status())) {
+				if (is_png(path)) {
+					string lua_id = strip_extension(name_from_full_path(path));
+					tree->entities.push_back(Entity::create(lua_id));
+					tree->size++;
+				}
+			}
+			else if (is_directory(it->status())) {
+				tree->children.push_back(create(path));
 			}
 		}
-		else if (is_directory(it->status())) {
-			tree->children.push_back(create(path));
-		}
+
+		return tree;
 	}
 
-	return tree;
-}
+	Entity* find(string lua_id) {
+		for (auto& entity : entities) {
+			if (entity->lua_id == lua_id) { 
+				return entity; 
+			}
+		}
+		for (auto& child : children) {
+			Entity* found_in_child = child->find(lua_id);
+			if (found_in_child) { 
+				return found_in_child; 
+			}
+		}
+
+		return nullptr;
+	}
+}; 
+
+
 
 
 struct Console {
@@ -285,8 +301,8 @@ struct Console {
 
 vector<function<void()>> stack;
 struct {
-	Asset_Tree* tile_tree;
-	Asset_Tree* entity_tree;
+	Entity_Tree* tile_tree;
+	Entity_Tree* entity_tree;
 	glm::ivec2 last_grid_pos_drawn;
 	enum {
 		IDLE,
@@ -340,8 +356,8 @@ struct {
 
 	void init() {
 		editing_state = IDLE;
-		tile_tree = Asset_Tree::create("..\\..\\textures\\tiles");
-		entity_tree = Asset_Tree::create("..\\..\\textures\\entities");
+		tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
+		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 		dude_ranch.name = "dude_ranch";
 	}
 	
@@ -393,13 +409,13 @@ struct {
 		// Tile Selector GUI
 		int unique_button_index = 0; // Needed for ImGui
 		
-		auto draw_buttons = [&](Asset_Tree* root) -> void {
-			auto lambda = [&](Asset_Tree* root, const auto& lambda) -> void {
+		auto draw_buttons = [&](Entity_Tree* root) -> void {
+			auto lambda = [&](Entity_Tree* root, const auto& lambda) -> void {
 				if (ImGui::TreeNode(root->dir.c_str())) {
 
 					// If expanded, draw this folder's tiles
 					int indx = 0;
-					for (auto tile : root->tiles) {
+					for (auto tile : root->entities) {
 						Graphic_Component* gc = tile->get_component<Graphic_Component>();
 						if (gc) {
 							Sprite* ent_sprite = gc->get_current_frame();
@@ -442,64 +458,79 @@ struct {
 
 		// INSERT MODE: There is a selected tile or entity, and we can move it around and click to place it.
 		if (editing_state == INSERT) {
-			// Add a new entity to the tilemap on click
+			static int lag_frames; // so we dont paint fifty entities every time we click
+
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+				glm::vec3 translation;
 				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
-				Entity* current_entity = dude_ranch.get_tile(grid_pos.x, grid_pos.y);
+				if (snap_to_grid) { translation = translation_from_grid_pos(grid_pos); }
+				else { translation = translation_from_px_pos(game_input.px_pos); }
 
-				// We don't want to double paint, so check to make sure we're not doing that
-				bool okay_to_create = true;
+				// Add a grid tile
+				if (tile_tree->find(selected->lua_id)) {
+					Entity* current_entity = dude_ranch.get_tile(grid_pos.x, grid_pos.y);
 
-				// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
-				if (current_entity) {
-					if (current_entity->lua_id == selected->lua_id) {
-						okay_to_create = false;
-					}
-				}
+					// We don't want to double paint, so check to make sure we're not doing that
+					bool okay_to_create = true;
 
-				if (okay_to_create) {
-					// Create a lambda which will undo the tile placement we're about to do
-					auto my_lambda = [&dude_ranch = dude_ranch,
-						x = grid_pos.x, y = grid_pos.y,
-						ent = dude_ranch.get_tile(grid_pos.x, grid_pos.y)]
-					{
-						dude_ranch.set_tile(ent, x, y);
-					};
-					stack.push_back(my_lambda);
-
-					// Grab the translation from the mouse position and figure out whether its a tile or an entity
-					Entity* new_entity = Entity::create(selected->lua_id);
-					glm::vec3 translation;
-					if (snap_to_grid) {
-						translation = translation_from_grid_pos(grid_pos);
-					} else {
-						translation = translation_from_px_pos(game_input.px_pos);
+					// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
+					if (current_entity) {
+						if (current_entity->lua_id == selected->lua_id) {
+							okay_to_create = false;
+						}
 					}
 
-					if (find(entities.begin(), entities.end(), selected->lua_id) != entities.end()) {
-						Position_Component* pc = new_entity->get_component<Position_Component>();
-						pc->transform.translate = translation; 
-						dude_ranch.entities.push_back(new_entity);
-					}else {
+					if (okay_to_create) {
+						// Create a lambda which will undo the tile placement we're about to do
+						auto my_lambda = [&dude_ranch = dude_ranch,
+							x = grid_pos.x, y = grid_pos.y,
+							ent = dude_ranch.get_tile(grid_pos.x, grid_pos.y)]
+						{
+							dude_ranch.set_tile(ent, x, y);
+						};
+						stack.push_back(my_lambda);
+
+						// Grab the translation from the mouse position and figure out whether its a tile or an entity
+						Entity* new_entity = Entity::create(selected->lua_id);
+						
+
 						Position_Component* pc = new_entity->get_component<Position_Component>();
 						pc->transform.translate = translation;
 						dude_ranch.set_tile(new_entity, grid_pos.x, grid_pos.y);
-					}
 
-					// Update so we only paint one entity per tile
-					last_grid_pos_drawn = grid_pos;
+						// Update so we only paint one entity per tile
+						last_grid_pos_drawn = grid_pos;
+					}
+				}
+				// Add an entity
+				else if (entity_tree->find(selected->lua_id)) {
+					if (lag_frames == 0) {
+						auto my_lambda = [&dude_ranch = dude_ranch]() -> void {
+							dude_ranch.entities.pop_back();
+						};
+						stack.push_back(my_lambda);
+
+						Entity* new_entity = Entity::create(selected->lua_id);
+						Position_Component* pc = new_entity->get_component<Position_Component>();
+						pc->transform.translate = translation;
+						dude_ranch.entities.push_back(new_entity);
+						lag_frames = 30;
+					}
 				}
 			}
+
+			lag_frames = fox_max(0, lag_frames - 1);
 
 			// Correctly translate current selected tile to be under the mouse & scale it otherwise
 			Position_Component* pc = selected->get_component<Position_Component>();
 			if (pc) {
-					glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
-					if (snap_to_grid) {
-						pc->transform.translate = translation_from_grid_pos(grid_pos);
-					} else {
-						pc->transform.translate = translation_from_px_pos(game_input.px_pos);
-					}
+				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
+				if (snap_to_grid) {
+					pc->transform.translate = translation_from_grid_pos(grid_pos);
+				}
+				else {
+					pc->transform.translate = translation_from_px_pos(game_input.px_pos);
+				}
 			}
 		}
 		
