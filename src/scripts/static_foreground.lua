@@ -2,7 +2,7 @@ tree = {
    Graphic_Component = {
 	  Animations = {
 		 tree = {
-			"tree1.png",
+			"tree.png",
 		 }
 	  },
 	  default_animation = "tree",

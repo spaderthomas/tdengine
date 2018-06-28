@@ -141,7 +141,7 @@ int main() {
 		ImGui_ImplGlfwGL3_NewFrame();
 		game_layer.update(seconds_per_update);
 		game_layer.render();
-		ImGui::ShowDemoWindow();
+		//ImGui::ShowDemoWindow();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

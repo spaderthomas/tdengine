@@ -12,3 +12,7 @@ overlaying constant rhythms (drums, bass, horns)
 layers of horns for texture, how to make horns sound good
 two or three themes, twice repeated in a loop (background music)
 old science fiction movies, radio, dissonance
+
+* Workflow
+- Adding new tiles:
+    1. Add the tile to 

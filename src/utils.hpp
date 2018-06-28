@@ -67,13 +67,13 @@ glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
 
 
 // This defines which tile is on the upper left of the screen
-glm::ivec2 camera_top_left = glm::ivec2(0.f);
+glm::ivec2 camera_top_left = glm::ivec2(0);
 
 
 // Functions to convert between units
 glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
-	int closest_x = floor(px_pos.x / CELL_SIZE);
-	int closest_y = floor(px_pos.y / CELL_SIZE);
+	int closest_x = (int)floor(px_pos.x / CELL_SIZE);
+	int closest_y = (int)floor(px_pos.y / CELL_SIZE);
 	return glm::ivec2(closest_x, closest_y);
 }
 glm::vec2 gl_coords_from_screen_coords(glm::vec2 screen_coords) {

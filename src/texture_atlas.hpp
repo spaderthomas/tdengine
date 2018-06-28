@@ -1,9 +1,10 @@
 namespace stdfs = std::experimental::filesystem;
 
-string atlas_folders[] = {"..\\..\\textures\\boon",
-						  "..\\..\\textures\\wilson",	
-						  "..\\..\\textures\\environment",	
-						 };
+string atlas_folders[] = {
+	"..\\..\\textures\\characters",
+	"..\\..\\textures\\entities",
+	"..\\..\\textures\\tiles",
+};
 
 #define REGULAR_ATLAS_SIZE 1024
 
@@ -25,9 +26,9 @@ struct Name_And_ID {
 
 using namespace stdfs;
 
-void create_texture_atlas(string relative_dir) {
+void create_texture_atlas(string assets_dir) {
 	// Extract name of the atlas png from the dir name (e.g. /environment will output an atlas to /atlases/environment.png)
-	string atlas_name = name_from_full_path(relative_dir);
+	string atlas_name = name_from_full_path(assets_dir);
 	if (is_alphanumeric(atlas_name)) {
 		atlas_name += ".png";
 		Texture_Atlas* atlas = asset_table.get_asset<Texture_Atlas>(atlas_name);
@@ -44,28 +45,44 @@ void create_texture_atlas(string relative_dir) {
 
 		// Go through each sprite, register it in the asset table, and collect its rect data
 		int rect_id = 0;
-		for (directory_iterator iter(relative_dir); iter != directory_iterator(); ++iter) {
-			string asset_path = iter->path().string();
-			if (!is_regular_file(iter->status())) { continue; }
-			if (!is_png(asset_path)) { continue; }
+		auto recursive_add_from_dir = [&](string root_dir) -> void{
+			// The meat; given a directory, recursively add all PNGs
+			auto lambda = [&](string dir, const auto& lambda) -> void {
+				for (directory_iterator iter(dir); iter != directory_iterator(); ++iter) {
+					string asset_path = iter->path().string();
 
-			string asset_name = name_from_full_path(asset_path);
-			Sprite* sprite = asset_table.get_asset<Sprite>(asset_name);
-			sprite->atlas = atlas;
+					// Recurse to find assets in subdirectories
+					if (is_directory(iter->status())) { 
+						lambda(asset_path, lambda);
+					}
+					// If it's a regular file, check that it's a PNG and if so, load it
+					else if (is_regular_file(iter->status())) {
+						if (!is_png(asset_path)) { continue; }
 
-			// Load the image data, create a rectangle for it
-			unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
-			if (data) {
-				image_data.push_back(data);
-				stbrp_rect new_rect;
-				new_rect.id = rect_id++;
-				new_rect.w = sprite->width;
-				new_rect.h = sprite->height;
-				rects.push_back(new_rect);
-				Name_And_ID new_id = { asset_name, new_rect.id };
-				sprite_ids.push_back(new_id);
-			}
-		}
+						string asset_name = name_from_full_path(asset_path);
+						Sprite* sprite = asset_table.get_asset<Sprite>(asset_name);
+						sprite->atlas = atlas;
+
+						// Load the image data, create a rectangle for it
+						unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
+						if (data) {
+							image_data.push_back(data);
+							stbrp_rect new_rect;
+							new_rect.id = rect_id++;
+							new_rect.w = sprite->width;
+							new_rect.h = sprite->height;
+							rects.push_back(new_rect);
+							Name_And_ID new_id = { asset_name, new_rect.id };
+							sprite_ids.push_back(new_id);
+						}
+					}
+				}
+			};
+
+			// Kick off the recursion
+			lambda(root_dir, lambda);
+		};
+		recursive_add_from_dir(assets_dir);
 
 		// Pack the rectangles
 		stbrp_context* context = (stbrp_context*)calloc(1, sizeof(stbrp_context));
