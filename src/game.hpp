@@ -1,3 +1,110 @@
+
+#if 0
+//   "Load" a font file from a memory buffer (you have to keep the buffer loaded)
+//           stbtt_InitFont()
+//           stbtt_GetFontOffsetForIndex()        -- indexing for TTC font collections
+//           stbtt_GetNumberOfFonts()             -- number of fonts for TTC font collections
+#endif
+
+unsigned char font_buffer[1 << 20];
+unsigned char bitmap_buffer[512 * 512];
+stbtt_bakedchar char_data[96];
+GLuint font_texture; 
+float font_buffer_data[16];
+unsigned int font_elements[6];
+GLuint font_vao;
+GLuint font_elem_buffer, font_vert_buffer;
+
+void init_fonts() {
+	fread(font_buffer, 1, 1 << 20, fopen("C:/Windows/Fonts/Inconsolata-Regular.ttf", "rb"));
+	stbtt_BakeFontBitmap(font_buffer, 0, 32.0, bitmap_buffer, 512, 512, 32, 96, char_data);
+
+	glGenTextures(1, &font_texture);
+	glBindTexture(GL_TEXTURE_2D, font_texture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 512, 512, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap_buffer);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	glGenVertexArrays(1, &font_vao);
+	glGenBuffers(1, &font_elem_buffer);
+	glGenBuffers(1, &font_vert_buffer);
+}
+
+void stbtt_print(float x, float y, const char* text) {
+	glBindVertexArray(font_vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, font_elem_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
+
+	textured_shader.bind();
+	textured_shader.set_int("sampler", 0);
+	glm::vec3 camera_pos = glm::vec3(0.f);
+	glm::mat3 transform = mat3_from_transform(SRT::no_transform());
+	textured_shader.set_vec3("camera_pos", camera_pos);
+	textured_shader.set_mat3("transform", transform);
+	textured_shader.set_int("z", 0.f);
+
+	glBindTexture(GL_TEXTURE_2D, font_texture);
+
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)(sizeof(float) * 8));
+	glEnableVertexAttribArray(1);
+
+
+	while (*text) {
+		stbtt_aligned_quad quad;
+		stbtt_GetBakedQuad(char_data, 512, 512, *text - 32, &x, &y, &quad, 1);
+		//draw_square_outline(srt_from_grid_pos(glm::ivec2(5, 5)), blue);
+		//draw_square_outline(glm::vec2(0.f, .5f), glm::vec2(.5f, .5f), glm::vec2(.5f, 0.f), glm::vec2(0.f, 0.f), blue);
+		//draw_square_outline(glm::vec2(quad.x0 / SCREEN_X, quad.y0 / SCREEN_Y), glm::vec2(quad.x1 / SCREEN_X, quad.y0 / SCREEN_Y), glm::vec2(quad.x1 / SCREEN_X, quad.y1 / SCREEN_Y), glm::vec2(quad.x1 / SCREEN_X, quad.y1 / SCREEN_Y), blue);
+		text++;
+
+		float left_vert = quad.x1;
+		float right_vert = quad.x0;
+		float top_vert = quad.y1;
+		float bottom_vert = quad.y0;
+
+		float left_tex = quad.s0;
+		float right_tex = quad.s1;
+		float top_tex = quad.t1;
+		float bottom_tex = quad.t0;
+
+
+		font_buffer_data[0] = left_vert / SCREEN_X; // bottom left
+		font_buffer_data[1] = bottom_vert / SCREEN_Y; 
+		font_buffer_data[2] = right_vert / SCREEN_X; // bottom right
+		font_buffer_data[3] = bottom_vert / SCREEN_Y;
+		font_buffer_data[4] = right_vert / SCREEN_X; // top right
+		font_buffer_data[5] = top_vert / SCREEN_Y;
+		font_buffer_data[6] = left_vert / SCREEN_X; // top left
+		font_buffer_data[7] = top_vert / SCREEN_Y;
+
+		font_buffer_data[8] = right_tex; // bottom left
+		font_buffer_data[9] = top_tex;
+		font_buffer_data[10] = left_tex; // bottom right
+		font_buffer_data[11] = top_tex;
+		font_buffer_data[12] = left_tex; // top right
+		font_buffer_data[13] = bottom_tex;
+		font_buffer_data[14] = right_tex; // top left
+		font_buffer_data[15] = bottom_tex;
+		
+		
+		font_elements[0] = 0;
+		font_elements[1] = 1;
+		font_elements[2] = 2;
+		font_elements[3] = 3;
+		font_elements[4] = 2;
+		font_elements[5] = 0;
+
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, font_elem_buffer);
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 6, font_elements, GL_STATIC_DRAW);
+
+		glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
+		glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), font_buffer_data, GL_STATIC_DRAW);
+
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	}
+}
+
 struct Entity_Tree {
 	string dir;
 	vector<Entity*> entities;
@@ -41,9 +148,6 @@ struct Entity_Tree {
 		return nullptr;
 	}
 }; 
-
-
-
 
 struct Console {
     char                  InputBuf[256];
@@ -326,13 +430,16 @@ struct {
 			dude_ranch.load();
 		}
 		else if (console.Stricmp(command_line, "RELOAD") == 0) {
-			init_template_entities();
-
 			//@leak this one is quite big 
 			for (auto dirname : atlas_folders) {
 				create_texture_atlas(dirname);
 			}
+
 			Lua.load_scripts();
+
+			tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
+			entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
+
 			// Reload all graphics components
 			for (auto it : dude_ranch.chunks) {
 				Chunk& chunk = it.second;
@@ -359,6 +466,7 @@ struct {
 		tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
 		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 		dude_ranch.name = "dude_ranch";
+		init_fonts();
 	}
 	
 	void update(float dt) {
@@ -386,6 +494,9 @@ struct {
 		if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
 			selected = nullptr;
 			editing_state = IDLE;
+		}
+		if (game_input.was_pressed(GLFW_KEY_0)) {
+			editing_state = SELECT;
 		}
 		
 		// Toggle the console on control
@@ -575,11 +686,15 @@ struct {
 
 			// Draw the tile that's hovered 
 			hovered_color = glm::mix(hovered_color, red, .1f);
+			draw_square_outline(srt_from_grid_pos(glm::ivec2(5, 5)), blue);
 			draw_square_outline(srt_from_grid_pos(hovered), hovered_color);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
 		ImGui::End();
+
+		stbtt_print(.3, .3, "hello world");
+
 	}
 } game_layer;
 

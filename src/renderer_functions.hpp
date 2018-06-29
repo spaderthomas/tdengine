@@ -35,7 +35,7 @@ void Renderer::render_for_frame() {
 			[](const Render_Element& a, const Render_Element& b) {
 				return a.pc->transform.translate.y > b.pc->transform.translate.y; 
 			});
-
+		
 		// Draw the correctly sorted elements for a depth level
 		for (auto& render_element : depth_level_render_elements) {
 			Sprite* sprite = render_element.gc->get_current_frame();
@@ -43,7 +43,7 @@ void Renderer::render_for_frame() {
 				sprite->atlas->bind();
 
 				// 0: vertices, 1: texcoords
-				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 3 * sizeof(float), 0);
+				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
 				glEnableVertexAttribArray(0);
 				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), sprite->tex_coord_offset);
 				glEnableVertexAttribArray(1);

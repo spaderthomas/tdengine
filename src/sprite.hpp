@@ -26,7 +26,6 @@ void fill_gpu_sprite_buffers() {
 	vector<float> vert_data;
 	vector<float> tex_coords;
 
-	// Push each layer of square verts into the buffer, and mark offsets
 	concat(vert_data, square_verts);
 
 	// Fill tex coordinate buffer

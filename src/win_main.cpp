@@ -11,6 +11,8 @@
 #include "stb/stb_rect_pack.h"
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb/stb_image_write.h"
+#define STB_TRUETYPE_IMPLEMENTATION
+#include "stb/stb_truetype.h"
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
 
@@ -31,6 +33,8 @@ using json = nlohmann::json;
 #include <experimental/filesystem>
 #include <typeindex>
 using namespace std;
+
+
 
 #include "imgui_impl_glfw_gl3.hpp"
 #include "log.hpp"
@@ -54,6 +58,10 @@ using namespace std;
 #include "draw.hpp"
 #include "renderer_functions.hpp"
 #include "game.hpp"
+
+
+
+
 
 
 int main() {
@@ -115,10 +123,15 @@ int main() {
 	glBindVertexArray(Mesh::vao);
 	fill_gpu_mesh_buffers();
 
+	//init_fonts();
+
 	game_layer.init();
+
+	
 	
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
+		
 		double frame_start_time = glfwGetTime();
 
 		// Call all GLFW callbacks

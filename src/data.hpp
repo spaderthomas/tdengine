@@ -13,10 +13,10 @@ vector<float> triangle_tex_coords = {
 };
 
 vector<float> square_verts = {
-	1.f,  1.f, 1.f,
-	1.f, -1.f, 1.f,
-	-1.f, -1.f, 1.f,
-	-1.f,  1.f, 1.f
+	1.f,  1.f,
+	1.f, -1.f,
+	-1.f, -1.f,
+	-1.f,  1.f
 };
 glm::vec3 screen_bottom_right = glm::vec3(1.f, 1.f, 1.f);
 glm::vec3 screen_top_right = glm::vec3(1.f, -1.f, 1.f);
