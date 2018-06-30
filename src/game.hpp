@@ -23,78 +23,77 @@ void __stdcall dbGLDebugMessageCallback(GLenum source,
 	debug_msg += "\nSource: ";
 	switch (source) {
 	case GL_DEBUG_SOURCE_API:
-		write_str(debug_msg, "API");
+		debug_msg += "API";
 		break;
 	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-		write_str(debug_msg, "Window System");
+		debug_msg += "Window System";
 		break;
 	case GL_DEBUG_SOURCE_SHADER_COMPILER:
-		write_str(debug_msg, "Shader Compiler");
+		debug_msg += "Shader Compiler";
 		break;
 	case GL_DEBUG_SOURCE_THIRD_PARTY:
-		write_str(debug_msg, "Third Party");
+		debug_msg += "Third Party";
 		break;
 	case GL_DEBUG_SOURCE_APPLICATION:
-		write_str(debug_msg, "Application");
+		debug_msg += "Application";
 		break;
 	case GL_DEBUG_SOURCE_OTHER:
-		write_str(debug_msg, "Other");
+		debug_msg += "Other";
 		break;
 	}
 
-	write_str(debug_msg, "\nType: ");
+	debug_msg += "\nType: ";
 	switch (type) {
 	case GL_DEBUG_TYPE_ERROR:
-		write_str(debug_msg, "Error");
+		debug_msg += "Error";
 		break;
 	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-		write_str(debug_msg, "Deprecated Behaviour");
+		debug_msg += "Deprecated Behaviour";
 		break;
 	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-		write_str(debug_msg, "Undefined Behaviour");
+		debug_msg += "Undefined Behaviour";
 		break;
 	case GL_DEBUG_TYPE_PORTABILITY:
-		write_str(debug_msg, "Portability");
+		debug_msg += "Portability";
 		break;
 	case GL_DEBUG_TYPE_PERFORMANCE:
-		write_str(debug_msg, "Performance");
+		debug_msg += "Performance";
 		break;
 	case GL_DEBUG_TYPE_MARKER:
-		write_str(debug_msg, "Marker");
+		debug_msg += "Marker";
 		break;
 	case GL_DEBUG_TYPE_PUSH_GROUP:
-		write_str(debug_msg, "Push Group");
+		debug_msg += "Push Group";
 		break;
 	case GL_DEBUG_TYPE_POP_GROUP:
-		write_str(debug_msg, "Pop Group");
+		debug_msg += "Pop Group";
 		break;
 	case GL_DEBUG_TYPE_OTHER:
-		write_str(debug_msg, "Other");
+		debug_msg += "Other";
 		break;
 	}
 
-	write_str(debug_msg, "\nID: ");
-	write_uint(debug_msg, id);
+	debug_msg += "\nID: ";
+	debug_msg += to_string(id);
 
-	write_str(debug_msg, "\nSeverity: ");
+	debug_msg += "\nSeverity: ";
 	switch (severity) {
 	case GL_DEBUG_SEVERITY_HIGH:
-		write_str(debug_msg, "High");
+		debug_msg += "High";
 		break;
 	case GL_DEBUG_SEVERITY_MEDIUM:
-		write_str(debug_msg, "Medium");
+		debug_msg += "Medium";
 		break;
 	case GL_DEBUG_SEVERITY_LOW:
-		write_str(debug_msg, "Low");
+		debug_msg += "Low";
 		break;
 	case GL_DEBUG_SEVERITY_NOTIFICATION:
-		write_str(debug_msg, "Notification");
+		debug_msg += "Notification";
 		break;
 	}
 
-	write_str(debug_msg, "\n\n");
-	game_state->log.write_str(const_str(debug_msg.elems));
-	game_state->heap_stack.restore(ta);
+	debug_msg += "\n\n";
+	tdns_log.write(debug_msg);
 }
 
 struct Character {
@@ -102,7 +101,10 @@ struct Character {
 	glm::ivec2 size;
 	glm::ivec2 bearing;
 	GLuint advance;
+
+	static glm::ivec2 largest;
 };
+glm::ivec2 Character::largest;
 map<GLchar, Character> characters;
 
 FT_Library freetype;
@@ -120,7 +122,7 @@ void init_freetype() {
 	}
 
 	FT_Set_Pixel_Sizes(face, 0, 16);
-
+	Character::largest = glm::ivec2(0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 	for (GLubyte c = 0; c < 128; c++) {
 		if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
@@ -150,6 +152,7 @@ void init_freetype() {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
 		// Now store character for later use
 		Character character = {
 			texture,
@@ -158,6 +161,13 @@ void init_freetype() {
 			face->glyph->advance.x
 		};
 		characters.insert(std::pair<GLchar, Character>(c, character));
+	
+		if (character.size.x > Character::largest.x) {
+			Character::largest.x = character.size.x;
+		}
+		if (character.size.y > Character::largest.y) {
+			Character::largest.y = character.size.y;
+		}
 	}
 
 	FT_Done_Face(face);
@@ -571,12 +581,21 @@ struct {
 	}
 
 	void init() {
+		GLint flags;
+		glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+		if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+			glEnable(GL_DEBUG_OUTPUT);
+			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+			glDebugMessageCallbackKHR(dbGLDebugMessageCallback, nullptr);
+			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+		}
+
 		editing_state = IDLE;
 		tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
 		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 		dude_ranch.name = "dude_ranch";
 		init_freetype();
-		create_texture("..\\..\\textures\\reference\\lone_star.png");
+		create_texture("..\\..\\textures\\reference\\test.png");
 	}
 	
 	void update(float dt) {
@@ -803,7 +822,6 @@ struct {
 
 		ImGui::End();
 
-
 #if 0
 		SRT transform = SRT::no_transform();
 		glm::vec2 bottom_left = glm::vec2(-.9, -.9);
@@ -813,15 +831,16 @@ struct {
 
 		draw_rectangle(glm::vec2(0, 0), glm::vec2(.25, .25), hannah_color);
 #endif
+		// Draw the background for the text
 		SRT transform = SRT::no_transform();
-		glm::vec2 bottom_left = glm::vec2(-.9, -.9);
+		glm::vec2 bottom_left = glm::vec2(-.7, -.7);
 		transform.scale = glm::vec2(-1.f * bottom_left.x, .25f);
 		transform.translate = glm::vec3(bottom_left.x + transform.scale.x, bottom_left.y + transform.scale.y, 1.f);
 		textured_shader.bind();
 		textured_shader.set_int("sampler", 0);
 		glm::vec2 camera_pos = glm::vec2(0.f, 0.f);
 		textured_shader.set_vec2("camera_pos", camera_pos);
-		auto texture = asset_table.get_asset<Texture>("lone_star.png");
+		auto texture = asset_table.get_asset<Texture>("test.png");
 		bind_sprite_buffers();
 		glBindTexture(GL_TEXTURE_2D, texture->handle);
 
@@ -836,8 +855,15 @@ struct {
 		textured_shader.set_int("z", 1);
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
-		//stbtt_print(0, 0, "C");
-		render_text(100, 100, 1, blue, "whoa would you look at that that sure is a lot of text right there");
+		// Draw the text
+		glm::vec2 top_left = bottom_left + glm::vec2(0.f, 2 * transform.scale.y);
+		glm::vec2 padding = glm::vec2(.01f, 0.f);
+		float text_box_hsize;
+		glm::vec2 text_start = top_left + padding;
+		text_start.y -=  2 * Character::largest.y / SCREEN_Y;
+		glm::ivec2 text_start_px = px_coords_from_gl_coords(text_start);
+		glm::ivec2 test = px_coords_from_gl_coords(glm::vec2(0, 0));
+		render_text(text_start_px.x, text_start_px.y, 1, red, "whoa would you look at that that sure is a lot of text right there");
 
 	}
 } game_layer;

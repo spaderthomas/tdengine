@@ -29,9 +29,9 @@ struct Name_And_ID {
 void create_texture(string path) {
 	string texture_name = name_from_full_path(path);
 	if (is_valid_texture_name(texture_name)) {
-		texture_name += ".png";
 		Texture* new_texture = asset_table.get_asset<Texture>(texture_name);
 
+		stbi_set_flip_vertically_on_load(true);
 		unsigned char* data = stbi_load(path.c_str(), &new_texture->width, &new_texture->height, &new_texture->num_channels, 0);
 		if (data) {
 			// Now, create all the OpenGL internals and point it to the newly created atlas
@@ -45,7 +45,7 @@ void create_texture(string path) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, new_texture->width, new_texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		} else {
 			string msg = "stb_image failed to load an image. Path was: " + path;

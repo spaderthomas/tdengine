@@ -96,3 +96,8 @@ void GLFW_Scroll_Callback(GLFWwindow* window, double xoffset, double yoffset) {
 	io.MouseWheelH += (float)xoffset;
 	io.MouseWheel += (float)yoffset;
 }
+
+void GLFW_Error_Callback(int err, const char* msg) {
+	cout << err;
+	cout << msg;
+}

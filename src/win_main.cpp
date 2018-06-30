@@ -50,7 +50,7 @@ using namespace std;
 #include "renderer.hpp"
 #include "asset_table.hpp"
 #include "sprite.hpp"
-#include "texture_atlas.hpp"
+#include "texture.hpp"
 #include "mesh.hpp"
 #include "animation.hpp"
 #include "component.hpp"
@@ -65,7 +65,6 @@ using namespace std;
 
 
 
-
 int main() {
 	tdns_log.init();
 	
@@ -74,6 +73,7 @@ int main() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
 	GLFWwindow* window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "demo", NULL, NULL);
 	if (window == NULL) {
@@ -93,6 +93,7 @@ int main() {
 	glfwSetMouseButtonCallback(window, GLFW_Mouse_Button_Callback);
 	glfwSetKeyCallback(window, GLFW_Key_Callback);
 	glfwSetScrollCallback(window, GLFW_Scroll_Callback);
+	glfwSetErrorCallback(GLFW_Error_Callback);
 
 	init_shaders();
 	init_mesh();

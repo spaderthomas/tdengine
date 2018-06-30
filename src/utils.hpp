@@ -79,7 +79,11 @@ glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
 glm::vec2 gl_coords_from_screen_coords(glm::vec2 screen_coords) {
 	return glm::vec2(screen_coords.x * 2 - 1, 1 - screen_coords.y * 2);
 }
-
+glm::ivec2 px_coords_from_gl_coords(glm::vec2 gl_coords) {
+	float y = (gl_coords.y + 1) / 2;
+	float x = (gl_coords.x + 1) / 2;
+	return glm::ivec2(floor(x * SCREEN_X), floor(y * SCREEN_Y));
+}
 // Takes in a directory or file -- returns everything after the first double backslash
 string name_from_full_path(string path) {
 	string asset_name;
