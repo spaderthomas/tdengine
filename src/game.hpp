@@ -1,130 +1,102 @@
-#if 0
-//   "Load" a font file from a memory buffer (you have to keep the buffer loaded)
-//           stbtt_InitFont()
-//           stbtt_GetFontOffsetForIndex()        -- indexing for TTC font collections
-//           stbtt_GetNumberOfFonts()             -- number of fonts for TTC font collections
+void __stdcall dbGLDebugMessageCallback(GLenum source,
+	GLenum type,
+	GLuint id,
+	GLenum severity,
+	GLsizei length,
+	const GLchar *message,
+	const void *userParam) {
+	(void)userParam;
 
-Use ScaleForPixelHeight to get a scaling factor 
-GetFontBoundingBox to get a baseline-relative bounding box. SF * -y0 will be the distance in pixels that the tallest character extends above baseline
-#endif
-
-unsigned char font_buffer[1 << 20];
-unsigned char bitmap_buffer[512 * 512];
-stbtt_bakedchar char_data[96];
-GLuint font_texture; 
-float font_buffer_data[16];
-unsigned int font_elements[6];
-GLuint font_vao;
-GLuint font_elem_buffer, font_vert_buffer;
-
-void init_fonts() {
-	fread(font_buffer, 1, 1 << 20, fopen("C:/Windows/Fonts/PxPlus_IBM_VGA8.ttf", "rb"));
-	stbtt_BakeFontBitmap(font_buffer, 0, 32.0, bitmap_buffer, 512, 512, 32, 96, char_data);
-
-	glGenTextures(1, &font_texture);
-	glBindTexture(GL_TEXTURE_2D, font_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, 512, 512, 0, GL_RED, GL_UNSIGNED_BYTE, bitmap_buffer);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	glGenVertexArrays(1, &font_vao);
-	glGenBuffers(1, &font_elem_buffer);
-	glGenBuffers(1, &font_vert_buffer);
-}
-
-void stbtt_print(float x, float y, const char* text) {
-	glBindVertexArray(font_vao);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, font_elem_buffer);
-	glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
-
-	textured_shader.bind();
-	textured_shader.set_int("sampler", 0);
-	glm::vec3 camera_pos = glm::vec3(0.f);
-	glm::mat3 transform = mat3_from_transform(SRT::no_transform());
-	textured_shader.set_vec3("camera_pos", camera_pos);
-	textured_shader.set_mat3("transform", transform);
-	textured_shader.set_int("z", 0.f);
-
-	glBindTexture(GL_TEXTURE_2D, font_texture);
-
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (GLvoid*)(sizeof(float) * 8));
-	glEnableVertexAttribArray(1);
-
-
-	while (*text) {
-		stbtt_aligned_quad quad;
-		stbtt_GetBakedQuad(char_data, 512, 512, *text - 32, &x, &y, &quad, 1);
-		//draw_square_outline(srt_from_grid_pos(glm::ivec2(5, 5)), blue);
-		//draw_square_outline(glm::vec2(0.f, .5f), glm::vec2(.5f, .5f), glm::vec2(.5f, 0.f), glm::vec2(0.f, 0.f), blue);
-		//draw_square_outline(glm::vec2(quad.x0 / SCREEN_X, quad.y0 / SCREEN_Y), glm::vec2(quad.x1 / SCREEN_X, quad.y0 / SCREEN_Y), glm::vec2(quad.x1 / SCREEN_X, quad.y1 / SCREEN_Y), glm::vec2(quad.x1 / SCREEN_X, quad.y1 / SCREEN_Y), blue);
-		text++;
-
-		float left_vert = quad.x1;
-		float right_vert = quad.x0;
-		float top_vert = quad.y1;
-		float bottom_vert = quad.y0;
-
-		float left_tex = quad.s0;
-		float right_tex = quad.s1;
-		float top_tex = quad.t1;
-		float bottom_tex = quad.t0;
-
-
-		font_buffer_data[0] = left_vert / SCREEN_X; // bottom left
-		font_buffer_data[1] = bottom_vert / SCREEN_Y; 
-		font_buffer_data[2] = right_vert / SCREEN_X; // bottom right
-		font_buffer_data[3] = bottom_vert / SCREEN_Y;
-		font_buffer_data[4] = right_vert / SCREEN_X; // top right
-		font_buffer_data[5] = top_vert / SCREEN_Y;
-		font_buffer_data[6] = left_vert / SCREEN_X; // top left
-		font_buffer_data[7] = top_vert / SCREEN_Y;
-
-		font_buffer_data[8] = right_tex; // bottom left
-		font_buffer_data[9] = top_tex;
-		font_buffer_data[10] = left_tex; // bottom right
-		font_buffer_data[11] = top_tex;
-		font_buffer_data[12] = left_tex; // top right
-		font_buffer_data[13] = bottom_tex;
-		font_buffer_data[14] = right_tex; // top left
-		font_buffer_data[15] = bottom_tex;
-		
-		
-		font_elements[0] = 0;
-		font_elements[1] = 1;
-		font_elements[2] = 2;
-		font_elements[3] = 3;
-		font_elements[4] = 2;
-		font_elements[5] = 0;
-
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, font_elem_buffer);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(float) * 6, font_elements, GL_STATIC_DRAW);
-
-		glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
-		glBufferData(GL_ARRAY_BUFFER, 16 * sizeof(float), font_buffer_data, GL_STATIC_DRAW);
-
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+	switch (id) {
+	case 131169: // The driver allocated storage for renderbuffer
+		return;
+	case 131185: // glBufferData
+		return;
+	case 481131: // buffer info
+		return;
+	case 131184: // buffer info
+		return;
 	}
+
+	string debug_msg;
+	debug_msg += "OpenGL Debug Message: ";
+	debug_msg += "\nSource: ";
+	switch (source) {
+	case GL_DEBUG_SOURCE_API:
+		write_str(debug_msg, "API");
+		break;
+	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+		write_str(debug_msg, "Window System");
+		break;
+	case GL_DEBUG_SOURCE_SHADER_COMPILER:
+		write_str(debug_msg, "Shader Compiler");
+		break;
+	case GL_DEBUG_SOURCE_THIRD_PARTY:
+		write_str(debug_msg, "Third Party");
+		break;
+	case GL_DEBUG_SOURCE_APPLICATION:
+		write_str(debug_msg, "Application");
+		break;
+	case GL_DEBUG_SOURCE_OTHER:
+		write_str(debug_msg, "Other");
+		break;
+	}
+
+	write_str(debug_msg, "\nType: ");
+	switch (type) {
+	case GL_DEBUG_TYPE_ERROR:
+		write_str(debug_msg, "Error");
+		break;
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+		write_str(debug_msg, "Deprecated Behaviour");
+		break;
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+		write_str(debug_msg, "Undefined Behaviour");
+		break;
+	case GL_DEBUG_TYPE_PORTABILITY:
+		write_str(debug_msg, "Portability");
+		break;
+	case GL_DEBUG_TYPE_PERFORMANCE:
+		write_str(debug_msg, "Performance");
+		break;
+	case GL_DEBUG_TYPE_MARKER:
+		write_str(debug_msg, "Marker");
+		break;
+	case GL_DEBUG_TYPE_PUSH_GROUP:
+		write_str(debug_msg, "Push Group");
+		break;
+	case GL_DEBUG_TYPE_POP_GROUP:
+		write_str(debug_msg, "Pop Group");
+		break;
+	case GL_DEBUG_TYPE_OTHER:
+		write_str(debug_msg, "Other");
+		break;
+	}
+
+	write_str(debug_msg, "\nID: ");
+	write_uint(debug_msg, id);
+
+	write_str(debug_msg, "\nSeverity: ");
+	switch (severity) {
+	case GL_DEBUG_SEVERITY_HIGH:
+		write_str(debug_msg, "High");
+		break;
+	case GL_DEBUG_SEVERITY_MEDIUM:
+		write_str(debug_msg, "Medium");
+		break;
+	case GL_DEBUG_SEVERITY_LOW:
+		write_str(debug_msg, "Low");
+		break;
+	case GL_DEBUG_SEVERITY_NOTIFICATION:
+		write_str(debug_msg, "Notification");
+		break;
+	}
+
+	write_str(debug_msg, "\n\n");
+	game_state->log.write_str(const_str(debug_msg.elems));
+	game_state->heap_stack.restore(ta);
 }
 
-#if 0
-stbtt_fontinfo font;
-unsigned char font_buffer2[1<<25];
-unsigned char bitmap_buffer[512 * 512];
-unsigned char unicode_data[74];
-#endif 
-
-void init_fonts_detailed() {
-#if 0
-	fread(font_buffer2, 1, 1 << 25, fopen("C:/Windows/Fonts/Inconsolata-Regular.ttf", "rb"));
-	stbtt_InitFont(&font, font_buffer2, stbtt_GetFontOffsetForIndex(font_buffer2, 0));
-	stbtt_pack_context pack_context;
-	stbtt_PackBegin(&pack_context, bitmap_buffer, 512, 512, 0, 1, 0);
-	stbtt_PackFontRange(&pack_context, font_buffer2, 0, stbtt_ScaleForPixelHeight(&font, 24), 48, (122 - 48), unicode_data);
-	stbtt_PackEnd(&pack_context);
-	stbi_write_png("c:/Users/dboon/programming/tdengine/textures/fontmaybe.png", 512, 512, 4, bitmap_buffer, 0);
-#endif
-}
 struct Character {
 	GLuint texture;
 	glm::ivec2 size;
@@ -240,7 +212,6 @@ void render_text(float x, float y, float scale, glm::vec3 color, string text) {
 		x += (freetype_char.advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
 	}
 }
-
 
 
 struct Entity_Tree {
@@ -604,8 +575,8 @@ struct {
 		tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
 		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 		dude_ranch.name = "dude_ranch";
-		init_fonts();
 		init_freetype();
+		create_texture("..\\..\\textures\\reference\\lone_star.png");
 	}
 	
 	void update(float dt) {
@@ -832,13 +803,8 @@ struct {
 
 		ImGui::End();
 
-		//stbtt_print(0, 0, "C");
-		render_text(100, 100, 1, blue, "whoa would you look at that that sure is a lot of text right there");
 
 #if 0
-		
-#endif 
-
 		SRT transform = SRT::no_transform();
 		glm::vec2 bottom_left = glm::vec2(-.9, -.9);
 		transform.scale = glm::vec2(-1.f * bottom_left.x, .25f);
@@ -846,6 +812,33 @@ struct {
 		draw_square(transform, red);
 
 		draw_rectangle(glm::vec2(0, 0), glm::vec2(.25, .25), hannah_color);
+#endif
+		SRT transform = SRT::no_transform();
+		glm::vec2 bottom_left = glm::vec2(-.9, -.9);
+		transform.scale = glm::vec2(-1.f * bottom_left.x, .25f);
+		transform.translate = glm::vec3(bottom_left.x + transform.scale.x, bottom_left.y + transform.scale.y, 1.f);
+		textured_shader.bind();
+		textured_shader.set_int("sampler", 0);
+		glm::vec2 camera_pos = glm::vec2(0.f, 0.f);
+		textured_shader.set_vec2("camera_pos", camera_pos);
+		auto texture = asset_table.get_asset<Texture>("lone_star.png");
+		bind_sprite_buffers();
+		glBindTexture(GL_TEXTURE_2D, texture->handle);
+
+		// 0: vertices, 1: texcoords
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), square_tex_coords_offset);
+		glEnableVertexAttribArray(1);
+
+		auto transform_mat = mat3_from_transform(transform);
+		textured_shader.set_mat3("transform", transform_mat);
+		textured_shader.set_int("z", 1);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+		//stbtt_print(0, 0, "C");
+		render_text(100, 100, 1, blue, "whoa would you look at that that sure is a lot of text right there");
+
 	}
 } game_layer;
 

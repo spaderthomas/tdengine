@@ -80,9 +80,8 @@ glm::vec2 gl_coords_from_screen_coords(glm::vec2 screen_coords) {
 	return glm::vec2(screen_coords.x * 2 - 1, 1 - screen_coords.y * 2);
 }
 
-
+// Takes in a directory or file -- returns everything after the first double backslash
 string name_from_full_path(string path) {
-	// Extract the actual name of the .png from the path, put it in the asset table
 	string asset_name;
 	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
 		if (path.at(ichar) == '\\') { break; }
@@ -97,13 +96,14 @@ string name_from_full_path(string path) {
 	return asset_name;
 }
 
-string strip_extension(string path) {
+// Accepts a filename, not a path. Returns all the characters before the first period.
+string strip_extension(string filename) {
 	string stripped;
-	for (unsigned int ichar = 0; ichar < path.size(); ichar++) {
-		if (path.at(ichar) == '.') {
+	for (unsigned int ichar = 0; ichar < filename.size(); ichar++) {
+		if (filename.at(ichar) == '.') {
 			return stripped;
 		}
-		stripped.push_back(path.at(ichar));
+		stripped.push_back(filename.at(ichar));
 	}
 
 	return stripped;
@@ -116,6 +116,22 @@ bool is_alphanumeric(string& str) {
 	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
 		char c = str.at(ichar);
 		if (!(is_numeric(c) || is_alpha(c))) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+// Allowing alphanumerics, underscores, and periods
+bool is_valid_texture_name(string& str) {
+	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
+	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
+	auto is_misc_valid = [](char c) -> bool { return (c == '_') || c == '.'; };
+
+	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
+		char c = str.at(ichar);
+		if (!(is_numeric(c) || is_alpha(c) || is_misc_valid(c))) {
 			return false;
 		}
 	}

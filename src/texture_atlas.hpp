@@ -1,4 +1,5 @@
 namespace stdfs = std::experimental::filesystem;
+using namespace stdfs;
 
 string atlas_folders[] = {
 	"..\\..\\textures\\characters",
@@ -8,7 +9,7 @@ string atlas_folders[] = {
 
 #define REGULAR_ATLAS_SIZE 1024
 
-struct Texture_Atlas : Asset {
+struct Texture : Asset {
 	GLuint handle;
 
 	int width, height, num_channels;
@@ -24,14 +25,41 @@ struct Name_And_ID {
 	int id;
 };
 
-using namespace stdfs;
+//@leak never free stbi memory
+void create_texture(string path) {
+	string texture_name = name_from_full_path(path);
+	if (is_valid_texture_name(texture_name)) {
+		texture_name += ".png";
+		Texture* new_texture = asset_table.get_asset<Texture>(texture_name);
+
+		unsigned char* data = stbi_load(path.c_str(), &new_texture->width, &new_texture->height, &new_texture->num_channels, 0);
+		if (data) {
+			// Now, create all the OpenGL internals and point it to the newly created atlas
+			glGenTextures(1, &new_texture->handle);
+			glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
+			glBindTexture(GL_TEXTURE_2D, new_texture->handle);
+
+			// Some sane defaults
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		} else {
+			string msg = "stb_image failed to load an image. Path was: " + path;
+			tdns_log.write(msg);
+		}
+	}
+}
 
 void create_texture_atlas(string assets_dir) {
 	// Extract name of the atlas png from the dir name (e.g. /environment will output an atlas to /atlases/environment.png)
 	string atlas_name = name_from_full_path(assets_dir);
 	if (is_alphanumeric(atlas_name)) {
 		atlas_name += ".png";
-		Texture_Atlas* atlas = asset_table.get_asset<Texture_Atlas>(atlas_name);
+		Texture* atlas = asset_table.get_asset<Texture>(atlas_name);
 
 		// Create some memory for our atlas
 		stbi_set_flip_vertically_on_load(false);

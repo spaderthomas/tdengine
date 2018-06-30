@@ -1,7 +1,7 @@
-struct Texture_Atlas;
+struct Texture;
 struct Sprite : Asset {
 	int height, width, num_channels;
-	Texture_Atlas* atlas;
+	Texture* atlas;
 	vector<float> tex_coords;
 
 	GLvoid* tex_coord_offset;
@@ -36,6 +36,9 @@ void fill_gpu_sprite_buffers() {
 			concat(vert_data, sprite->tex_coords);
 		}
 	}
+
+	square_tex_coords_offset = (GLvoid*)(sizeof(float) * vert_data.size());
+	concat(vert_data, square_tex_coords);
 
 	// Send all the data to OpenGL buffers
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Sprite::elem_buffer);
