@@ -18,7 +18,7 @@ struct Mesh : Asset {
 		glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 
 		// 0: Vertices
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), vert_offset);
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), vert_offset);
 		glEnableVertexAttribArray(0);
 		if (use_tex_coords) {
 			// 1: Texture coordinates

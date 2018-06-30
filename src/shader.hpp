@@ -66,6 +66,10 @@ struct Shader {
 		auto x = get_uniform_loc(name);
 		glUniformMatrix3fv(get_uniform_loc(name), 1, GL_FALSE, glm::value_ptr(mat));
 	}
+	void set_mat4(const char* name, glm::mat4& mat) {
+		auto x = get_uniform_loc(name);
+		glUniformMatrix4fv(get_uniform_loc(name), 1, GL_FALSE, glm::value_ptr(mat));
+	}
 	void set_int(const char* name, GLint val) {
 		glUniform1i(get_uniform_loc(name), val);
 	}
@@ -80,7 +84,9 @@ struct Shader {
 
 Shader textured_shader;
 Shader solid_shader;
+Shader text_shader;
 void init_shaders() {
 	textured_shader.init("../../shaders/textured.vs", "../../shaders/textured.fs");
 	solid_shader.init("../../shaders/solid.vs", "../../shaders/solid.fs");
+	text_shader.init("../../shaders/text.vs", "../../shaders/text.fs");
 }

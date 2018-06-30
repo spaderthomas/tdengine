@@ -1,9 +1,11 @@
-
 #if 0
 //   "Load" a font file from a memory buffer (you have to keep the buffer loaded)
 //           stbtt_InitFont()
 //           stbtt_GetFontOffsetForIndex()        -- indexing for TTC font collections
 //           stbtt_GetNumberOfFonts()             -- number of fonts for TTC font collections
+
+Use ScaleForPixelHeight to get a scaling factor 
+GetFontBoundingBox to get a baseline-relative bounding box. SF * -y0 will be the distance in pixels that the tallest character extends above baseline
 #endif
 
 unsigned char font_buffer[1 << 20];
@@ -16,7 +18,7 @@ GLuint font_vao;
 GLuint font_elem_buffer, font_vert_buffer;
 
 void init_fonts() {
-	fread(font_buffer, 1, 1 << 20, fopen("C:/Windows/Fonts/Inconsolata-Regular.ttf", "rb"));
+	fread(font_buffer, 1, 1 << 20, fopen("C:/Windows/Fonts/PxPlus_IBM_VGA8.ttf", "rb"));
 	stbtt_BakeFontBitmap(font_buffer, 0, 32.0, bitmap_buffer, 512, 512, 32, 96, char_data);
 
 	glGenTextures(1, &font_texture);
@@ -104,6 +106,142 @@ void stbtt_print(float x, float y, const char* text) {
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 }
+
+#if 0
+stbtt_fontinfo font;
+unsigned char font_buffer2[1<<25];
+unsigned char bitmap_buffer[512 * 512];
+unsigned char unicode_data[74];
+#endif 
+
+void init_fonts_detailed() {
+#if 0
+	fread(font_buffer2, 1, 1 << 25, fopen("C:/Windows/Fonts/Inconsolata-Regular.ttf", "rb"));
+	stbtt_InitFont(&font, font_buffer2, stbtt_GetFontOffsetForIndex(font_buffer2, 0));
+	stbtt_pack_context pack_context;
+	stbtt_PackBegin(&pack_context, bitmap_buffer, 512, 512, 0, 1, 0);
+	stbtt_PackFontRange(&pack_context, font_buffer2, 0, stbtt_ScaleForPixelHeight(&font, 24), 48, (122 - 48), unicode_data);
+	stbtt_PackEnd(&pack_context);
+	stbi_write_png("c:/Users/dboon/programming/tdengine/textures/fontmaybe.png", 512, 512, 4, bitmap_buffer, 0);
+#endif
+}
+struct Character {
+	GLuint texture;
+	glm::ivec2 size;
+	glm::ivec2 bearing;
+	GLuint advance;
+};
+map<GLchar, Character> characters;
+
+FT_Library freetype;
+FT_Face face;
+GLuint ft_vao, ft_vert_buffer;
+
+void init_freetype() {
+	if (FT_Init_FreeType(&freetype)) {
+		tdns_log.write("Failed to initialize FreeType");
+		exit(0);
+	}
+	if (FT_New_Face(freetype, "C:/Windows/Fonts/PxPlus_IBM_VGA8.ttf", 0, &face)) {
+		tdns_log.write("Failed to load font");
+		exit(0);
+	}
+
+	FT_Set_Pixel_Sizes(face, 0, 16);
+
+	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+	for (GLubyte c = 0; c < 128; c++) {
+		if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
+			tdns_log.write("FreeType failed to load character");
+			tdns_log.write(string("Character was: %c", c));
+			exit(0);
+		}
+
+		// Generate texture
+		GLuint texture;
+		glGenTextures(1, &texture);
+		glBindTexture(GL_TEXTURE_2D, texture);
+		glTexImage2D(
+			GL_TEXTURE_2D,
+			0,
+			GL_RED,
+			face->glyph->bitmap.width,
+			face->glyph->bitmap.rows,
+			0,
+			GL_RED,
+			GL_UNSIGNED_BYTE,
+			face->glyph->bitmap.buffer
+		);
+
+		// Set texture options
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		// Now store character for later use
+		Character character = {
+			texture,
+			glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+			glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+			face->glyph->advance.x
+		};
+		characters.insert(std::pair<GLchar, Character>(c, character));
+	}
+
+	FT_Done_Face(face);
+	FT_Done_FreeType(freetype);
+
+	glGenVertexArrays(1, &ft_vao);
+	glGenBuffers(1, &ft_vert_buffer);
+	glBindVertexArray(ft_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, ft_vert_buffer);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBindVertexArray(0);
+}
+
+void render_text(float x, float y, float scale, glm::vec3 color, string text) {
+	text_shader.bind();
+	text_shader.set_vec3("text_color", color);
+	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(SCREEN_X), 0.0f, static_cast<GLfloat>(SCREEN_Y));
+	text_shader.set_mat4("projection", projection);
+	glBindVertexArray(ft_vao);
+
+	for (auto it = text.begin(); it != text.end(); it++) {
+		Character freetype_char = characters[*it];
+
+		GLfloat xpos = x + freetype_char.bearing.x * scale;
+		GLfloat ypos = y - (freetype_char.size.y - freetype_char.bearing.y) * scale;
+
+		GLfloat w = freetype_char.size.x * scale;
+		GLfloat h = freetype_char.size.y * scale;
+		
+		// Update VBO for each character
+		GLfloat vertices[6][4] = {
+			{ xpos,     ypos + h,   0.0, 0.0 },
+			{ xpos,     ypos,       0.0, 1.0 },
+			{ xpos + w, ypos,       1.0, 1.0 },
+
+			{ xpos,     ypos + h,   0.0, 0.0 },
+			{ xpos + w, ypos,       1.0, 1.0 },
+			{ xpos + w, ypos + h,   1.0, 0.0 }
+		};
+
+		// Render glyph texture over quad
+		glBindTexture(GL_TEXTURE_2D, freetype_char.texture);
+		glBindBuffer(GL_ARRAY_BUFFER, ft_vert_buffer);
+		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		// Render quad
+		glDrawArrays(GL_TRIANGLES, 0, 6);
+		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+		x += (freetype_char.advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
+	}
+}
+
+
 
 struct Entity_Tree {
 	string dir;
@@ -467,6 +605,7 @@ struct {
 		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 		dude_ranch.name = "dude_ranch";
 		init_fonts();
+		init_freetype();
 	}
 	
 	void update(float dt) {
@@ -693,8 +832,20 @@ struct {
 
 		ImGui::End();
 
-		stbtt_print(.3, .3, "hello world");
+		//stbtt_print(0, 0, "C");
+		render_text(100, 100, 1, blue, "whoa would you look at that that sure is a lot of text right there");
 
+#if 0
+		
+#endif 
+
+		SRT transform = SRT::no_transform();
+		glm::vec2 bottom_left = glm::vec2(-.9, -.9);
+		transform.scale = glm::vec2(-1.f * bottom_left.x, .25f);
+		transform.translate = glm::vec3(bottom_left.x + transform.scale.x, bottom_left.y + transform.scale.y, 1.f);
+		draw_square(transform, red);
+
+		draw_rectangle(glm::vec2(0, 0), glm::vec2(.25, .25), hannah_color);
 	}
 } game_layer;
 

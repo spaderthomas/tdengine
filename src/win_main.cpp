@@ -5,6 +5,7 @@
 #include "GLFW/glfw3.h"
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #define STB_RECT_PACK_IMPLEMENTATION
@@ -15,7 +16,10 @@
 #include "stb/stb_truetype.h"
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
-
+extern "C" {
+#include <ft2build.h>
+#include FT_FREETYPE_H  
+}
 #include "lua/lua.hpp"
 #include "sol/sol.hpp"
 
@@ -58,8 +62,6 @@ using namespace std;
 #include "draw.hpp"
 #include "renderer_functions.hpp"
 #include "game.hpp"
-
-
 
 
 

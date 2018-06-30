@@ -42,3 +42,9 @@ void draw_square(SRT transform, glm::vec4 color) {
 	square->bind();
 	square->draw(GL_TRIANGLES);
 }
+void draw_rectangle(glm::vec2 bottom_left, glm::vec2 extents, glm::vec4 color) {
+	SRT transform = SRT::no_transform();
+	transform.scale = extents;
+	transform.translate = glm::vec3(bottom_left.x + extents.x, bottom_left.y + extents.y, 1.f);
+	draw_square(transform, color);
+}
