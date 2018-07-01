@@ -59,6 +59,7 @@ struct Shader {
 			tdns_log.write("Tried to get uniform location, but it didn't exist. Shader name: " + string(name));
 			exit(1);
 		}
+		return loc;
 	}
 
 	void set_vec4(const char* name, glm::vec4& vec) {
@@ -117,6 +118,11 @@ struct Shader {
 	void check() {
 		if (uniforms_set_this_call.size() != num_uniforms) {
 			string msg = "You didn't fill in all of the uniforms! Shader was: " + string(name);
+			tdns_log.write(msg);
+			exit(1);
+		}
+		if (Shader::active != id) {
+			string msg = "Checked shader before draw, but it was not set. Did you forget to call begin()? Shader: " + name;
 			tdns_log.write(msg);
 			exit(1);
 		}

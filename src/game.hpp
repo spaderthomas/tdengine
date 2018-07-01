@@ -356,13 +356,10 @@ struct {
 	}
 
 	void init() {
-		
-
 		editing_state = IDLE;
 		tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
 		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 		dude_ranch.name = "dude_ranch";
-		//init_freetype();
 		create_texture("..\\..\\textures\\reference\\test.png");
 
 	}
@@ -591,49 +588,7 @@ struct {
 
 		ImGui::End();
 
-#if 0
-		SRT transform = SRT::no_transform();
-		glm::vec2 bottom_left = glm::vec2(-.9, -.9);
-		transform.scale = glm::vec2(-1.f * bottom_left.x, .25f);
-		transform.translate = glm::vec3(bottom_left.x + transform.scale.x, bottom_left.y + transform.scale.y, 1.f);
-		draw_square(transform, red);
-
-		draw_rectangle(glm::vec2(0, 0), glm::vec2(.25, .25), hannah_color);
-		// Draw the background for the text
-		SRT transform = SRT::no_transform();
-		glm::vec2 bottom_left = glm::vec2(-.7, -.7);
-		transform.scale = glm::vec2(-1.f * bottom_left.x, .25f);
-		transform.translate = glm::vec3(bottom_left.x + transform.scale.x, bottom_left.y + transform.scale.y, 1.f);
-		textured_shader.bind();
-		textured_shader.set_int("sampler", 0);
-		glm::vec2 camera_pos = glm::vec2(0.f, 0.f);
-		textured_shader.set_vec2("camera_pos", camera_pos);
-		auto texture = asset_table.get_asset<Texture>("test.png");
-		bind_sprite_buffers();
-		glBindTexture(GL_TEXTURE_2D, texture->handle);
-
-		// 0: vertices, 1: texcoords
-		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), square_tex_coords_offset);
-		glEnableVertexAttribArray(1);
-
-		auto transform_mat = mat3_from_transform(transform);
-		textured_shader.set_mat3("transform", transform_mat);
-		textured_shader.set_int("z", 1);
-		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-		// Draw the text
-		glm::vec2 top_left = bottom_left + glm::vec2(0.f, 2 * transform.scale.y);
-		glm::vec2 padding = glm::vec2(.01f, 0.f);
-		float text_box_hsize;
-		glm::vec2 text_start = top_left + padding;
-		text_start.y -=  2 * Character::largest.y / SCREEN_Y;
-		glm::ivec2 text_start_px = px_coords_from_gl_coords(text_start);
-		glm::ivec2 test = px_coords_from_gl_coords(glm::vec2(0, 0));
-		//render_text(text_start_px.x, text_start_px.y, red, "whoa would you look at that that sure is a lot of text right there");
-#endif
-
+		draw_text_box("a heck of a lot of text ohhhhhhhhhhhhh yeah baby that sure is some good text right there");
 	}
 } game_layer;
 

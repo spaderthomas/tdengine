@@ -5,6 +5,7 @@ typedef unsigned int uint;
 typedef int32_t int32;
 typedef int pixel_unit;
 typedef float screen_unit;
+typedef float gl_unit;
 
 template<typename vec_type>
 void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {
