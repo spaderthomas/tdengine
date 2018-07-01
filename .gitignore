@@ -1,8 +1,12 @@
 .vs/
-graphics_demo/
-graphics_demo.vcxproj
-glfw-3.2.1/
-lib/
-textures/
+.vscode/
+Debug/
 gifs/
+graphics_demo/
+lib/
 misc/
+textures/
+save/
+graphics_demo.vcxproj
+log.txt
+todo.org
