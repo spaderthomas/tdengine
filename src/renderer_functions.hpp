@@ -9,7 +9,7 @@ void Renderer::draw(Graphic_Component* gc, Position_Component* pc) {
 }
 void Renderer::render_for_frame() {
 	bind_sprite_buffers();
-	textured_shader.bind();
+	textured_shader.begin();
 	textured_shader.set_int("sampler", 0);
 	glm::vec2 camera_pos = glm::vec2(camera_top_left.x * GLSCR_TILESIZE_X, -1.f * camera_top_left.y * GLSCR_TILESIZE_Y);
 	textured_shader.set_vec2("camera_pos", camera_pos);
@@ -51,10 +51,12 @@ void Renderer::render_for_frame() {
 				auto transform_mat = mat3_from_transform(render_element.pc->transform);
 				textured_shader.set_mat3("transform", transform_mat);
 				textured_shader.set_int("z", render_element.gc->z);
+				textured_shader.check();
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			}
 		}
 	}
 
+	textured_shader.end();
 	render_list.clear();
 }

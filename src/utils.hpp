@@ -1,11 +1,17 @@
+#define fox_max(a, b) (a) > (b) ? (a) : (b)
+#define fox_min(a, b) (a) > (b) ? (b) : (a)
 #define fox_for(iterName, iterCount) for (unsigned int iterName = 0; iterName < (iterCount); ++iterName)
 typedef unsigned int uint;
 typedef int32_t int32;
+typedef int pixel_unit;
+typedef float screen_unit;
 
 template<typename vec_type>
 void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {
 	append_to.insert(append_to.end(), append_from.begin(), append_from.end());
 }
+
+#define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
     glViewport(0, 0, width, height);
@@ -151,5 +157,95 @@ bool is_png(string& asset_path) {
 	return true;
 }
 
-#define fox_max(a, b) (a) > (b) ? (a) : (b)
-#define fox_min(a, b) (a) > (b) ? (b) : (a)
+void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void *userParam) {
+	(void)userParam;
+
+	switch (id) {
+	case 131169: // The driver allocated storage for renderbuffer
+		return;
+	case 131185: // glBufferData
+		return;
+	case 481131: // buffer info
+		return;
+	case 131184: // buffer info
+		return;
+	}
+
+	string debug_msg;
+	debug_msg += "OpenGL Debug Message: ";
+	debug_msg += "\nSource: ";
+	switch (source) {
+	case GL_DEBUG_SOURCE_API:
+		debug_msg += "API";
+		break;
+	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+		debug_msg += "Window System";
+		break;
+	case GL_DEBUG_SOURCE_SHADER_COMPILER:
+		debug_msg += "Shader Compiler";
+		break;
+	case GL_DEBUG_SOURCE_THIRD_PARTY:
+		debug_msg += "Third Party";
+		break;
+	case GL_DEBUG_SOURCE_APPLICATION:
+		debug_msg += "Application";
+		break;
+	case GL_DEBUG_SOURCE_OTHER:
+		debug_msg += "Other";
+		break;
+	}
+
+	debug_msg += "\nType: ";
+	switch (type) {
+	case GL_DEBUG_TYPE_ERROR:
+		debug_msg += "Error";
+		break;
+	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+		debug_msg += "Deprecated Behaviour";
+		break;
+	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+		debug_msg += "Undefined Behaviour";
+		break;
+	case GL_DEBUG_TYPE_PORTABILITY:
+		debug_msg += "Portability";
+		break;
+	case GL_DEBUG_TYPE_PERFORMANCE:
+		debug_msg += "Performance";
+		break;
+	case GL_DEBUG_TYPE_MARKER:
+		debug_msg += "Marker";
+		break;
+	case GL_DEBUG_TYPE_PUSH_GROUP:
+		debug_msg += "Push Group";
+		break;
+	case GL_DEBUG_TYPE_POP_GROUP:
+		debug_msg += "Pop Group";
+		break;
+	case GL_DEBUG_TYPE_OTHER:
+		debug_msg += "Other";
+		break;
+	}
+
+	debug_msg += "\nID: ";
+	debug_msg += to_string(id);
+
+	debug_msg += "\nSeverity: ";
+	switch (severity) {
+	case GL_DEBUG_SEVERITY_HIGH:
+		debug_msg += "High";
+		break;
+	case GL_DEBUG_SEVERITY_MEDIUM:
+		debug_msg += "Medium";
+		break;
+	case GL_DEBUG_SEVERITY_LOW:
+		debug_msg += "Low";
+		break;
+	case GL_DEBUG_SEVERITY_NOTIFICATION:
+		debug_msg += "Notification";
+		break;
+	}
+
+	debug_msg += "\nGL message: " + string(message);
+	debug_msg += "\n\n";
+	tdns_log.write(debug_msg);
+}

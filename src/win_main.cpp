@@ -56,16 +56,17 @@ using namespace std;
 #include "component.hpp"
 #include "entity.hpp"
 #include "serialization.hpp"
-#include "template_entities.hpp"
 #include "tilemap.hpp"
 #include "input.hpp"
 #include "draw.hpp"
 #include "renderer_functions.hpp"
+#include "text.hpp"
 #include "game.hpp"
 
 
 
 int main() {
+
 	tdns_log.init();
 	
 	// GLFW INIT
@@ -87,7 +88,7 @@ int main() {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
-	
+
 	//glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, GLFW_Cursor_Pos_Callback);
 	glfwSetMouseButtonCallback(window, GLFW_Mouse_Button_Callback);
@@ -101,17 +102,25 @@ int main() {
 		create_texture_atlas(dirname);
 	}
 	Lua.init();
-	init_template_entities();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui_ImplGlfwGL3_Init(window, false);
 	ImGui::StyleColorsDark();
 
-	// OPENGL INIT
+	//---OPENGL INIT
+	// Set up some debug output
+	GLint flags;
+	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
+	if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
+		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
+		glDebugMessageCallbackKHR(gl_debug_callback, nullptr);
+		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
+	}
+
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
-	glEnable(GL_TEXTURE_2D);
 	//glEnable(GL_DEPTH_TEST);
 
 	glGenVertexArrays(1, &Sprite::vao);
@@ -126,11 +135,9 @@ int main() {
 	glBindVertexArray(Mesh::vao);
 	fill_gpu_mesh_buffers();
 
-	//init_fonts();
+	init_freetype();
 
 	game_layer.init();
-
-	
 	
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
@@ -157,6 +164,7 @@ int main() {
 		ImGui_ImplGlfwGL3_NewFrame();
 		game_layer.update(seconds_per_update);
 		game_layer.render();
+
 		//ImGui::ShowDemoWindow();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());

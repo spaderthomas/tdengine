@@ -1,229 +1,3 @@
-void __stdcall dbGLDebugMessageCallback(GLenum source,
-	GLenum type,
-	GLuint id,
-	GLenum severity,
-	GLsizei length,
-	const GLchar *message,
-	const void *userParam) {
-	(void)userParam;
-
-	switch (id) {
-	case 131169: // The driver allocated storage for renderbuffer
-		return;
-	case 131185: // glBufferData
-		return;
-	case 481131: // buffer info
-		return;
-	case 131184: // buffer info
-		return;
-	}
-
-	string debug_msg;
-	debug_msg += "OpenGL Debug Message: ";
-	debug_msg += "\nSource: ";
-	switch (source) {
-	case GL_DEBUG_SOURCE_API:
-		debug_msg += "API";
-		break;
-	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
-		debug_msg += "Window System";
-		break;
-	case GL_DEBUG_SOURCE_SHADER_COMPILER:
-		debug_msg += "Shader Compiler";
-		break;
-	case GL_DEBUG_SOURCE_THIRD_PARTY:
-		debug_msg += "Third Party";
-		break;
-	case GL_DEBUG_SOURCE_APPLICATION:
-		debug_msg += "Application";
-		break;
-	case GL_DEBUG_SOURCE_OTHER:
-		debug_msg += "Other";
-		break;
-	}
-
-	debug_msg += "\nType: ";
-	switch (type) {
-	case GL_DEBUG_TYPE_ERROR:
-		debug_msg += "Error";
-		break;
-	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
-		debug_msg += "Deprecated Behaviour";
-		break;
-	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
-		debug_msg += "Undefined Behaviour";
-		break;
-	case GL_DEBUG_TYPE_PORTABILITY:
-		debug_msg += "Portability";
-		break;
-	case GL_DEBUG_TYPE_PERFORMANCE:
-		debug_msg += "Performance";
-		break;
-	case GL_DEBUG_TYPE_MARKER:
-		debug_msg += "Marker";
-		break;
-	case GL_DEBUG_TYPE_PUSH_GROUP:
-		debug_msg += "Push Group";
-		break;
-	case GL_DEBUG_TYPE_POP_GROUP:
-		debug_msg += "Pop Group";
-		break;
-	case GL_DEBUG_TYPE_OTHER:
-		debug_msg += "Other";
-		break;
-	}
-
-	debug_msg += "\nID: ";
-	debug_msg += to_string(id);
-
-	debug_msg += "\nSeverity: ";
-	switch (severity) {
-	case GL_DEBUG_SEVERITY_HIGH:
-		debug_msg += "High";
-		break;
-	case GL_DEBUG_SEVERITY_MEDIUM:
-		debug_msg += "Medium";
-		break;
-	case GL_DEBUG_SEVERITY_LOW:
-		debug_msg += "Low";
-		break;
-	case GL_DEBUG_SEVERITY_NOTIFICATION:
-		debug_msg += "Notification";
-		break;
-	}
-
-	debug_msg += "\n\n";
-	tdns_log.write(debug_msg);
-}
-
-struct Character {
-	GLuint texture;
-	glm::ivec2 size;
-	glm::ivec2 bearing;
-	GLuint advance;
-
-	static glm::ivec2 largest;
-};
-glm::ivec2 Character::largest;
-map<GLchar, Character> characters;
-
-FT_Library freetype;
-FT_Face face;
-GLuint ft_vao, ft_vert_buffer;
-
-void init_freetype() {
-	if (FT_Init_FreeType(&freetype)) {
-		tdns_log.write("Failed to initialize FreeType");
-		exit(0);
-	}
-	if (FT_New_Face(freetype, "C:/Windows/Fonts/PxPlus_IBM_VGA8.ttf", 0, &face)) {
-		tdns_log.write("Failed to load font");
-		exit(0);
-	}
-
-	FT_Set_Pixel_Sizes(face, 0, 16);
-	Character::largest = glm::ivec2(0);
-	glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-	for (GLubyte c = 0; c < 128; c++) {
-		if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
-			tdns_log.write("FreeType failed to load character");
-			tdns_log.write(string("Character was: %c", c));
-			exit(0);
-		}
-
-		// Generate texture
-		GLuint texture;
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-		glTexImage2D(
-			GL_TEXTURE_2D,
-			0,
-			GL_RED,
-			face->glyph->bitmap.width,
-			face->glyph->bitmap.rows,
-			0,
-			GL_RED,
-			GL_UNSIGNED_BYTE,
-			face->glyph->bitmap.buffer
-		);
-
-		// Set texture options
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		// Now store character for later use
-		Character character = {
-			texture,
-			glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-			glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-			face->glyph->advance.x
-		};
-		characters.insert(std::pair<GLchar, Character>(c, character));
-	
-		if (character.size.x > Character::largest.x) {
-			Character::largest.x = character.size.x;
-		}
-		if (character.size.y > Character::largest.y) {
-			Character::largest.y = character.size.y;
-		}
-	}
-
-	FT_Done_Face(face);
-	FT_Done_FreeType(freetype);
-
-	glGenVertexArrays(1, &ft_vao);
-	glGenBuffers(1, &ft_vert_buffer);
-	glBindVertexArray(ft_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, ft_vert_buffer);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
-}
-
-void render_text(float x, float y, float scale, glm::vec3 color, string text) {
-	text_shader.bind();
-	text_shader.set_vec3("text_color", color);
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(SCREEN_X), 0.0f, static_cast<GLfloat>(SCREEN_Y));
-	text_shader.set_mat4("projection", projection);
-	glBindVertexArray(ft_vao);
-
-	for (auto it = text.begin(); it != text.end(); it++) {
-		Character freetype_char = characters[*it];
-
-		GLfloat xpos = x + freetype_char.bearing.x * scale;
-		GLfloat ypos = y - (freetype_char.size.y - freetype_char.bearing.y) * scale;
-
-		GLfloat w = freetype_char.size.x * scale;
-		GLfloat h = freetype_char.size.y * scale;
-		
-		// Update VBO for each character
-		GLfloat vertices[6][4] = {
-			{ xpos,     ypos + h,   0.0, 0.0 },
-			{ xpos,     ypos,       0.0, 1.0 },
-			{ xpos + w, ypos,       1.0, 1.0 },
-
-			{ xpos,     ypos + h,   0.0, 0.0 },
-			{ xpos + w, ypos,       1.0, 1.0 },
-			{ xpos + w, ypos + h,   1.0, 0.0 }
-		};
-
-		// Render glyph texture over quad
-		glBindTexture(GL_TEXTURE_2D, freetype_char.texture);
-		glBindBuffer(GL_ARRAY_BUFFER, ft_vert_buffer);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		// Render quad
-		glDrawArrays(GL_TRIANGLES, 0, 6);
-		// Now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-		x += (freetype_char.advance >> 6) * scale; // Bitshift by 6 to get value in pixels (2^6 = 64)
-	}
-}
-
-
 struct Entity_Tree {
 	string dir;
 	vector<Entity*> entities;
@@ -522,6 +296,7 @@ struct Console {
     
 };
 
+
 vector<function<void()>> stack;
 struct {
 	Entity_Tree* tile_tree;
@@ -581,21 +356,15 @@ struct {
 	}
 
 	void init() {
-		GLint flags;
-		glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
-		if (flags & GL_CONTEXT_FLAG_DEBUG_BIT) {
-			glEnable(GL_DEBUG_OUTPUT);
-			glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
-			glDebugMessageCallbackKHR(dbGLDebugMessageCallback, nullptr);
-			glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
-		}
+		
 
 		editing_state = IDLE;
 		tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
 		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 		dude_ranch.name = "dude_ranch";
-		init_freetype();
+		//init_freetype();
 		create_texture("..\\..\\textures\\reference\\test.png");
+
 	}
 	
 	void update(float dt) {
@@ -830,7 +599,6 @@ struct {
 		draw_square(transform, red);
 
 		draw_rectangle(glm::vec2(0, 0), glm::vec2(.25, .25), hannah_color);
-#endif
 		// Draw the background for the text
 		SRT transform = SRT::no_transform();
 		glm::vec2 bottom_left = glm::vec2(-.7, -.7);
@@ -863,7 +631,8 @@ struct {
 		text_start.y -=  2 * Character::largest.y / SCREEN_Y;
 		glm::ivec2 text_start_px = px_coords_from_gl_coords(text_start);
 		glm::ivec2 test = px_coords_from_gl_coords(glm::vec2(0, 0));
-		render_text(text_start_px.x, text_start_px.y, 1, red, "whoa would you look at that that sure is a lot of text right there");
+		//render_text(text_start_px.x, text_start_px.y, red, "whoa would you look at that that sure is a lot of text right there");
+#endif
 
 	}
 } game_layer;
