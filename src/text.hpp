@@ -149,7 +149,6 @@ struct {
 
 
 		// Draw the text
-
 		// Start the text at the top left of the text box, padded
 		gl_unit padding_x = .075f;
 		gl_unit padding_y = .05f;

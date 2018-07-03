@@ -167,6 +167,7 @@ int main() {
 		//ImGui::ShowDemoWindow();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+		draw_square(SRT::no_transform(), blue);
 
 		glfwSwapBuffers(window);
 		global_input.reset_for_next_frame();
