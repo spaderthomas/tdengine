@@ -6,7 +6,7 @@ tree = {
 		 }
 	  },
 	  default_animation = "tree",
-      z = 1,
+      z = .5,
     },
     Collision_Component = {
         top = .5,
@@ -36,7 +36,7 @@ fence_left = {
 		  }
 	   },
 	   default_animation = "fence_left",
-	   z = 1,
+	   z = .5,
 	},
     Collision_Component = {
         top = .5,
@@ -65,7 +65,7 @@ fence_left = {
 		  }
 	   },
 	   default_animation = "fence_middle",
-	   z = 1,
+	   z = .5,
 	},
     Collision_Component = {
         top = .5,
@@ -94,7 +94,7 @@ fence_left = {
 		  }
 	   },
 	   default_animation = "fence_right",
-	   z = 1,
+	   z = .5,
 	},
     Collision_Component = {
         top = .5,
@@ -123,7 +123,7 @@ fence_left = {
 		  }
 	   },
 	   default_animation = "fence_post",
-	   z = 1,
+	   z = .5,
 	},
     Collision_Component = {
         top = .5,
@@ -152,7 +152,7 @@ fence_top = {
             }
         },
         default_animation = "fence_top",
-        z = 1
+        z = .5
     },
     Collision_Component = {
         top = .5,
@@ -182,7 +182,7 @@ fence_top = {
             }
         },
         default_animation = "cactus",
-        z = 1
+        z = .5
     },
     Collision_Component = {
         top = .5,
@@ -212,7 +212,7 @@ bush = {
             }
         },
         default_animation = "bush",
-        z = 1
+        z = .5
     },
     Collision_Component = {
         top = .5,
@@ -242,7 +242,7 @@ building = {
             }
         },
         default_animation = "building",
-        z = 1
+        z = .5
     },
     Collision_Component = {
         top = .5,

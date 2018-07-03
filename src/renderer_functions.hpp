@@ -50,7 +50,7 @@ void Renderer::render_for_frame() {
 				
 				auto transform_mat = mat3_from_transform(render_element.pc->transform);
 				textured_shader.set_mat3("transform", transform_mat);
-				textured_shader.set_int("z", render_element.gc->z);
+				textured_shader.set_float("z", render_element.gc->z);
 				textured_shader.check();
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			}

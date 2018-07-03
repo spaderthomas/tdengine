@@ -4,7 +4,7 @@
 struct Character {
 	GLuint texture;
 	glm::ivec2 px_size;
-	glm::ivec2 px_bearing; 
+	glm::ivec2 px_bearing;
 	uint advance;
 
 	static glm::ivec2 px_largest; // Useful to guarantee characters stay inside an area. 
@@ -14,14 +14,15 @@ map<GLchar, Character> characters;
 
 FT_Library freetype;
 FT_Face face;
-GLuint font_vao, font_vert_buffer;
+GLuint font_vao, font_vert_buffer, text_box_vao, text_box_vert_buffer;
 #define PX_FONT_SIZE 20
-void init_freetype() {
+void init_fonts() {
+	// FreeType initialization
 	if (FT_Init_FreeType(&freetype)) {
 		tdns_log.write("Failed to initialize FreeType");
 		exit(0);
 	}
-	if (FT_New_Face(freetype, "C:/Windows/Fonts/PxPlus_IBM_VGA8.ttf", 0, &face)) {
+	if (FT_New_Face(freetype, "C:/Windows/Fonts/Inconsolata-Regular.ttf", 0, &face)) {
 		tdns_log.write("Failed to load font");
 		exit(0);
 	}
@@ -77,37 +78,52 @@ void init_freetype() {
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
-	glBindVertexArray(0);
+
+
+	// Text Box initialization
+	glGenVertexArrays(1, &text_box_vao);
+	glGenBuffers(1, &text_box_vert_buffer);
+	glBindVertexArray(text_box_vao);
+	glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
+
+	// Also array of structs of vertices and texture coordinates
+	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
 }
 
-void render_text(pixel_unit x_begin, pixel_unit y_begin, pixel_unit dist_until_wrap, glm::vec3 color, string text) {
-	// We can render text at floating point pixel levels, so explicitly cast
-	float cur_subpixel_x = (float)x_begin;
-	float cur_subpixel_y = (float)y_begin;
+struct {
+	string text;
+	int point = -1;
+	float scale = 1.f * (SCREEN_X / 640); //@future: If you need bigger text, just load a bigger font. This looks terrible (but fine for now!)
 
-	text_shader.begin();
-	text_shader.set_vec3("text_color", color);
-	text_shader.set_int("sampler", 0);
-	float scale = 1;
+	void begin(string text) {
+		this->text = text;
+		point = 0;
+	}
 
-	// Text is raw 2D, so just use an orthographic projection
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(SCREEN_X), 0.0f, static_cast<GLfloat>(SCREEN_Y));
-	text_shader.set_mat4("projection", projection);
-	
-	glBindVertexArray(font_vao);
-	for (auto it = text.begin(); it != text.end(); it++) {
-		Character freetype_char = characters[*it];
+	void update(int frame) {
+		if (frame % 2) {
+			point = fox_min(point + 1, (int)text.size() - 1);
+			float scale = 1.f * (SCREEN_X / 640);
+		}
+	}
 
-		GLfloat left = cur_subpixel_x + freetype_char.px_bearing.x * scale;
-		GLfloat right = left + freetype_char.px_size.x * scale;
-		GLfloat bottom = cur_subpixel_y - (freetype_char.px_size.y - freetype_char.px_bearing.y) * scale; // Put the bearing point, not the bottom of the glyph, at requested Y
-		GLfloat top = bottom + freetype_char.px_size.y * scale;
+	void render() {
+		// Draw the box
+		glBindVertexArray(text_box_vao);
+		glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
 
-		// FreeType loads the fonts upside down, which is why texture coordinates look wonky
+		textured_shader2.begin();
+
+		gl_unit size_x = 1.8f, size_y = .5f;
+		gl_unit bottom = -.9f, left = -.9f;
+		gl_unit top = bottom + size_y;
+		gl_unit right = left + size_x;
+
 		GLfloat vertices[6][4] = {
 			{ left,  top,     0.0, 0.0 },
-			{ left,  bottom,  0.0, 1.0 },	
+			{ left,  bottom,  0.0, 1.0 },
 			{ right, bottom,  1.0, 1.0 },
 
 			{ left,  top,     0.0, 0.0 },
@@ -115,72 +131,155 @@ void render_text(pixel_unit x_begin, pixel_unit y_begin, pixel_unit dist_until_w
 			{ right, top,     1.0, 0.0 }
 		};
 
-		// Render glyph texture over quad
-		glBindTexture(GL_TEXTURE_2D, freetype_char.texture);
-		glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
-		glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
-		text_shader.check();
+		SRT transform = SRT::no_transform();
+		auto transform_mat = mat3_from_transform(transform);
+		textured_shader2.set_mat3("transform", transform_mat);
+
+		textured_shader2.set_int("sampler", 0);
+
+		textured_shader2.set_float("z", 1.f); // Ensures text boxes will be drawn on the top
+
+		glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), vertices, GL_STATIC_DRAW);
+		auto texture = asset_table.get_asset<Texture>("test.png");
+		glBindTexture(GL_TEXTURE_2D, texture->handle);
+
+		textured_shader2.check();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
+		textured_shader2.end();
 
-		cur_subpixel_x += (freetype_char.advance / 64) * scale; 
 
-		if (cur_subpixel_x - x_begin >= (float)dist_until_wrap) {
-			cur_subpixel_y -= Character::px_largest.y;
-			cur_subpixel_x = (float)x_begin;
+		// Draw the text
+
+		// Start the text at the top left of the text box, padded
+		gl_unit padding_x = .075f;
+		gl_unit padding_y = .05f;
+		gl_unit text_start_x = left + padding_x;
+		gl_unit text_start_y = top - padding_y;
+
+		// Move the text down so the top of the text is aligned with the top of the box
+		screen_unit screen_align_offset = Character::px_largest.y / SCREEN_Y;
+		gl_unit gl_align_offset = 2 * screen_align_offset;
+		text_start_y -= gl_align_offset * scale;
+		glm::ivec2 text_start_px = px_coords_from_gl_coords(glm::vec2((float)text_start_x, (float)text_start_y));
+
+		// Wrap once you go the fraction of the screen defined by size (minus padding on both sides)
+		pixel_unit wrap = SCREEN_X * magnitude_screen_from_gl(size_x - 2 * padding_x);
+
+		// Break that bad boy up into lines
+		string this_frame_text = text.substr(0, point+1);
+		vector<string> words = split(this_frame_text, ' ');
+		subpixel_unit accumulated_x = 0;
+		string cur_line;
+		vector<string> lines;
+		for (auto it = words.begin(); it != words.end(); it++) {
+			subpixel_unit this_word_x = 0;
+			string word = *it;
+			for (auto c : word) {
+				Character freetype_char = characters[c];
+				this_word_x += (freetype_char.advance / 64) * scale;
+			}
+
+			Character freetype_char = characters[' '];
+			this_word_x += (freetype_char.advance / 64) * scale;
+
+			accumulated_x += this_word_x;
+			if (accumulated_x >= wrap) {
+				// Get rid of trailing space
+				cur_line.pop_back();
+				this_word_x -= (freetype_char.advance / 64) * scale;
+				// Add line and reset, reset for next line
+				lines.push_back(cur_line);
+				cur_line = word + " ";
+				accumulated_x = this_word_x;
+			}
+			else {
+				cur_line += word + " ";
+			}
 		}
+
+		// Now we have the final line of text. We know it all fits into one line -- but there is an (evil) special case
+		// If we're halfway through a word, we want to start on a new line so we don't abruptly change lines.
+		// Get rid of trailing space
+		if (cur_line.size()) {
+			cur_line.pop_back();
+			accumulated_x -= (characters[' '].advance / 64) * scale;
+		}
+
+		// None of the bounds checks make sense if the text is empty.
+		if (text.size()) {
+			// Now we want to collect all of the characters until (and including) the next space, and see if they overflow 
+			if (text.at(point) != ' ') {
+				int _point = point + 1;
+				while (_point < (text.size() - 1) && text.at(_point) != ' ') {
+					Character freetype_char = characters[text.at(_point)];
+					accumulated_x += (freetype_char.advance / 64) * scale;
+					_point++;
+				}
+				accumulated_x += (characters[' '].advance / 64) * scale;
+			}
+
+
+			// If they do overflow, peel off characters from this line and put them on a new line
+			if (accumulated_x >= wrap) {
+				string new_final_line;
+				int last_line_point = cur_line.size() - 1;
+				while (cur_line.at(last_line_point) != ' ' && last_line_point >= 0) {
+					char c = cur_line.back(); cur_line.pop_back();
+					new_final_line.insert(new_final_line.begin(), c);
+					last_line_point--;
+				}
+				lines.push_back(cur_line);
+				lines.push_back(new_final_line);
+			} else { // No overflow; not a special case
+				lines.push_back(cur_line);
+			}
+		}
+
+		text_shader.begin();
+		float cur_subpixel_y = (float)text_start_px.y;
+		for (auto line : lines) {
+			// We can render text at floating point pixel levels, so explicitly cast
+			float cur_subpixel_x = (float)text_start_px.x;
+
+			text_shader.set_vec3("text_color", white3);
+			text_shader.set_int("sampler", 0);
+
+			// Text is raw 2D, so just use an orthographic projection
+			glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(SCREEN_X), 0.0f, static_cast<GLfloat>(SCREEN_Y));
+			text_shader.set_mat4("projection", projection);
+
+			glBindVertexArray(font_vao);
+			for (auto it = line.begin(); it != line.end(); it++) {
+				Character freetype_char = characters[*it];
+
+				GLfloat left = cur_subpixel_x + freetype_char.px_bearing.x * scale;
+				GLfloat right = left + freetype_char.px_size.x * scale;
+				GLfloat bottom = cur_subpixel_y - (freetype_char.px_size.y - freetype_char.px_bearing.y) * scale; // Put the bearing point, not the bottom of the glyph, at requested Y
+				GLfloat top = bottom + freetype_char.px_size.y * scale;
+
+				// FreeType loads the fonts upside down, which is why texture coordinates look wonky
+				GLfloat vertices[6][4] = {
+					{ left,  top,     0.0, 0.0 },
+					{ left,  bottom,  0.0, 1.0 },
+					{ right, bottom,  1.0, 1.0 },
+
+					{ left,  top,     0.0, 0.0 },
+					{ right, bottom,  1.0, 1.0 },
+					{ right, top,     1.0, 0.0 }
+				};
+
+				// Render glyph texture over quad
+				glBindTexture(GL_TEXTURE_2D, freetype_char.texture);
+				glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
+				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+				text_shader.check();
+				glDrawArrays(GL_TRIANGLES, 0, 6);
+
+				cur_subpixel_x += (freetype_char.advance / 64) * scale;
+			}
+			cur_subpixel_y -= Character::px_largest.y * scale;
+		}
+
+		text_shader.end();
 	}
-	text_shader.end();
-}
-
-void draw_text_box(string text) {
-	// Draw the box
-	bind_sprite_buffers(); //@hack? We just want to draw textured rectangles, which is what this does
-	textured_shader.begin();
-
-	SRT transform = SRT::no_transform();
-	gl_unit bottom = -.9f;
-	gl_unit left = -.9f;
-	transform.scale = glm::vec2(.9f, .25f);
-	transform.translate = glm::vec3(bottom + transform.scale.x, left + transform.scale.y, 1.f); // Sprite buffer has a centered square -- so add back the scale so that we're referring to bottom left
-	auto transform_mat = mat3_from_transform(transform);
-	textured_shader.set_mat3("transform", transform_mat);
-
-	textured_shader.set_int("sampler", 0);
-
-	textured_shader.set_int("z", 1); // Ensures text boxes will be drawn on the top
-
-	glm::vec2 camera_pos = glm::vec2(0.f, 0.f);
-	textured_shader.set_vec2("camera_pos", camera_pos);
-	
-	auto texture = asset_table.get_asset<Texture>("test.png");
-	glBindTexture(GL_TEXTURE_2D, texture->handle);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), square_tex_coords_offset);
-	glEnableVertexAttribArray(1);
-
-	textured_shader.check();
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-	textured_shader.end();
-
-
-	// Draw the text
-	// Start the text at the top left of the text box, padded
-	gl_unit box_left = left;
-	gl_unit box_top = bottom + 2 * transform.scale.y;
-	gl_unit padding_x = .05f;
-	gl_unit padding_y = 0.f;
-	gl_unit text_start_x = box_left + padding_x;
-	gl_unit text_start_y = box_top + padding_y;
-
-	// Move the text down so the top of the text is aligned with the top of the box
-	screen_unit screen_align_offset = Character::px_largest.y / SCREEN_Y;
-	gl_unit gl_align_offset= 2 * screen_align_offset;
-	text_start_y -= gl_align_offset;
-	
-	glm::ivec2 text_start_px = px_coords_from_gl_coords(glm::vec2((float)text_start_x, (float)text_start_y));
-	pixel_unit wrap = SCREEN_X * (.9 - padding_x);
-	render_text((pixel_unit)text_start_px.x, (pixel_unit)text_start_px.y, wrap, red, text);
-
-}
+} text_box;

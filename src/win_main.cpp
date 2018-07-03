@@ -66,7 +66,6 @@ using namespace std;
 
 
 int main() {
-
 	tdns_log.init();
 	
 	// GLFW INIT
@@ -135,7 +134,7 @@ int main() {
 	glBindVertexArray(Mesh::vao);
 	fill_gpu_mesh_buffers();
 
-	init_freetype();
+	init_fonts();
 
 	game_layer.init();
 	

@@ -365,6 +365,7 @@ struct {
 	}
 	
 	void update(float dt) {
+		static int frame = 0;
 		if (game_input.is_down[GLFW_KEY_UP]) {
 			camera_top_left.y = fox_max(0, camera_top_left.y - 1);
 		}
@@ -541,6 +542,16 @@ struct {
 		}
 		
 		ImGui::End();
+
+		string text = "There was text -- and then there was more text. Andsssss then, inexplicably, when they thought the well had run dry, there was yet more text.";
+		if (game_input.was_pressed(GLFW_KEY_RIGHT_ALT)) {
+			text_box.begin(text);
+		}
+		if (game_input.was_pressed(GLFW_KEY_RIGHT_CONTROL)) {
+			text_box.begin("");
+		}
+		text_box.update(frame);
+		frame++;
 	}
 
 	void render() {
@@ -588,7 +599,7 @@ struct {
 
 		ImGui::End();
 
-		draw_text_box("a heck of a lot of text ohhhhhhhhhhhhh yeah baby that sure is some good text right there");
+		text_box.render();
 	}
 } game_layer;
 

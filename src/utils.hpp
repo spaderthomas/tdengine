@@ -4,12 +4,23 @@
 typedef unsigned int uint;
 typedef int32_t int32;
 typedef int pixel_unit;
+typedef float subpixel_unit;
 typedef float screen_unit;
 typedef float gl_unit;
 
 template<typename vec_type>
 void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {
 	append_to.insert(append_to.end(), append_from.begin(), append_from.end());
+}
+
+vector<string> split(const string &str, char delim) {
+	stringstream stream(str);
+	string item;
+	vector<string> tokens;
+	while (getline(stream, item, delim)) {
+		tokens.push_back(item);
+	}
+	return tokens;
 }
 
 #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
@@ -71,6 +82,8 @@ glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f);
 glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
 glm::vec4 green = glm::vec4(0.f, 1.f, 0.f, 1.f);
 glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
+glm::vec4 white4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
+glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
 
 
 // This defines which tile is on the upper left of the screen
@@ -85,6 +98,11 @@ glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
 }
 glm::vec2 gl_coords_from_screen_coords(glm::vec2 screen_coords) {
 	return glm::vec2(screen_coords.x * 2 - 1, 1 - screen_coords.y * 2);
+}
+
+// For converting magnitudes from GL to creen
+screen_unit magnitude_screen_from_gl(gl_unit u) {
+	return (screen_unit)(u / 2);
 }
 glm::ivec2 px_coords_from_gl_coords(glm::vec2 gl_coords) {
 	float y = (gl_coords.y + 1) / 2;

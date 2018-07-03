@@ -6,7 +6,7 @@ out vec2 frag_tex_coord;
 
 uniform vec2 camera_pos;
 uniform mat3 transform;
-uniform int z;
+uniform float z;
 
 void main() {
     vec3 xyz_pos = vec3(pos, 1.f);

@@ -37,17 +37,19 @@ struct Shader {
 			error = glGetError();
 
 			glShaderSource(shader, 1, &source, NULL);
-			error = glGetError();
 
             glCompileShader(shader);
-			error = glGetError();
-            glAttachShader(shader_program, shader);
-			error = glGetError();
+			if (glGetError()) {
+				tdns_log.write("Error compiling shader: " + string(path));
+			}
+			glAttachShader(shader_program, shader);
 		}
 		
 		// Link into a shader program
 		glLinkProgram(shader_program);
-		error = glGetError();
+		if (glGetError()) {
+			tdns_log.write("Error linking shader: " + string(vs_path));
+		}
 		id = shader_program;
 		glGetProgramiv(shader_program, GL_ACTIVE_UNIFORMS, &num_uniforms);
 		name = name_from_full_path(string(vs_path));
@@ -56,7 +58,7 @@ struct Shader {
 	unsigned int get_uniform_loc(const char* name) {
 		auto loc = glGetUniformLocation(id, name);
 		if (loc == -1) {
-			tdns_log.write("Tried to get uniform location, but it didn't exist. Shader name: " + string(name));
+			tdns_log.write("Tried to get uniform location, but it didn't exist. Uniform name: " + string(name) + ", Shader name: " + string(this->name));
 			exit(1);
 		}
 		return loc;
@@ -135,10 +137,12 @@ struct Shader {
 int Shader::active = -1;
 
 Shader textured_shader;
+Shader textured_shader2;
 Shader solid_shader;
 Shader text_shader;
 void init_shaders() {
 	textured_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\textured.fs");
+	textured_shader2.init("..\\..\\shaders\\textured2.vs", "..\\..\\shaders\\textured2.fs");
 	solid_shader.init("..\\..\\shaders\\solid.vs", "..\\..\\shaders\\solid.fs");
 	text_shader.init("..\\..\\shaders\\text.vs", "..\\..\\shaders\\text.fs");
 }
