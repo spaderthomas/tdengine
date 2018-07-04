@@ -9,10 +9,12 @@ void Renderer::draw(Graphic_Component* gc, Position_Component* pc) {
 }
 void Renderer::render_for_frame() {
 	bind_sprite_buffers();
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
+	glEnableVertexAttribArray(0);
+
 	textured_shader.begin();
 	textured_shader.set_int("sampler", 0);
 	glm::vec2 camera_pos = glm::vec2(camera_top_left.x * GLSCR_TILESIZE_X, -1.f * camera_top_left.y * GLSCR_TILESIZE_Y);
-	textured_shader.set_vec2("camera_pos", camera_pos);
 
 	// Algorithm:
 	// Sort by Z-position (as if you were going to do the Painter's algorithm
@@ -42,15 +44,16 @@ void Renderer::render_for_frame() {
 			if (sprite) {
 				sprite->atlas->bind();
 
-				// 0: vertices, 1: texcoords
-				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-				glEnableVertexAttribArray(0);
+				// Point the texture coordinates to this sprite's texcoords
 				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), sprite->tex_coord_offset);
 				glEnableVertexAttribArray(1);
 				
-				auto transform_mat = mat3_from_transform(render_element.pc->transform);
+				SRT transform = render_element.pc->transform;
+				transform.translate.z = render_element.gc->z;
+				transform.translate -= glm::vec3(camera_pos, 0.f);
+				auto transform_mat = mat3_from_transform(transform);
 				textured_shader.set_mat3("transform", transform_mat);
-				textured_shader.set_float("z", render_element.gc->z);
+
 				textured_shader.check();
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			}

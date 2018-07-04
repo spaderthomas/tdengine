@@ -137,12 +137,10 @@ struct Shader {
 int Shader::active = -1;
 
 Shader textured_shader;
-Shader textured_shader2;
 Shader solid_shader;
 Shader text_shader;
 void init_shaders() {
 	textured_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\textured.fs");
-	textured_shader2.init("..\\..\\shaders\\textured2.vs", "..\\..\\shaders\\textured2.fs");
 	solid_shader.init("..\\..\\shaders\\solid.vs", "..\\..\\shaders\\solid.fs");
-	text_shader.init("..\\..\\shaders\\text.vs", "..\\..\\shaders\\text.fs");
+	text_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\text.fs");
 }

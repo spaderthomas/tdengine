@@ -69,27 +69,30 @@ void init_fonts() {
 	FT_Done_Face(face);
 	FT_Done_FreeType(freetype);
 
+	// GL buffers for text
 	glGenVertexArrays(1, &font_vao);
 	glGenBuffers(1, &font_vert_buffer);
 	glBindVertexArray(font_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
 
-	// FreeType generates vertices for us. We'll pass them in as array of structs of vertices and texture coordinates
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(GLfloat) * 12));
 
-
-	// Text Box initialization
+	// GL buffers for the text box
 	glGenVertexArrays(1, &text_box_vao);
 	glGenBuffers(1, &text_box_vert_buffer);
 	glBindVertexArray(text_box_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
 
-	// Also array of structs of vertices and texture coordinates
+	// VAO
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(GLfloat) * 12));
 }
 
 struct {
@@ -113,39 +116,47 @@ struct {
 		// Draw the box
 		glBindVertexArray(text_box_vao);
 		glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
+		auto texture = asset_table.get_asset<Texture>("test.png");
+		glBindTexture(GL_TEXTURE_2D, texture->handle);
 
-		textured_shader2.begin();
+		textured_shader.begin();
 
 		gl_unit size_x = 1.8f, size_y = .5f;
 		gl_unit bottom = -.9f, left = -.9f;
 		gl_unit top = bottom + size_y;
 		gl_unit right = left + size_x;
 
-		GLfloat vertices[6][4] = {
-			{ left,  top,     0.0, 0.0 },
-			{ left,  bottom,  0.0, 1.0 },
-			{ right, bottom,  1.0, 1.0 },
+		GLfloat vertices[12][2] = {
+			// Vertices 
+			{ left,  top },
+			{ left,  bottom },
+			{ right, bottom },
 
-			{ left,  top,     0.0, 0.0 },
-			{ right, bottom,  1.0, 1.0 },
-			{ right, top,     1.0, 0.0 }
+			{ left,  top },
+			{ right, bottom },
+			{ right, top },
+
+			// Texture coordinates
+			{ 0.f, 0.f },
+			{ 0.f, 1.f },
+			{ 1.f, 1.f },
+
+			{ 0.f, 0.f },
+			{ 1.f, 1.f },
+			{ 1.f, 0.f }
 		};
+		glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), vertices, GL_STATIC_DRAW);
 
 		SRT transform = SRT::no_transform();
+		transform.translate.z = 1.f;
 		auto transform_mat = mat3_from_transform(transform);
-		textured_shader2.set_mat3("transform", transform_mat);
+		textured_shader.set_mat3("transform", transform_mat);
 
-		textured_shader2.set_int("sampler", 0);
+		textured_shader.set_int("sampler", 0);
 
-		textured_shader2.set_float("z", 1.f); // Ensures text boxes will be drawn on the top
-
-		glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), vertices, GL_STATIC_DRAW);
-		auto texture = asset_table.get_asset<Texture>("test.png");
-		glBindTexture(GL_TEXTURE_2D, texture->handle);
-
-		textured_shader2.check();
+		textured_shader.check();
 		glDrawArrays(GL_TRIANGLES, 0, 6);
-		textured_shader2.end();
+		textured_shader.end();
 
 
 		// Draw the text
@@ -244,9 +255,12 @@ struct {
 			text_shader.set_int("sampler", 0);
 
 			// Text is raw 2D, so just use an orthographic projection
-			glm::mat4 projection = glm::ortho(0.0f, static_cast<GLfloat>(SCREEN_X), 0.0f, static_cast<GLfloat>(SCREEN_Y));
-			text_shader.set_mat4("projection", projection);
+			SRT transform = SRT::no_transform();
+			transform.translate.z = 1.f;
+			glm::mat3 mat = mat3_from_transform(transform);
+			text_shader.set_mat3("transform", mat);
 
+			glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
 			glBindVertexArray(font_vao);
 			for (auto it = line.begin(); it != line.end(); it++) {
 				Character freetype_char = characters[*it];
@@ -256,21 +270,36 @@ struct {
 				GLfloat bottom = cur_subpixel_y - (freetype_char.px_size.y - freetype_char.px_bearing.y) * scale; // Put the bearing point, not the bottom of the glyph, at requested Y
 				GLfloat top = bottom + freetype_char.px_size.y * scale;
 
-				// FreeType loads the fonts upside down, which is why texture coordinates look wonky
-				GLfloat vertices[6][4] = {
-					{ left,  top,     0.0, 0.0 },
-					{ left,  bottom,  0.0, 1.0 },
-					{ right, bottom,  1.0, 1.0 },
+				gl_unit gl_left = gl_from_screen(screen_x_from_px(left));
+				gl_unit gl_right = gl_from_screen(screen_x_from_px(right));
+				gl_unit gl_bottom = gl_from_screen(screen_y_from_px(bottom));
+				gl_unit gl_top = gl_from_screen(screen_y_from_px(top));
 
-					{ left,  top,     0.0, 0.0 },
-					{ right, bottom,  1.0, 1.0 },
-					{ right, top,     1.0, 0.0 }
+				// FreeType loads the fonts upside down, which is why texture coordinates look wonky
+				GLfloat vertices[12][2] = {
+					// Vertices 
+					{ gl_left,  gl_top },
+					{ gl_left,  gl_bottom },
+					{ gl_right, gl_bottom },
+
+					{ gl_left,  gl_top },
+					{ gl_right, gl_bottom },
+					{ gl_right, gl_top },
+
+					// Texture coordinates
+					{ 0.f, 0.f },
+					{ 0.f, 1.f },
+					{ 1.f, 1.f },
+						
+					{ 0.f, 0.f },
+					{ 1.f, 1.f },
+					{ 1.f, 0.f }
 				};
 
 				// Render glyph texture over quad
 				glBindTexture(GL_TEXTURE_2D, freetype_char.texture);
-				glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
 				glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
+
 				text_shader.check();
 				glDrawArrays(GL_TRIANGLES, 0, 6);
 

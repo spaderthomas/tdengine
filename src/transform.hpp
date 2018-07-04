@@ -74,7 +74,7 @@ glm::vec3 translation_from_grid_pos(glm::ivec2 grid_pos) {
 
 glm::vec3 translation_from_px_pos(glm::vec2 px_pos) {
 	glm::vec2 screen_coords = glm::vec2(px_pos.x / SCREEN_X, px_pos.y / SCREEN_Y);
-	glm::vec2 gl_coords = gl_coords_from_screen_coords(screen_coords);
+	glm::vec2 gl_coords = gl_from_screen(screen_coords);
 	return glm::vec3(gl_coords, 0);
 }
 
