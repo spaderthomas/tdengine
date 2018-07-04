@@ -100,7 +100,7 @@ struct Entity {
 		for (auto component : components_json) {
 			if (component["kind"] == "Position_Component") {
 				Position_Component* pc = new Position_Component;
-				pc->load(component);
+				//pc->load(component);
 				this->add_component(pc);
 			}
 		}

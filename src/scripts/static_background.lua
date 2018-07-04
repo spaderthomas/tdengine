@@ -10,10 +10,9 @@ grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -34,10 +33,9 @@ grass_flower1 = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -58,10 +56,9 @@ grass_flower2 = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -82,10 +79,9 @@ grass_flower3 = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -106,10 +102,9 @@ sand = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -130,10 +125,9 @@ sand_cracked = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -154,10 +148,9 @@ sand_path_top = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -178,10 +171,9 @@ sand_path_bottom = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -202,10 +194,9 @@ sand_path_left = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -226,10 +217,9 @@ sand_path_right = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -250,10 +240,9 @@ sand_path_topleft_inner = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -274,10 +263,9 @@ sand_path_topright_inner = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -298,10 +286,9 @@ sand_path_bottomleft_inner = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -322,10 +309,9 @@ sand_path_bottomright_inner = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -346,10 +332,9 @@ sand_path_topleft_outer = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -370,10 +355,9 @@ sand_path_topright_outer = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -394,10 +378,9 @@ sand_path_bottomleft_outer = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -418,10 +401,9 @@ border_left_sand_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -442,10 +424,9 @@ sand_path_bottomright_outer = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -466,10 +447,9 @@ border_bottom_sand_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -490,10 +470,9 @@ border_left_sand_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -514,10 +493,9 @@ border_top_sand_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -538,10 +516,9 @@ border_right_sand_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -562,10 +539,9 @@ border_bottom_right_sand_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -586,10 +562,9 @@ border_bottom_left_sand_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -610,10 +585,9 @@ border_top_left_sand_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -634,10 +608,9 @@ border_top_right_sand_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -658,10 +631,9 @@ border_bottom_right_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -682,10 +654,9 @@ border_bottom_left_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -706,10 +677,9 @@ border_top_left_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
@@ -730,10 +700,9 @@ border_top_right_grass = {
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,

@@ -62,7 +62,7 @@ void fill_imgui_input() {
 // GLFW Callbacks
 static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypos) {
 	xpos = max<double>(xpos, 0); ypos = max<double>(ypos, 0);
-	global_input.px_pos = glm::vec2(xpos, ypos);
+	global_input.px_pos = glm::vec2(xpos, SCREEN_Y - ypos);
 	global_input.screen_pos = glm::vec2(xpos / SCREEN_X, ypos / SCREEN_Y);
 }
 

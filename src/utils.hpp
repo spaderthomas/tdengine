@@ -100,7 +100,11 @@ Grid coordinates have
 	the bottommost at +1,
 	the topmost at 0
 
-Pixel coordinates are exactly as you would expect. 
+Pixel coordinates have
+	the leftmost coordinate at 0,
+	the rightmost at SCREEN_X,
+	the bottommost at 0,
+	the topmost at SCREEN_Y
 
 Below are all the conversion functions. Using them and proper units is a bit verbose, 
 but is worth it to save the confusion of exchanging units (which is unavoidable). Also
@@ -122,7 +126,7 @@ glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
 
 // Converting to GL units
 glm::vec2 gl_from_screen(glm::vec2 screen_coords) {
-	return glm::vec2(screen_coords.x * 2 - 1, 1 - screen_coords.y * 2);
+	return glm::vec2(screen_coords.x * 2 - 1, screen_coords.y * 2 - 1);
 }
 gl_unit gl_from_screen(screen_unit s) {
 	return s * 2 - 1;
@@ -137,6 +141,9 @@ screen_unit screen_x_from_px(pixel_unit px) {
 }
 screen_unit screen_y_from_px(pixel_unit px) {
 	return px / SCREEN_Y;
+}
+glm::vec2 screen_from_px(glm::ivec2 px) {
+	return glm::vec2(px.x / SCREEN_X, px.y / SCREEN_Y);
 }
 
 // Converting to pixel units

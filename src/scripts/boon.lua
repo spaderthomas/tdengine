@@ -1,15 +1,25 @@
 boon = {
-   Graphics_Component = {
-	  Animations = {
-		 boon_walk = {
-			"boon_walk1",
-			"boon_walk2",
-			"boon_walk3",
-			"boon_walk4",
-			"boon_walk5",
-		 }
-	  },
-	  seconds_per_sprite_update = 1.0 / 8.0,
-	  z = 1
-   }
+   Graphic_Component = {
+        Animations = {
+            walk = {
+                "boon_walk1.png",
+                "boon_walk2.png",
+                "boon_walk3.png",
+                "boon_walk4.png",
+                "boon_walk5.png"
+            }
+        },
+        default_animation = "walk",
+        z = .5
+	},
+	Position_Component = {
+        pos = {
+            x = .25,
+            y = .25,
+        },
+        scale = {
+            x = 32,
+            y = 32
+        }
+    }
 }

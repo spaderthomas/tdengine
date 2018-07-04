@@ -297,7 +297,13 @@ struct Console {
 };
 
 
-vector<function<void()>> stack;
+struct Player {
+	Entity* boon;
+	glm::vec2 position = glm::vec2(.25, .25);
+	void init() {
+		boon = Entity::create("boon");
+	}
+} player;
 struct {
 	Entity_Tree* tile_tree;
 	Entity_Tree* entity_tree;
@@ -308,6 +314,7 @@ struct {
 		SELECT
 	} editing_state;
 	Entity* selected = nullptr;
+	vector<function<void()>> stack;
 	string id_selected_entity;
 	bool show_grid;
 	bool snap_to_grid;
@@ -361,7 +368,7 @@ struct {
 		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 		dude_ranch.name = "dude_ranch";
 		create_texture("..\\..\\textures\\reference\\test.png");
-
+		player.init();
 	}
 	
 	void update(float dt) {
@@ -467,12 +474,11 @@ struct {
 		if (editing_state == INSERT) {
 			static int lag_frames; // so we dont paint fifty entities every time we click
 
+			glm::vec2 draggable_position;
+			glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
+			if (snap_to_grid) { draggable_position = screen_from_px(game_input.px_pos); } //@fix
+			else { draggable_position = screen_from_px(game_input.px_pos); }
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-				glm::vec3 translation;
-				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
-				if (snap_to_grid) { translation = translation_from_grid_pos(grid_pos); }
-				else { translation = translation_from_px_pos(game_input.px_pos); }
-
 				// Add a grid tile
 				if (tile_tree->find(selected->lua_id)) {
 					Entity* current_entity = dude_ranch.get_tile(grid_pos.x, grid_pos.y);
@@ -500,9 +506,8 @@ struct {
 						// Grab the translation from the mouse position and figure out whether its a tile or an entity
 						Entity* new_entity = Entity::create(selected->lua_id);
 						
-
 						Position_Component* pc = new_entity->get_component<Position_Component>();
-						pc->transform.translate = translation;
+						pc->screen_pos = draggable_position;
 						dude_ranch.set_tile(new_entity, grid_pos.x, grid_pos.y);
 
 						// Update so we only paint one entity per tile
@@ -519,7 +524,7 @@ struct {
 
 						Entity* new_entity = Entity::create(selected->lua_id);
 						Position_Component* pc = new_entity->get_component<Position_Component>();
-						pc->transform.translate = translation;
+						pc->screen_pos = draggable_position;
 						dude_ranch.entities.push_back(new_entity);
 						lag_frames = 30;
 					}
@@ -533,10 +538,10 @@ struct {
 			if (pc) {
 				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
 				if (snap_to_grid) {
-					pc->transform.translate = translation_from_grid_pos(grid_pos);
+					pc->screen_pos = draggable_position;
 				}
 				else {
-					pc->transform.translate = translation_from_px_pos(game_input.px_pos);
+					pc->screen_pos = draggable_position;
 				}
 			}
 		}
@@ -551,6 +556,7 @@ struct {
 			text_box.begin("");
 		}
 		text_box.update(frame);
+
 		frame++;
 	}
 

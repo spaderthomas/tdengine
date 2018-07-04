@@ -68,7 +68,7 @@ struct Graphic_Component : Component {
 	}
 };
 
-struct Position_Component : Component {
+struct Position_Component_OLD : Component {
 	SRT transform;
 
 	void init_from_table(sol::table pc) override {
@@ -92,6 +92,21 @@ struct Position_Component : Component {
 
 	void load(json& j) {
 		transform.load(j["transform"]);
+	}
+};
+struct Position_Component : Component {
+	glm::vec2 screen_pos;
+	glm::vec2 scale;
+
+	void init_from_table(sol::table pc) override {
+		screen_pos.x = pc["pos"]["x"];
+		screen_pos.y = pc["pos"]["y"];
+
+		//@hack I feel like there's a way to auto-detect this
+		int px_size_x = pc["scale"]["x"];
+		int px_size_y = pc["scale"]["y"];
+		scale.x = (px_size_x / 16) * SCR_TILESIZE_X;
+		scale.y = (px_size_y / 16) * SCR_TILESIZE_Y;
 	}
 };
 

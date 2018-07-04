@@ -15,16 +15,14 @@ tree = {
         right = 1
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 64,
             y = 64
-        },
-        rad_rot = 0
+        }
     }
 }
 
@@ -45,16 +43,14 @@ fence_left = {
         right = 1
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 32,
             y = 32
-        },
-        rad_rot = 0
+        }
     }
  }
  fence_middle = {
@@ -74,16 +70,14 @@ fence_left = {
         right = 1
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 32,
             y = 32
-        },
-        rad_rot = 0
+        }
     }
  }
  fence_right = {
@@ -103,16 +97,14 @@ fence_left = {
         right = 1
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 32,
             y = 32
-        },
-        rad_rot = 0
+        }
     }
  }
  fence_post = {
@@ -132,16 +124,14 @@ fence_left = {
         right = 1
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 32,
             y = 32
-        },
-        rad_rot = 0
+        }
     }
  }
 fence_top = {
@@ -161,16 +151,14 @@ fence_top = {
         right = 1
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 32,
             y = 64
-        },
-        rad_rot = 0
+        }
     }
 }
 
@@ -191,16 +179,14 @@ fence_top = {
         right = 1
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 32,
             y = 32
-        },
-        rad_rot = 0
+        }
     }
 }
 
@@ -221,16 +207,14 @@ bush = {
         right = 1
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
             y = 16
-        },
-        rad_rot = 0
+        }
     }
 }
 
@@ -251,16 +235,14 @@ building = {
         right = 1
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 128,
             y = 128
-        },
-        rad_rot = 0
+        }
     }
 } 
 

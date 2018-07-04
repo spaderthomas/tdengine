@@ -28,7 +28,7 @@ struct Name_And_ID {
 //@leak never free stbi memory
 void create_texture(string path) {
 	string texture_name = name_from_full_path(path);
-	if (is_valid_texture_name(texture_name)) {
+	if (is_valid_filename(texture_name)) {
 		Texture* new_texture = asset_table.get_asset<Texture>(texture_name);
 
 		stbi_set_flip_vertically_on_load(true);

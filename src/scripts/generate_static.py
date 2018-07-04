@@ -49,10 +49,9 @@ with open("static_background.lua", "w") as file:
         z = 0
     },
     Position_Component = {
-        translate = {
+        pos = {
             x = 0,
-            y = 0,
-            z = 0
+            y = 0
         },
         scale = {
             x = 16,
