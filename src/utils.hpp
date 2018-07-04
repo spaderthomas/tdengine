@@ -97,14 +97,14 @@ Screen coordinates have
 Grid coordinates have
 	the leftmost coordinate at 0,
 	the rightmost at +1,
-	the bottommost at +1,
-	the topmost at 0
+	the bottommost at 0,
+	the topmost at +1
 
 Pixel coordinates have
 	the leftmost coordinate at 0,
 	the rightmost at SCREEN_X,
 	the bottommost at 0,
-	the topmost at SCREEN_Y
+	the topmost at SCREEN_Yd
 
 Below are all the conversion functions. Using them and proper units is a bit verbose, 
 but is worth it to save the confusion of exchanging units (which is unavoidable). Also
@@ -144,6 +144,14 @@ screen_unit screen_y_from_px(pixel_unit px) {
 }
 glm::vec2 screen_from_px(glm::ivec2 px) {
 	return glm::vec2(px.x / SCREEN_X, px.y / SCREEN_Y);
+}
+// Puts it in the center of the grid tile
+glm::vec2 screen_from_grid(glm::ivec2 grid_pos) { 
+	screen_unit x = (screen_unit)(grid_pos.x * SCR_TILESIZE_X);
+	screen_unit y = (screen_unit)(grid_pos.y * SCR_TILESIZE_Y);
+	x += .5 * SCR_TILESIZE_X;
+	y += .5 * SCR_TILESIZE_Y;
+	return glm::vec2(x, y);
 }
 
 // Converting to pixel units

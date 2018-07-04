@@ -68,32 +68,6 @@ struct Graphic_Component : Component {
 	}
 };
 
-struct Position_Component_OLD : Component {
-	SRT transform;
-
-	void init_from_table(sol::table pc) override {
-		transform.translate.x = pc["translate"]["x"];
-		transform.translate.y = pc["translate"]["y"];
-		transform.translate.z = pc["translate"]["z"];
-	
-		//@hack I feel like there's a way to auto-detect this
-		int px_size_x = pc["scale"]["x"];
-		int px_size_y = pc["scale"]["y"];
-		transform.scale.x = (px_size_x / 16) * SCR_TILESIZE_X;
-		transform.scale.y = (px_size_y / 16) * SCR_TILESIZE_Y;
-
-		transform.rad_rot = pc["rad_rot"];
-	}
-
-	void save(json& j) const override {
-		j["kind"] = "Position_Component";
-		transform.save(j["transform"]);
-	}
-
-	void load(json& j) {
-		transform.load(j["transform"]);
-	}
-};
 struct Position_Component : Component {
 	glm::vec2 screen_pos;
 	glm::vec2 scale;
@@ -107,6 +81,21 @@ struct Position_Component : Component {
 		int px_size_y = pc["scale"]["y"];
 		scale.x = (px_size_x / 16) * SCR_TILESIZE_X;
 		scale.y = (px_size_y / 16) * SCR_TILESIZE_Y;
+	}
+
+	void save(json& j) const override {
+		j["kind"] = "Position_Component";
+		j["scale"]["x"] = scale.x;
+		j["scale"]["y"] = scale.y;
+		j["pos"]["x"] = screen_pos.x;
+		j["pos"]["y"] = screen_pos.y;
+	}
+
+	void load(json& j) {
+		scale.x = j["scale"]["x"];
+		scale.y = j["scale"]["y"];
+		screen_pos.x = j["pos"]["x"];
+		screen_pos.y = j["pos"]["y"];
 	}
 };
 

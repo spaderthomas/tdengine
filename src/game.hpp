@@ -476,7 +476,7 @@ struct {
 
 			glm::vec2 draggable_position;
 			glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
-			if (snap_to_grid) { draggable_position = screen_from_px(game_input.px_pos); } //@fix
+			if (snap_to_grid) { draggable_position = screen_from_grid(grid_pos); } //@fix
 			else { draggable_position = screen_from_px(game_input.px_pos); }
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 				// Add a grid tile
@@ -579,7 +579,7 @@ struct {
 				for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {
 					draw_line_from_points(glm::vec2(col_offset, -1.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.5f));
 				}
-				for (float row_offset = 1; row_offset >= -1; row_offset -= GLSCR_TILESIZE_Y) {
+				for (float row_offset = -1; row_offset <= 1; row_offset += GLSCR_TILESIZE_Y) {
 					draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
 				}
 			}
