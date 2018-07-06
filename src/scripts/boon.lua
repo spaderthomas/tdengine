@@ -21,5 +21,17 @@ boon = {
             x = 32,
             y = 32
         }
-    }
+    },
+	Collision_Component = {
+        center = {
+           x = 0,
+           y = 0
+        },
+        extents = {
+           x = tile_x_to_screen(1.25),
+           y = tile_y_to_screen(1.75)
+        }
+     },
+     Movement_Component = {
+     },
 }

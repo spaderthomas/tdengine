@@ -30,9 +30,11 @@ struct Entity {
 			if (cast_component) { return cast_component; }
 		}
 
+#if 0
 		string msg = "Entity " + to_string(id) + " tried to get a component it did not have.";
 		msg +=       " Component type: " + string(typeid(Component_Type).name());
 		tdns_log.write(msg);
+#endif
 		return nullptr;
 	}
 	
@@ -61,8 +63,8 @@ struct Entity {
 				gc->init_from_table(table);
 				entity->add_component(gc);
 			}
-			else if (component_type == "Collision_Component") {
-				Collision_Component* cc = new Collision_Component;
+			else if (component_type == "Collision_Component") { //@fix
+				Bounding_Box* cc = new Bounding_Box;
 				cc->init_from_table(table);
 				entity->add_component(cc);
 			}
@@ -70,6 +72,11 @@ struct Entity {
 				Position_Component* pc = new Position_Component;
 				pc->init_from_table(table);
 				entity->add_component(pc);
+			}
+			else if (component_type == "Movement_Component") {
+				Movement_Component* mc = new Movement_Component;
+				mc->wish = glm::vec2(0.f);
+				entity->add_component(mc);
 			}
 		}
 

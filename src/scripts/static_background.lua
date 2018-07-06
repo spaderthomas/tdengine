@@ -712,3 +712,26 @@ border_top_right_grass = {
     }
 }
         
+wood_floor = {
+    Graphic_Component = {
+        Animations = {
+            wood_floor = {
+                "wood_floor.png"
+            }
+        },
+        default_animation = "wood_floor",
+        z = 0
+    },
+    Position_Component = {
+        pos = {
+            x = 0,
+            y = 0
+        },
+        scale = {
+            x = 16,
+            y = 16
+        },
+        rad_rot = 0
+    }
+}
+        

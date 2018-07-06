@@ -3,7 +3,7 @@ struct Entity_Tree {
 	vector<Entity*> entities;
 	vector<Entity_Tree*> children;
 
-	int size;
+	int size = 0;
 
 	static Entity_Tree* create(string dir) {
 		Entity_Tree* tree = new Entity_Tree;
@@ -296,7 +296,6 @@ struct Console {
     
 };
 
-
 struct Player {
 	Entity* boon;
 	glm::vec2 position = glm::vec2(.25, .25);
@@ -304,6 +303,7 @@ struct Player {
 		boon = Entity::create("boon");
 	}
 } player;
+
 struct {
 	Entity_Tree* tile_tree;
 	Entity_Tree* entity_tree;
@@ -320,15 +320,16 @@ struct {
 	bool snap_to_grid;
 
 	Level dude_ranch;
-
+	Level cantina;
+	Level* active_level;
 	Console console;
 
 	void exec_console_command(const char* command_line) {
 		if (console.Stricmp(command_line, "SAVE") == 0) {
-			dude_ranch.save();
+			active_level->save();
 		}
 		else if (console.Stricmp(command_line, "LOAD") == 0) {
-			dude_ranch.load();
+			active_level->load();
 		}
 		else if (console.Stricmp(command_line, "RELOAD") == 0) {
 			//@leak this one is quite big 
@@ -342,7 +343,7 @@ struct {
 			entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 
 			// Reload all graphics components
-			for (auto it : dude_ranch.chunks) {
+			for (auto it : active_level->chunks) {
 				Chunk& chunk = it.second;
 				fox_for(x, CHUNK_SIZE) {
 					fox_for(y, CHUNK_SIZE) {
@@ -367,6 +368,8 @@ struct {
 		tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
 		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
 		dude_ranch.name = "dude_ranch";
+		cantina.name = "cantina";
+		active_level = &cantina;
 		create_texture("..\\..\\textures\\reference\\test.png");
 		player.init();
 	}
@@ -374,16 +377,16 @@ struct {
 	void update(float dt) {
 		static int frame = 0;
 		if (game_input.is_down[GLFW_KEY_UP]) {
-			camera_top_left.y = fox_max(0, camera_top_left.y - 1);
+			camera.y = fox_max(0, camera.y - 1);
 		}
 		if (game_input.is_down[GLFW_KEY_DOWN]) {
-			camera_top_left.y = camera_top_left.y + 1;
+			camera.y = camera.y + 1;
 		}
 		if (game_input.is_down[GLFW_KEY_RIGHT]) {
-				camera_top_left.x += 1;
+				camera.x += 1;
 			}
 		if (game_input.is_down[GLFW_KEY_LEFT]) {
-			camera_top_left.x = fox_max(0, camera_top_left.x - 1);
+			camera.x = fox_max(0, camera.x - 1);
 		}
 		if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
 			game_input.was_pressed(GLFW_KEY_Z)) 
@@ -448,7 +451,7 @@ struct {
 							}
 							ImGui::PopID();
 							bool is_end_of_row = !((indx + 1) % 6);
-							bool is_last_element = indx == (tile_tree->size - 1);
+							bool is_last_element = indx == (root->size - 1);
 							if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
 							indx++;
 						}
@@ -475,13 +478,13 @@ struct {
 			static int lag_frames; // so we dont paint fifty entities every time we click
 
 			glm::vec2 draggable_position;
-			glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
+			glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
 			if (snap_to_grid) { draggable_position = screen_from_grid(grid_pos); } //@fix
 			else { draggable_position = screen_from_px(game_input.px_pos); }
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 				// Add a grid tile
 				if (tile_tree->find(selected->lua_id)) {
-					Entity* current_entity = dude_ranch.get_tile(grid_pos.x, grid_pos.y);
+					Entity* current_entity = active_level->get_tile(grid_pos.x, grid_pos.y);
 
 					// We don't want to double paint, so check to make sure we're not doing that
 					bool okay_to_create = true;
@@ -495,11 +498,11 @@ struct {
 
 					if (okay_to_create) {
 						// Create a lambda which will undo the tile placement we're about to do
-						auto my_lambda = [&dude_ranch = dude_ranch,
+						auto my_lambda = [&active_level = active_level,
 							x = grid_pos.x, y = grid_pos.y,
-							ent = dude_ranch.get_tile(grid_pos.x, grid_pos.y)]
+							ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
 						{
-							dude_ranch.set_tile(ent, x, y);
+							active_level->set_tile(ent, x, y);
 						};
 						stack.push_back(my_lambda);
 
@@ -508,7 +511,7 @@ struct {
 						
 						Position_Component* pc = new_entity->get_component<Position_Component>();
 						pc->screen_pos = draggable_position;
-						dude_ranch.set_tile(new_entity, grid_pos.x, grid_pos.y);
+						active_level->set_tile(new_entity, grid_pos.x, grid_pos.y);
 
 						// Update so we only paint one entity per tile
 						last_grid_pos_drawn = grid_pos;
@@ -517,15 +520,15 @@ struct {
 				// Add an entity
 				else if (entity_tree->find(selected->lua_id)) {
 					if (lag_frames == 0) {
-						auto my_lambda = [&dude_ranch = dude_ranch]() -> void {
-							dude_ranch.entities.pop_back();
+						auto my_lambda = [&active_level = active_level]() -> void {
+							active_level->entities.pop_back();
 						};
 						stack.push_back(my_lambda);
 
 						Entity* new_entity = Entity::create(selected->lua_id);
 						Position_Component* pc = new_entity->get_component<Position_Component>();
 						pc->screen_pos = draggable_position;
-						dude_ranch.entities.push_back(new_entity);
+						active_level->entities.push_back(new_entity);
 						lag_frames = 30;
 					}
 				}
@@ -536,7 +539,7 @@ struct {
 			// Correctly translate current selected tile to be under the mouse & scale it otherwise
 			Position_Component* pc = selected->get_component<Position_Component>();
 			if (pc) {
-				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera_top_left;
+				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
 				if (snap_to_grid) {
 					pc->screen_pos = draggable_position;
 				}
@@ -548,25 +551,34 @@ struct {
 		
 		ImGui::End();
 
-		string text = "There was text -- and then there was more text. Andsssss then, inexplicably, when they thought the well had run dry, there was yet more text.";
-		if (game_input.was_pressed(GLFW_KEY_RIGHT_ALT)) {
-			text_box.begin(text);
+
+		auto mc = player.boon->get_component<Movement_Component>();
+		if (game_input.is_down[GLFW_KEY_W]) {
+			mc->wish += glm::vec2(0.f, .0025f);
 		}
-		if (game_input.was_pressed(GLFW_KEY_RIGHT_CONTROL)) {
-			text_box.begin("");
+		if (game_input.is_down[GLFW_KEY_A]) {
+			mc->wish += glm::vec2(-.0025f, 0.f);
 		}
-		text_box.update(frame);
+		if (game_input.is_down[GLFW_KEY_S]) {
+			mc->wish += glm::vec2(0.f, -.0025f);
+		}
+		if (game_input.is_down[GLFW_KEY_D]) {
+			mc->wish += glm::vec2(.0025f, 0.f);
+		}
+
+		auto pc = player.boon->get_component<Position_Component>();
+		renderer.draw(player.boon->get_component<Graphic_Component>(), pc);
+		
+		for (auto& ent : active_level->entities) {
+			physics_system.entities.push_back(ent);
+		}
+		physics_system.entities.push_back(player.boon);
 
 		frame++;
 	}
 
 	void render() {
-		static bool* show_layers = (bool*)calloc(sizeof(bool), 128); // @hack; // For ImGui checkboxes to show layers
-		
-		// Render the layer selector and chosen layers
-		ImGui::Begin("Level Editor", 0, 0);
-		
-		dude_ranch.draw();
+		active_level->draw();
 		if (selected) { selected->draw(); }
 
 		// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
@@ -603,9 +615,7 @@ struct {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
-		ImGui::End();
-
-		text_box.render();
+		physics_system.process(1.f / 60.f);
 	}
 } game_layer;
 

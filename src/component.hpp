@@ -99,16 +99,18 @@ struct Position_Component : Component {
 	}
 };
 
-struct Collision_Component : Component {
-	float top;
-	float bottom;
-	float left;
-	float right;
+struct Bounding_Box : Component {
+	glm::vec2 screen_center;
+	glm::vec2 screen_extents;
 
 	void init_from_table(sol::table table) override {
-		top = table["top"];
-		bottom = table["bottom"];
-		left = table["left"];
-		right = table["right"];
+		screen_center.x = table["center"]["x"];
+		screen_center.y = table["center"]["y"];
+		screen_extents.x = table["extents"]["x"];
+		screen_extents.y = table["extents"]["y"];
 	};
+};
+
+struct Movement_Component : Component {
+	glm::vec2 wish;
 };

@@ -39,8 +39,8 @@ extern "C" {
 using namespace std;
 
 
-
 #include "imgui_impl_glfw_gl3.hpp"
+
 #include "log.hpp"
 #include "utils.hpp"
 #include "tdns_lua.hpp"
@@ -55,10 +55,11 @@ using namespace std;
 #include "animation.hpp"
 #include "component.hpp"
 #include "entity.hpp"
+#include "draw.hpp"
+#include "collision.hpp"
 #include "serialization.hpp"
 #include "tilemap.hpp"
 #include "input.hpp"
-#include "draw.hpp"
 #include "renderer_functions.hpp"
 #include "text.hpp"
 #include "game.hpp"

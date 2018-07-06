@@ -1,3 +1,35 @@
+building = {
+    Graphic_Component = {
+        Animations = {
+            building = {
+                "building.png"
+            }
+        },
+        default_animation = "building",
+        z = .5
+    },
+    Collision_Component = {
+	   center = {
+		  x = 0,
+		  y = 0
+	   },
+	   extents = {
+		  x = tile_x_to_screen(3),
+		  y = tile_y_to_screen(3)
+	   }
+	},
+    Position_Component = {
+        pos = {
+            x = 0,
+            y = 0
+        },
+        scale = {
+            x = 128,
+            y = 128
+        }
+    }
+} 
+
 tree = {
    Graphic_Component = {
 	  Animations = {
@@ -9,11 +41,15 @@ tree = {
       z = .5,
     },
     Collision_Component = {
-        top = .5,
-        bottom = 0,
-        left = 0, 
-        right = 1
-    },
+	   center = {
+		  x = 0,
+		  y = 0,
+	   },
+	   extents = {
+		  x = 32 / 680,
+		  y = 32 / 360
+	   }
+	},
     Position_Component = {
         pos = {
             x = 0,
@@ -37,11 +73,15 @@ fence_left = {
 	   z = .5,
 	},
     Collision_Component = {
-        top = .5,
-        bottom = 0,
-        left = 0, 
-        right = 1
-    },
+	   center = {
+		  x = 0,
+		  y = 0
+	   },
+	   extents = {
+		  x = 32 / 680,
+		  y = 32 / 360
+	   }
+	},
     Position_Component = {
         pos = {
             x = 0,
@@ -64,11 +104,15 @@ fence_left = {
 	   z = .5,
 	},
     Collision_Component = {
-        top = .5,
-        bottom = 0,
-        left = 0, 
-        right = 1
-    },
+        center = {
+           x = 0,
+           y = 0
+        },
+        extents = {
+           x = 32 / 680,
+           y = 32 / 360
+        }
+     },
     Position_Component = {
         pos = {
             x = 0,
@@ -91,11 +135,15 @@ fence_left = {
 	   z = .5,
 	},
     Collision_Component = {
-        top = .5,
-        bottom = 0,
-        left = 0, 
-        right = 1
-    },
+        center = {
+           x = 0,
+           y = 0
+        },
+        extents = {
+           x = 32 / 680,
+           y = 32 / 360
+        }
+     },
     Position_Component = {
         pos = {
             x = 0,
@@ -118,11 +166,15 @@ fence_left = {
 	   z = .5,
 	},
     Collision_Component = {
-        top = .5,
-        bottom = 0,
-        left = 0, 
-        right = 1
-    },
+        center = {
+           x = 0,
+           y = 0
+        },
+        extents = {
+           x = 32 / 680,
+           y = 32 / 360
+        }
+     },
     Position_Component = {
         pos = {
             x = 0,
@@ -145,11 +197,15 @@ fence_top = {
         z = .5
     },
     Collision_Component = {
-        top = .5,
-        bottom = 0,
-        left = 0, 
-        right = 1
-    },
+        center = {
+           x = 0,
+           y = 0
+        },
+        extents = {
+           x = 32 / 680,
+           y = 32 / 360
+        }
+     },
     Position_Component = {
         pos = {
             x = 0,
@@ -173,11 +229,15 @@ fence_top = {
         z = .5
     },
     Collision_Component = {
-        top = .5,
-        bottom = 0,
-        left = 0, 
-        right = 1
-    },
+	   center = {
+		  x = 0,
+		  y = 0,
+	   },
+	   extents = {
+		  x = 32 / 680,
+		  y = 32 / 360
+	   }
+	},
     Position_Component = {
         pos = {
             x = 0,
@@ -201,11 +261,15 @@ bush = {
         z = .5
     },
     Collision_Component = {
-        top = .5,
-        bottom = 0,
-        left = 0, 
-        right = 1
-    },
+	   center = {
+		  x = 0,
+		  y = 0,
+	   },
+	   extents = {
+		  x = 32 / 680,
+		  y = 32 / 360
+	   }
+	},
     Position_Component = {
         pos = {
             x = 0,
@@ -218,22 +282,120 @@ bush = {
     }
 }
 
-building = {
+table_ = {
     Graphic_Component = {
         Animations = {
-            building = {
-                "building.png"
+            table_ = {
+                "table_.png"
             }
         },
-        default_animation = "building",
+        default_animation = "table_",
         z = .5
     },
     Collision_Component = {
-        top = .5,
-        bottom = 0,
-        left = 0, 
-        right = 1
+	   center = {
+		  x = 0,
+		  y = 0,
+	   },
+	   extents = {
+		  x = tile_x_to_screen(2),
+		  y = tile_y_to_screen(1.5)
+	   }
+	},
+    Position_Component = {
+        pos = {
+            x = 0,
+            y = 0
+        },
+        scale = {
+            x = 32,
+            y = 32
+        }
+    }
+}
+
+chair_left = {
+    Graphic_Component = {
+        Animations = {
+            chair = {
+                "chair_left.png"
+            }
+        },
+        default_animation = "chair",
+        z = .5
     },
+    Collision_Component = {
+	   center = {
+		  x = 0,
+		  y = 0,
+	   },
+	   extents = {
+        x = tile_x_to_screen(1),
+        y = tile_y_to_screen(1)
+	   }
+	},
+    Position_Component = {
+        pos = {
+            x = 0,
+            y = 0
+        },
+        scale = {
+            x = 32,
+            y = 32
+        }
+    }
+}
+chair_right = {
+    Graphic_Component = {
+        Animations = {
+            chair = {
+                "chair_right.png"
+            }
+        },
+        default_animation = "chair",
+        z = .5
+    },
+    Collision_Component = {
+	   center = {
+		  x = 0,
+		  y = 0,
+	   },
+	   extents = {
+        x = tile_x_to_screen(1),
+        y = tile_y_to_screen(1)
+	   }
+	},
+    Position_Component = {
+        pos = {
+            x = 0,
+            y = 0
+        },
+        scale = {
+            x = 32,
+            y = 32
+        }
+    }
+}
+bar = {
+    Graphic_Component = {
+        Animations = {
+            bar = {
+                "bar.png"
+            }
+        },
+        default_animation = "bar",
+        z = .5
+    },
+    Collision_Component = {
+	   center = {
+		  x = 0,
+		  y = 0,
+	   },
+	   extents = {
+          x = tile_x_to_screen(8),
+          y = tile_y_to_screen(4)
+	   }
+	},
     Position_Component = {
         pos = {
             x = 0,
@@ -241,8 +403,38 @@ building = {
         },
         scale = {
             x = 128,
-            y = 128
+            y = 64  
         }
     }
-} 
-
+}
+liquor_cabinet = {
+    Graphic_Component = {
+        Animations = {
+            liquor_cabinet = {
+                "liquor_cabinet.png"
+            }
+        },
+        default_animation = "liquor_cabinet",
+        z = .5
+    },
+    Collision_Component = {
+	   center = {
+		  x = 0,
+		  y = 0,
+	   },
+	   extents = {
+          x = tile_x_to_screen(8),
+          y = tile_y_to_screen(4)
+	   }
+	},
+    Position_Component = {
+        pos = {
+            x = 0,
+            y = 0
+        },
+        scale = {
+            x = 128,
+            y = 64  
+        }
+    }
+}

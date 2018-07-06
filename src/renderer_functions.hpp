@@ -9,7 +9,7 @@ void Renderer::render_for_frame() {
 
 	textured_shader.begin();
 	textured_shader.set_int("sampler", 0);
-	glm::vec2 camera_pos = glm::vec2(camera_top_left.x * GLSCR_TILESIZE_X, -1.f * camera_top_left.y * GLSCR_TILESIZE_Y);
+	glm::vec2 camera_pos = glm::vec2(camera.x * GLSCR_TILESIZE_X, -1.f * camera.y * GLSCR_TILESIZE_Y);
 
 	// Algorithm:
 	// Sort by Z-position (as if you were going to do the Painter's algorithm
@@ -52,6 +52,8 @@ void Renderer::render_for_frame() {
 
 				textured_shader.check();
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+
 			}
 		}
 	}

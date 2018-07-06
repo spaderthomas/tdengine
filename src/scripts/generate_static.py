@@ -31,6 +31,7 @@ tiles = [
     "border_bottom_left_grass", \
     "border_top_left_grass", \
     "border_top_right_grass", \
+    "wood_floor", \
     ]
 
 

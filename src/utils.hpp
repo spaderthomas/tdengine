@@ -24,7 +24,20 @@ vector<string> split(const string &str, char delim) {
 
 #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
 
+glm::vec2 tdns_normalize(glm::vec2 vec) {
+	if (vec.x == 0.f && vec.y == 0.f) {
+		return vec;
+	}
 
+	return glm::normalize(vec);
+}
+glm::vec3 tdns_normalize(glm::vec3 vec) {
+	if (vec.x == 0.f && vec.y == 0.f && vec.z == 0.f) {
+		return vec;
+	}
+
+	return glm::normalize(vec);
+}
 // Colors
 glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's favorite three floating point numbers.
 glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
@@ -326,5 +339,5 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 }
 
 // This defines which tile is on the upper left of the screen
-glm::ivec2 camera_top_left = glm::ivec2(0);
+glm::ivec2 camera = glm::ivec2(0);
 float seconds_per_update = 1.f / 60.f;

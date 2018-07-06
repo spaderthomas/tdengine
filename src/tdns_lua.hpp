@@ -8,6 +8,7 @@ struct {
 
 	void load_scripts() {
 		vector<string> scripts = {
+			"../../src/scripts/utils.lua",
 			"../../src/scripts/static_background.lua",
 			"../../src/scripts/static_foreground.lua",
 			"../../src/scripts/boon.lua",
