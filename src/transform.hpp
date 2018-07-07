@@ -49,6 +49,7 @@ glm::mat3 mat3_from_transform(SRT transform) {
 	glm::mat3 trans_mat = identity_mat3();
 	trans_mat[2][0] = transform.translate.x;
 	trans_mat[2][1] = transform.translate.y;
+	trans_mat[2][2] = transform.translate.z;
 
 	return trans_mat * rot_mat * scale_mat;
 }

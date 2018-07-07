@@ -6,9 +6,9 @@ building = {
             }
         },
         default_animation = "building",
-        z = .5
+        z = 1
     },
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
 		  y = 0
@@ -38,9 +38,9 @@ tree = {
 		 }
 	  },
 	  default_animation = "tree",
-      z = .5,
+      z = 1,
     },
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
 		  y = 0,
@@ -70,9 +70,9 @@ fence_left = {
 		  }
 	   },
 	   default_animation = "fence_left",
-	   z = .5,
+	   z = 1,
 	},
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
 		  y = 0
@@ -101,9 +101,9 @@ fence_left = {
 		  }
 	   },
 	   default_animation = "fence_middle",
-	   z = .5,
+	   z = 1,
 	},
-    Collision_Component = {
+    Bounding_Box = {
         center = {
            x = 0,
            y = 0
@@ -132,9 +132,9 @@ fence_left = {
 		  }
 	   },
 	   default_animation = "fence_right",
-	   z = .5,
+	   z = 1,
 	},
-    Collision_Component = {
+    Bounding_Box = {
         center = {
            x = 0,
            y = 0
@@ -163,9 +163,9 @@ fence_left = {
 		  }
 	   },
 	   default_animation = "fence_post",
-	   z = .5,
+	   z = 1,
 	},
-    Collision_Component = {
+    Bounding_Box = {
         center = {
            x = 0,
            y = 0
@@ -194,9 +194,9 @@ fence_top = {
             }
         },
         default_animation = "fence_top",
-        z = .5
+        z = 1
     },
-    Collision_Component = {
+    Bounding_Box = {
         center = {
            x = 0,
            y = 0
@@ -226,9 +226,9 @@ fence_top = {
             }
         },
         default_animation = "cactus",
-        z = .5
+        z = 1
     },
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
 		  y = 0,
@@ -258,9 +258,9 @@ bush = {
             }
         },
         default_animation = "bush",
-        z = .5
+        z = 1
     },
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
 		  y = 0,
@@ -290,9 +290,9 @@ table_ = {
             }
         },
         default_animation = "table_",
-        z = .5
+        z = 1
     },
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
 		  y = 0,
@@ -322,9 +322,9 @@ chair_left = {
             }
         },
         default_animation = "chair",
-        z = .5
+        z = 1
     },
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
 		  y = 0,
@@ -353,9 +353,9 @@ chair_right = {
             }
         },
         default_animation = "chair",
-        z = .5
+        z = 1
     },
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
 		  y = 0,
@@ -384,16 +384,16 @@ bar = {
             }
         },
         default_animation = "bar",
-        z = .5
+        z = 1
     },
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
 		  y = 0,
 	   },
 	   extents = {
           x = tile_x_to_screen(8),
-          y = tile_y_to_screen(4)
+          y = tile_y_to_screen(3.5)
 	   }
 	},
     Position_Component = {
@@ -415,16 +415,16 @@ liquor_cabinet = {
             }
         },
         default_animation = "liquor_cabinet",
-        z = .5
+        z = 1
     },
-    Collision_Component = {
+    Bounding_Box = {
 	   center = {
 		  x = 0,
-		  y = 0,
+		  y = tile_y_to_screen(-1),
 	   },
 	   extents = {
           x = tile_x_to_screen(8),
-          y = tile_y_to_screen(4)
+          y = tile_y_to_screen(2)
 	   }
 	},
     Position_Component = {

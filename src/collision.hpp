@@ -26,13 +26,10 @@ struct {
 			Absolute_Bounding_Box box;
 			Position_Component* pc = e->get_component<Position_Component>();
 			Bounding_Box* cc = e->get_component<Bounding_Box>();
-			if (pc && cc) {
-				box.origin = pc->screen_pos + cc->screen_center;
-				box.extents = cc->screen_extents;
-			} else {
-				tdns_log.write("Tried to make an absolute bounding box, but didn't have either position or bounding box");
-				tdns_log.write("Lua ID: " + e->lua_id);
-			}
+			fox_assert(pc);
+			fox_assert(cc);
+			box.origin = pc->screen_pos + cc->screen_center;
+			box.extents = cc->screen_extents;
 
 			return box;
 		}
@@ -69,7 +66,7 @@ struct {
 	void process(float dt) {
 		// Render collision boxes
 		for (auto ent : entities) {
-			debug_draw_bounding_box(ent, white4);
+			//debug_draw_bounding_box(ent, white4);
 		}
 
 		// First, figure out which entities are trying to move.
@@ -85,8 +82,8 @@ struct {
 				entity_box.origin += mc->wish;
 				if (are_boxes_colliding(entity_box, other_box)) {
 					mc->wish = glm::vec2(0.f);
-					debug_draw_bounding_box(entity, blue);
-					debug_draw_bounding_box(other, blue);
+					//debug_draw_bounding_box(entity, blue);
+					//debug_draw_bounding_box(other, blue);
 				}
 			}
 			

@@ -574,6 +574,8 @@ struct {
 		}
 		physics_system.entities.push_back(player.boon);
 
+		physics_system.process(1.f / 60.f);
+
 		frame++;
 	}
 
@@ -615,7 +617,6 @@ struct {
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
-		physics_system.process(1.f / 60.f);
 	}
 } game_layer;
 

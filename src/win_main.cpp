@@ -76,7 +76,7 @@ int main() {
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
-	GLFWwindow* window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "demo", NULL, NULL);
+	GLFWwindow* window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "tdengine", NULL, NULL);
 	if (window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
@@ -121,7 +121,8 @@ int main() {
 
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
-	//glEnable(GL_DEPTH_TEST);
+	glEnable(GL_DEPTH_TEST);
+	glDepthFunc(GL_ALWAYS);
 
 	glGenVertexArrays(1, &Sprite::vao);
 	glGenBuffers(1, &Sprite::vert_buffer);
@@ -159,11 +160,15 @@ int main() {
 			if (global_input.was_pressed(GLFW_KEY_3)) { use_1080p(window); }
 		}
 
-		glClear(GL_COLOR_BUFFER_BIT);  
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		ImGui_ImplGlfwGL3_NewFrame();
 		game_layer.update(seconds_per_update);
 		game_layer.render();
+		for (auto& draw_func : render_on_top) {
+			draw_func();
+		}
+		render_on_top.clear();
 
 		//ImGui::ShowDemoWindow();
 		ImGui::Render();

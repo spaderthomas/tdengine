@@ -10,7 +10,7 @@ boon = {
             }
         },
         default_animation = "walk",
-        z = .5
+        z = 1
 	},
 	Position_Component = {
         pos = {
@@ -22,14 +22,14 @@ boon = {
             y = 32
         }
     },
-	Collision_Component = {
+	Bounding_Box = {
         center = {
            x = 0,
-           y = 0
+           y = tile_y_to_screen(-.5)
         },
         extents = {
            x = tile_x_to_screen(1.25),
-           y = tile_y_to_screen(1.75)
+           y = tile_y_to_screen(.5)
         }
      },
      Movement_Component = {

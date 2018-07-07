@@ -2,6 +2,15 @@
 #define fox_max(a, b) (a) > (b) ? (a) : (b)
 #define fox_min(a, b) (a) > (b) ? (b) : (a)
 #define fox_for(iterName, iterCount) for (unsigned int iterName = 0; iterName < (iterCount); ++iterName)
+//Assert
+#ifdef _MSC_VER
+#	ifdef assert
+#		undef assert
+#	endif
+#	define fox_assert(expr) if (!(expr)) _CrtDbgBreak()
+#else
+#	define fox_assert(expr) assert(expr)
+#endif
 typedef unsigned int uint;
 typedef int32_t int32;
 

@@ -63,10 +63,10 @@ struct Entity {
 				gc->init_from_table(table);
 				entity->add_component(gc);
 			}
-			else if (component_type == "Collision_Component") { //@fix
-				Bounding_Box* cc = new Bounding_Box;
-				cc->init_from_table(table);
-				entity->add_component(cc);
+			else if (component_type == "Bounding_Box") {
+				Bounding_Box* box = new Bounding_Box;
+				box->init_from_table(table);
+				entity->add_component(box);
 			}
 			else if (component_type == "Position_Component") {
 				Position_Component* pc = new Position_Component;

@@ -1,27 +1,39 @@
+vector<function<void()>> render_on_top;
+
 void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
-	solid_shader.begin();
-	solid_shader.set_vec4("color", color);
-	SRT transform = SRT::no_transform();
-	transform.scale = basis;
-	auto transform_mat = mat3_from_transform(transform);
-	solid_shader.set_mat3("transform", transform_mat);
-	line->bind();
-	solid_shader.check();
-	line->draw(GL_LINES);
-	solid_shader.end();
+	auto draw = [basis, color]() -> void {
+		solid_shader.begin();
+		glm::vec4 color_ = color;
+		solid_shader.set_vec4("color", color_);
+		SRT transform = SRT::no_transform();
+		transform.scale = basis;
+		auto transform_mat = mat3_from_transform(transform);
+		solid_shader.set_mat3("transform", transform_mat);
+		line->bind();
+		solid_shader.check();
+		line->draw(GL_LINES);
+		solid_shader.end();
+	};
+	render_on_top.push_back(draw);
 }
 void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
-	solid_shader.begin();
-	solid_shader.set_vec4("color", color);
-	SRT transform = SRT::no_transform();
-	transform.scale = p2 - p1;
-	transform.translate = glm::vec3(p1, 0.f);
-	auto transform_mat = mat3_from_transform(transform);
-	solid_shader.set_mat3("transform", transform_mat);
-	line->bind();
-	solid_shader.check();
-	line->draw(GL_LINES);
-	solid_shader.end();
+	auto draw = [p1, p2, color]() -> void {
+		solid_shader.begin();
+		glm::vec4 color_ = color; //@hack So I can pass as a reference everywhere else. maybe make it a pointer? but then inconsistent :(
+		solid_shader.set_vec4("color", color_);
+		SRT transform = SRT::no_transform();
+		transform.scale = p2 - p1;
+		transform.translate = glm::vec3(p1, 1.f);
+		auto transform_mat = mat3_from_transform(transform);
+		solid_shader.set_mat3("transform", transform_mat);
+		line->bind();
+		solid_shader.check();
+		line->draw(GL_LINES);
+
+		solid_shader.end();
+	};
+	render_on_top.push_back(draw);
+
 }
 
 void draw_square_outline(glm::vec2 top_left, glm::vec2 top_right, glm::vec2 bottom_right, glm::vec2 bottom_left, glm::vec4 color) {
@@ -39,14 +51,18 @@ void draw_square_outline(SRT transform, glm::vec4 color) {
 }
 
 void draw_square(SRT transform, glm::vec4 color) {
-	auto trans_mat = mat3_from_transform(transform);
-	solid_shader.begin();
-	solid_shader.set_mat3("transform", trans_mat);
-	solid_shader.set_vec4("color", color);
-	square->bind();
-	solid_shader.check();
-	square->draw(GL_TRIANGLES);
-	solid_shader.end();
+	auto draw = [&transform, &color]() -> void {
+		auto trans_mat = mat3_from_transform(transform);
+		solid_shader.begin();
+		solid_shader.set_mat3("transform", trans_mat);
+		solid_shader.set_vec4("color", color);
+		square->bind();
+		solid_shader.check();
+		square->draw(GL_TRIANGLES);
+		solid_shader.end();
+	};
+	render_on_top.push_back(draw);
+
 }
 void draw_rectangle(glm::vec2 bottom_left, glm::vec2 extents, glm::vec4 color) {
 	SRT transform = SRT::no_transform();

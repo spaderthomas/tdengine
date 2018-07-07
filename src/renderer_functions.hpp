@@ -45,15 +45,13 @@ void Renderer::render_for_frame() {
 				
 				SRT transform = SRT::no_transform();
 				transform.scale = render_element.pc->scale;
-				transform.translate = glm::vec3(gl_from_screen(render_element.pc->screen_pos), render_element.gc->z);
+				transform.translate = glm::vec3(gl_from_screen(render_element.pc->screen_pos), 0.f);
 				transform.translate -= glm::vec3(camera_pos, 0.f);
 				auto transform_mat = mat3_from_transform(transform);
 				textured_shader.set_mat3("transform", transform_mat);
 
 				textured_shader.check();
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-
-
 			}
 		}
 	}
