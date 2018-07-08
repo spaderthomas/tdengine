@@ -253,6 +253,12 @@ bool is_png(string& asset_path) {
 }
 
 
+/* ImGui */
+bool show_console = false;
+bool console_close = false;
+bool debug_show_aabb = false;
+
+
 /* Random shit */
 void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void *userParam) {
 	(void)userParam;

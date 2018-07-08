@@ -406,8 +406,6 @@ struct {
 		}
 		
 		// Toggle the console on control
-		static bool show_console = false;
-		static bool console_close = false;
 		if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 			show_console = !show_console;
 		}
@@ -418,9 +416,12 @@ struct {
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize;
 		ImGui::Begin("Level Editor", 0, flags);
 		
-		if (ImGui::CollapsingHeader("Options")) {
+		//if (ImGui::CollapsingHeader("Options")) {
+		if (ImGui::TreeNode("options")) {
 			ImGui::Checkbox("Show grid", &show_grid);
 			ImGui::Checkbox("Snap to grid", &snap_to_grid);
+			ImGui::Checkbox("Show AABBs", &debug_show_aabb);
+			ImGui::TreePop();
 		}
 
 		// Tile Selector GUI
@@ -525,7 +526,7 @@ struct {
 						};
 						stack.push_back(my_lambda);
 
-						Entity* new_entity = Entity::create(selected->lua_id);
+    					Entity* new_entity = Entity::create(selected->lua_id);
 						Position_Component* pc = new_entity->get_component<Position_Component>();
 						pc->screen_pos = draggable_position;
 						active_level->entities.push_back(new_entity);
@@ -570,7 +571,9 @@ struct {
 		renderer.draw(player.boon->get_component<Graphic_Component>(), pc);
 		
 		for (auto& ent : active_level->entities) {
-			physics_system.entities.push_back(ent);
+			if (ent->get_component<Bounding_Box>()) {
+				physics_system.entities.push_back(ent);
+			}
 		}
 		physics_system.entities.push_back(player.boon);
 

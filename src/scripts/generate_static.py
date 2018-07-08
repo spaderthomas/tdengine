@@ -50,15 +50,6 @@ with open("static_background.lua", "w") as file:
         z = 0
     },
     Position_Component = {
-        pos = {
-            x = 0,
-            y = 0
-        },
-        scale = {
-            x = 16,
-            y = 16
-        },
-        rad_rot = 0
     }
 }
         ''' % (tile, tile, tile, tile)

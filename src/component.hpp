@@ -7,6 +7,7 @@ struct Component {
 struct Graphic_Component : Component {
 	vector<Animation*> animations;
 	Animation* active_animation = nullptr;
+	glm::vec2 scale;
 	int z;
 
 	void set_animation(const string wish_name) {
@@ -64,6 +65,10 @@ struct Graphic_Component : Component {
 		sol::object default_animation_name = gc["default_animation"];
 		set_animation(default_animation_name.as<string>());
 
+		// Set the scaling of this based on the first sprite we see. Right now, no objects resize (i.e. all sprites it could use are the same dimensions)
+		// Also, use 680x360 because the raw dimensions are based on this
+		Sprite* default_sprite = this->get_current_frame();
+		this->scale = glm::vec2((float)default_sprite->width / (float)640, (float)default_sprite->height / (float)360);
 		this->z = gc["z"];
 	}
 };
@@ -73,14 +78,8 @@ struct Position_Component : Component {
 	glm::vec2 scale;
 
 	void init_from_table(sol::table pc) override {
-		screen_pos.x = pc["pos"]["x"];
-		screen_pos.y = pc["pos"]["y"];
-
-		//@hack I feel like there's a way to auto-detect this
-		int px_size_x = pc["scale"]["x"];
-		int px_size_y = pc["scale"]["y"];
-		scale.x = (px_size_x / 16) * SCR_TILESIZE_X;
-		scale.y = (px_size_y / 16) * SCR_TILESIZE_Y;
+		screen_pos = glm::vec2(0.f);
+		scale = glm::vec2(0.f);
 	}
 
 	void save(json& j) const override {
