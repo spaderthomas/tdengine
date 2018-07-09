@@ -1,5 +1,14 @@
+
 struct {
 	sol::state state;
+	map<string, vector<string>> script_to_definitions;
+	map<string, string> definitions_to_script;
+	vector<string> scripts = {
+		"utils",
+		"static_background",
+		"static_foreground",
+		"boon",
+	};
 
 	void init() {
 		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io);
@@ -7,12 +16,6 @@ struct {
 	}
 
 	void load_scripts() {
-		vector<string> scripts = {
-			"../../src/scripts/utils.lua",
-			"../../src/scripts/static_background.lua",
-			"../../src/scripts/static_foreground.lua",
-			"../../src/scripts/boon.lua",
-		};
 		auto error_handler = [](lua_State*, sol::protected_function_result pfr) {
 			sol::error err = pfr;
 			string msg = string("Error in script: ") + err.what();
@@ -20,8 +23,29 @@ struct {
 			return pfr;
 		};
 
+		// Load in all the scripts
 		for (auto& script : scripts) {
-			state.safe_script_file(script, error_handler);
+			string path = "..\\..\\src\\scripts\\" + script + ".lua";
+			state.safe_script_file(path, error_handler);
+		}
+
+		// Each script has a single table with its filename as the name containing its definitions
+		// Pull out the definitions in the file and put them in a vector that the filename maps to
+		for (auto& script : scripts) {
+			vector<string> defined;
+			sol::optional<sol::table> entities = state[script];
+			if (entities) {
+				for (auto& entity : entities.value()) {
+					string name = entity.first.as<string>();
+					defined.push_back(name);
+					definitions_to_script[name] = script;
+				}
+			}
+
+			sort(defined.begin(), defined.end());
+			script_to_definitions[script] = defined;
 		}
 	}
+
+	
 } Lua;

@@ -631,8 +631,8 @@ void ImGui::ShowDemoWindow(bool* p_open)
             // (your selection data could be an index, a pointer to the object, an id for the object, a flag stored in the object itself, etc.)
             const char* items[] = { "AAAA", "BBBB", "CCCC", "DDDD", "EEEE", "FFFF", "GGGG", "HHHH", "IIII", "JJJJ", "KKKK", "LLLLLLL", "MMMM", "OOOOOOO" };
             static const char* item_current = items[0];            // Here our selection is a single pointer stored outside the object.
-            if (ImGui::BeginCombo("combo 1", item_current, flags)) // The second parameter is the label previewed before opening the combo.
-            {
+			if (ImGui::BeginCombo("combo 1", item_current, flags)) // The second parameter is the label previewed before opening the combo.
+			{
                 for (int n = 0; n < IM_ARRAYSIZE(items); n++)
                 {
                     bool is_selected = (item_current == items[n]);
@@ -1207,8 +1207,8 @@ void ImGui::ShowDemoWindow(bool* p_open)
 
             // Child 2: rounded border
             {
-                ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-                ImGui::BeginChild("Child2", ImVec2(0,300), true, (disable_mouse_wheel ? ImGuiWindowFlags_NoScrollWithMouse : 0) | (disable_menu ? 0 : ImGuiWindowFlags_MenuBar));
+				ImGui::PushStyleVar(ImGuiStyleVar_WindowBorderSize, 0.f);
+				ImGui::BeginChild("Child2", ImVec2(0,300), true, (disable_mouse_wheel ? ImGuiWindowFlags_NoScrollWithMouse : 0) | (disable_menu ? 0 : ImGuiWindowFlags_MenuBar));
                 if (!disable_menu && ImGui::BeginMenuBar())
                 {
                     if (ImGui::BeginMenu("Menu"))

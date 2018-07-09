@@ -66,7 +66,7 @@ struct Graphic_Component : Component {
 		set_animation(default_animation_name.as<string>());
 
 		// Set the scaling of this based on the first sprite we see. Right now, no objects resize (i.e. all sprites it could use are the same dimensions)
-		// Also, use 680x360 because the raw dimensions are based on this
+		// Also, use 640x360 because the raw dimensions are based on this
 		Sprite* default_sprite = this->get_current_frame();
 		this->scale = glm::vec2((float)default_sprite->width / (float)640, (float)default_sprite->height / (float)360);
 		this->z = gc["z"];

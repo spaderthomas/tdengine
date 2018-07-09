@@ -311,8 +311,13 @@ struct {
 	enum {
 		IDLE,
 		INSERT,
-		SELECT
+		EDIT
 	} editing_state;
+	enum Selected_Kind {
+		TILE,
+		ENTITY
+	};
+	Selected_Kind selected_kind;
 	Entity* selected = nullptr;
 	vector<function<void()>> stack;
 	string id_selected_entity;
@@ -383,13 +388,13 @@ struct {
 			camera.y = camera.y + 1;
 		}
 		if (game_input.is_down[GLFW_KEY_RIGHT]) {
-				camera.x += 1;
-			}
+			camera.x += 1;
+		}
 		if (game_input.is_down[GLFW_KEY_LEFT]) {
 			camera.x = fox_max(0, camera.x - 1);
 		}
 		if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
-			game_input.was_pressed(GLFW_KEY_Z)) 
+			game_input.was_pressed(GLFW_KEY_Z))
 		{
 			if (stack.size()) {
 				function<void()> undo = stack.back();
@@ -401,10 +406,7 @@ struct {
 			selected = nullptr;
 			editing_state = IDLE;
 		}
-		if (game_input.was_pressed(GLFW_KEY_0)) {
-			editing_state = SELECT;
-		}
-		
+
 		// Toggle the console on control
 		if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 			show_console = !show_console;
@@ -413,10 +415,9 @@ struct {
 			console.Draw("tdnsconsole", &console_close);
 		}
 
+		// Tile Selector GUI
 		ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize;
-		ImGui::Begin("Level Editor", 0, flags);
-		
-		//if (ImGui::CollapsingHeader("Options")) {
+		ImGui::Begin("editor", 0, flags);
 		if (ImGui::TreeNode("options")) {
 			ImGui::Checkbox("Show grid", &show_grid);
 			ImGui::Checkbox("Snap to grid", &snap_to_grid);
@@ -424,11 +425,10 @@ struct {
 			ImGui::TreePop();
 		}
 
-		// Tile Selector GUI
 		int unique_button_index = 0; // Needed for ImGui
-		
-		auto draw_buttons = [&](Entity_Tree* root) -> void {
-			auto lambda = [&](Entity_Tree* root, const auto& lambda) -> void {
+
+		auto draw_buttons = [&](Entity_Tree* root, Selected_Kind kind) -> void {
+			auto lambda = [&](Entity_Tree* root, Selected_Kind kind, const auto& lambda) -> void {
 				if (ImGui::TreeNode(root->dir.c_str())) {
 
 					// If expanded, draw this folder's tiles
@@ -449,6 +449,7 @@ struct {
 								selected = Entity::create(tile->lua_id);
 								id_selected_entity = tile->lua_id;
 								editing_state = INSERT;
+								selected_kind = kind;
 							}
 							ImGui::PopID();
 							bool is_end_of_row = !((indx + 1) % 6);
@@ -460,31 +461,84 @@ struct {
 
 					// And draw dropdowns for any children
 					for (auto child : root->children) {
-						lambda(child, lambda);
+						lambda(child, kind, lambda);
 					}
 
 					ImGui::TreePop();
 				}
 			};
-			lambda(root, lambda);
+			lambda(root, kind, lambda);
 		};
-		draw_buttons(tile_tree);
-		draw_buttons(entity_tree);
+		draw_buttons(tile_tree, TILE);
 
-		//@hack
-		if (!selected) { editing_state = IDLE;  }
+		static string script_current = Lua.scripts[0];
+		if (ImGui::BeginCombo("##choosescript", script_current.c_str(), 0)) {
+			for (auto script : Lua.scripts) {
+				bool is_selected = script == script_current;
+				if (ImGui::Selectable(script.c_str(), is_selected)) {
+					script_current = script;
+				}
+				if (is_selected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+		ImGui::BeginChild("Child2", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
+		for (auto& ent : Lua.script_to_definitions[script_current]) {
+			if (ImGui::Selectable(ent.c_str())) {
+				selected = Entity::create(ent.c_str());
+				editing_state = INSERT;
+				selected_kind = ENTITY;
+			}
+		}
+		ImGui::PopStyleVar();
+		ImGui::EndChild();
+		draw_buttons(entity_tree, ENTITY);
 
 		// INSERT MODE: There is a selected tile or entity, and we can move it around and click to place it.
-		if (editing_state == INSERT) {
-			static int lag_frames; // so we dont paint fifty entities every time we click
+		if (editing_state == IDLE) {
+			static glm::ivec2 hovered = glm::vec2(0);
+			static glm::vec4 hovered_color = green;
+			Entity* last_hovered_entity = nullptr;
+			Entity* hovered_entity = nullptr;
+			glm::vec2 mouse = screen_from_px(game_input.px_pos);
+			for (auto& entity : active_level->entities) {
+				Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
+				if (point_inside_box(mouse, box)) {
+					hovered_entity = entity;
+					editing_state = EDIT;
+				}
+			}
 
+			// If we change what tile we are hovering over, fade the new tile from green to red and the old tile from red to green
+			glm::ivec2 this_frame_hovered = grid_pos_from_px_pos(game_input.px_pos);
+			if (this_frame_hovered != hovered) {
+				hovered_color = green;
+				hovered = this_frame_hovered;
+			}
+
+			// Draw the tile that's hovered 
+			hovered_color = glm::mix(hovered_color, red, .1f);
+			draw_square_outline(srt_from_grid_pos(glm::ivec2(5, 5)), blue);
+			draw_square_outline(srt_from_grid_pos(hovered), hovered_color);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}
+		else if (editing_state == INSERT) {
+			// Correctly translate current selected thing to be under the mouse & scale it otherwise
 			glm::vec2 draggable_position;
 			glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
-			if (snap_to_grid) { draggable_position = screen_from_grid(grid_pos); } //@fix
+			if (snap_to_grid) { draggable_position = screen_from_grid(grid_pos); } 
 			else { draggable_position = screen_from_px(game_input.px_pos); }
-			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-				// Add a grid tile
-				if (tile_tree->find(selected->lua_id)) {
+
+			Position_Component* pc = selected->get_component<Position_Component>();
+			pc->screen_pos = draggable_position;
+
+			// Add a grid tile
+			if (selected_kind == TILE) {
+				if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 					Entity* current_entity = active_level->get_tile(grid_pos.x, grid_pos.y);
 
 					// We don't want to double paint, so check to make sure we're not doing that
@@ -509,7 +563,7 @@ struct {
 
 						// Grab the translation from the mouse position and figure out whether its a tile or an entity
 						Entity* new_entity = Entity::create(selected->lua_id);
-						
+
 						Position_Component* pc = new_entity->get_component<Position_Component>();
 						pc->screen_pos = draggable_position;
 						active_level->set_tile(new_entity, grid_pos.x, grid_pos.y);
@@ -518,38 +572,72 @@ struct {
 						last_grid_pos_drawn = grid_pos;
 					}
 				}
-				// Add an entity
-				else if (entity_tree->find(selected->lua_id)) {
-					if (lag_frames == 0) {
-						auto my_lambda = [&active_level = active_level]() -> void {
-							active_level->entities.pop_back();
-						};
-						stack.push_back(my_lambda);
-
-    					Entity* new_entity = Entity::create(selected->lua_id);
-						Position_Component* pc = new_entity->get_component<Position_Component>();
-						pc->screen_pos = draggable_position;
-						active_level->entities.push_back(new_entity);
-						lag_frames = 30;
-					}
-				}
 			}
+			// Add an entity
+			else if (selected_kind == ENTITY) {
+				if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+					auto my_lambda = [&active_level = active_level]() -> void {
+						active_level->entities.pop_back();
+					};
+					stack.push_back(my_lambda);
 
-			lag_frames = fox_max(0, lag_frames - 1);
-
-			// Correctly translate current selected tile to be under the mouse & scale it otherwise
-			Position_Component* pc = selected->get_component<Position_Component>();
-			if (pc) {
-				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
-				if (snap_to_grid) {
-					pc->screen_pos = draggable_position;
-				}
-				else {
+					active_level->entities.push_back(selected);
+					selected = Entity::create(selected->lua_id);
+					Position_Component* pc = selected->get_component<Position_Component>();
 					pc->screen_pos = draggable_position;
 				}
 			}
 		}
-		
+		else if (editing_state == EDIT) {
+			enum Moving_Status {
+				NOT_MOVING,
+				MOVING,
+			};
+			static Moving_Status moving = NOT_MOVING;
+			ImGui::End();
+			ImGui::Begin("properties", 0, 0);
+			ImGui::Text("maybe one day there will be some properties to browse...");
+			ImGui::End();
+
+			if (moving == NOT_MOVING) {
+				if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+					auto mouse = screen_from_px(game_input.px_pos);
+					auto bounding_box = Absolute_Bounding_Box::from_entity(selected);
+
+					if (point_inside_box(mouse, bounding_box)) {
+						moving = MOVING;
+					}
+					else {
+						editing_state = IDLE;
+					}
+				}
+			}
+			else if (moving == MOVING) {
+				if (!game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+					auto my_lambda = [&active_level = active_level]() -> void {
+						active_level->entities.pop_back();
+					};
+					stack.push_back(my_lambda);
+
+					active_level->entities.push_back(selected);
+					moving = NOT_MOVING;
+				}
+				else {
+					// Correctly translate current selected thing to be under the mouse & scale it otherwise
+					glm::vec2 draggable_position;
+					glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
+					if (snap_to_grid) { draggable_position = screen_from_grid(grid_pos); }
+					else { draggable_position = screen_from_px(game_input.px_pos); }
+
+					Position_Component* pc = selected->get_component<Position_Component>();
+					pc->screen_pos = draggable_position;
+				}
+			}
+
+			
+
+			ImGui::Begin("editor", 0, 0);
+		}
 		ImGui::End();
 
 
@@ -602,23 +690,7 @@ struct {
 			}
 		}
 
-		// SELECT MODE: Lets you select previously placed tiles and edit them. Render a fade-in outline around selected tile.
-		static glm::ivec2 hovered = glm::vec2(0);
-		static glm::vec4 hovered_color = green;
-		if (editing_state == SELECT) {
-			// If we change what tile we are hovering over, fade the new tile from green to red and the old tile from red to green
-			glm::ivec2 this_frame_hovered = grid_pos_from_px_pos(game_input.px_pos);
-			if (this_frame_hovered != hovered) {
-				hovered_color = green;
-				hovered = this_frame_hovered;
-			}
-
-			// Draw the tile that's hovered 
-			hovered_color = glm::mix(hovered_color, red, .1f);
-			draw_square_outline(srt_from_grid_pos(glm::ivec2(5, 5)), blue);
-			draw_square_outline(srt_from_grid_pos(hovered), hovered_color);
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
+		
 
 	}
 } game_layer;

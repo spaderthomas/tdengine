@@ -36,6 +36,9 @@ tiles = [
 
 
 with open("static_background.lua", "w") as file:
+    file.write('''
+static_background = {
+''')
     for tile in tiles:
         path = tile + '.png'
         lua_def = '''
@@ -51,6 +54,7 @@ with open("static_background.lua", "w") as file:
     },
     Position_Component = {
     }
-}
+},
         ''' % (tile, tile, tile, tile)
         file.write(lua_def)
+    file.write("}")

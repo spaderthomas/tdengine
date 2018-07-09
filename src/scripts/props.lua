@@ -1,6 +1,4 @@
-
-static_background = {
-
+stuff = {
 grass = {
     Graphic_Component = {
         Animations = {
@@ -13,7 +11,7 @@ grass = {
     },
     Position_Component = {
     }
-},
+}
         
 grass_flower1 = {
     Graphic_Component = {
@@ -27,7 +25,7 @@ grass_flower1 = {
     },
     Position_Component = {
     }
-},
+}
         
 grass_flower2 = {
     Graphic_Component = {
@@ -41,7 +39,7 @@ grass_flower2 = {
     },
     Position_Component = {
     }
-},
+}
         
 grass_flower3 = {
     Graphic_Component = {
@@ -55,7 +53,7 @@ grass_flower3 = {
     },
     Position_Component = {
     }
-},
+}
         
 sand = {
     Graphic_Component = {
@@ -69,7 +67,7 @@ sand = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_cracked = {
     Graphic_Component = {
@@ -83,7 +81,7 @@ sand_cracked = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_top = {
     Graphic_Component = {
@@ -97,7 +95,7 @@ sand_path_top = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_bottom = {
     Graphic_Component = {
@@ -111,7 +109,7 @@ sand_path_bottom = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_left = {
     Graphic_Component = {
@@ -125,7 +123,7 @@ sand_path_left = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_right = {
     Graphic_Component = {
@@ -139,7 +137,7 @@ sand_path_right = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_topleft_inner = {
     Graphic_Component = {
@@ -153,7 +151,7 @@ sand_path_topleft_inner = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_topright_inner = {
     Graphic_Component = {
@@ -167,7 +165,7 @@ sand_path_topright_inner = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_bottomleft_inner = {
     Graphic_Component = {
@@ -181,7 +179,7 @@ sand_path_bottomleft_inner = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_bottomright_inner = {
     Graphic_Component = {
@@ -195,7 +193,7 @@ sand_path_bottomright_inner = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_topleft_outer = {
     Graphic_Component = {
@@ -209,7 +207,7 @@ sand_path_topleft_outer = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_topright_outer = {
     Graphic_Component = {
@@ -223,7 +221,7 @@ sand_path_topright_outer = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_bottomleft_outer = {
     Graphic_Component = {
@@ -237,7 +235,7 @@ sand_path_bottomleft_outer = {
     },
     Position_Component = {
     }
-},
+}
         
 border_left_sand_grass = {
     Graphic_Component = {
@@ -251,7 +249,7 @@ border_left_sand_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 sand_path_bottomright_outer = {
     Graphic_Component = {
@@ -265,7 +263,7 @@ sand_path_bottomright_outer = {
     },
     Position_Component = {
     }
-},
+}
         
 border_bottom_sand_grass = {
     Graphic_Component = {
@@ -279,7 +277,7 @@ border_bottom_sand_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_left_sand_grass = {
     Graphic_Component = {
@@ -293,7 +291,7 @@ border_left_sand_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_top_sand_grass = {
     Graphic_Component = {
@@ -307,7 +305,7 @@ border_top_sand_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_right_sand_grass = {
     Graphic_Component = {
@@ -321,7 +319,7 @@ border_right_sand_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_bottom_right_sand_grass = {
     Graphic_Component = {
@@ -335,7 +333,7 @@ border_bottom_right_sand_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_bottom_left_sand_grass = {
     Graphic_Component = {
@@ -349,7 +347,7 @@ border_bottom_left_sand_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_top_left_sand_grass = {
     Graphic_Component = {
@@ -363,7 +361,7 @@ border_top_left_sand_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_top_right_sand_grass = {
     Graphic_Component = {
@@ -377,7 +375,7 @@ border_top_right_sand_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_bottom_right_grass = {
     Graphic_Component = {
@@ -391,7 +389,7 @@ border_bottom_right_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_bottom_left_grass = {
     Graphic_Component = {
@@ -405,7 +403,7 @@ border_bottom_left_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_top_left_grass = {
     Graphic_Component = {
@@ -419,7 +417,7 @@ border_top_left_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 border_top_right_grass = {
     Graphic_Component = {
@@ -433,7 +431,7 @@ border_top_right_grass = {
     },
     Position_Component = {
     }
-},
+}
         
 wood_floor = {
     Graphic_Component = {
@@ -447,5 +445,5 @@ wood_floor = {
     },
     Position_Component = {
     }
-},
-        }
+}
+}       

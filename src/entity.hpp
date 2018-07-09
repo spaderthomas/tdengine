@@ -37,6 +37,11 @@ struct Entity {
 #endif
 		return nullptr;
 	}
+
+	static sol::table get_definition(string lua_id) {
+		string script = Lua.definitions_to_script[lua_id];
+		return Lua.state[script][lua_id];
+	}
 	
 	// Pulls defaults from Lua, then fills in whatever was saved
 	static Entity* create(json& entity_json) {
@@ -54,7 +59,7 @@ struct Entity {
 		entity->id = next_id++;
 		entity->lua_id = lua_id;
 		
-		sol::table lua_components = Lua.state[lua_id];
+		sol::table lua_components = Entity::get_definition(lua_id);
 		for (auto it : lua_components) {
 			string component_type = it.first.as<string>();
 			sol::table table = it.second.as<sol::table>();

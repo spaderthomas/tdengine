@@ -5,47 +5,58 @@ struct Rectangle_Points {
 	screen_unit bottom;
 };
 
+// A struct for combining Bounding_Box (which is relative to the center of the thing it bounds) and actual positions
+struct Absolute_Bounding_Box {
+	glm::vec2 origin;
+	glm::vec2 extents;
+
+	Rectangle_Points get_verts() {
+		screen_unit left = origin.x - extents.x / 2;
+		screen_unit right = origin.x + extents.x / 2;
+		screen_unit top = origin.y + extents.y / 2;
+		screen_unit bottom = origin.y - extents.y / 2;
+
+		return { left, right, top, bottom };
+	}
+
+	static Absolute_Bounding_Box from_entity(Entity* e) {
+		Absolute_Bounding_Box box;
+		Position_Component* pc = e->get_component<Position_Component>();
+		Bounding_Box* cc = e->get_component<Bounding_Box>();
+		fox_assert(pc);
+		fox_assert(cc);
+		box.origin = pc->screen_pos + cc->screen_center;
+		box.extents = cc->screen_extents;
+
+		return box;
+	}
+
+	void debug_draw(glm::vec4 color) {
+		Rectangle_Points verts = get_verts();
+
+		gl_unit gl_left = gl_from_screen(verts.left);
+		gl_unit gl_right = gl_from_screen(verts.right);
+		gl_unit gl_top = gl_from_screen(verts.top);
+		gl_unit gl_bottom = gl_from_screen(verts.bottom);
+
+		draw_square_outline(glm::vec2(gl_left, gl_top), glm::vec2(gl_right, gl_top), glm::vec2(gl_right, gl_bottom), glm::vec2(gl_left, gl_bottom), color);
+	}
+};
+
+bool point_inside_box(glm::vec2& screen_pos, Absolute_Bounding_Box& box) {
+	Rectangle_Points points = box.get_verts();
+	if (screen_pos.x > points.left && screen_pos.x < points.right
+		&& screen_pos.y > points.bottom && screen_pos.y < points.top) {
+		return true;
+	}
+
+	return false;
+}
+
 struct {
 	vector<Entity*> entities;
 
-	// An internal struct for combining Bounding_Box (which is relative to the center of the thing it bounds) and actual positions
-	struct Absolute_Bounding_Box {
-		glm::vec2 origin;
-		glm::vec2 extents;
-
-		Rectangle_Points get_verts() {
-			screen_unit left = origin.x - extents.x / 2;
-			screen_unit right = origin.x + extents.x / 2;
-			screen_unit top = origin.y + extents.y / 2;
-			screen_unit bottom = origin.y - extents.y / 2;
-
-			return { left, right, top, bottom };
-		}
-
-		static Absolute_Bounding_Box from_entity(Entity* e) {
-			Absolute_Bounding_Box box;
-			Position_Component* pc = e->get_component<Position_Component>();
-			Bounding_Box* cc = e->get_component<Bounding_Box>();
-			fox_assert(pc);
-			fox_assert(cc);
-			box.origin = pc->screen_pos + cc->screen_center;
-			box.extents = cc->screen_extents;
-
-			return box;
-		}
-
-		void debug_draw(glm::vec4 color) {
-			Rectangle_Points verts = get_verts();
-
-			gl_unit gl_left = gl_from_screen(verts.left);
-			gl_unit gl_right = gl_from_screen(verts.right);
-			gl_unit gl_top = gl_from_screen(verts.top);
-			gl_unit gl_bottom = gl_from_screen(verts.bottom);
-
-			draw_square_outline(glm::vec2(gl_left, gl_top), glm::vec2(gl_right, gl_top), glm::vec2(gl_right, gl_bottom), glm::vec2(gl_left, gl_bottom), color);
-		}
-	};
-
+	
 	void debug_draw_bounding_box(Entity* entity, glm::vec4 color) {
 		Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
 		box.debug_draw(color);

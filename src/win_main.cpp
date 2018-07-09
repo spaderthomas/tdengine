@@ -170,7 +170,7 @@ int main() {
 		}
 		render_on_top.clear();
 
-		//ImGui::ShowDemoWindow();
+		ImGui::ShowDemoWindow();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
