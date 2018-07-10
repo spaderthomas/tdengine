@@ -329,6 +329,41 @@ struct {
 	Level* active_level;
 	Console console;
 
+	void reload() {
+		//@leak this one is quite big 
+		for (auto dirname : atlas_folders) {
+			create_texture_atlas(dirname);
+		}
+
+		Lua.load_scripts();
+
+		tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
+		entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
+
+		// Reload all graphics components
+		for (auto it : active_level->chunks) {
+			Chunk& chunk = it.second;
+			fox_for(x, CHUNK_SIZE) {
+				fox_for(y, CHUNK_SIZE) {
+					Entity* cur = chunk.tiles[x][y];
+					if (cur != nullptr) {
+						Graphic_Component* gc = cur->get_component<Graphic_Component>();
+						if (gc) {
+							gc->init_from_table(Lua.state[cur->lua_id]["Graphic_Component"]);
+						}
+					}
+				}
+			}
+		}
+	}
+	void undo() {
+		if (stack.size()) {
+			function<void()> undo = stack.back();
+			stack.pop_back();
+			undo();
+		}
+	}
+
 	void exec_console_command(const char* command_line) {
 		if (console.Stricmp(command_line, "SAVE") == 0) {
 			active_level->save();
@@ -337,31 +372,7 @@ struct {
 			active_level->load();
 		}
 		else if (console.Stricmp(command_line, "RELOAD") == 0) {
-			//@leak this one is quite big 
-			for (auto dirname : atlas_folders) {
-				create_texture_atlas(dirname);
-			}
-
-			Lua.load_scripts();
-
-			tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
-			entity_tree = Entity_Tree::create("..\\..\\textures\\entities");
-
-			// Reload all graphics components
-			for (auto it : active_level->chunks) {
-				Chunk& chunk = it.second;
-				fox_for(x, CHUNK_SIZE) {
-					fox_for(y, CHUNK_SIZE) {
-						Entity* cur = chunk.tiles[x][y];
-						if (cur != nullptr) {
-							Graphic_Component* gc = cur->get_component<Graphic_Component>();
-							if (gc) {
-								gc->init_from_table(Lua.state[cur->lua_id]["Graphic_Component"]);
-							}
-						}
-					}
-				}
-			}
+			reload();
 		}
 		else {
 			console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);
@@ -396,11 +407,7 @@ struct {
 		if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
 			game_input.was_pressed(GLFW_KEY_Z))
 		{
-			if (stack.size()) {
-				function<void()> undo = stack.back();
-				stack.pop_back();
-				undo();
-			}
+			undo();
 		}
 		if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
 			selected = nullptr;
@@ -415,20 +422,38 @@ struct {
 			console.Draw("tdnsconsole", &console_close);
 		}
 
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Save", "console::save")) { active_level->save(); }
+				if (ImGui::MenuItem("Load", "console::load")) { active_level->load(); }
+				if (ImGui::MenuItem("Reload", "console::reload")) { reload(); }
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Edit"))
+			{
+				if (ImGui::MenuItem("Undo", "M-z")) { undo(); }
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
+
 		// Tile Selector GUI
-		ImGuiWindowFlags flags = ImGuiWindowFlags_NoSavedSettings | ImGuiWindowFlags_AlwaysAutoResize;
-		ImGui::Begin("editor", 0, flags);
-		if (ImGui::TreeNode("options")) {
+		ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize;
+		ImGui::Begin("tdengine", 0, flags);
+		if (ImGui::CollapsingHeader("Options")) {
 			ImGui::Checkbox("Show grid", &show_grid);
 			ImGui::Checkbox("Snap to grid", &snap_to_grid);
 			ImGui::Checkbox("Show AABBs", &debug_show_aabb);
-			ImGui::TreePop();
+			ImGui::Checkbox("Show ImGui demo", &show_imgui_demo);
 		}
 
 		int unique_button_index = 0; // Needed for ImGui
 
-		auto draw_buttons = [&](Entity_Tree* root, Selected_Kind kind) -> void {
-			auto lambda = [&](Entity_Tree* root, Selected_Kind kind, const auto& lambda) -> void {
+		ImGui::Separator();
+		auto draw_tile_tree = [&](Entity_Tree* root) -> void {
+			auto lambda = [&](Entity_Tree* root, const auto& lambda) -> void {
 				if (ImGui::TreeNode(root->dir.c_str())) {
 
 					// If expanded, draw this folder's tiles
@@ -449,7 +474,7 @@ struct {
 								selected = Entity::create(tile->lua_id);
 								id_selected_entity = tile->lua_id;
 								editing_state = INSERT;
-								selected_kind = kind;
+								selected_kind = TILE;
 							}
 							ImGui::PopID();
 							bool is_end_of_row = !((indx + 1) % 6);
@@ -461,70 +486,61 @@ struct {
 
 					// And draw dropdowns for any children
 					for (auto child : root->children) {
-						lambda(child, kind, lambda);
+						lambda(child, lambda);
 					}
 
 					ImGui::TreePop();
 				}
 			};
-			lambda(root, kind, lambda);
+			if (ImGui::CollapsingHeader("Tile Selector")) {
+				for (auto child : root->children) {
+					lambda(child, lambda);
+				}
+			}
 		};
-		draw_buttons(tile_tree, TILE);
+		draw_tile_tree(tile_tree);
+		{
+			ImGui::Separator();
 
-		static string script_current = Lua.scripts[0];
-		if (ImGui::BeginCombo("##choosescript", script_current.c_str(), 0)) {
-			for (auto script : Lua.scripts) {
-				bool is_selected = script == script_current;
-				if (ImGui::Selectable(script.c_str(), is_selected)) {
-					script_current = script;
+			static string script_current = Lua.scripts[0];
+			if (ImGui::BeginCombo("##choosescript", (script_current + ".lua").c_str(), 0)) {
+				for (auto script : Lua.scripts) {
+					bool is_selected = script == script_current;
+					if (ImGui::Selectable((script + ".lua").c_str(), is_selected)) {
+						script_current = script;
+					}
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
 				}
-				if (is_selected) {
-					ImGui::SetItemDefaultFocus();
+				ImGui::EndCombo();
+			}
+
+			ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+			ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
+			for (auto& ent : Lua.script_to_definitions[script_current]) {
+				if (ImGui::Selectable(ent.c_str())) {
+					selected = Entity::create(ent.c_str());
+					editing_state = INSERT;
+					selected_kind = ENTITY;
 				}
 			}
-			ImGui::EndCombo();
+			ImGui::PopStyleVar();
+			ImGui::EndChild();
 		}
-
-		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-		ImGui::BeginChild("Child2", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
-		for (auto& ent : Lua.script_to_definitions[script_current]) {
-			if (ImGui::Selectable(ent.c_str())) {
-				selected = Entity::create(ent.c_str());
-				editing_state = INSERT;
-				selected_kind = ENTITY;
-			}
-		}
-		ImGui::PopStyleVar();
-		ImGui::EndChild();
-		draw_buttons(entity_tree, ENTITY);
 
 		// INSERT MODE: There is a selected tile or entity, and we can move it around and click to place it.
 		if (editing_state == IDLE) {
-			static glm::ivec2 hovered = glm::vec2(0);
-			static glm::vec4 hovered_color = green;
-			Entity* last_hovered_entity = nullptr;
-			Entity* hovered_entity = nullptr;
 			glm::vec2 mouse = screen_from_px(game_input.px_pos);
-			for (auto& entity : active_level->entities) {
-				Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
-				if (point_inside_box(mouse, box)) {
-					hovered_entity = entity;
-					editing_state = EDIT;
+			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+				for (auto& entity : active_level->entities) {
+					Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
+					if (point_inside_box(mouse, box)) {
+						selected = entity;
+						editing_state = EDIT;
+					}
 				}
 			}
-
-			// If we change what tile we are hovering over, fade the new tile from green to red and the old tile from red to green
-			glm::ivec2 this_frame_hovered = grid_pos_from_px_pos(game_input.px_pos);
-			if (this_frame_hovered != hovered) {
-				hovered_color = green;
-				hovered = this_frame_hovered;
-			}
-
-			// Draw the tile that's hovered 
-			hovered_color = glm::mix(hovered_color, red, .1f);
-			draw_square_outline(srt_from_grid_pos(glm::ivec2(5, 5)), blue);
-			draw_square_outline(srt_from_grid_pos(hovered), hovered_color);
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 		else if (editing_state == INSERT) {
 			// Correctly translate current selected thing to be under the mouse & scale it otherwise
@@ -590,29 +606,60 @@ struct {
 		}
 		else if (editing_state == EDIT) {
 			enum Moving_Status {
-				NOT_MOVING,
-				MOVING,
+				NOT_DRAGON,
+				DRAGON,
 			};
-			static Moving_Status moving = NOT_MOVING;
-			ImGui::End();
-			ImGui::Begin("properties", 0, 0);
-			ImGui::Text("maybe one day there will be some properties to browse...");
-			ImGui::End();
+			static Moving_Status moving = NOT_DRAGON;
 
-			if (moving == NOT_MOVING) {
+			// Leave the main tdengine window, and pop up a properties window for this entity!
+			ImGui::End();
+			ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
+			for (auto& component : selected->components) {
+				if (dynamic_cast<Graphic_Component*>(component)) {
+					if (ImGui::TreeNode("Graphic Component")) {
+						Graphic_Component* gc = dynamic_cast<Graphic_Component*>(component);
+						Animation* current_animation = gc->active_animation;
+						if (ImGui::BeginCombo("Animations", current_animation->name.c_str(), 0)) {
+							for (auto anim : gc->animations) {
+								bool is_selected = anim->name == current_animation->name;
+								if (ImGui::Selectable(anim->name.c_str(), is_selected)) {
+									gc->set_animation(anim->name);
+								}
+								if (is_selected) {
+									ImGui::SetItemDefaultFocus();
+								}
+							}
+							ImGui::EndCombo();
+						}
+						ImGui::SliderFloat2("Scale", glm::value_ptr(gc->scale), 0.f, 1.f);
+						ImGui::TreePop();
+					}
+				}
+			}
+			ImGui::End();
+			ImGui::Begin("tdengine", 0, flags);
+
+
+			// If we're not dragging something around, wait for another click
+			// If it's inside something, start dragging it. If not, go back to idle.
+			if (moving == NOT_DRAGON) {
 				if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 					auto mouse = screen_from_px(game_input.px_pos);
 					auto bounding_box = Absolute_Bounding_Box::from_entity(selected);
 
 					if (point_inside_box(mouse, bounding_box)) {
-						moving = MOVING;
+						moving = DRAGON;
 					}
 					else {
 						editing_state = IDLE;
 					}
+				} 
+				if (game_input.was_pressed(GLFW_KEY_DELETE)) {
+					// delete the thing
 				}
 			}
-			else if (moving == MOVING) {
+			// If we're dragging something around , wait for mouse release and then put it there
+			else if (moving == DRAGON) {
 				if (!game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 					auto my_lambda = [&active_level = active_level]() -> void {
 						active_level->entities.pop_back();
@@ -620,7 +667,7 @@ struct {
 					stack.push_back(my_lambda);
 
 					active_level->entities.push_back(selected);
-					moving = NOT_MOVING;
+					moving = NOT_DRAGON;
 				}
 				else {
 					// Correctly translate current selected thing to be under the mouse & scale it otherwise
@@ -633,10 +680,6 @@ struct {
 					pc->screen_pos = draggable_position;
 				}
 			}
-
-			
-
-			ImGui::Begin("editor", 0, 0);
 		}
 		ImGui::End();
 

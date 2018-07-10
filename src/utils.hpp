@@ -257,6 +257,7 @@ bool is_png(string& asset_path) {
 bool show_console = false;
 bool console_close = false;
 bool debug_show_aabb = false;
+bool show_imgui_demo = false;
 
 
 /* Random shit */

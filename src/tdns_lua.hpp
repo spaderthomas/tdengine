@@ -4,10 +4,12 @@ struct {
 	map<string, vector<string>> script_to_definitions;
 	map<string, string> definitions_to_script;
 	vector<string> scripts = {
-		"utils",
-		"static_background",
-		"static_foreground",
+		"props",
 		"boon",
+	};
+	vector<string> imgui_ignored_scripts = {
+		"utils",
+		"tiles"
 	};
 
 	void init() {
@@ -23,15 +25,31 @@ struct {
 			return pfr;
 		};
 
-		// Load in all the scripts
-		for (auto& script : scripts) {
+		// Some scripts are things we don't wanna be able to select in ImGui
+		// So just load those in separately
+		// Also note: this has to go first so utils gets loaded. @hack?
+		for (auto& script : imgui_ignored_scripts) {
 			string path = "..\\..\\src\\scripts\\" + script + ".lua";
 			state.safe_script_file(path, error_handler);
-		}
 
+			vector<string> defined;
+			sol::optional<sol::table> entities = state[script];
+			if (entities) {
+				for (auto& entity : entities.value()) {
+					string name = entity.first.as<string>();
+					defined.push_back(name);
+					definitions_to_script[name] = script;
+				}
+			}
+			sort(defined.begin(), defined.end());
+			script_to_definitions[script] = defined;
+		}
 		// Each script has a single table with its filename as the name containing its definitions
 		// Pull out the definitions in the file and put them in a vector that the filename maps to
 		for (auto& script : scripts) {
+			string path = "..\\..\\src\\scripts\\" + script + ".lua";
+			state.safe_script_file(path, error_handler);
+
 			vector<string> defined;
 			sol::optional<sol::table> entities = state[script];
 			if (entities) {
@@ -45,6 +63,8 @@ struct {
 			sort(defined.begin(), defined.end());
 			script_to_definitions[script] = defined;
 		}
+
+
 	}
 
 	

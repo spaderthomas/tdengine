@@ -1,5 +1,5 @@
 
-static_background = {
+tiles = {
 
 grass = {
     Graphic_Component = {

@@ -35,26 +35,26 @@ tiles = [
     ]
 
 
-with open("static_background.lua", "w") as file:
+with open("tiles.lua", "w") as file:
     file.write('''
-static_background = {
+tiles = {
 ''')
     for tile in tiles:
         path = tile + '.png'
         lua_def = '''
-%s = {
-    Graphic_Component = {
-        Animations = {
-            %s = {
-                "%s.png"
-            }
+    %s = {
+        Graphic_Component = {
+            Animations = {
+                %s = {
+                    "%s.png"
+                }
+            },
+            default_animation = "%s",
+            z = 0
         },
-        default_animation = "%s",
-        z = 0
+        Position_Component = {
+        }
     },
-    Position_Component = {
-    }
-},
         ''' % (tile, tile, tile, tile)
         file.write(lua_def)
     file.write("}")

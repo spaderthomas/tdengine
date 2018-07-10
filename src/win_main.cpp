@@ -139,6 +139,7 @@ int main() {
 	init_fonts();
 
 	game_layer.init();
+	use_720p(window);
 	
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
@@ -170,7 +171,7 @@ int main() {
 		}
 		render_on_top.clear();
 
-		ImGui::ShowDemoWindow();
+		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
