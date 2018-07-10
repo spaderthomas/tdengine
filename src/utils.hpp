@@ -253,11 +253,12 @@ bool is_png(string& asset_path) {
 }
 
 
-/* ImGui */
-bool show_console = false;
-bool console_close = false;
+/* ImGui options */
+bool show_grid = false;
+bool snap_to_grid = false;
 bool debug_show_aabb = false;
 bool show_imgui_demo = false;
+bool show_console = false;
 
 
 /* Random shit */

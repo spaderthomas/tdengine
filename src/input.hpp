@@ -63,7 +63,7 @@ void fill_imgui_input() {
 static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypos) {
 	xpos = max<double>(xpos, 0); ypos = max<double>(ypos, 0);
 	global_input.px_pos = glm::vec2(xpos, SCREEN_Y - ypos);
-	global_input.screen_pos = glm::vec2(xpos / SCREEN_X, ypos / SCREEN_Y);
+	global_input.screen_pos = glm::vec2(xpos / SCREEN_X, (SCREEN_Y - ypos) / SCREEN_Y);
 }
 
 void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int mods) {
