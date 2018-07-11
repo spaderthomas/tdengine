@@ -50,14 +50,14 @@ struct Level {
 				fox_for(itiley, CHUNK_SIZE) {
 					Entity* ent = chunk.tiles[itilex][itiley];
 					if (ent) {
-						ent->draw();
+						ent->draw(Render_Flags::None);
 					}
 				}
 			}
 		}
 
 		for (auto entity : entities) {
-			entity->draw();
+			entity->draw(Render_Flags::None);
 		}
 	}
 

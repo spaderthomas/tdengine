@@ -6,10 +6,10 @@ struct Shader {
 	
 	static int active;
 
-	void init(const char* vs_path, const char* fs_path) {
+	void init(string vs_path, string fs_path, string name) {
 		auto error = glGetError();
 
-		const char* paths[] = {
+		string paths[] = {
 			vs_path,
 			fs_path
 		};
@@ -20,8 +20,8 @@ struct Shader {
 
 		fox_for(ishader, 2) {
 			// Read in shader data
-			const char* path = paths[ishader];
-			FILE *shader_source_file = fopen(path, "rb");
+			string path = paths[ishader];
+			FILE *shader_source_file = fopen(path.c_str(), "rb");
 			fseek(shader_source_file, 0, SEEK_END);
 			unsigned int fsize = ftell(shader_source_file);
 			fseek(shader_source_file, 0, SEEK_SET);
@@ -40,7 +40,7 @@ struct Shader {
 
             glCompileShader(shader);
 			if (glGetError()) {
-				tdns_log.write("Error compiling shader: " + string(path));
+				tdns_log.write("Error compiling shader: " + name);
 			}
 			glAttachShader(shader_program, shader);
 		}
@@ -52,7 +52,7 @@ struct Shader {
 		}
 		id = shader_program;
 		glGetProgramiv(shader_program, GL_ACTIVE_UNIFORMS, &num_uniforms);
-		name = name_from_full_path(string(vs_path));
+		this->name = name;
 	}
 
 	unsigned int get_uniform_loc(const char* name) {
@@ -137,10 +137,12 @@ struct Shader {
 int Shader::active = -1;
 
 Shader textured_shader;
+Shader highlighted_shader;
 Shader solid_shader;
 Shader text_shader;
 void init_shaders() {
-	textured_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\textured.fs");
-	solid_shader.init("..\\..\\shaders\\solid.vs", "..\\..\\shaders\\solid.fs");
-	text_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\text.fs");
+	textured_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\textured.fs", "textured");
+	highlighted_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\highlighted.fs", "highlighted");
+	solid_shader.init("..\\..\\shaders\\solid.vs", "..\\..\\shaders\\solid.fs", "solid");
+	text_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\text.fs", "text");
 }

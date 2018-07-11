@@ -1,5 +1,6 @@
-void Renderer::draw(Graphic_Component* gc, Position_Component* pc) {
-	Render_Element info = { gc, pc };
+
+void Renderer::draw(Graphic_Component* gc, Position_Component* pc, Render_Flags flags) {
+	Render_Element info = { gc, pc, flags };
 	render_list.push_back(info);
 }
 void Renderer::render_for_frame() {
@@ -7,8 +8,9 @@ void Renderer::render_for_frame() {
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
 	glEnableVertexAttribArray(0);
 
-	textured_shader.begin();
-	textured_shader.set_int("sampler", 0);
+	Shader* shader = &textured_shader;
+	shader->begin();
+	shader->set_int("sampler", 0);
 	glm::vec2 camera_pos = glm::vec2(camera.x * GLSCR_TILESIZE_X, -1.f * camera.y * GLSCR_TILESIZE_Y);
 
 	// Algorithm:
@@ -35,6 +37,24 @@ void Renderer::render_for_frame() {
 		
 		// Draw the correctly sorted elements for a depth level
 		for (auto& render_element : depth_level_render_elements) {
+			// Swap shader based on flags
+			if (render_element.flags & Render_Flags::Highlighted) {
+				if (shader != &highlighted_shader) {
+					shader->end();
+					shader = &highlighted_shader;
+					shader->begin();
+					shader->set_int("sampler", 0);
+				}
+			}
+			else {
+				if (shader != &textured_shader) {
+					shader->end();
+					shader = &textured_shader;
+					shader->begin();
+					shader->set_int("sampler", 0);
+				}
+			}
+
 			Sprite* sprite = render_element.gc->get_current_frame();
 			if (sprite) {
 				sprite->atlas->bind();
@@ -48,14 +68,14 @@ void Renderer::render_for_frame() {
 				transform.translate = glm::vec3(gl_from_screen(render_element.pc->screen_pos), 0.f);
 				transform.translate -= glm::vec3(camera_pos, 0.f);
 				auto transform_mat = mat3_from_transform(transform);
-				textured_shader.set_mat3("transform", transform_mat);
+				shader->set_mat3("transform", transform_mat);
 
-				textured_shader.check();
+				shader->check();
 				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 			}
 		}
 	}
 
-	textured_shader.end();
+	shader->end();
 	render_list.clear();
 }

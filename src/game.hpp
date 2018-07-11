@@ -302,22 +302,64 @@ struct {
 	enum Editing_State {
 		IDLE,
 		INSERT,
-		EDIT
-	} editing_state;
+		EDIT,
+		DRAG
+	} editor_state;
 	struct Editor_Selection {
 		enum Selected_Kind {
 			TILE,
 			ENTITY
 		};
 		Selected_Kind kind;
-		enum Moving_State {
-			NOT_DRAGON,
-			DRAGON,
-		};
-		Moving_State moving_state;
 
 		glm::vec2 offset_from_mouse = glm::vec2(0.f);
 		Entity* entity;
+
+		// Translates the selection to be under the mouse (grid or free)
+		// offset_from_mouse used so it doesnt jerk to be centered under the mouse, but rather just follow it
+		void translate_entity() {
+			glm::vec2 draggable_position;
+			glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
+			if (snap_to_grid) { 
+				draggable_position = screen_from_grid(grid_pos);
+			}
+			else {
+				draggable_position = game_input.screen_pos + offset_from_mouse;
+			}
+
+			Position_Component* pc = entity->get_component<Position_Component>();
+			pc->screen_pos = draggable_position;
+		}
+
+		void draw_component_editor() {
+			// Leave the main tdengine window, and pop up a properties window for this entity
+			ImGui::End();
+			ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
+			for (auto& component : entity->components) {
+				if (dynamic_cast<Graphic_Component*>(component)) {
+					if (ImGui::TreeNode("Graphic Component")) {
+						Graphic_Component* gc = dynamic_cast<Graphic_Component*>(component);
+						Animation* current_animation = gc->active_animation;
+						if (ImGui::BeginCombo("Animations", current_animation->name.c_str(), 0)) {
+							for (auto anim : gc->animations) {
+								bool is_selected = anim->name == current_animation->name;
+								if (ImGui::Selectable(anim->name.c_str(), is_selected)) {
+									gc->set_animation(anim->name);
+								}
+								if (is_selected) {
+									ImGui::SetItemDefaultFocus();
+								}
+							}
+							ImGui::EndCombo();
+						}
+						ImGui::SliderFloat2("Scale", glm::value_ptr(gc->scale), 0.f, 1.f);
+						ImGui::TreePop();
+					}
+				}
+			}
+			ImGui::End();
+			ImGui::Begin("tdengine", 0, ImGuiWindowFlags_AlwaysAutoResize);
+		}
 	} editor_selection;
 	vector<function<void()>> stack;
 
@@ -376,7 +418,7 @@ struct {
 	}
 
 	void init() {
-		editing_state = IDLE;
+		editor_state = IDLE;
 		tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
 		dude_ranch.name = "dude_ranch";
 		cantina.name = "cantina";
@@ -408,7 +450,7 @@ struct {
 		}
 		if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
 			editor_selection.entity = nullptr;
-			editing_state = IDLE;
+			editor_state = IDLE;
 		}
 
 		// Toggle the console on control
@@ -474,7 +516,7 @@ struct {
 							{
 								editor_selection.entity = Entity::create(tile->lua_id);
 								editor_selection.kind = Editor_Selection::TILE;
-								editing_state = INSERT;
+								editor_state = INSERT;
 							}
 							ImGui::PopID();
 							bool is_end_of_row = !((indx + 1) % 6);
@@ -523,7 +565,7 @@ struct {
 			if (ImGui::Selectable(ent.c_str())) {
 				editor_selection.entity = Entity::create(ent.c_str());
 				editor_selection.kind = Editor_Selection::ENTITY;
-				editing_state = INSERT;
+				editor_state = INSERT;
 			}
 		}
 		ImGui::PopStyleVar();
@@ -532,160 +574,122 @@ struct {
 
 
 		//--EDITOR
-		switch (editing_state) {
+		switch (editor_state) {
 		case Editing_State::IDLE:
-				if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+				for (auto& entity : active_level->entities) {
+					Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
+					if (point_inside_box(game_input.screen_pos, box)) {
+						editor_selection.entity = entity;
+						editor_selection.offset_from_mouse = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
+						editor_state = DRAG;
+					}
+				}
+			}
+			break;
+		case Editing_State::INSERT:
+			editor_selection.translate_entity();
+
+			// And if we click, add it to the level
+			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+				switch (editor_selection.kind) {
+				case Editor_Selection::TILE: {
+					auto grid_pos = grid_pos_from_px_pos(game_input.px_pos);
+					Entity* current_entity = active_level->get_tile(grid_pos.x, grid_pos.y);
+
+					// We don't want to double paint, so check to make sure we're not doing that
+					bool okay_to_create = true;
+
+					// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
+					if (current_entity) {
+						if (current_entity->lua_id == editor_selection.entity->lua_id) {
+							okay_to_create = false;
+						}
+					}
+
+					if (okay_to_create) {
+						// Create a lambda which will undo the tile placement we're about to do
+						auto my_lambda =
+							[&active_level = active_level,
+							x = grid_pos.x, y = grid_pos.y,
+							ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
+						{
+							active_level->set_tile(ent, x, y);
+						};
+						stack.push_back(my_lambda);
+
+						active_level->set_tile(editor_selection.entity, grid_pos.x, grid_pos.y);
+						editor_selection.entity = Entity::create(editor_selection.entity->lua_id);
+
+						// Update so we only paint one entity per tile
+						last_grid_pos_drawn = grid_pos;
+						break;
+					}
+				}
+				case Editor_Selection::ENTITY: 
+					if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+						auto my_lambda = [&active_level = active_level]() -> void {
+							active_level->entities.pop_back();
+						};
+						stack.push_back(my_lambda);
+
+						active_level->entities.push_back(editor_selection.entity);
+						editor_selection.entity = Entity::create(editor_selection.entity->lua_id);
+						editor_selection.offset_from_mouse = glm::vec2(0.f);
+						editor_selection.translate_entity();
+					}
+					break;
+				}
+			}
+			break;
+		
+		case Editing_State::EDIT:
+			editor_selection.draw_component_editor();
+			// If it's inside something, start dragging it. If not, go back to idle.
+			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+				auto bounding_box = Absolute_Bounding_Box::from_entity(editor_selection.entity);
+
+				if (point_inside_box(game_input.screen_pos, bounding_box)) {
+					editor_selection.offset_from_mouse = editor_selection.entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos;
+					editor_state = DRAG;
+				}
+				else {
+					bool found = false;
 					for (auto& entity : active_level->entities) {
 						Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
 						if (point_inside_box(game_input.screen_pos, box)) {
 							editor_selection.entity = entity;
-							editor_selection.moving_state = Editor_Selection::DRAGON;
 							editor_selection.offset_from_mouse = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
-							editing_state = EDIT;
+							editor_state = DRAG;
+							found = true;
 						}
 					}
-				}
-				break;
-		case Editing_State::INSERT:
-				// Correctly translate current selected thing to be under the mouse & scale it otherwise
-				glm::vec2 draggable_position;
-				glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
-				if (snap_to_grid) { draggable_position = screen_from_grid(grid_pos); }
-				else { draggable_position = screen_from_px(game_input.px_pos); }
-
-				editor_selection.entity->get_component<Position_Component>()->screen_pos = draggable_position;
-
-				// And if we click, add it to the level
-				if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-					switch (editor_selection.kind) {
-						case Editor_Selection::TILE: {
-							Entity * current_entity = active_level->get_tile(grid_pos.x, grid_pos.y);
-
-							// We don't want to double paint, so check to make sure we're not doing that
-							bool okay_to_create = true;
-
-							// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
-							if (current_entity) {
-								if (current_entity->lua_id == editor_selection.entity->lua_id) {
-									okay_to_create = false;
-								}
-							}
-
-							if (okay_to_create) {
-								// Create a lambda which will undo the tile placement we're about to do
-								auto my_lambda = [&active_level = active_level,
-									x = grid_pos.x, y = grid_pos.y,
-									ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
-								{
-									active_level->set_tile(ent, x, y);
-								};
-								stack.push_back(my_lambda);
-
-								// Grab the translation from the mouse position and figure out whether its a tile or an entity
-								Entity* new_entity = Entity::create(editor_selection.entity->lua_id);
-
-								Position_Component* pc = new_entity->get_component<Position_Component>();
-								pc->screen_pos = draggable_position;
-								active_level->set_tile(new_entity, grid_pos.x, grid_pos.y);
-
-								// Update so we only paint one entity per tile
-								last_grid_pos_drawn = grid_pos;
-							}
-							break;
-						}
-						case Editor_Selection::ENTITY: {
-							if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-								auto my_lambda = [&active_level = active_level]() -> void {
-									active_level->entities.pop_back();
-								};
-								stack.push_back(my_lambda);
-
-								active_level->entities.push_back(editor_selection.entity);
-								editor_selection.entity = Entity::create(editor_selection.entity->lua_id);
-								Position_Component* pc = editor_selection.entity->get_component<Position_Component>();
-								pc->screen_pos = draggable_position;
-							}
-							break;
-						}
-					}
-				}
-				break;
-		case Editing_State::EDIT:
-				// Leave the main tdengine window, and pop up a properties window for this entity
-				ImGui::End();
-				ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
-				for (auto& component : editor_selection.entity->components) {
-					if (dynamic_cast<Graphic_Component*>(component)) {
-						if (ImGui::TreeNode("Graphic Component")) {
-							Graphic_Component* gc = dynamic_cast<Graphic_Component*>(component);
-							Animation* current_animation = gc->active_animation;
-							if (ImGui::BeginCombo("Animations", current_animation->name.c_str(), 0)) {
-								for (auto anim : gc->animations) {
-									bool is_selected = anim->name == current_animation->name;
-									if (ImGui::Selectable(anim->name.c_str(), is_selected)) {
-										gc->set_animation(anim->name);
-									}
-									if (is_selected) {
-										ImGui::SetItemDefaultFocus();
-									}
-								}
-								ImGui::EndCombo();
-							}
-							ImGui::SliderFloat2("Scale", glm::value_ptr(gc->scale), 0.f, 1.f);
-							ImGui::TreePop();
-						}
-					}
-				}
-				ImGui::End();
-				ImGui::Begin("tdengine", 0, flags);
-
-				// If we're not dragging something around, wait for another click
-				// If it's inside something, start dragging it. If not, go back to idle.
-				if (editor_selection.moving_state == Editor_Selection::NOT_DRAGON) {
-					if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-						auto bounding_box = Absolute_Bounding_Box::from_entity(editor_selection.entity);
-
-						if (point_inside_box(game_input.screen_pos, bounding_box)) {
-							editor_selection.moving_state = Editor_Selection::DRAGON; //@refactor into start_drag()?
-							editor_selection.offset_from_mouse = editor_selection.entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos;
-						}
-						else {
-							editing_state = IDLE;
-						}
-					}
-					if (game_input.was_pressed(GLFW_KEY_DELETE)) {
-						for (auto it = active_level->entities.begin(); it != active_level->entities.end(); it++) {
-							if (editor_selection.entity == *it) {
-								active_level->entities.erase(it);
-								break;
-							}
-						}
+					if (!found) { 
 						editor_selection.entity = nullptr;
-						editing_state = IDLE;
+						editor_state = IDLE; 
 					}
 				}
-				// If we're dragging something around , wait for mouse release and then put it there
-				else if (editor_selection.moving_state == Editor_Selection::DRAGON) {
-					if (!game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-						editor_selection.moving_state = Editor_Selection::NOT_DRAGON;
-					}
-					else {
-						// Correctly translate current selected thing to be under the mouse & scale it otherwise
-						glm::vec2 draggable_position;
-						glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
-						if (snap_to_grid) {
-							draggable_position = screen_from_grid(grid_pos);
-						}
-						else {
-							draggable_position = game_input.screen_pos + editor_selection.offset_from_mouse;
-						}
-
-						Position_Component* pc = editor_selection.entity->get_component<Position_Component>();
-						pc->screen_pos = draggable_position;
-					}
-				}
-				break;
 			}
+			if (game_input.was_pressed(GLFW_KEY_DELETE)) {
+				for (auto it = active_level->entities.begin(); it != active_level->entities.end(); it++) {
+					if (editor_selection.entity == *it) {
+						active_level->entities.erase(it);
+						break;
+					}
+				}
+				editor_selection.entity = nullptr;
+				editor_state = IDLE;
+			}
+			break;
+		case Editing_State::DRAG:
+			editor_selection.draw_component_editor();
+			editor_selection.translate_entity();
+
+			if (!game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+				editor_state = EDIT;
+			}
+			break;
+		}
 		ImGui::End();
 
 
@@ -704,8 +708,7 @@ struct {
 			mc->wish += glm::vec2(.0025f, 0.f);
 		}
 
-		auto pc = player.boon->get_component<Position_Component>();
-		renderer.draw(player.boon->get_component<Graphic_Component>(), pc);
+		renderer.draw(player.boon->get_component<Graphic_Component>(), player.boon->get_component<Position_Component>(), Render_Flags::None);
 		
 		for (auto& ent : active_level->entities) {
 			if (ent->get_component<Bounding_Box>()) {
@@ -721,26 +724,21 @@ struct {
 
 	void render() {
 		active_level->draw();
-		if (editor_selection.entity) { editor_selection.entity->draw(); }
+		if (editor_selection.entity) { editor_selection.entity->draw(Render_Flags::Highlighted); }
 
 		// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
 		renderer.render_for_frame();
 
 		// Render the grid
-		{
-			if (show_grid) {
-				// We have to multiply by two because OpenGL uses -1 to 1
-				for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {
-					draw_line_from_points(glm::vec2(col_offset, -1.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.5f));
-				}
-				for (float row_offset = -1; row_offset <= 1; row_offset += GLSCR_TILESIZE_Y) {
-					draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
-				}
+		if (show_grid) {
+			// We have to multiply by two because OpenGL uses -1 to 1
+			for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {
+				draw_line_from_points(glm::vec2(col_offset, -1.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.5f));
+			}
+			for (float row_offset = -1; row_offset <= 1; row_offset += GLSCR_TILESIZE_Y) {
+				draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
 			}
 		}
-
-		
-
 	}
 } game_layer;
 

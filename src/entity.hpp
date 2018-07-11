@@ -88,11 +88,11 @@ struct Entity {
 		return entity;
 	}
 
-	void draw() const {
+	void draw(Render_Flags flags) const {
 		auto graphic_component = get_component<Graphic_Component>();
 		auto position_component = get_component<Position_Component>();
 		if (graphic_component && position_component) {
-			renderer.draw(graphic_component, position_component);
+			renderer.draw(graphic_component, position_component, flags);
 		} else {
 			string msg = "Tried to draw entity, but component was undefined. Entity number: " + to_string(id);
 			tdns_log.write(msg);
