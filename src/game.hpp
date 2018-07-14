@@ -383,11 +383,9 @@ struct Particle_System {
 		fox_iter(it, particles) {
 			auto& particle = *it;
 			if (particle.alive) {
-				SRT transform = SRT::no_transform();
-				transform.translate = glm::vec3(gl_from_screen(particle.position), 0.f);
-				transform.scale = particle.scale;
+				Center_Box box = { particle.position, particle.scale };
 				glm::vec4 energycolor = glm::vec4(particle.color.x, particle.color.y, particle.color.z, particle.life);
-				draw_square(transform, energycolor);
+				draw_square(box, energycolor);
 				
 				particle.life -= dt;
 				particle.position.x += dt;
@@ -712,7 +710,7 @@ struct {
 			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 				bool clicked_inside_something = false;
 				for (auto& entity : active_level->entities) {
-					Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
+					Center_Box box = Center_Box::from_entity(entity);
 					if (point_inside_box(game_input.screen_pos, box)) {
 						clicked_inside_something = true;
 						editor_selection.entity = entity;
@@ -787,7 +785,7 @@ struct {
 			editor_selection.draw_component_editor();
 			// If it's inside something, start dragging it. If not, go back to idle.
 			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-				auto bounding_box = Absolute_Bounding_Box::from_entity(editor_selection.entity);
+				auto bounding_box = Center_Box::from_entity(editor_selection.entity);
 
 				if (point_inside_box(game_input.screen_pos, bounding_box)) {
 					editor_selection.offset_from_mouse = editor_selection.entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos;
@@ -796,7 +794,7 @@ struct {
 				else {
 					bool found = false;
 					for (auto& entity : active_level->entities) {
-						Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
+						Center_Box box = Center_Box::from_entity(entity);
 						if (point_inside_box(game_input.screen_pos, box)) {
 							editor_selection.entity = entity;
 							editor_selection.offset_from_mouse = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
@@ -830,12 +828,12 @@ struct {
 			}
 			break;
 		case Editing_State::RECTANGLE_SELECT:
-			draw_square_outline(gl_from_screen(top_left_drag.y), gl_from_screen(game_input.screen_pos.y), gl_from_screen(top_left_drag.x), gl_from_screen(game_input.screen_pos.x), red);
+			draw_square_outline(top_left_drag.y, game_input.screen_pos.y, top_left_drag.x, game_input.screen_pos.x, red);
 
-			Rectangle_Points points = { top_left_drag.y, game_input.screen_pos.y, top_left_drag.x, game_input.screen_pos.x };
-			Absolute_Bounding_Box selection_area = Absolute_Bounding_Box::from_points(points);
+			Points_Box points = { top_left_drag.y, game_input.screen_pos.y, top_left_drag.x, game_input.screen_pos.x };
+			Center_Box selection_area = Center_Box::from_points(points);
 			for (auto& entity : active_level->entities) {
-				Absolute_Bounding_Box entity_box = Absolute_Bounding_Box::from_entity(entity);
+				Center_Box entity_box = Center_Box::from_entity(entity);
 				glm::vec2 dummy;
 				if (are_boxes_colliding(entity_box, selection_area, dummy)) {
 
@@ -865,8 +863,7 @@ struct {
 		}
 
 		if (game_input.is_down[GLFW_KEY_E]) {
-			Rectangle_Points points = Absolute_Bounding_Box::from_entity(player.boon).as_points();
-			convert_screen_to_gl(points);
+			Points_Box points = Center_Box::from_entity(player.boon).as_points();
 			SRT transform = SRT::no_transform();
 			draw_square_outline(points, transform, red);
 		}
@@ -895,11 +892,11 @@ struct {
 		// Render the grid
 		if (show_grid) {
 			// We have to multiply by two because OpenGL uses -1 to 1
-			for (float col_offset = -1; col_offset <= 1; col_offset += GLSCR_TILESIZE_X) {
-				draw_line_from_points(glm::vec2(col_offset, -1.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.5f));
+			for (float col_offset = 0; col_offset <= 1; col_offset += SCR_TILESIZE_X) {
+				draw_line_from_points(glm::vec2(col_offset, 0.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.5f));
 			}
-			for (float row_offset = -1; row_offset <= 1; row_offset += GLSCR_TILESIZE_Y) {
-				draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
+			for (float row_offset = 0; row_offset <= 1; row_offset += SCR_TILESIZE_Y) {
+				draw_line_from_points(glm::vec2(0.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
 			}
 		}
 

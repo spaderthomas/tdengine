@@ -363,17 +363,3 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 glm::ivec2 camera = glm::ivec2(0);
 float seconds_per_update = 1.f / 60.f;
 float pi = 3.14159;
-
-struct Rectangle_Points {
-	screen_unit top;
-	screen_unit bottom;
-	screen_unit left;
-	screen_unit right;
-};
-
-void convert_screen_to_gl(Rectangle_Points& points) {
-	points.left = gl_from_screen(points.left);
-	points.right = gl_from_screen(points.right);
-	points.top = gl_from_screen(points.top);
-	points.bottom = gl_from_screen(points.bottom);
-}

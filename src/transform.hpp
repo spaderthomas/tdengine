@@ -1,5 +1,5 @@
 struct SRT {
-	glm::vec3 translate;
+	glm::vec2 translate;
 	glm::vec2 scale;
 	float rad_rot;
 	
@@ -14,7 +14,6 @@ struct SRT {
 	void save(json& j) const {
 		j["translate.x"] = translate.x;
 		j["translate.y"] = translate.y;
-		j["translate.z"] = translate.z;
 		j["scale.x"] = scale.x;
 		j["scale.y"] = scale.y;
 		j["rad_rot"] = rad_rot;
@@ -23,7 +22,6 @@ struct SRT {
 	void load(json& j) {
 		translate.x = j["translate.x"];
 		translate.y = j["translate.y"];
-		translate.z = j["translate.z"];
 		scale.x = j["scale.x"];
 		scale.y = j["scale.y"];
 		rad_rot = j["rad_rot"];
@@ -50,7 +48,7 @@ glm::mat3 mat3_from_transform(SRT transform) {
 	glm::mat3 trans_mat = identity_mat3();
 	trans_mat[2][0] = transform.translate.x;
 	trans_mat[2][1] = transform.translate.y;
-	trans_mat[2][2] = transform.translate.z;
+	trans_mat[2][2] = 0.f;
 
 	return trans_mat * rot_mat * scale_mat;
 }
@@ -61,21 +59,21 @@ SRT srt_from_grid_pos(glm::ivec2 grid_pos) {
 	grid_pos_transform.scale = glm::vec2(SCR_TILESIZE_X, SCR_TILESIZE_Y);
 
 	// Starting at -1, move grid_pos tiles forward
-	grid_pos_transform.translate = glm::vec3(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y, 0.f);
+	grid_pos_transform.translate = glm::vec2(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y);
 
 	// Since tile was centered before, it'll be halfway between the tile, so correct that
-	grid_pos_transform.translate += glm::vec3(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y, 0.f);
+	grid_pos_transform.translate += glm::vec2(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y);
 	return grid_pos_transform;
 }
 
-glm::vec3 translation_from_grid_pos(glm::ivec2 grid_pos) {
-	glm::vec3 translation = glm::vec3(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y, 0.f);
-	translation += glm::vec3(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y, 0.f);
+glm::vec2 translation_from_grid_pos(glm::ivec2 grid_pos) {
+	glm::vec2 translation = glm::vec2(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y);
+	translation += glm::vec2(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y);
 	return translation;
 }
 
-glm::vec3 translation_from_px_pos(glm::vec2 px_pos) {
+glm::vec2 translation_from_px_pos(glm::vec2 px_pos) {
 	glm::vec2 screen_coords = glm::vec2(px_pos.x / SCREEN_X, px_pos.y / SCREEN_Y);
 	glm::vec2 gl_coords = gl_from_screen(screen_coords);
-	return glm::vec3(gl_coords, 0);
+	return gl_coords;
 }

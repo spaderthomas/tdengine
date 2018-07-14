@@ -56,6 +56,7 @@ using namespace std;
 #include "animation.hpp"
 #include "component.hpp"
 #include "entity.hpp"
+#include "box.hpp"
 #include "draw.hpp"
 #include "collision.hpp"
 #include "tilemap.hpp"

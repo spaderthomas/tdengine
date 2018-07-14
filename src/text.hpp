@@ -148,7 +148,6 @@ struct {
 		glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), vertices, GL_STATIC_DRAW);
 
 		SRT transform = SRT::no_transform();
-		transform.translate.z = 1.f;
 		auto transform_mat = mat3_from_transform(transform);
 		textured_shader.set_mat3("transform", transform_mat);
 
@@ -256,7 +255,6 @@ struct {
 
 			// Text is raw 2D, so just use an orthographic projection
 			SRT transform = SRT::no_transform();
-			transform.translate.z = 1.f;
 			glm::mat3 mat = mat3_from_transform(transform);
 			text_shader.set_mat3("transform", mat);
 

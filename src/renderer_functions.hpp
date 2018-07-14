@@ -65,8 +65,8 @@ void Renderer::render_for_frame() {
 				
 				SRT transform = SRT::no_transform();
 				transform.scale = render_element.gc->scale;
-				transform.translate = glm::vec3(gl_from_screen(render_element.pc->screen_pos), 0.f);
-				transform.translate -= glm::vec3(camera_pos, 0.f);
+				transform.translate = gl_from_screen(render_element.pc->screen_pos);
+				transform.translate -= camera_pos;
 				auto transform_mat = mat3_from_transform(transform);
 				shader->set_mat3("transform", transform_mat);
 
