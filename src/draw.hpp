@@ -36,22 +36,47 @@ void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 
 }
 
+
+// All of these take GL units
 void draw_square_outline(glm::vec2 top_left, glm::vec2 top_right, glm::vec2 bottom_right, glm::vec2 bottom_left, glm::vec4 color) {
 	draw_line_from_points(top_left, top_right, color);
 	draw_line_from_points(top_right, bottom_right, color);
 	draw_line_from_points(bottom_right, bottom_left, color);
 	draw_line_from_points(bottom_left, top_left, color);
 }
+void draw_square_outline(gl_unit top, gl_unit bottom, gl_unit left, gl_unit right, glm::vec4 color) {
+	glm::vec2 top_left = glm::vec2(left, top);
+	glm::vec2 top_right = glm::vec2(right, top);
+	glm::vec2 bottom_right = glm::vec2(right, bottom);
+	glm::vec2 bottom_left = glm::vec2(left, bottom);
+	draw_square_outline(top_left, top_right, bottom_right, bottom_left, color);
+}
+void draw_square_outline(Rectangle_Points& points, glm::vec4 color) {
+	glm::vec2 top_left = glm::vec2(points.left, points.top);
+	glm::vec2 top_right = glm::vec2(points.right, points.top);
+	glm::vec2 bottom_right = glm::vec2(points.right, points.bottom);
+	glm::vec2 bottom_left = glm::vec2(points.left, points.bottom);
+	draw_square_outline(top_left, top_right, bottom_right, bottom_left, color);
+}
 void draw_square_outline(SRT transform, glm::vec4 color) {
-	glm::vec3 top_left = mat3_from_transform(transform) * screen_top_left;
-	glm::vec3 top_right = mat3_from_transform(transform) * screen_top_right;
-	glm::vec3 bottom_right = mat3_from_transform(transform) * screen_bottom_right;
-	glm::vec3 bottom_left = mat3_from_transform(transform) * screen_bottom_left;
+	auto mat = mat3_from_transform(transform);
+	glm::vec3 top_left = mat * screen_top_left;
+	glm::vec3 top_right = mat * screen_top_right;
+	glm::vec3 bottom_right = mat * screen_bottom_right;
+	glm::vec3 bottom_left = mat * screen_bottom_left;
+	draw_square_outline(top_left, top_right, bottom_right, bottom_left, color);
+}
+void draw_square_outline(Rectangle_Points& points, SRT& transform, glm::vec4 color) {
+	auto mat = mat3_from_transform(transform);
+	glm::vec3 top_left = mat * glm::vec3(points.left, points.top, 1.f);
+	glm::vec3 top_right = mat * glm::vec3(points.right, points.top, 1.f);
+	glm::vec3 bottom_right = mat * glm::vec3(points.right, points.bottom, 1.f);
+	glm::vec3 bottom_left = mat * glm::vec3(points.left, points.bottom, 1.f);
 	draw_square_outline(top_left, top_right, bottom_right, bottom_left, color);
 }
 
 void draw_square(SRT transform, glm::vec4 color) {
-	auto draw = [&transform, &color]() -> void {
+	auto draw = [transform, color]() -> void {
 		auto trans_mat = mat3_from_transform(transform);
 		solid_shader.begin();
 		solid_shader.set_mat3("transform", trans_mat);

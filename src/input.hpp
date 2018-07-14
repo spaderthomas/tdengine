@@ -2,7 +2,7 @@ typedef int GLFW_KEY_TYPE;
 struct Input {
 	bool should_update;
 	glm::vec2 px_pos;
-	glm::vec2 screen_pos; // Top left is (0,0), bottom right is (1,1)
+	glm::vec2 screen_pos;
 	glm::vec2 scroll;
 
 	bool is_down[GLFW_KEY_LAST];

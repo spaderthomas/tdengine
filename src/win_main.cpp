@@ -36,6 +36,7 @@ extern "C" {
 #include <cmath>
 #include <experimental/filesystem>
 #include <typeindex>
+#include <optional>
 using namespace std;
 
 
@@ -57,7 +58,6 @@ using namespace std;
 #include "entity.hpp"
 #include "draw.hpp"
 #include "collision.hpp"
-#include "serialization.hpp"
 #include "tilemap.hpp"
 #include "input.hpp"
 #include "renderer_functions.hpp"
@@ -102,6 +102,7 @@ int main() {
 		create_texture_atlas(dirname);
 	}
 	Lua.init();
+	init_levels();
 
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();

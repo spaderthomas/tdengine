@@ -64,31 +64,31 @@ struct Shader {
 		return loc;
 	}
 
-	void set_vec4(const char* name, glm::vec4& vec) {
+	void set_vec4(const char* name, glm::vec4 vec) {
 		glUniform4f(get_uniform_loc(name), vec.x, vec.y, vec.z, vec.w);
 		if (!tdns_find(uniforms_set_this_call, name)) {
 			uniforms_set_this_call.push_back(name);
 		}
 	}
-	void set_vec3(const char* name, glm::vec3& vec) {
+	void set_vec3(const char* name, glm::vec3 vec) {
 		glUniform3f(get_uniform_loc(name), vec.x, vec.y, vec.z);
 		if (!tdns_find(uniforms_set_this_call, name)) {
 			uniforms_set_this_call.push_back(name);
 		}
 	}
-	void set_vec2(const char* name, glm::vec2& vec) {
+	void set_vec2(const char* name, glm::vec2 vec) {
 		glUniform2f(get_uniform_loc(name), vec.x, vec.y);
 		if (!tdns_find(uniforms_set_this_call, name)) {
 			uniforms_set_this_call.push_back(name);
 		}
 	}
-	void set_mat3(const char* name, glm::mat3& mat) {
+	void set_mat3(const char* name, glm::mat3 mat) {
 		glUniformMatrix3fv(get_uniform_loc(name), 1, GL_FALSE, glm::value_ptr(mat));
 		if (!tdns_find(uniforms_set_this_call, name)) {
 			uniforms_set_this_call.push_back(name);
 		}
 	}
-	void set_mat4(const char* name, glm::mat4& mat) {
+	void set_mat4(const char* name, glm::mat4 mat) {
 		glUniformMatrix4fv(get_uniform_loc(name), 1, GL_FALSE, glm::value_ptr(mat));
 		if (!tdns_find(uniforms_set_this_call, name)) {
 			uniforms_set_this_call.push_back(name);

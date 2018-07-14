@@ -39,6 +39,7 @@ glm::mat3 mat3_from_transform(SRT transform) {
 	glm::mat3 scale_mat = identity_mat3();
 	scale_mat[0][0] = transform.scale.x;
 	scale_mat[1][1] = transform.scale.y;
+	scale_mat[2][2] = 1.f;
 
 	glm::mat3 rot_mat = identity_mat3();
 	rot_mat[0][0] = glm::cos(transform.rad_rot);
@@ -77,17 +78,4 @@ glm::vec3 translation_from_px_pos(glm::vec2 px_pos) {
 	glm::vec2 screen_coords = glm::vec2(px_pos.x / SCREEN_X, px_pos.y / SCREEN_Y);
 	glm::vec2 gl_coords = gl_from_screen(screen_coords);
 	return glm::vec3(gl_coords, 0);
-}
-
-bool is_point_inside_aligned_rectangle(glm::vec2 point, SRT rect_transform) {
-	// @note: All these are really vec3s, but the conversion drops the Z coordinate like we want
-	glm::vec2 top_left = mat3_from_transform(rect_transform) * screen_top_left;
-	glm::vec2 bottom_right = mat3_from_transform(rect_transform) * screen_bottom_right;
-
-	// These seem weird but it's because OpenGL has Y opposite of cartesian
-	return (top_left.x < point.x &&
-			top_left.y < point.y &&
-			bottom_right.x > point.x &&
-			bottom_right.y > point.y);
-
 }

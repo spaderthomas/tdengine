@@ -2,6 +2,9 @@
 #define fox_max(a, b) (a) > (b) ? (a) : (b)
 #define fox_min(a, b) (a) > (b) ? (b) : (a)
 #define fox_for(iterName, iterCount) for (unsigned int iterName = 0; iterName < (iterCount); ++iterName)
+#define fox_iter(iter_name, container) for (auto iter_name = (container).begin(); (iter_name) != (container).end(); (iter_name)++)
+#define rand_float(max) (static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (max)))
+
 //Assert
 #ifdef _MSC_VER
 #	ifdef assert
@@ -52,6 +55,7 @@ glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's f
 glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
 glm::vec4 green = glm::vec4(0.f, 1.f, 0.f, 1.f);
 glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
+glm::vec4 brown = glm::vec4(173.f / 255.f, 133.f / 255.f, 74.f / 255.f, 1.f);
 glm::vec4 white4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
 glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
 
@@ -358,3 +362,18 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 // This defines which tile is on the upper left of the screen
 glm::ivec2 camera = glm::ivec2(0);
 float seconds_per_update = 1.f / 60.f;
+float pi = 3.14159;
+
+struct Rectangle_Points {
+	screen_unit top;
+	screen_unit bottom;
+	screen_unit left;
+	screen_unit right;
+};
+
+void convert_screen_to_gl(Rectangle_Points& points) {
+	points.left = gl_from_screen(points.left);
+	points.right = gl_from_screen(points.right);
+	points.top = gl_from_screen(points.top);
+	points.bottom = gl_from_screen(points.bottom);
+}

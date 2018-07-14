@@ -290,20 +290,128 @@ struct Console {
 struct Player {
 	Entity* boon;
 	glm::vec2 position = glm::vec2(.25, .25);
+	float facing = 0.f;
 	void init() {
 		boon = Entity::create("boon");
 	}
 } player;
 
+struct Circle_Buffer {
+	int* data = nullptr;
+	int head = 0;
+	int capacity = 0;
+	int len = 0;
 
+	void push_back(int elem) {
+		if (len == capacity) { return; }
+		data[(head + len) % capacity] = elem;
+		len++;
+	}
+
+	optional<int> pop_front() {
+		if (len) {
+			int ret = data[head];
+			head = (head + 1) % capacity;
+			return ret;
+		}
+		return {};
+	}
+
+	void clear() {
+		memset(data, 0, sizeof(data));
+	}
+};
+
+// amp * sin(period * k - phase_shift)
+struct Sine_Func {
+	float amp = 1.f;
+	float period = 1.f;
+	float phase_shift = 1.f;
+
+	float eval_at(float point) {
+		return amp * glm::sin(period * point - phase_shift);		
+	}
+};
+
+// Everything stored in screen units;
+struct Particle {
+	glm::vec2 velocity = glm::vec2(0.f);
+	glm::vec2 position = glm::vec2(0.f);
+	glm::vec2 scale = glm::vec2((2 / SCREEN_X), (2 / SCREEN_Y));
+	glm::vec4 color = red;
+	float life;
+	bool alive = false;
+	Sine_Func y_offset;
+	float y_baseline;
+	
+	void make_alive() {
+		velocity = glm::vec2(0.f);
+		color = brown;
+		y_baseline = rand_float(1.f);
+		position = glm::vec2(0.f, y_baseline);
+		y_offset.amp = rand_float(.5f);
+		life = 1.f;
+		alive = true;
+	}
+};
+
+
+struct Particle_System {
+	Circle_Buffer free_list;
+	array<Particle, 1024> particles;
+	
+	void init() {
+		free_list.data = (int*)malloc(1024 * sizeof(int));
+		free_list.capacity = 1024;
+	}
+	void start() {
+		fox_for(i, 1024) {
+			free_list.push_back(i);
+			particles[i].alive = false;
+		}
+	}
+
+	void update(float dt) {
+		// Emit 2 particles per frame
+		fox_for(ipart, 2) {
+			auto index = free_list.pop_front();
+			if (index) {
+				particles[*index].make_alive();
+			}
+		}
+
+		fox_iter(it, particles) {
+			auto& particle = *it;
+			if (particle.alive) {
+				SRT transform = SRT::no_transform();
+				transform.translate = glm::vec3(gl_from_screen(particle.position), 0.f);
+				transform.scale = particle.scale;
+				glm::vec4 energycolor = glm::vec4(particle.color.x, particle.color.y, particle.color.z, particle.life);
+				draw_square(transform, energycolor);
+				
+				particle.life -= dt;
+				particle.position.x += dt;
+				particle.position.y = particle.y_baseline + particle.y_offset.eval_at(particle.life);
+
+				if (particle.life <= 0) {
+					particle.alive = false;
+					int index = it - particles.begin();
+					free_list.push_back(index);
+				}
+			}
+		}
+	}
+};
 struct {
 	Entity_Tree* tile_tree;
 	glm::ivec2 last_grid_pos_drawn;
+	glm::vec2 top_left_drag;
 	enum Editing_State {
 		IDLE,
 		INSERT,
 		EDIT,
-		DRAG
+		DRAG,
+		RECTANGLE_SELECT,
 	} editor_state;
 	struct Editor_Selection {
 		enum Selected_Kind {
@@ -368,6 +476,8 @@ struct {
 	Level* active_level;
 	Console console;
 
+	Particle_System particle_system;
+
 	void reload() {
 		//@leak this one is quite big 
 		for (auto dirname : atlas_folders) {
@@ -425,10 +535,12 @@ struct {
 		active_level = &cantina;
 		create_texture("..\\..\\textures\\reference\\test.png");
 		player.init();
+		particle_system.init();
 	}
 	
 	void update(float dt) {
 		static int frame = 0;
+		active_level->draw();
 
 		//--INPUT
 		if (game_input.is_down[GLFW_KEY_UP]) {
@@ -451,6 +563,9 @@ struct {
 		if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
 			editor_selection.entity = nullptr;
 			editor_state = IDLE;
+		}
+		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+			particle_system.start();
 		}
 
 		// Toggle the console on control
@@ -542,6 +657,24 @@ struct {
 		};
 		draw_tile_tree(tile_tree);
 
+		// Level selector
+		ImGui::Separator();
+		static string level_current = "choose level";
+		if (ImGui::BeginCombo("##chooselevel", level_current.c_str(), 0)) {
+			fox_iter(it, levels) {
+				string level_name = it->first;
+				bool is_selected = level_name == level_current;
+				if (ImGui::Selectable(level_name.c_str(), is_selected)) {
+					level_current = level_name;
+					active_level = it->second;
+				}
+				if (is_selected) {
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndCombo();
+		}
+
 		// Script selector
 		ImGui::Separator();
 		static string script_current = Lua.scripts[0];
@@ -577,13 +710,21 @@ struct {
 		switch (editor_state) {
 		case Editing_State::IDLE:
 			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+				bool clicked_inside_something = false;
 				for (auto& entity : active_level->entities) {
 					Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
 					if (point_inside_box(game_input.screen_pos, box)) {
+						clicked_inside_something = true;
 						editor_selection.entity = entity;
 						editor_selection.offset_from_mouse = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
 						editor_state = DRAG;
+						break;
 					}
+				}
+
+				if (!clicked_inside_something) {
+					top_left_drag = game_input.screen_pos;
+					editor_state = RECTANGLE_SELECT;
 				}
 			}
 			break;
@@ -642,7 +783,6 @@ struct {
 				}
 			}
 			break;
-		
 		case Editing_State::EDIT:
 			editor_selection.draw_component_editor();
 			// If it's inside something, start dragging it. If not, go back to idle.
@@ -689,7 +829,23 @@ struct {
 				editor_state = EDIT;
 			}
 			break;
+		case Editing_State::RECTANGLE_SELECT:
+			draw_square_outline(gl_from_screen(top_left_drag.y), gl_from_screen(game_input.screen_pos.y), gl_from_screen(top_left_drag.x), gl_from_screen(game_input.screen_pos.x), red);
+
+			Rectangle_Points points = { top_left_drag.y, game_input.screen_pos.y, top_left_drag.x, game_input.screen_pos.x };
+			Absolute_Bounding_Box selection_area = Absolute_Bounding_Box::from_points(points);
+			for (auto& entity : active_level->entities) {
+				Absolute_Bounding_Box entity_box = Absolute_Bounding_Box::from_entity(entity);
+				glm::vec2 dummy;
+				if (are_boxes_colliding(entity_box, selection_area, dummy)) {
+
+					entity->draw(Render_Flags::Highlighted);
+				}
+			}
+		
+			break;
 		}
+
 		ImGui::End();
 
 
@@ -708,6 +864,12 @@ struct {
 			mc->wish += glm::vec2(.0025f, 0.f);
 		}
 
+		if (game_input.is_down[GLFW_KEY_E]) {
+			Rectangle_Points points = Absolute_Bounding_Box::from_entity(player.boon).as_points();
+			convert_screen_to_gl(points);
+			SRT transform = SRT::no_transform();
+			draw_square_outline(points, transform, red);
+		}
 		renderer.draw(player.boon->get_component<Graphic_Component>(), player.boon->get_component<Position_Component>(), Render_Flags::None);
 		
 		for (auto& ent : active_level->entities) {
@@ -719,11 +881,12 @@ struct {
 
 		physics_system.process(1.f / 60.f);
 
+		particle_system.update(dt);
+
 		frame++;
 	}
 
 	void render() {
-		active_level->draw();
 		if (editor_selection.entity) { editor_selection.entity->draw(Render_Flags::Highlighted); }
 
 		// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
@@ -739,6 +902,7 @@ struct {
 				draw_line_from_points(glm::vec2(-1.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
 			}
 		}
+
 	}
 } game_layer;
 

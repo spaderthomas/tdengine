@@ -1,22 +1,17 @@
-struct Rectangle_Points {
-	screen_unit left;
-	screen_unit right;
-	screen_unit top;
-	screen_unit bottom;
-};
+
 
 // A struct for combining Bounding_Box (which is relative to the center of the thing it bounds) and actual positions
 struct Absolute_Bounding_Box {
 	glm::vec2 origin;
 	glm::vec2 extents;
 
-	Rectangle_Points get_verts() {
+	Rectangle_Points as_points() {
 		screen_unit left = origin.x - extents.x / 2;
 		screen_unit right = origin.x + extents.x / 2;
 		screen_unit top = origin.y + extents.y / 2;
 		screen_unit bottom = origin.y - extents.y / 2;
 
-		return { left, right, top, bottom };
+		return { top, bottom, left, right };
 	}
 
 	static Absolute_Bounding_Box from_entity(Entity* e) {
@@ -31,8 +26,15 @@ struct Absolute_Bounding_Box {
 		return box;
 	}
 
+	static Absolute_Bounding_Box from_points(Rectangle_Points& points) {
+		Absolute_Bounding_Box box;
+		box.origin = glm::vec2((points.left + points.right) / 2, (points.top + points.bottom) / 2);
+		box.extents = glm::vec2(points.right - points.left, points.top - points.bottom);
+		return box;
+	}
+
 	void debug_draw(glm::vec4 color) {
-		Rectangle_Points verts = get_verts();
+		Rectangle_Points verts = as_points();
 
 		gl_unit gl_left = gl_from_screen(verts.left);
 		gl_unit gl_right = gl_from_screen(verts.right);
@@ -44,7 +46,7 @@ struct Absolute_Bounding_Box {
 };
 
 bool point_inside_box(glm::vec2& screen_pos, Absolute_Bounding_Box& box) {
-	Rectangle_Points points = box.get_verts();
+	Rectangle_Points points = box.as_points();
 	if (screen_pos.x > points.left && screen_pos.x < points.right
 		&& screen_pos.y > points.bottom && screen_pos.y < points.top) {
 		return true;
@@ -53,56 +55,55 @@ bool point_inside_box(glm::vec2& screen_pos, Absolute_Bounding_Box& box) {
 	return false;
 }
 
+bool are_boxes_colliding(Absolute_Bounding_Box a, Absolute_Bounding_Box b, glm::vec2& penetration) {
+	// First, calculate the Minkowski difference
+	Absolute_Bounding_Box minkowski;
+	minkowski.extents = a.extents + b.extents;
+	float a_left = a.origin.x - .5f * a.extents.x;
+	float b_right = b.origin.x + .5f * b.extents.x;
+	minkowski.origin.x = a_left - b_right + .5f * minkowski.extents.x;
+	float a_top = a.origin.y + .5f * a.extents.y;
+	float b_bottom = b.origin.y - .5f * b.extents.y;
+	minkowski.origin.y = a_top - b_bottom - .5f * minkowski.extents.y;
+
+	if (debug_show_aabb) { minkowski.debug_draw(red); }
+
+	// If the Minkowski difference intersects the origin, there's a collision
+	auto verts = minkowski.as_points();
+	if (verts.right >= 0 && verts.left <= 0 && verts.top >= 0 && verts.bottom <= 0) {
+		// The pen vector is the shortest vector from the origin of the MD to an edge.
+		// You know this has to be a vertical or horizontal line from the origin (these are by def. the shortest)
+		float min = 100000.f;
+		if (abs(verts.left) < min) {
+			min = abs(verts.left);
+			penetration = glm::vec2(verts.left, 0.f);
+		}
+		if (abs(verts.right) < min) {
+			min = abs(verts.right);
+			penetration = glm::vec2(verts.right, 0.f);
+		}
+		if (abs(verts.top) < min) {
+			min = abs(verts.top);
+			penetration = glm::vec2(0.f, verts.top);
+		}
+		if (abs(verts.bottom) < min) {
+			min = abs(verts.bottom);
+			penetration = glm::vec2(0.f, verts.bottom);
+		}
+
+		return true;
+	}
+
+	penetration = glm::vec2(0.f);
+	return false;
+}
+
 struct {
 	vector<Entity*> entities;
 
-	
 	void debug_draw_bounding_box(Entity* entity, glm::vec4 color) {
 		Absolute_Bounding_Box box = Absolute_Bounding_Box::from_entity(entity);
 		box.debug_draw(color);
-	}
-
-	bool are_boxes_colliding(Absolute_Bounding_Box a, Absolute_Bounding_Box b, glm::vec2& penetration) {
-		// First, calculate the Minkowski difference
-		Absolute_Bounding_Box minkowski;
-		minkowski.extents = a.extents + b.extents;
-		float a_left = a.origin.x - .5f * a.extents.x;
-		float b_right = b.origin.x + .5f * b.extents.x;
-		minkowski.origin.x = a_left - b_right + .5f * minkowski.extents.x;
-		float a_top = a.origin.y + .5f * a.extents.y;
-		float b_bottom = b.origin.y - .5f * b.extents.y;
-		minkowski.origin.y = a_top - b_bottom - .5f * minkowski.extents.y;
-	
-		if (debug_show_aabb) { minkowski.debug_draw(red); }
-
-		// If the Minkowski difference intersects the origin, there's a collision
-		auto verts = minkowski.get_verts();
-		if (verts.right >= 0 && verts.left <= 0 && verts.top >= 0 && verts.bottom <= 0) {
-			// The pen vector is the shortest vector from the origin of the MD to an edge.
-			// You know this has to be a vertical or horizontal line from the origin (these are by def. the shortest)
-			float min = 100000.f;
-			if (abs(verts.left) < min) {
-				min = abs(verts.left);
-				penetration = glm::vec2(verts.left, 0.f);
-			}
-			if (abs(verts.right) < min) {
-				min = abs(verts.right);
-				penetration = glm::vec2(verts.right, 0.f);
-			}
-			if (abs(verts.top) < min) {
-				min = abs(verts.top);
-				penetration = glm::vec2(0.f, verts.top);
-			}
-			if (abs(verts.bottom) < min) {
-				min = abs(verts.bottom);
-				penetration = glm::vec2(0.f, verts.bottom);
-			}
-
-			return true;
-		}
-
-		penetration = glm::vec2(0.f);
-		return false;
 	}
 
 	void process(float dt) {
@@ -119,7 +120,7 @@ struct {
 			auto mc = entity->get_component<Movement_Component>();
 			auto pc = entity->get_component<Position_Component>();
 			
-			if (!mc) { continue; }
+			if (!mc) { continue; } // Don't check if the other thing is static
 			for (auto& other : entities) {
 				if (other == entity) { continue; } // Don't check when you come across yourself
 				Absolute_Bounding_Box entity_box = Absolute_Bounding_Box::from_entity(entity);

@@ -129,3 +129,16 @@ struct Level {
 		}
 	}
 };
+
+map<string, Level*> levels;
+void init_levels() {
+	string dir = "..\\..\\save";
+	for (directory_iterator iter(dir); iter != directory_iterator(); ++iter) {
+		if (is_regular_file(iter->status())) {
+			string path = iter->path().string();
+			Level* level = new Level;
+			level->name = strip_extension(name_from_full_path(path));
+			levels[level->name] = level;
+		}
+	}
+}
