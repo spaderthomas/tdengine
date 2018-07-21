@@ -11,3 +11,9 @@ end
 function tile_y_to_screen (tile_y)
     return tile_y * tilesize_y / screen_y
 end
+function px_x_to_screen (px_x)
+    return px_x / screen_x
+end
+function px_y_to_screen (px_y)
+    return px_y / screen_y
+end

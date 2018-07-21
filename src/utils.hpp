@@ -261,6 +261,7 @@ bool is_png(string& asset_path) {
 bool show_grid = false;
 bool snap_to_grid = false;
 bool debug_show_aabb = false;
+bool debug_show_minkowski = false;
 bool show_imgui_demo = false;
 bool show_console = false;
 

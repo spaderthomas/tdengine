@@ -78,4 +78,11 @@ void Renderer::render_for_frame() {
 
 	shader->end();
 	render_list.clear();
+
+
+	// Finally, render all the primitives on top of the screen in the order they were queued.
+	for (auto& draw_func : primitives) {
+		draw_func();
+	}
+	primitives.clear();
 }

@@ -12,6 +12,7 @@ struct Render_Element {
 };
 
 struct Renderer {
+	vector<function<void()>> primitives;
 	vector<Render_Element> render_list;
 	void draw(Graphic_Component* gc, Position_Component* pc, Render_Flags flags);
 	void render_for_frame();

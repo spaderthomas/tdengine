@@ -4,7 +4,6 @@ Pass any arguments to draw functions in screen coordinates. That function will t
 Keep it this way to separate concerns: The game (or whatever system) doesn't need to know about GL coordinate system!
 */
 
-vector<function<void()>> render_on_top;
 
 
 void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
@@ -22,7 +21,7 @@ void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
 		line->draw(GL_LINES);
 		solid_shader.end();
 	};
-	render_on_top.push_back(draw);
+	renderer.primitives.push_back(draw);
 }
 void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 	p1 = gl_from_screen(p1);
@@ -42,7 +41,7 @@ void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 
 		solid_shader.end();
 	};
-	render_on_top.push_back(draw);
+	renderer.primitives.push_back(draw);
 
 }
 
@@ -91,5 +90,5 @@ void draw_square(Center_Box box, glm::vec4 color) {
 		square->draw(GL_TRIANGLES);
 		solid_shader.end();
 	};
-	render_on_top.push_back(draw);
+	renderer.primitives.push_back(draw);
 }

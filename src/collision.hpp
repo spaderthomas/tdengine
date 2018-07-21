@@ -1,5 +1,3 @@
-
-
 bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
 	// First, calculate the Minkowski difference
 	Center_Box minkowski;
@@ -11,8 +9,19 @@ bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
 	float b_bottom = b.origin.y - .5f * b.extents.y;
 	minkowski.origin.y = a_top - b_bottom - .5f * minkowski.extents.y;
 
-	if (debug_show_aabb) { 
-		draw_square_outline(minkowski.as_points(), red);
+	Points_Box a_points = a.as_points();
+	Points_Box b_points = b.as_points();
+	glm::vec2 top_right = glm::vec2(a_points.right, a_points.top) - glm::vec2(b_points.left, b_points.bottom);
+	glm::vec2 top_left = glm::vec2(a_points.left, a_points.top) - glm::vec2(b_points.right, b_points.bottom);
+	glm::vec2 bottom_right = glm::vec2(a_points.right, a_points.bottom) - glm::vec2(b_points.left, b_points.top);
+	glm::vec2 bottom_left = glm::vec2(a_points.left, a_points.bottom) - glm::vec2(b_points.right, b_points.top);
+	Points_Box minkowski_;
+	minkowski_.bottom = bottom_right.y;
+	minkowski_.top = top_right.y;
+	minkowski_.left = top_left.x;
+	minkowski_.right = top_right.x;
+	if (debug_show_minkowski) {
+		draw_square_outline(minkowski_, red);
 	}
 
 	// If the Minkowski difference intersects the origin, there's a collision

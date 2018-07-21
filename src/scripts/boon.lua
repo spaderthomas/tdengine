@@ -1,16 +1,29 @@
 boon = {
     boon = {
         Graphic_Component = {
-             Animations = {
-                 walk = {
-                     "boon_walk1.png",
-                     "boon_walk2.png",
-                     "boon_walk3.png",
-                     "boon_walk4.png",
-                     "boon_walk5.png"
+		   Animations = {
+			  
+                 stand = {
+                     "boon_stand.png",
+                 },
+				 walk_down = {
+                     "boon_walk_down1.png",
+                     "boon_walk_down2.png",
+                     "boon_walk_down3.png",
+                     "boon_walk_down4.png",
+                     "boon_walk_down5.png",
+                     "boon_walk_down6.png"
+                 },
+				 walk_up = {
+                     "boon_walk_up1.png",
+                     "boon_walk_up2.png",
+                     "boon_walk_up3.png",
+                     "boon_walk_up4.png",
+                     "boon_walk_up5.png",
+                     "boon_walk_up6.png"
                  }
              },
-             default_animation = "walk",
+             default_animation = "stand",
              z = 1
          },
          Position_Component = {
@@ -33,7 +46,13 @@ boon = {
                y = tile_y_to_screen(.5)
             }
          },
-         Movement_Component = {
-         },
+        Movement_Component = {
+        },
+        Vision = {
+            extents = {
+                width = px_x_to_screen(8),
+                depth = px_y_to_screen(32)
+             } 
+        }
     }
 }

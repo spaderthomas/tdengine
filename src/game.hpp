@@ -287,12 +287,28 @@ struct Console {
     
 };
 
+enum Facing {
+	left,
+	right,
+	up,
+	down
+};
 struct Player {
 	Entity* boon;
 	glm::vec2 position = glm::vec2(.25, .25);
-	float facing = 0.f;
+	Facing facing;
+	float frame_timer = 8.f / 60.f;
 	void init() {
 		boon = Entity::create("boon");
+	}
+	void update(float dt) {
+		frame_timer -= dt;
+		if (frame_timer <= 0.f) {
+			auto gc = boon->get_component<Graphic_Component>();
+			auto animation = gc->active_animation;
+			animation->next_frame();
+			frame_timer = 8.f / 60.f;
+		}
 	}
 } player;
 
@@ -303,15 +319,20 @@ struct Circle_Buffer {
 	int len = 0;
 
 	void push_back(int elem) {
+		fox_assert(len <= capacity);
+		fox_assert(head >= 0 && head < capacity);
 		if (len == capacity) { return; }
 		data[(head + len) % capacity] = elem;
 		len++;
 	}
 
 	optional<int> pop_front() {
+		fox_assert(len <= capacity);
+		fox_assert(head >= 0 && head < capacity);
 		if (len) {
 			int ret = data[head];
 			head = (head + 1) % capacity;
+			len--;
 			return ret;
 		}
 		return {};
@@ -319,6 +340,8 @@ struct Circle_Buffer {
 
 	void clear() {
 		memset(data, 0, sizeof(data));
+		head = 0;
+		len = 0;
 	}
 };
 
@@ -333,7 +356,6 @@ struct Sine_Func {
 	}
 };
 
-// Everything stored in screen units;
 struct Particle {
 	glm::vec2 velocity = glm::vec2(0.f);
 	glm::vec2 position = glm::vec2(0.f);
@@ -534,6 +556,8 @@ struct {
 		create_texture("..\\..\\textures\\reference\\test.png");
 		player.init();
 		particle_system.init();
+		knowledge_base.setup();
+		Boon_Dialogue_FSM.set_to_initial_state();
 	}
 	
 	void update(float dt) {
@@ -602,6 +626,7 @@ struct {
 			ImGui::Checkbox("Show grid", &show_grid);
 			ImGui::Checkbox("Snap to grid", &snap_to_grid);
 			ImGui::Checkbox("Show AABBs", &debug_show_aabb);
+			ImGui::Checkbox("Show ImGui demo", &debug_show_minkowski);
 			ImGui::Checkbox("Show ImGui demo", &show_imgui_demo);
 		}
 
@@ -849,30 +874,76 @@ struct {
 
 		//--EXPLORATION
 		auto mc = player.boon->get_component<Movement_Component>();
+		bool moving = false;
 		if (game_input.is_down[GLFW_KEY_W]) {
 			mc->wish += glm::vec2(0.f, .0025f);
+			auto gc = player.boon->get_component<Graphic_Component>();
+			gc->set_animation2("walk_up");
+			moving = true;
+			player.facing = Facing::up;
 		}
 		if (game_input.is_down[GLFW_KEY_A]) {
 			mc->wish += glm::vec2(-.0025f, 0.f);
+			player.facing = Facing::left;
 		}
 		if (game_input.is_down[GLFW_KEY_S]) {
 			mc->wish += glm::vec2(0.f, -.0025f);
+			auto gc = player.boon->get_component<Graphic_Component>();
+			gc->set_animation2("walk_down");
+			moving = true;
+			player.facing = Facing::down;
 		}
 		if (game_input.is_down[GLFW_KEY_D]) {
 			mc->wish += glm::vec2(.0025f, 0.f);
+			player.facing = Facing::right;
+		}
+		if (!moving) {
+			auto gc = player.boon->get_component<Graphic_Component>();
+			gc->set_animation2("stand");
 		}
 
-		if (game_input.is_down[GLFW_KEY_E]) {
-			Points_Box points = Center_Box::from_entity(player.boon).as_points();
-			SRT transform = SRT::no_transform();
-			draw_square_outline(points, transform, red);
+		Vision* vision_box = player.boon->get_component<Vision>();
+		Points_Box points;
+		auto pc = player.boon->get_component<Position_Component>();
+		switch (player.facing) {
+		case up:
+			points.left = pc->screen_pos.x - vision_box->width;
+			points.right = pc->screen_pos.x + vision_box->width;
+			points.top = pc->screen_pos.y + 2 * vision_box->depth;
+			points.bottom = pc->screen_pos.y;
+			break;
+		case down:
+			points.left = pc->screen_pos.x - vision_box->width;
+			points.right = pc->screen_pos.x + vision_box->width;
+			points.top = pc->screen_pos.y;
+			points.bottom = pc->screen_pos.y - 2 * vision_box->depth;
+			break;
+		default:
+			points.left = pc->screen_pos.x - vision_box->width;
+			points.right = pc->screen_pos.x + vision_box->width;
+			points.top = pc->screen_pos.y + 2 * vision_box->depth;
+			points.bottom = pc->screen_pos.y;
+			break;
 		}
+		draw_square_outline(points, red); 
+		if (game_input.was_pressed(GLFW_KEY_E)) {
+			for (auto& ent : active_level->entities) {
+				Center_Box boon = Center_Box::from_points(points);
+				Center_Box other = Center_Box::from_entity(ent);
+				glm::vec2 sep;
+				if (are_boxes_colliding(boon, other, sep)) {
+					string msg = "It's a " + ent->lua_id;
+					text_box.begin(msg);
+				}
+			}
+		}
+
 		renderer.draw(player.boon->get_component<Graphic_Component>(), player.boon->get_component<Position_Component>(), Render_Flags::None);
-		
 		for (auto& ent : active_level->entities) {
 			if (ent->get_component<Bounding_Box>()) {
 				physics_system.entities.push_back(ent);
 			}
+			
 		}
 		physics_system.entities.push_back(player.boon);
 
@@ -880,7 +951,17 @@ struct {
 
 		particle_system.update(dt);
 
+		player.update(dt);
+		text_box.update(frame);
 		frame++;
+
+		ImGui::Begin("FSM debugger");
+		string dialogue_status = "Current state: " + Boon_Dialogue_FSM.current_state;
+		ImGui::Text(dialogue_status.c_str());
+		if (ImGui::Button("press to test!")) {
+			knowledge_base.update_variable(&knowledge_base.boon_has_interacted, true);
+		}
+		ImGui::End();
 	}
 
 	void render() {
@@ -899,7 +980,8 @@ struct {
 				draw_line_from_points(glm::vec2(0.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
 			}
 		}
-
+		
+		text_box.render();
 	}
 } game_layer;
 

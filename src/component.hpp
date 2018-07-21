@@ -23,6 +23,16 @@ struct Graphic_Component : Component {
 		tdns_log.write(msg);
 	}
 
+	void set_animation2(const string wish_name) {
+		if (active_animation) {
+			if (active_animation->name == wish_name) {
+				return;
+			}
+		}
+
+		set_animation(wish_name);
+	}
+
 	void add_animation(Animation* anim) {
 		animations.push_back(anim);
 	}
@@ -112,4 +122,15 @@ struct Bounding_Box : Component {
 
 struct Movement_Component : Component {
 	glm::vec2 wish;
+};
+
+// Defines a box whose bottom center is at the characters origin. Used for selecting.
+struct Vision : Component {
+	float width;
+	float depth;
+
+	void init_from_table(sol::table table) {
+		width = table["extents"]["width"];
+		depth = table["extents"]["depth"];
+	}
 };

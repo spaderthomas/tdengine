@@ -63,6 +63,7 @@ using namespace std;
 #include "input.hpp"
 #include "renderer_functions.hpp"
 #include "text.hpp"
+#include "fsm.hpp"
 #include "game.hpp"
 
 
@@ -90,13 +91,14 @@ int main() {
 		return -1;
 	}
 
-	//glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 	glfwSetCursorPosCallback(window, GLFW_Cursor_Pos_Callback);
 	glfwSetMouseButtonCallback(window, GLFW_Mouse_Button_Callback);
 	glfwSetKeyCallback(window, GLFW_Key_Callback);
 	glfwSetScrollCallback(window, GLFW_Scroll_Callback);
 	glfwSetErrorCallback(GLFW_Error_Callback);
 
+
+	// GAME DATA INIT
 	init_shaders();
 	init_mesh();
 	for (auto dirname : atlas_folders) {
@@ -109,6 +111,7 @@ int main() {
 	ImGui::CreateContext();
 	ImGui_ImplGlfwGL3_Init(window, false);
 	ImGui::StyleColorsDark();
+
 
 	//---OPENGL INIT
 	// Set up some debug output
@@ -143,35 +146,34 @@ int main() {
 	game_layer.init();
 	use_720p(window);
 	
+
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
-		
 		double frame_start_time = glfwGetTime();
 
+		// SETUP
 		// Call all GLFW callbacks
 		glfwPollEvents();
 
+		// Pass all inputs to ImGui BEFORE ImGui::NewFrame
 		auto io = ImGui::GetIO();
 		give_imgui_mouse_input();
 		if (io.WantCaptureKeyboard || io.WantCaptureMouse) { fill_imgui_input(); } 
 		else { game_input = global_input; }
 
 		// Window resizing requests
-		{
-			if (global_input.was_pressed(GLFW_KEY_1)) { use_640_360(window); }
-			if (global_input.was_pressed(GLFW_KEY_2)) { use_720p(window); }
-			if (global_input.was_pressed(GLFW_KEY_3)) { use_1080p(window); }
-		}
+		if (global_input.was_pressed(GLFW_KEY_1)) { use_640_360(window); }
+		if (global_input.was_pressed(GLFW_KEY_2)) { use_720p(window); }
+		if (global_input.was_pressed(GLFW_KEY_3)) { use_1080p(window); }
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+
+		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();
 		game_layer.update(seconds_per_update);
 		game_layer.render();
-		for (auto& draw_func : render_on_top) {
-			draw_func();
-		}
-		render_on_top.clear();
+	
 
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
 		ImGui::Render();
@@ -179,6 +181,7 @@ int main() {
 
 		glfwSwapBuffers(window);
 		global_input.reset_for_next_frame();
+
 
 		// Wait until we hit the next frame time
 		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
