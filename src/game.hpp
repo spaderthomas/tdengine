@@ -609,6 +609,10 @@ struct {
 				if (ImGui::MenuItem("Save", "console::save")) { active_level->save(); }
 				if (ImGui::MenuItem("Load", "console::load")) { active_level->load(); }
 				if (ImGui::MenuItem("Reload", "console::reload")) { reload(); }
+				if (ImGui::BeginMenu("Show")) {
+					if (ImGui::MenuItem("Toggle FSM Debugger")) { show_fsm_debugger = !show_fsm_debugger; }
+					ImGui::EndMenu();
+				}
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Edit"))
@@ -626,7 +630,7 @@ struct {
 			ImGui::Checkbox("Show grid", &show_grid);
 			ImGui::Checkbox("Snap to grid", &snap_to_grid);
 			ImGui::Checkbox("Show AABBs", &debug_show_aabb);
-			ImGui::Checkbox("Show ImGui demo", &debug_show_minkowski);
+			ImGui::Checkbox("Show Minkowski", &debug_show_minkowski);
 			ImGui::Checkbox("Show ImGui demo", &show_imgui_demo);
 		}
 
@@ -727,6 +731,38 @@ struct {
 		ImGui::PopStyleVar();
 		ImGui::EndChild();
 
+		// FSM debugger
+		if (show_fsm_debugger) {
+			ImGui::Begin("FSM debugger", 0, ImGuiWindowFlags_AlwaysAutoResize);
+			static FSM* selected_fsm = all_fsm[0];
+			if (ImGui::BeginCombo("##choosefsm", selected_fsm->name.c_str(), 0)) {
+				for (auto& fsm : all_fsm) {
+					bool is_selected = fsm->name == selected_fsm->name;
+					if (ImGui::Selectable(fsm->name.c_str(), is_selected)) {
+						selected_fsm = fsm;
+					}
+					if (is_selected) {
+						ImGui::SetItemDefaultFocus();
+					}
+				}
+				ImGui::EndCombo();
+			}
+			ImGui::Text("Current State: "); ImGui::SameLine(); ImGui::Text(selected_fsm->current_state.c_str());
+			for (auto& watched_variable : selected_fsm->watched_variables) {
+				bool current_status = knowledge_base[watched_variable];
+				if (current_status) {
+					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(.06f, .8f, .05f, 1.f));
+				}
+				else {
+					ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, .06f, .05f, 1.f));
+				}
+				if (ImGui::Button(watched_variable.c_str())) {
+					knowledge_base.update_variable(watched_variable, !current_status);
+				}
+				ImGui::PopStyleColor();
+			}
+			ImGui::End();
+		}
 
 
 		//--EDITOR
@@ -868,7 +904,6 @@ struct {
 		
 			break;
 		}
-
 		ImGui::End();
 
 
@@ -955,13 +990,7 @@ struct {
 		text_box.update(frame);
 		frame++;
 
-		ImGui::Begin("FSM debugger");
-		string dialogue_status = "Current state: " + Boon_Dialogue_FSM.current_state;
-		ImGui::Text(dialogue_status.c_str());
-		if (ImGui::Button("press to test!")) {
-			knowledge_base.update_variable(&knowledge_base.boon_has_interacted, true);
-		}
-		ImGui::End();
+
 	}
 
 	void render() {

@@ -113,6 +113,7 @@ struct {
 	}
 
 	void render() {
+		if (point == -1 || point == (text.size() - 1)) { return; }
 		// Draw the box
 		glBindVertexArray(text_box_vao);
 		glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
