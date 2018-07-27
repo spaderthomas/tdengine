@@ -25,16 +25,17 @@ struct Center_Box {
 		return { top, bottom, left, right };
 	}
 
-	static Center_Box from_entity(Entity* e) {
+	static optional<Center_Box> from_entity(Entity* e) {
 		Center_Box box;
 		Position_Component* pc = e->get_component<Position_Component>();
 		Bounding_Box* cc = e->get_component<Bounding_Box>();
-		fox_assert(pc);
-		fox_assert(cc);
-		box.origin = pc->screen_pos + cc->screen_center;
-		box.extents = cc->screen_extents;
+		if (pc && cc) {
+			box.origin = pc->screen_pos + cc->screen_center;
+			box.extents = cc->screen_extents;
+			return box;
+		}
 
-		return box;
+		return {};
 	}
 
 	static Center_Box from_points(Points_Box& points) {

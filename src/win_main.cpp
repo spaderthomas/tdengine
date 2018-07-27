@@ -44,27 +44,34 @@ using namespace std;
 
 #include "log.hpp"
 #include "utils.hpp"
+#include "input.hpp"
+#include "text.hpp"
+#include "asset_table.hpp"
+#include "sprite.hpp"
+#include "texture.hpp"
+#include "animation.hpp"
+#include "component.hpp"
+#include "renderer.hpp"
+#include "entity.hpp"
+#include "level.hpp"
+#include "game.hpp"
 #include "tdns_lua.hpp"
 #include "data.hpp"
 #include "shader.hpp"
 #include "transform.hpp"
-#include "renderer.hpp"
-#include "asset_table.hpp"
-#include "sprite.hpp"
-#include "texture.hpp"
+#include "sprite_impl.hpp"
 #include "mesh.hpp"
-#include "animation.hpp"
-#include "component.hpp"
-#include "entity.hpp"
+#include "animation_impl.hpp"
+#include "component_impl.hpp"
+#include "entity_impl.hpp"
 #include "box.hpp"
 #include "draw.hpp"
 #include "collision.hpp"
-#include "tilemap.hpp"
-#include "input.hpp"
+#include "level_impl.hpp"
 #include "renderer_functions.hpp"
-#include "text.hpp"
+#include "text_impl.hpp"
 #include "fsm.hpp"
-#include "game.hpp"
+#include "game_impl.hpp"
 
 
 
@@ -184,7 +191,10 @@ int main() {
 
 
 		// Wait until we hit the next frame time
-		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
+		while (glfwGetTime() - frame_start_time < seconds_per_update) {
+			float x = glfwGetTime();
+			int a = x - frame_start_time;
+		}
 	}
 	glfwTerminate();
     return 0;

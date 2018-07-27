@@ -39,7 +39,7 @@ struct {
 } knowledge_base;
 
 
-// FSMs
+// FSMs (seems like prime thing to try to generate with metaprogramming)
 struct : FSM {
 	void set_to_initial_state() override {
 		name = "boon_dialogue";

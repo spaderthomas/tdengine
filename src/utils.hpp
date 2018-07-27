@@ -60,48 +60,7 @@ glm::vec4 white4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
 glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
 
 
-// Screen stuff!
-float SCREEN_X = 640.f;
-float SCREEN_Y = 360.f;
-float CELL_SIZE = 16.f;
-float SCR_TILESIZE_X = CELL_SIZE / SCREEN_X;
-float SCR_TILESIZE_Y = CELL_SIZE / SCREEN_Y;
-float GLSCR_TILESIZE_X = 2 * SCR_TILESIZE_X;
-float GLSCR_TILESIZE_Y = 2 * SCR_TILESIZE_Y;
 
-void use_640_360(GLFWwindow* window) {
-	SCREEN_X = 640.f;
-	SCREEN_Y = 360.f;
-	CELL_SIZE = 16.f;
-	SCR_TILESIZE_X = CELL_SIZE / SCREEN_X;
-	SCR_TILESIZE_Y = CELL_SIZE / SCREEN_Y;
-	GLSCR_TILESIZE_X = 2 * SCR_TILESIZE_X;
-	GLSCR_TILESIZE_Y = 2 * SCR_TILESIZE_Y;
-	glfwSetWindowSize(window, 640, 360);
-	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
-}
-void use_720p(GLFWwindow* window) {
-	SCREEN_X = 1280.f;
-	SCREEN_Y = 720.f;
-	CELL_SIZE = 32.f;
-	SCR_TILESIZE_X = CELL_SIZE / SCREEN_X;
-	SCR_TILESIZE_Y = CELL_SIZE / SCREEN_Y;
-	GLSCR_TILESIZE_X = 2 * SCR_TILESIZE_X;
-	GLSCR_TILESIZE_Y = 2 * SCR_TILESIZE_Y;
-	glfwSetWindowSize(window, 1280, 720);
-	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
-}
-void use_1080p(GLFWwindow* window) {
-	SCREEN_X = 1920.f;
-	SCREEN_Y = 1080.f;
-	CELL_SIZE = 64.f;
-	SCR_TILESIZE_X = CELL_SIZE / SCREEN_X;
-	SCR_TILESIZE_Y = CELL_SIZE / SCREEN_Y;
-	GLSCR_TILESIZE_X = 2 * SCR_TILESIZE_X;
-	GLSCR_TILESIZE_Y = 2 * SCR_TILESIZE_Y;
-	glfwSetWindowSize(window, 1920, 1080);
-	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
-}
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
@@ -143,6 +102,48 @@ typedef float subpixel_unit;
 typedef float screen_unit;
 typedef float gl_unit;
 
+// Screen size definitions
+subpixel_unit SCREEN_X = (subpixel_unit)640.f;
+subpixel_unit SCREEN_Y = (subpixel_unit)360.f;
+subpixel_unit CELL_SIZE = (subpixel_unit)16.f;
+screen_unit SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+screen_unit SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+gl_unit GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+gl_unit GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
+
+void use_640_360(GLFWwindow* window) {
+	SCREEN_X = (subpixel_unit)640.f;
+	SCREEN_Y = (subpixel_unit)360.f;
+	CELL_SIZE = (subpixel_unit)16.f;
+	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
+	glfwSetWindowSize(window, 640, 360);
+	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+}
+void use_720p(GLFWwindow* window) {
+	SCREEN_X = (subpixel_unit)1280.f;
+	SCREEN_Y = (subpixel_unit)720.f;
+	CELL_SIZE = (subpixel_unit)32.f;
+	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
+	glfwSetWindowSize(window, 1280, 720);
+	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+}
+void use_1080p(GLFWwindow* window) {
+	SCREEN_X = (subpixel_unit)1920.f;
+	SCREEN_Y = (subpixel_unit)1080.f;
+	CELL_SIZE = (subpixel_unit)48.f;
+	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
+	glfwSetWindowSize(window, 1920, 1080);
+	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+}
 // Converting to grid units
 glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
 	int closest_x = (int)floor(px_pos.x / CELL_SIZE);
@@ -175,8 +176,8 @@ glm::vec2 screen_from_px(glm::ivec2 px) {
 glm::vec2 screen_from_grid(glm::ivec2 grid_pos) { 
 	screen_unit x = (screen_unit)(grid_pos.x * SCR_TILESIZE_X);
 	screen_unit y = (screen_unit)(grid_pos.y * SCR_TILESIZE_Y);
-	x += .5 * SCR_TILESIZE_X;
-	y += .5 * SCR_TILESIZE_Y;
+	x += (screen_unit)(.5 * SCR_TILESIZE_X);
+	y += (screen_unit)(.5 * SCR_TILESIZE_Y);
 	return glm::vec2(x, y);
 }
 
@@ -364,4 +365,14 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 // This defines which tile is on the upper left of the screen
 glm::ivec2 camera = glm::ivec2(0);
 float seconds_per_update = 1.f / 60.f;
-float pi = 3.14159;
+double pi = 3.14159;
+
+void fixup_type_name(string& type_name) {
+	vector<string> extraneous = { " *", " const", "struct " };
+	for (auto& str : extraneous) {
+		int erase_pos = type_name.find(str);
+		if (erase_pos >= 0) {
+			type_name.erase(erase_pos, str.length());
+		}
+	}
+}

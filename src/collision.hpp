@@ -58,8 +58,10 @@ struct {
 	vector<Entity*> entities;
 
 	void debug_draw_bounding_box(Entity* entity, glm::vec4 color) {
-		Center_Box box = Center_Box::from_entity(entity);
-		draw_square_outline(box.as_points(), color);
+		auto box = Center_Box::from_entity(entity);
+		if (box) {
+			draw_square_outline((*box).as_points(), color);
+		}
 	}
 
 	void process(float dt) {
@@ -79,19 +81,21 @@ struct {
 			if (!mc) { continue; } // Don't check if the other thing is static
 			for (auto& other : entities) {
 				if (other == entity) { continue; } // Don't check when you come across yourself
-				Center_Box entity_box = Center_Box::from_entity(entity);
-				entity_box.origin += mc->wish;
-				Center_Box other_box = Center_Box::from_entity(other);
-				glm::vec2 penetration;
+				auto entity_box = Center_Box::from_entity(entity);
+				auto other_box = Center_Box::from_entity(other);
+				if (entity_box && other_box) {
+					(*entity_box).origin += mc->wish;
+					glm::vec2 penetration;
 
-				if (are_boxes_colliding(entity_box, other_box, penetration)) {
-					mc->wish -= penetration;
-					
-					if (debug_show_aabb) {
-						debug_draw_bounding_box(entity, blue);
-						debug_draw_bounding_box(other, blue);
+					if (are_boxes_colliding(*entity_box, *other_box, penetration)) {
+						mc->wish -= penetration;
+
+						if (debug_show_aabb) {
+							debug_draw_bounding_box(entity, blue);
+							debug_draw_bounding_box(other, blue);
+						}
+
 					}
-					
 				}
 			}
 			

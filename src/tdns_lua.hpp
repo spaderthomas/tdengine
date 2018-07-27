@@ -1,4 +1,3 @@
-
 struct {
 	sol::state state;
 	map<string, vector<string>> script_to_definitions;
@@ -6,6 +5,7 @@ struct {
 	vector<string> scripts = {
 		"props",
 		"boon",
+		"wilson"
 	};
 	vector<string> imgui_ignored_scripts = {
 		"utils",
@@ -14,10 +14,12 @@ struct {
 
 	void init() {
 		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io);
-		load_scripts();
-	}
+		
+		// Register C++ functions in Lua
+		state.set_function("show_text", &Text_Box::begin, &game_layer.text_box);
 
-	void load_scripts() {
+
+		// Load scripts
 		auto error_handler = [](lua_State*, sol::protected_function_result pfr) {
 			sol::error err = pfr;
 			string msg = string("Error in script: ") + err.what();
@@ -63,9 +65,5 @@ struct {
 			sort(defined.begin(), defined.end());
 			script_to_definitions[script] = defined;
 		}
-
-
 	}
-
-	
 } Lua;

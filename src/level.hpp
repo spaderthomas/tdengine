@@ -1,0 +1,42 @@
+struct Chunk_Index {
+	int x;
+	int y;
+
+	Chunk_Index(int x, int y) {
+		this->x = x;
+		this->y = y;
+	}
+
+	bool operator==(const Chunk_Index &other) const {
+		return (x == other.x && y == other.y);
+	}
+};
+
+// https://en.wikipedia.org/wiki/Pairing_function#Cantor_pairing_function
+// Implementation of a bijective mapping from NxN to N
+template <>
+struct hash<Chunk_Index> {
+	std::size_t operator()(const Chunk_Index& chunk) const {
+		return (chunk.x + chunk.y) * (chunk.x + chunk.y + 1) / 2 + chunk.y;
+	}
+};
+
+#define CHUNK_SIZE 8
+#define chunk_of(x) ((x) / CHUNK_SIZE)
+#define index_into_chunk(x) ((x) % CHUNK_SIZE)
+struct Chunk {
+	Entity* tiles[CHUNK_SIZE][CHUNK_SIZE];
+};
+
+struct Level {
+	string name;
+	unordered_map<Chunk_Index, Chunk> chunks;
+	vector<Entity*> entities;
+
+	Entity* get_tile(int x, int y);
+	void set_tile(Entity* tile, int x, int y);
+	void draw();
+	void save();
+	void load();
+};
+
