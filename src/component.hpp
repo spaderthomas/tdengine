@@ -55,3 +55,13 @@ struct Interaction_Component : Component {
 	void init_from_table(sol::table table) override;
 	string name() override;
 };
+
+struct State_Component : Component {
+	vector<string> states;
+	string current_state;
+	sol::function update;
+
+	void init_from_table(sol::table table) override;
+	void set_state(string state);
+	string name() override;
+};

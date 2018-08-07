@@ -44,7 +44,6 @@ struct Center_Box {
 		box.extents = glm::vec2(points.right - points.left, points.top - points.bottom);
 		return box;
 	}
-
 };
 
 

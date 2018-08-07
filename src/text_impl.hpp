@@ -78,7 +78,7 @@ void Text_Box::render() {
 	// Draw the box
 	glBindVertexArray(text_box_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
-	auto texture = asset_table.get_asset<Texture>("test.png");
+	auto texture = asset_table.get_asset<Texture>("text_box.png");
 	glBindTexture(GL_TEXTURE_2D, texture->handle);
 
 	textured_shader.begin();
@@ -87,25 +87,25 @@ void Text_Box::render() {
 	gl_unit bottom = -.9f, left = -.9f;
 	gl_unit top = bottom + size_y;
 	gl_unit right = left + size_x;
-	GLfloat vertices[12][2] = {
 
+	GLfloat vertices[12][2] = {
 		// Vertices 
 		{ left,  top },
-	{ left,  bottom },
-	{ right, bottom },
+		{ left,  bottom },
+		{ right, bottom },
 
-	{ left,  top },
-	{ right, bottom },
-	{ right, top },
+		{ left,  top },
+		{ right, bottom },
+		{ right, top },
 
-	// Texture coordinates
-	{ 0.f, 0.f },
-	{ 0.f, 1.f },
-	{ 1.f, 1.f },
+		// Texture coordinates
+		{ 0.f, 0.f },
+		{ 0.f, 1.f },
+		{ 1.f, 1.f },
 
-	{ 0.f, 0.f },
-	{ 1.f, 1.f },
-	{ 1.f, 0.f }
+		{ 0.f, 0.f },
+		{ 1.f, 1.f },
+		{ 1.f, 0.f }
 	};
 	glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), vertices, GL_STATIC_DRAW);
 

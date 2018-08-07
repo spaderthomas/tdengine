@@ -25,7 +25,8 @@ Component_Type* Entity::get_component() const {
 
 	return nullptr;
 }
-
+template <typename Component_Type>
+Entity::
 sol::table Entity::get_definition(string lua_id) {
 	string script = Lua.definitions_to_script[lua_id];
 	return Lua.state[script][lua_id];
@@ -50,36 +51,43 @@ Entity* Entity::create(string lua_id) {
 	sol::table lua_components = Entity::get_definition(lua_id);
 	for (auto it : lua_components) {
 		string component_type = it.first.as<string>();
-		sol::table table = it.second.as<sol::table>();
-		if (component_type == "Graphic_Component") {
-			Graphic_Component* gc = new Graphic_Component;
-			gc->init_from_table(table);
-			entity->add_component(gc);
-		}
-		else if (component_type == "Bounding_Box") {
-			Bounding_Box* box = new Bounding_Box;
-			box->init_from_table(table);
-			entity->add_component(box);
-		}
-		else if (component_type == "Position_Component") {
-			Position_Component* pc = new Position_Component;
-			pc->init_from_table(table);
-			entity->add_component(pc);
-		}
-		else if (component_type == "Movement_Component") {
-			Movement_Component* mc = new Movement_Component;
-			mc->wish = glm::vec2(0.f);
-			entity->add_component(mc);
-		}
-		else if (component_type == "Vision") {
-			Vision* vision = new Vision;
-			vision->init_from_table(table);
-			entity->add_component(vision);
-		}
-		else if (component_type == "Interaction_Component") {
-			Interaction_Component* ic = new Interaction_Component;
-			ic->init_from_table(table);
-			entity->add_component(ic);
+		if (it.second.get_type() == sol::type::table) {
+			sol::table table = it.second.as<sol::table>();
+			if (component_type == "Graphic_Component") {
+				Graphic_Component* gc = new Graphic_Component;
+				gc->init_from_table(table);
+				entity->add_component(gc);
+			}
+			else if (component_type == "Bounding_Box") {
+				Bounding_Box* box = new Bounding_Box;
+				box->init_from_table(table);
+				entity->add_component(box);
+			}
+			else if (component_type == "Position_Component") {
+				Position_Component* pc = new Position_Component;
+				pc->init_from_table(table);
+				entity->add_component(pc);
+			}
+			else if (component_type == "Movement_Component") {
+				Movement_Component* mc = new Movement_Component;
+				mc->wish = glm::vec2(0.f);
+				entity->add_component(mc);
+			}
+			else if (component_type == "Vision") {
+				Vision* vision = new Vision;
+				vision->init_from_table(table);
+				entity->add_component(vision);
+			}
+			else if (component_type == "Interaction_Component") {
+				Interaction_Component* ic = new Interaction_Component;
+				ic->init_from_table(table);
+				entity->add_component(ic);
+			}
+			else if (component_type == "State_Component") {
+				State_Component* fsm = new State_Component;
+				fsm->init_from_table(table);
+				entity->add_component(fsm);
+			}
 		}
 	}
 

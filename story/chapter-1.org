@@ -1,6 +1,91 @@
+* 1
 Boon has to go to get his first augmentation. This would involve going to see the doctor, getting an explanation on augmentations, and then choosing which one you want to start with. the problem with this is that it's very anti in media res, which i like a lot. maybe the main city isn't the FSF base, but is instead a foreign city where you have to figure out the vibe, who to trust, factions -- so you never exactly feel at home. vampire. 
-maybe instead boon has to seek out a black market doctor. like the asian doctor from blade runner. someone who's doing some fucked up stuff. but for a not altogether bad cause -- he's opposing the regime, and he's helping you, maybe even kicking back some of his services pro bono to charity. everyone's after him. you can go to the underground and drop off your kid with leukemia and they got a 50/50 chance of coming back three weeks later -- not that his success rate isn't immaculate, but the fact of the matter is the dude is hard to get a hold of. and there are rumors that, well, every business has to source materials from somewhere. it's not possible to purely synthesize all the human parts you need. 
-anyway, the FSF smuggled one of their guys into the city because this dude is the only one that can save him. boon's gotta track him down. he only has rumors really -- there are a few connections in the city that can probably lead him closer to where he wants to go, but nothing definite. 
-one: super low key tech dude. he's hooked into the routers behind all the traffic that heads into the city. he's used it to build a network of people, who they know, who they talk to. all the messages themselves are encrypted, but just the metadata is worth its weight in gold. he works a bit for both sides. use him at your peril. he doesn't deal in commodities, so he prefers favors. maintaining his hold over the network traffic is hard. he has no muscle of his own. if you want him to help you track down the doc, you gotta go in and kill one of the maintenence guys at the data center where the router is. he's got most of them under his thumb, but a new guy is thinking of snitching. take care of him.
 
+* 2
+
+* 3
 demon's souls setup: one main hub, and then when you go do a mission it's just the 'dungeon'. this could take a number of different forms. you could have an actual dungeon that you go through, maybe solving puzzles and fighting minibosses (no random encounters!). you could have something that's really just a series of battles. the main hub will be much richer than in demon's souls -- less of a jumping off point and more of the jumping off point of the action.
+
+* 4
+need some way to get boon into the city in a circumstance where he can just poke around. something where there is a general interesting thing which must be investigated, but the way in which it can be done varies greatly. important to not have the earth shattering consequences be apparent immediately (i.e. don't have the tension way up at the beginning). there's no way you can hold the tension for all that time, and anyway it's not conducive to giving the player time to discover the world if you have to save it RIGHT NOW!!
+
+i like the idea of boon getting a text message to come to the cantina and talk about some shit that's going down. then, get an augmentation to prepare and then head out. but that doesn't build up. snow crash -- you just get the characters, you get them doing stuff that gives you a sense of what this world is like (and the world is very interesting), and the characters get a few little threads to pull on (YT making her delivery and getting in with the mob; hiro seeing the fuzz). 
+
+ride through the cover of night to somewhere just outside the city in the desert and get snuck in. 
+
+we have to secure some supplies
+someone at the ranch is sick
+you have to meet a 'mob boss' inside the city
+whispers of vaguely unreal things happening inside -- reports being smuggled out of things that seem magical
+meet up with a spy inside the city who has gotten in hot water
+sneak a stuxnet style worm into their system
+infinite jest kind of infective media? too derivative?
+sneaking some kind of 'in' to the people so they can access free internet?
+
+* 6
+every sovereign state has a lot of resources they need to produce in quantity to keep themselves running. at the root of it all is energy, of course. everything follows from the energy. of course you need clean water and concrete, but without electricity none of that happens. call electricity a tier zero resource. after that comes all the stuff that's just as essential. running water. infrastructure -- functioning roads, docks, gigabit fiber. food. the production of these varies from private to semiprivate to locked the fuck down by the government.
+
+normally, if you're trying to go big, you mess with the tier one resources. electricity is just too spread out for any entity to make a dent -- unless you nuke the whole damn country, and even then most countried import a fair amount of electricity from regional hubs. 
+
+but there is a way to derail the production of electricity. maybe not completely, but enough to do the damage you need to finish them off some other way. see, all the plants and production centers are very spread out physically, but data...data travels at the speed of light. if you can get a worm into the plants, you're golden. not to make this sound like an easy, or even possble, task. here's a list of what you're more or less looking at to pull something like this off:
+1. first, you gotta find out a bit about their hardware. hacking isn't magic, you have to figure out what they're running before you can get into it. and hardware isn't magic either -- there's always a way in. this step is physical. you either pay someone an absurd sum of money for information (maybe someone who works at the plant, maybe someone at the chip manufacturing place, there are a lot of ways here. most involve money)
+2. once you find out a bit about their hardware, you're much better off. there are known explots for many chips. you may even have one already pre-rolled for their hardware. if it's custom, you're a little better off, but you need another physical in. the good thing is that it's just not feasible from a dollar or maintanence standpoint to make everything purely custom for every power plant in the country. throw on top the fact that the government has to contract this work out, and it's not as impossible to get an in as it seems
+3. at this point, you have a worm. now you have to get it onto their system. a classic example of this is stuxnet, the worm that the US government used to disable Iran's nuclear centrifuges. they sent it out to a few civilians. the worm silently copied itself from USB drives to computers. it had control of your network card. it had the ability to silently send copies of itself around and around until, one day, it reached its target. no system lives in isolation. a computer system is worthless without getting input from its environment, and it's impossible to verify every single packet that comes into it.
+4. once the worm is on their system, you're gravy. of course, you're assuming everything works as you planned, but that's out of your control. the point here is to lie as low as posible. don't make things explode -- make them subtly break down. make it seem like their machinery has manufacturing errors. make it seem like everything's working ok, and change turbine speeds by five percent. there is much more value in subtle undermining than big explosions.
+5. optional: explosions are pretty good too. if you need to, blow shit up. 
+
+now. boon. this is where you come in. parts one and two are done, a sealed deal. part three is posing a few issues, however. these guys have got some serious, serious fucking opsec. every piece of information that goes into their power grid's control systems gets put in by a group of people explicitly hired for this purpose. a small group of people, and (for people who are glorified checksums) a very, very well paid, respected, and vetted group of people. no ins there. 
+
+but we have heard rumors. any society that places such a high emphasis on tech literacy and has security so locked down is bound to create a rich, rich community of hackers. it's the price you pay. they're no different. 
+
+we can get you in. but we don't necessarily know what's waiting for you. you're not flying totally blind, at least. we have a few threads for you to pull on when you first roll in. 
+
+one: super low key tech dude. he's hooked into the routers behind all the traffic that heads into the city. he's used it to build a network of people, who they know, who they talk to. all the messages themselves are encrypted, but just the metadata is worth its weight in gold. he works a bit for both sides. use him at your peril. he doesn't deal in commodities, so he prefers favors. maintaining his hold over the network traffic is hard. he has no muscle of his own. if you want him to help you, you gotta go in and kill one of the maintenence guys at the data center where the router is. he's got most of them under his thumb, but a new guy is thinking of snitching. take care of him.
+
+two: a black market doctor. like the asian doctor from blade runner. someone who's doing some fucked up stuff. but for a not altogether bad cause -- he's opposing the regime, and he's helping you, maybe even kicking back some of his services pro bono to charity. everyone's after him. you can go to the underground and drop off your kid with leukemia and they got a 50/50 chance of coming back three weeks later -- not that his success rate isn't immaculate, but the fact of the matter is the dude is hard to get a hold of. and there are rumors that, well, every business has to source materials from somewhere. it's not possible to purely synthesize all the human parts you need. point being is that a lot of people owe this guy favors, and he is definitely down to trade. 
+
+* 7 
+black, silence. text scrolling over the screen (with text noises). interlace pictures of:
+the signing of the secession
+the frontier people
+the dude ranch
+robert boon
+the young dude ranch
+
+December 14th, 2030. Celebrated by about two dozen million people on the West coast of the United States as Sovereignty Day. It started small; a few corporations building up a personal guard to protect themselves from domestic terrorism, corporate spying, and a litany of other threats. But all large things were once small. Before the large, clunky government knew what happened, the rug had been swept from under their feet. 
+
+This move did not go unopposed, nor unimitated. When it finally shook out, there were four nation states (if they could be called that) where the mighty United States once stood. The United States government occupied the East coast. A smallish group of final frontier types claimed the desolate hills of the north-central part of the country. The technocrats took the West coast. But most curious of all of them was what happened to America's great vast starscape: The desert. 
+
+A group of hackers (a loose term rendered even looser when every object you own has an embedded computer in it) with their finger on the pulse of geopolitics, military tech, cutting edge computing, and everything in between, realized the power vacuum was quickly approaching. The coalesced onto a ranch in central Texas, christened The Dude Ranch, about a year before everything went down. They built a community of people with many skills and many connections, proselytized the locals, and seceded while the iron was hot.
+
+Among these people is Robert Boon. Born August '21, grew up an ordinary life as a farmhand to his father. Of course, when United Tractors started locking their hardware behind 4K RSA keys and performing some legal (with the help of a little lobbying Uncle Sam) extortion to get a nice young man to come out there with the private key and unlock them once every six months, being a farmhand wasn't as simple an occupation as it was in the past. Farmers breathe entrepreneurial spirit and self sufficience, so it only makes sense that they fit like a glove with the hacker community. 
+
+He got into computer programming when he was eleven. By fifteen, he was one of the leading security experts this side of the Mississippi. By seventeen, he realized that cracking low-grade commercial DRM was small fries, and he decided to follow the action and head to dry Nelson, Texas with a few hackers he'd come to know through his time on the internet to set up what would legendarily become known as the Dude Ranch and be at the core of a group of people who had all the skills to build a civilization.  
+
+He trained in parkour and other methods of speed and flow at the Dude Ranch. The neural augmentations didn't hurt either. Usually, in any organization, the top dogs stop getting their hands dirty real quick, and the same could be said about the FSF -- fact of the matter is, minds like those don't need to spend their time digging trenches to route springwater to a nascent pseudo-anarchist community in the middle of the desert. Boon was different. He never wanted to be anywhere but the front lines. 
+
+* 8
+so you've seen the intro. there is a fair understanding of the tone of this world -- but not its inhabitants. the first person you meet is boon. where am i going with this? is the scope too large? i'm thinking you want a party of six characters. which means you need more than six characters to choose from. thing is, i think i can swing this if the customization works right. e.g. any one character can take on a number of roles. i think if I had ten playable characters (still a lot!), it'd be gravy.
+
+the first one is boon. i think his personality is pretty clearly laid out. he's a straight shooter. he doesn't fuck with philosophy. he likes to get things done, he likes to get them done right and usually by getting his hands dirty. but he's not condescending -- he just knows he can get the job done and prefers to do it himself. intensely intelligent and competent. 
+
+wake up outside boon's farm. he's leaning on the fence smoking a cigarette. his phone buzzes -- come to the cantina. it's...someone. gruff military brass? geeky gargoyle? what's the nature of this organization? it's supposed to be pretty alternative -- someone who looks like they got plucked from a nato meeting is probably not who you're looking for. a director of operations. perhaps a skinny ukranian kid. after all, this is security dirt. we finally got something for you. come to the cantina. no rush. 
+
+boon walks around the ranch. this is a time for information gathering. fleshing out their existence. missions? everything's gotta stay pretty clean. shit's not supposed to be dysfunctional around here. this is a group of people in their fucking prime, at the tipping point of too large and too small, perfect balance, excellent dynamics. 
+OR IS IT?
+it would be more interesting to have the dude ranch be a secondary hub, a place where there is some intrigue and mystery. problem is, if most of the story is happening inside New San Diego, why bother to flesh it out?
+- a library. inside, wilson's poring over arcana. ensuing, a discussion regarding the philosophy of the FSF and a few ideas.
+- research facility. experiments on making predictive models of people. 
+- a farmer. he asks boon to help him tend to some cattle. he tells boon about the energy sustainability of the ranch. energy. 
+- a dude fixing up net cables. he talks to you about the tech behind the net security. talks about how different it is outside. how commercial. like the bots following you around in pkd.
+(note these are all not particularly connected)
+
+boon finally makes it to the cantina. he walks in, and there are a fair few people there. a lot of randoms mulling about, drinking beer, talking. 
+i got my start hacking on synthesizers. then the dod caught wind of my skills and offered me a cool sum of money to shut the fuck up and work on cruise missiles. i have blue hair and black clothes.
+i was a computer graphics prodigy. then i got sucked into avant-garde literature. i curate the library. stop by sometime. this is just owen.
+i'm an old man. i left my home at the age of twelve years old. i just sit here and play my blues now. otherworldly sense. if you ever get a guitar come play with me. @quest
+the barkeep -- probably someone just like anyone on the ranch everyone takes shifts doing the menial work
+
+and then sitting at the table are the brass so to speak in as much as a commune can have brass. the ukranian kid is there. he meekly sips on mead as they talk. I believe his name is elia. two more people must be there. a tall man who looks like he has farmer's strength and a kind face, seems to be an old friend of boon. he claps him on the back and beckons him to sit. the last man -- maybe a bit timid, a bit of a burnout, spent the last five years fucking off doing who knows what -- but he has some serious skills on his resume. he greets boon slightly as boon sits. boon asks him a few questions about his background.
+
+and finally, he looks over to elia, who is intently staring at something on his laptop, well, you called me here, what's it gonna be then? elia looks up from his computer. I've got a big one for you, boon. he explains to him about the tiers and stuxnet. he gushes over the stux. boon interjects -- and what does this have to do with me? wally comes in. well, parts one and two are cinched, a done deal, sealed. problem is, we got no way to get it in. the last dude we were talking to who knew the first thing about getting into that fucking concrete dome of security ended up on the wrong side of a firing squad about a month before we got the worm ready to go. so you need a way to get it in? sounds like fun. we were hoping you'd say that. (friend talking) i know it's been tough sitting here while it seems like everyone else is playing geopolitical chess. i know how stir crazy you've been. well, here's your chance. then the other guy comes in. we brought this guy here because one he knows more about a fucking arm chip than the designers but two he used to live right in the heart of san diego. we don't know who you gotta talk to -- and to be fair neither does this guy, but he definitely knows a hell of a lot better than we do. we gotta get out of here. you guys chat though. boon, meet me at the depot when you're ready.

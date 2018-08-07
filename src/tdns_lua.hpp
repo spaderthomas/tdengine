@@ -2,14 +2,17 @@ struct {
 	sol::state state;
 	map<string, vector<string>> script_to_definitions;
 	map<string, string> definitions_to_script;
+
+	// Some scripts are things we don't wanna be able to select in ImGui, so just load those in separately
 	vector<string> scripts = {
 		"props",
 		"boon",
-		"wilson"
+		"npc"
 	};
 	vector<string> imgui_ignored_scripts = {
 		"utils",
-		"tiles"
+		"tiles",
+		"intro"
 	};
 
 	void init() {
@@ -17,6 +20,7 @@ struct {
 		
 		// Register C++ functions in Lua
 		state.set_function("show_text", &Text_Box::begin, &game_layer.text_box);
+		state.set_function("set_state", &State_Component::set_state);
 
 
 		// Load scripts
@@ -27,9 +31,7 @@ struct {
 			return pfr;
 		};
 
-		// Some scripts are things we don't wanna be able to select in ImGui
-		// So just load those in separately
-		// Also note: this has to go first so utils gets loaded. @hack?
+		// Note: this has to go first so utils gets loaded. @hack?
 		for (auto& script : imgui_ignored_scripts) {
 			string path = "..\\..\\src\\scripts\\" + script + ".lua";
 			state.safe_script_file(path, error_handler);
@@ -46,8 +48,7 @@ struct {
 			sort(defined.begin(), defined.end());
 			script_to_definitions[script] = defined;
 		}
-		// Each script has a single table with its filename as the name containing its definitions
-		// Pull out the definitions in the file and put them in a vector that the filename maps to
+
 		for (auto& script : scripts) {
 			string path = "..\\..\\src\\scripts\\" + script + ".lua";
 			state.safe_script_file(path, error_handler);
@@ -65,5 +66,10 @@ struct {
 			sort(defined.begin(), defined.end());
 			script_to_definitions[script] = defined;
 		}
+	}
+
+	sol::table get_npc_properties(string name) {
+		sol::table character = state["npc"][name];
+		return character;
 	}
 } Lua;

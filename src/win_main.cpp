@@ -56,6 +56,7 @@ using namespace std;
 #include "level.hpp"
 #include "game.hpp"
 #include "tdns_lua.hpp"
+#include "fsm.hpp"
 #include "data.hpp"
 #include "shader.hpp"
 #include "transform.hpp"
@@ -70,8 +71,8 @@ using namespace std;
 #include "level_impl.hpp"
 #include "renderer_functions.hpp"
 #include "text_impl.hpp"
-#include "fsm.hpp"
 #include "game_impl.hpp"
+
 
 
 
@@ -111,9 +112,17 @@ int main() {
 	for (auto dirname : atlas_folders) {
 		create_texture_atlas(dirname);
 	}
+	create_texture("..\\..\\textures\\misc\\text_box.png");
+
 	Lua.init();
 	init_levels();
 
+	init_fonts();
+
+	game_layer.init();
+	use_720p(window);
+
+	// IMGUI INIT
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui_ImplGlfwGL3_Init(window, false);
@@ -147,11 +156,6 @@ int main() {
 	fill_gpu_sprite_buffers();
 	glBindVertexArray(Mesh::vao);
 	fill_gpu_mesh_buffers();
-
-	init_fonts();
-
-	game_layer.init();
-	use_720p(window);
 	
 
 	// MAIN LOOP
@@ -191,10 +195,7 @@ int main() {
 
 
 		// Wait until we hit the next frame time
-		while (glfwGetTime() - frame_start_time < seconds_per_update) {
-			float x = glfwGetTime();
-			int a = x - frame_start_time;
-		}
+		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
 	}
 	glfwTerminate();
     return 0;

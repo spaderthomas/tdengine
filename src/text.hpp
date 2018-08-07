@@ -111,4 +111,3 @@ struct Text_Box {
 
 	void render();
 };
-

@@ -19,7 +19,12 @@ props = {
               y = tile_y_to_screen(2)
            }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("It's just a barn, but in the future everything is grey.")
+            end
+        }
     },
     
     tree = {
@@ -42,7 +47,12 @@ props = {
               y = tile_y_to_screen(3)
            }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("Somehow, this tree is barely taller than you are.")
+            end
+        }
     },
     
     fence_left = {
@@ -65,7 +75,13 @@ props = {
               y = tile_y_to_screen(1)
            }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                wilson:say()
+                show_text("It's just a fence.")
+            end
+        }
 	},
 	
      fence_middle = {
@@ -88,7 +104,12 @@ props = {
                 y = tile_y_to_screen(1)
             }
          },
-         Position_Component = {}
+         Position_Component = {},
+         Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("It's just a fence.")
+            end
+        }
      },
 	 
      fence_right = {
@@ -111,7 +132,12 @@ props = {
                 y = tile_y_to_screen(1)
             }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("It's just a fence.")
+            end
+        }
      },
 	 
      fence_post = {
@@ -134,7 +160,12 @@ props = {
                 y = tile_y_to_screen(1)
             }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("It's just a fence.")
+            end
+        }
      },
 	 
     fence_top = {
@@ -157,7 +188,12 @@ props = {
                 y = tile_y_to_screen(2)
             }
          },
-         Position_Component = {}
+         Position_Component = {},
+         Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("It's just a fence.")
+            end
+        }
     },
     
      cactus = {
@@ -206,7 +242,12 @@ props = {
               y = tile_y_to_screen(1)
            }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("Just thinking of all the things you could rest on this table fills you with excitement! What a rush!")
+            end
+        }
     },
     
     chair_left = {
@@ -229,7 +270,12 @@ props = {
             y = tile_y_to_screen(1)
            }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("This chair is made of a beautiful maple!")
+            end
+        }
     },
 	
     chair_right = {
@@ -252,7 +298,12 @@ props = {
             y = tile_y_to_screen(1)
            }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("This chair is made of a beautiful maple!")
+            end
+        }
     },
 	
     bar = {
@@ -275,7 +326,12 @@ props = {
               y = tile_y_to_screen(3.5)
            }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("Something feels off -- it feels like you're viewing this bar from above!")
+            end
+        }
     },
 	
     liquor_cabinet = {
@@ -298,7 +354,12 @@ props = {
               y = tile_y_to_screen(2)
            }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("You see a fine potato liquer labelled Silver Gander.")
+            end
+        }
     },
 	
     bookcase = {
@@ -321,7 +382,12 @@ props = {
               y = tile_y_to_screen(1.5)
            }
         },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("It's just lined with copies of Infinite Jest...")
+            end
+        }
     },
 	
     picture = {
@@ -344,6 +410,11 @@ props = {
                y = tile_y_to_screen(.75)
             }
          },
-        Position_Component = {}
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("It's a picture of two dripping hearts, joined together. You aren't sure if you like it or not.")
+            end
+        }
     }
 }

@@ -56,6 +56,7 @@ glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
 glm::vec4 green = glm::vec4(0.f, 1.f, 0.f, 1.f);
 glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
 glm::vec4 brown = glm::vec4(173.f / 255.f, 133.f / 255.f, 74.f / 255.f, 1.f);
+glm::vec4 black = glm::vec4(0.f, 0.f, 0.f, 1.f);
 glm::vec4 white4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
 glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
 
