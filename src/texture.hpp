@@ -2,9 +2,9 @@ namespace stdfs = std::experimental::filesystem;
 using namespace stdfs;
 
 string atlas_folders[] = {
-	"..\\..\\textures\\characters",
-	"..\\..\\textures\\entities",
-	"..\\..\\textures\\tiles",
+	absolute_path("textures\\characters"),
+	absolute_path("textures\\entities"),
+	absolute_path("textures\\tiles"),
 };
 
 #define REGULAR_ATLAS_SIZE 1024
@@ -32,7 +32,7 @@ void create_texture(string path) {
 		Texture* new_texture = asset_table.get_asset<Texture>(texture_name);
 
 		stbi_set_flip_vertically_on_load(true);
-		unsigned char* data = stbi_load(path.c_str(), &new_texture->width, &new_texture->height, &new_texture->num_channels, 0);
+		unsigned char* data = stbi_load(absolute_path(path).c_str(), &new_texture->width, &new_texture->height, &new_texture->num_channels, 0);
 		if (data) {
 			// Now, create all the OpenGL internals and point it to the newly created atlas
 			glGenTextures(1, &new_texture->handle);
@@ -153,7 +153,7 @@ void create_texture_atlas(string assets_dir) {
 
 		// Write the atlas itself, with the same name as the folder it was created from	
 
-		string atlas_path = "../../textures/atlases/" + atlas->name;
+		string atlas_path = absolute_path("textures\\atlases\\") + atlas->name;
 		stbi_write_png(atlas_path.c_str(), REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 4, atlas_data, 0);
 
 

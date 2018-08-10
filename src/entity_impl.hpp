@@ -25,8 +25,6 @@ Component_Type* Entity::get_component() const {
 
 	return nullptr;
 }
-template <typename Component_Type>
-Entity::
 sol::table Entity::get_definition(string lua_id) {
 	string script = Lua.definitions_to_script[lua_id];
 	return Lua.state[script][lua_id];

@@ -22,8 +22,8 @@ void init_fonts() {
 		tdns_log.write("Failed to initialize FreeType");
 		exit(0);
 	}
-	if (FT_New_Face(freetype, "C:/Windows/Fonts/Inconsolata-Regular.ttf", 0, &face)) {
-		tdns_log.write("Failed to load font");
+	if (FT_New_Face(freetype, "C:/Windows/Fonts/Arial.ttf", 0, &face)) {
+		tdns_log.write("Failed to load font (yes, even Papyrus failed :(");
 		exit(0);
 	}
 

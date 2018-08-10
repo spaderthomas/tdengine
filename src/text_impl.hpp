@@ -79,6 +79,7 @@ void Text_Box::render() {
 	glBindVertexArray(text_box_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
 	auto texture = asset_table.get_asset<Texture>("text_box.png");
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture->handle);
 
 	textured_shader.begin();
@@ -185,6 +186,7 @@ void Text_Box::render() {
 			};
 
 			// Render glyph texture over quad
+			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, freetype_char.texture);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 

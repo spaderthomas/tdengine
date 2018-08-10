@@ -250,6 +250,10 @@ bool is_valid_filename(string& str) {
 	return true;
 }
 
+string absolute_path(string dir_from_project_root) {
+	return root_dir + dir_from_project_root;
+}
+
 // @hack I'm sure there are PNG headers I could try parsing, but this works!
 bool is_png(string& asset_path) {
 	if (asset_path.size() < 5) { return false; } // "x.png" is the shortest name
@@ -281,6 +285,8 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 	case 481131: // buffer info
 		return;
 	case 131184: // buffer info
+		return;
+	case 131204: // Weird base level inconsistent bug. It may be a driver bug.
 		return;
 	}
 

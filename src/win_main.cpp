@@ -37,11 +37,13 @@ extern "C" {
 #include <experimental/filesystem>
 #include <typeindex>
 #include <optional>
+#include <iomanip>
 using namespace std;
 
 
 #include "imgui_impl_glfw_gl3.hpp"
 
+#include "machine_conf.hpp"
 #include "log.hpp"
 #include "utils.hpp"
 #include "input.hpp"
@@ -105,14 +107,13 @@ int main() {
 	glfwSetScrollCallback(window, GLFW_Scroll_Callback);
 	glfwSetErrorCallback(GLFW_Error_Callback);
 
-
 	// GAME DATA INIT
 	init_shaders();
 	init_mesh();
 	for (auto dirname : atlas_folders) {
 		create_texture_atlas(dirname);
 	}
-	create_texture("..\\..\\textures\\misc\\text_box.png");
+	create_texture("textures\\misc\\text_box.png");
 
 	Lua.init();
 	init_levels();

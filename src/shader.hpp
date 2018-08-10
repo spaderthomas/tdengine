@@ -141,8 +141,8 @@ Shader highlighted_shader;
 Shader solid_shader;
 Shader text_shader;
 void init_shaders() {
-	textured_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\textured.fs", "textured");
-	highlighted_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\highlighted.fs", "highlighted");
-	solid_shader.init("..\\..\\shaders\\solid.vs", "..\\..\\shaders\\solid.fs", "solid");
-	text_shader.init("..\\..\\shaders\\textured.vs", "..\\..\\shaders\\text.fs", "text");
+	textured_shader.init(absolute_path("shaders\\textured.vs"), absolute_path("shaders\\textured.fs"), "textured");
+	highlighted_shader.init(absolute_path("shaders\\textured.vs"), absolute_path("shaders\\highlighted.fs"), "highlighted");
+	solid_shader.init(absolute_path("shaders\\solid.vs"), absolute_path("shaders\\solid.fs"), "solid");
+	text_shader.init(absolute_path("shaders\\textured.vs"), absolute_path("shaders\\text.fs"), "text");
 }

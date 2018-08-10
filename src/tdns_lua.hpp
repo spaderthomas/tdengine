@@ -33,7 +33,7 @@ struct {
 
 		// Note: this has to go first so utils gets loaded. @hack?
 		for (auto& script : imgui_ignored_scripts) {
-			string path = "..\\..\\src\\scripts\\" + script + ".lua";
+			string path = absolute_path("src\\scripts\\") + script + ".lua";
 			state.safe_script_file(path, error_handler);
 
 			vector<string> defined;
@@ -50,7 +50,7 @@ struct {
 		}
 
 		for (auto& script : scripts) {
-			string path = "..\\..\\src\\scripts\\" + script + ".lua";
+			string path = absolute_path("src\\scripts\\") + script + ".lua";
 			state.safe_script_file(path, error_handler);
 
 			vector<string> defined;

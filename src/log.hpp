@@ -2,7 +2,7 @@ struct {
 	ofstream log_stream;
 	
 	void init() {
-		log_stream.open("../../log.txt", ofstream::out | ofstream::trunc);
+		log_stream.open(root_dir + "log.txt", ofstream::out | ofstream::trunc);
 	}
 
 	void write(string message) {
