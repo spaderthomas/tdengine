@@ -116,6 +116,9 @@ void State_Component::init_from_table(sol::table table) {
 		states.push_back(state.second.as<string>());
 	}
 
+	fox_assert(tdns_find(states, table["default_state"]));
+	current_state = table["default_state"];
+
 	sol::table watched_variables = table["watched_variables"];
 	for (auto& watched : watched_variables) {
 		knowledge_base.register_watcher(watched.second.as<string>(), this);

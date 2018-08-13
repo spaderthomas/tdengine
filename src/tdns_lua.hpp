@@ -12,7 +12,8 @@ struct {
 	vector<string> imgui_ignored_scripts = {
 		"utils",
 		"tiles",
-		"intro"
+		"intro",
+		"state"
 	};
 
 	void init() {

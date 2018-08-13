@@ -1,4 +1,4 @@
 state = {
     begin = false,
-    before_cantina = false
+    begin_cantina = false
 }
