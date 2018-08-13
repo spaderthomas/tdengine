@@ -61,9 +61,8 @@ npc = {
             } 
         },
         Interaction_Component = {
-            
             on_interact = function(this, other) 
-                self.say(this)
+                npc.wilson.say(this)
             end
         }
     },
@@ -115,11 +114,8 @@ npc = {
                     end
                 end
             },
-            say = function(self) 
-                show_text("... (He does not look up from his computer as he takes a sip of mead)")
-            end,
             on_interact = function(self, this, other) 
-                self:say()
+                show_text("... (He does not look up from his computer as he takes a sip of mead)")
             end
         }
     },

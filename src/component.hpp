@@ -57,6 +57,7 @@ struct Interaction_Component : Component {
 };
 
 struct State_Component : Component {
+	vector<string> watched_variables;
 	vector<string> states;
 	string current_state;
 	sol::function update;
