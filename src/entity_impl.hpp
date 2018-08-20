@@ -1,30 +1,22 @@
-template <typename Component_Type>
-void Entity::add_component(Component_Type* c) {
-	this->remove_component<Component_Type>();
-	components.push_back(c);
+template<typename Component_Type>
+component_handle Entity::add_component() {
+	component_handle handle = component_pool.next_available();
+	components[&typeid(Component_Type)] = handle;
+	return handle;
 }
 
 template <typename Component_Type>
 bool Entity::remove_component() {
-	for (auto it = components.begin(); it != components.end(); it++) {
-		if (dynamic_cast<Component_Type*>(*it)) {
-			components.erase(it);
-			return true;
-		}
-	}
-
-	return false;
+	component_handle handle = components[&typeid(Component_Type)];
+	component_pool.mark_available(handle);
 }
 
 template <typename Component_Type>
-Component_Type* Entity::get_component() const {
-	for (auto it = components.begin(); it != components.end(); ++it) {
-		Component_Type* cast_component = dynamic_cast<Component_Type*>(*it);
-		if (cast_component) { return cast_component; }
-	}
-
-	return nullptr;
+Component_Type* Entity::get_component() {
+	component_handle handle = components[&typeid(Component_Type)];
+	return (Component_Type*)component_pool.get(handle);
 }
+
 sol::table Entity::get_definition(string lua_id) {
 	string script = Lua.definitions_to_script[lua_id];
 	return Lua.state[script][lua_id];
@@ -52,39 +44,45 @@ Entity* Entity::create(string lua_id) {
 		if (it.second.get_type() == sol::type::table) {
 			sol::table table = it.second.as<sol::table>();
 			if (component_type == "Graphic_Component") {
-				Graphic_Component* gc = new Graphic_Component;
-				gc->init_from_table(table);
-				entity->add_component(gc);
+				component_handle handle = entity->add_component<Graphic_Component>();
+				Graphic_Component* component = component_pool.get<Graphic_Component>(handle);
+				new(component) Graphic_Component;
+				component->init_from_table(table);
 			}
 			else if (component_type == "Bounding_Box") {
-				Bounding_Box* box = new Bounding_Box;
-				box->init_from_table(table);
-				entity->add_component(box);
+				component_handle handle = entity->add_component<Bounding_Box>();
+				Bounding_Box* component = component_pool.get<Bounding_Box>(handle);
+				new(component) Bounding_Box;
+				component->init_from_table(table);
 			}
 			else if (component_type == "Position_Component") {
-				Position_Component* pc = new Position_Component;
-				pc->init_from_table(table);
-				entity->add_component(pc);
+				component_handle handle = entity->add_component<Position_Component>();
+				Position_Component* component = component_pool.get<Position_Component>(handle);
+				new(component) Position_Component;
+				component->init_from_table(table);
 			}
 			else if (component_type == "Movement_Component") {
-				Movement_Component* mc = new Movement_Component;
-				mc->wish = glm::vec2(0.f);
-				entity->add_component(mc);
+				component_handle handle = entity->add_component<Movement_Component>();
+				Movement_Component* component = component_pool.get<Movement_Component>(handle);
+				component->wish = glm::vec2(0.f);
 			}
 			else if (component_type == "Vision") {
-				Vision* vision = new Vision;
-				vision->init_from_table(table);
-				entity->add_component(vision);
+				component_handle handle = entity->add_component<Vision>();
+				Vision* component = component_pool.get<Vision>(handle);
+				new(component) Vision;
+				component->init_from_table(table);
 			}
 			else if (component_type == "Interaction_Component") {
-				Interaction_Component* ic = new Interaction_Component;
-				ic->init_from_table(table);
-				entity->add_component(ic);
+				component_handle handle = entity->add_component<Interaction_Component>();
+				Interaction_Component* component = component_pool.get<Interaction_Component>(handle);
+				new(component) Interaction_Component;
+				component->init_from_table(table);
 			}
 			else if (component_type == "State_Component") {
-				State_Component* fsm = new State_Component;
-				fsm->init_from_table(table);
-				entity->add_component(fsm);
+				component_handle handle = entity->add_component<State_Component>();
+				State_Component* component = component_pool.get<State_Component>(handle);
+				new(component) State_Component;
+				component->init_from_table(table);
 			}
 		}
 	}
@@ -92,7 +90,7 @@ Entity* Entity::create(string lua_id) {
 	return entity;
 }
 
-void Entity::draw(Render_Flags flags) const {
+void Entity::draw(Render_Flags flags) {
 	auto graphic_component = get_component<Graphic_Component>();
 	auto position_component = get_component<Position_Component>();
 	if (graphic_component && position_component) {
@@ -107,18 +105,18 @@ void Entity::draw(Render_Flags flags) const {
 void Entity::save(json& j) {
 	j["lua_id"] = lua_id;
 	int icomponent = 0;
-	for (auto& component : components) {
-		component->save(j["Components"][icomponent++]);
+	for (auto& kvp : components) {
+		//component->save(j["Components"][icomponent++]);
 	}
 }
 
 void Entity::load(json& entity) {
 	auto components_json = entity["Components"];
-	for (auto component : components_json) {
-		if (component["kind"] == "Position_Component") {
-			Position_Component* pc = new Position_Component;
-			pc->load(component);
-			this->add_component(pc);
+	for (auto component_json : components_json) {
+		if (component_json["kind"] == "Position_Component") {
+			component_handle handle = this->add_component<Position_Component>();
+			Position_Component* component = component_pool.get<Position_Component>(handle);
+			component->load(component_json);
 		}
 	}
 }

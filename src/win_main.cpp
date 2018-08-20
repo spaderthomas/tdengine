@@ -80,6 +80,9 @@ using namespace std;
 
 int main() {
 	tdns_log.init();
+
+	component_pool.init();
+
 	
 	// GLFW INIT
 	glfwInit();
@@ -158,6 +161,8 @@ int main() {
 	glBindVertexArray(Mesh::vao);
 	fill_gpu_mesh_buffers();
 	
+	glfwSwapInterval(0);
+
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
@@ -196,6 +201,7 @@ int main() {
 
 
 		// Wait until we hit the next frame time
+		cout << (1 / (glfwGetTime() - frame_start_time)) << " fps\n";
 		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
 	}
 	glfwTerminate();

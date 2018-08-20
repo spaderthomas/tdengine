@@ -65,3 +65,65 @@ struct State_Component : Component {
 	void set_state(string state);
 	string name() override;
 };
+
+struct Fake_Component {
+	int value;
+};
+
+union any_component {
+	Graphic_Component graphic_component;
+	Position_Component position_component;
+	Bounding_Box bounding_box;
+	Movement_Component movement_component;
+	Vision vision;
+	Interaction_Component interaction_component;
+	State_Component state_component;
+};
+
+struct pool_entry_info {
+	bool available : 1;
+};
+#define POOL_ENTRY_AVAILABLE 0x1
+#define POOL_SIZE 1000
+
+typedef int component_handle;
+
+struct {
+	any_component* components;
+	pool_entry_info* info;
+
+	void init() {
+		components = (any_component*)calloc(sizeof(any_component), POOL_SIZE);
+		info = (pool_entry_info*)calloc(sizeof(pool_entry_info), POOL_SIZE);
+		memset(info, 1, sizeof(pool_entry_info) * POOL_SIZE);
+	}
+
+	component_handle next_available() {
+		fox_for(handle, POOL_SIZE) {
+			pool_entry_info entry = info[handle];
+			if (entry.available) {
+				mark_unavailable(handle);
+				return handle;
+			}
+		}
+
+		return -1;
+	}
+
+	template <typename Component_Type>
+	Component_Type* get(component_handle handle) {
+		return (Component_Type*)(components + handle);
+	}
+	Component* get(component_handle handle) {
+		return (Component*)(components + handle);
+	}
+
+	inline void mark_available(component_handle handle) {
+		info[handle].available = true;
+		memset(components + handle, 0, sizeof(any_component));
+	}
+	inline void mark_unavailable(component_handle handle) {
+		info[handle].available = false;
+	}
+} component_pool;
+

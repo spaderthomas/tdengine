@@ -406,7 +406,8 @@ void Game::Editor_Selection::draw_component_editor() {
 	ImGui::End();
 	ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
 	ImGui::Text(string("/scripts/" + Lua.definitions_to_script[selection->lua_id] + "/" + selection->lua_id).c_str());
-	for (auto& component : selection->components) {
+	for (auto& kvp : selection->components) {
+		Component* component = component_pool.get(kvp.second);
 		if (dynamic_cast<Graphic_Component*>(component)) {
 			if (ImGui::TreeNode("Graphic Component")) {
 				Graphic_Component* gc = dynamic_cast<Graphic_Component*>(component);
@@ -461,8 +462,9 @@ void Game::reload() {
 			fox_for(y, CHUNK_SIZE) {
 				Entity* entity = chunk.tiles[x][y];
 				if (entity != nullptr) {
-					for (auto& component : entity->components) {
+					for (auto& kvp: entity->components) {
 						string script = Lua.definitions_to_script[entity->lua_id];
+						Component* component = component_pool.get(kvp.second);
 						component->init_from_table(Lua.state[script][entity->lua_id][component->name()]);
 					}
 				}
@@ -472,7 +474,8 @@ void Game::reload() {
 
 	// Reload all entities
 	for (auto& entity : active_level->entities) {
-		for (auto& component : entity->components) {
+		for (auto& kvp : entity->components) {
+			Component* component = component_pool.get(kvp.second);
 			string script = Lua.definitions_to_script[entity->lua_id];
 			component->init_from_table(Lua.state[script][entity->lua_id][component->name()]);
 		}
