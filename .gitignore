@@ -8,6 +8,7 @@ lib/
 misc/
 textures/
 save/
+src/macine_conf.hpp
 story/
 graphics_demo.vcxproj
 log.txt

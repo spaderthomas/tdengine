@@ -74,6 +74,7 @@ using namespace std;
 #include "renderer_functions.hpp"
 #include "text_impl.hpp"
 #include "game_impl.hpp"
+#include "test.hpp"
 
 
 
@@ -82,8 +83,8 @@ int main() {
 	tdns_log.init();
 
 	component_pool.init();
+	entity_pool.init();
 
-	
 	// GLFW INIT
 	glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -163,6 +164,7 @@ int main() {
 	
 	glfwSwapInterval(0);
 
+	test();
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {

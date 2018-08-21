@@ -55,10 +55,10 @@ bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
 }
 
 struct {
-	vector<Entity*> entities;
+	vector<pool_handle<Entity>> entity_handles;
 
-	void debug_draw_bounding_box(Entity* entity, glm::vec4 color) {
-		auto box = Center_Box::from_entity(entity);
+	void debug_draw_bounding_box(pool_handle<Entity> handle, glm::vec4 color) {
+		auto box = Center_Box::from_entity(handle);
 		if (box) {
 			draw_square_outline((*box).as_points(), color);
 		}
@@ -67,22 +67,23 @@ struct {
 	void process(float dt) {
 		// Render collision boxes
 		if (debug_show_aabb) {
-			for (auto ent : entities) {
-				debug_draw_bounding_box(ent, white4);
+			for (auto handle : entity_handles) {
+				debug_draw_bounding_box(handle, white4);
 
 			}
 		}
 
 		// First, figure out which entities are trying to move.
-		for (auto& entity : entities) {
+		for (auto& collider_handle : entity_handles) {
+			Entity* entity = entity_pool.get(collider_handle);
 			auto mc = entity->get_component<Movement_Component>();
 			auto pc = entity->get_component<Position_Component>();
 			
 			if (!mc) { continue; } // Don't check if the other thing is static
-			for (auto& other : entities) {
-				if (other == entity) { continue; } // Don't check when you come across yourself
-				auto entity_box = Center_Box::from_entity(entity);
-				auto other_box = Center_Box::from_entity(other);
+			for (auto& collidee_handle : entity_handles) {
+				if (collidee_handle == collider_handle) { continue; } // Don't check when you come across yourself
+				auto entity_box = Center_Box::from_entity(collider_handle);
+				auto other_box = Center_Box::from_entity(collidee_handle);
 				if (entity_box && other_box) {
 					(*entity_box).origin += mc->wish;
 					glm::vec2 penetration;
@@ -91,8 +92,8 @@ struct {
 						mc->wish -= penetration;
 
 						if (debug_show_aabb) {
-							debug_draw_bounding_box(entity, blue);
-							debug_draw_bounding_box(other, blue);
+							debug_draw_bounding_box(collider_handle, blue);
+							debug_draw_bounding_box(collidee_handle, blue);
 						}
 
 					}
@@ -104,6 +105,6 @@ struct {
 			mc->wish = glm::vec2(0.f);
 		}
 
-		entities.clear();
+		entity_handles.clear();
 	}
 } physics_system;

@@ -25,10 +25,11 @@ struct Center_Box {
 		return { top, bottom, left, right };
 	}
 
-	static optional<Center_Box> from_entity(Entity* e) {
+	static optional<Center_Box> from_entity(pool_handle<Entity> handle) {
+		Entity* entity = entity_pool.get(handle);
 		Center_Box box;
-		Position_Component* pc = e->get_component<Position_Component>();
-		Bounding_Box* cc = e->get_component<Bounding_Box>();
+		Position_Component* pc = entity->get_component<Position_Component>();
+		Bounding_Box* cc = entity->get_component<Bounding_Box>();
 		if (pc && cc) {
 			box.origin = pc->screen_pos + cc->screen_center;
 			box.extents = cc->screen_extents;

@@ -1,1 +1,1 @@
-string root_dir = "D:\\programming\\tdengine\\";
+string root_dir = "C:\\Users\\dboon\\programming\\tdengine\\";

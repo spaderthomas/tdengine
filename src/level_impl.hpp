@@ -1,8 +1,8 @@
-Entity* Level::get_tile(int x, int y) {
+pool_handle<Entity> Level::get_tile(int x, int y) {
 	Chunk& chunk = chunks[Chunk_Index(chunk_of(x), chunk_of(y))];
 	return chunk.tiles[index_into_chunk(x)][index_into_chunk(y)];
 }
-void Level::set_tile(Entity* tile, int x, int y) {
+void Level::set_tile(pool_handle<Entity> tile, int x, int y) {
 	Chunk& chunk = chunks[Chunk_Index(chunk_of(x), chunk_of(y))];
 	chunk.tiles[index_into_chunk(x)][index_into_chunk(y)] = tile;
 }
@@ -12,7 +12,7 @@ void Level::draw() {
 		Chunk& chunk = it.second;
 		fox_for(itilex, CHUNK_SIZE) {
 			fox_for(itiley, CHUNK_SIZE) {
-				Entity* ent = chunk.tiles[itilex][itiley];
+				Entity* ent = entity_pool.get(chunk.tiles[itilex][itiley]);
 				if (ent) {
 					ent->draw(Render_Flags::None);
 				}
@@ -20,8 +20,8 @@ void Level::draw() {
 		}
 	}
 
-	for (auto entity : entities) {
-		entity->draw(Render_Flags::None);
+	for (auto handle : entity_handles) {
+		entity_pool.get(handle)->draw(Render_Flags::None);
 	}
 }
 
@@ -34,7 +34,7 @@ void Level::save() {
 		Chunk& chunk = it.second;
 		fox_for(itilex, CHUNK_SIZE) {
 			fox_for(itiley, CHUNK_SIZE) {
-				Entity* tile = chunk.tiles[itilex][itiley];
+				Entity* tile = entity_pool.get(chunk.tiles[itilex][itiley]);
 				if (tile != nullptr) { tile->save(j["chunks"][index_key][itilex][itiley]); }
 				else { j["chunks"][index_key][itilex][itiley] = "NULL"; }
 			}
@@ -42,8 +42,8 @@ void Level::save() {
 	}
 
 	int indx = 0;
-	for (auto entity : entities) {
-		entity->save(j["entities"][indx++]);
+	for (auto handle : entity_handles) {
+		entity_pool.get(handle)->save(j["entities"][indx++]);
 	}
 
 	string path = string("../../save/") + name + string(".json");
@@ -74,22 +74,22 @@ void Level::load() {
 			fox_for(itiley, CHUNK_SIZE) {
 				auto tile_json = chunk_as_json[itilex][itiley];
 				if (tile_json != "NULL") {
-					Entity* new_ent = Entity::create(tile_json);
+					pool_handle<Entity> new_ent = Entity::create(tile_json);
 					chunk.tiles[itilex][itiley] = new_ent;
 				}
 				else {
-					chunk.tiles[itilex][itiley] = nullptr;
+					chunk.tiles[itilex][itiley] = { -1, nullptr };
 				}
 			}
 		}
 	}
 
 	// Load entities
-	entities.clear();
+	entity_handles.clear();
 	for (unsigned int i = 0; i < j["entities"].size(); i++) {
 		json entity_as_json = j["entities"][i];
-		Entity* entity = Entity::create(entity_as_json);
-		entities.push_back(entity);
+		pool_handle<Entity> handle = Entity::create(entity_as_json);
+		entity_handles.push_back(handle);
 	}
 }
 

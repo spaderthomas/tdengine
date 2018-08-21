@@ -1,11 +1,11 @@
 struct Entity_Tree {
 	string dir;
-	vector<Entity*> entities;
+	vector<pool_handle<Entity>> entities;
 	vector<Entity_Tree*> children;
 	int size = 0;
 
 	static Entity_Tree* create(string dir);
-	Entity* find(string lua_id);
+	pool_handle<Entity> find(string lua_id);
 }; 
 
 struct Console {
@@ -40,7 +40,7 @@ enum Facing {
 	down
 };
 struct Player {
-	Entity* boon;
+	pool_handle<Entity> boon;
 	glm::vec2 position = glm::vec2(.25, .25);
 	Facing facing;
 	float frame_timer = 8.f / 60.f;
@@ -111,8 +111,10 @@ struct Game {
 		} kind;
 
 		glm::vec2 smooth_drag_offset = glm::vec2(0.f);
-		Entity* selection;
-
+		pool_handle<Entity> selection;
+		pool_handle<Entity> operator->() {
+			return selection;
+		}
 		void translate_entity();
 		void draw_component_editor();
 	} editor_selection;
