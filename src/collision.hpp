@@ -73,38 +73,32 @@ struct {
 			}
 		}
 
-		// First, figure out which entities are trying to move.
-		for (auto& collider_handle : entity_handles) {
-			Entity* entity = entity_pool.get(collider_handle);
-			auto mc = entity->get_component<Movement_Component>();
-			auto pc = entity->get_component<Position_Component>();
-			
-			if (!mc) { continue; } // Don't check if the other thing is static
-			for (auto& collidee_handle : entity_handles) {
-				if (collidee_handle == collider_handle) { continue; } // Don't check when you come across yourself
-				auto entity_box = Center_Box::from_entity(collider_handle);
-				auto other_box = Center_Box::from_entity(collidee_handle);
+		for (auto& handle1 : entity_handles) {
+			Entity* entity = handle1();
+			auto position = entity->get_component<Position_Component>();
+			auto collider = entity->get_component<Collision_Component>();
+			auto movement = entity->get_component<Movement_Component>();
+
+			if (!(position)) { continue; }
+			for (auto& handle2 : entity_handles) {
+				if (handle1 == handle2) { continue; }
+				auto entity_box = Center_Box::from_entity(handle1);
+				auto other_box = Center_Box::from_entity(handle2);
 				if (entity_box && other_box) {
-					(*entity_box).origin += mc->wish;
 					glm::vec2 penetration;
-
 					if (are_boxes_colliding(*entity_box, *other_box, penetration)) {
-						mc->wish -= penetration;
-
-						if (debug_show_aabb) {
-							debug_draw_bounding_box(collider_handle, blue);
-							debug_draw_bounding_box(collidee_handle, blue);
-						}
-
+						if (!collider) { continue; }
+						collider->on_collide(handle1(), handle2());
 					}
 				}
-			}
-			
-			// Collision and movement handled; clear out the desired motion for this frame
-			pc->screen_pos += mc->wish;
-			mc->wish = glm::vec2(0.f);
-		}
 
+			}
+
+			if (movement) {
+				position->screen_pos += movement->wish;
+				movement->wish = glm::vec2(0.f);
+			}
+		}
 		entity_handles.clear();
 	}
 } physics_system;

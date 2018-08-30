@@ -12,16 +12,14 @@ void Level::draw() {
 		Chunk& chunk = it.second;
 		fox_for(itilex, CHUNK_SIZE) {
 			fox_for(itiley, CHUNK_SIZE) {
-				Entity* ent = entity_pool.get(chunk.tiles[itilex][itiley]);
-				if (ent) {
-					ent->draw(Render_Flags::None);
-				}
+				pool_handle<Entity> handle = chunk.tiles[itilex][itiley];
+				if (handle) handle->draw(Render_Flags::None);
 			}
 		}
 	}
 
 	for (auto handle : entity_handles) {
-		entity_pool.get(handle)->draw(Render_Flags::None);
+		if (handle) handle->draw(Render_Flags::None);
 	}
 }
 
@@ -33,8 +31,8 @@ void Level::save() {
 		string index_key = to_string(index.x) + "," + to_string(index.y);
 		Chunk& chunk = it.second;
 		fox_for(itilex, CHUNK_SIZE) {
-			fox_for(itiley, CHUNK_SIZE) {
-				Entity* tile = entity_pool.get(chunk.tiles[itilex][itiley]);
+			fox_for(itiley, CHUNK_SIZE) {	
+				Entity* tile = chunk.tiles[itilex][itiley]();
 				if (tile != nullptr) { tile->save(j["chunks"][index_key][itilex][itiley]); }
 				else { j["chunks"][index_key][itilex][itiley] = "NULL"; }
 			}
@@ -43,10 +41,10 @@ void Level::save() {
 
 	int indx = 0;
 	for (auto handle : entity_handles) {
-		entity_pool.get(handle)->save(j["entities"][indx++]);
+		handle->save(j["entities"][indx++]);
 	}
-
-	string path = string("../../save/") + name + string(".json");
+	
+	string path = absolute_path("save\\" + name + ".json");
 	ofstream save_file(path);
 	save_file << std::setw(4) << j << std::endl;
 }
@@ -54,9 +52,8 @@ void Level::save() {
 //@leak We never free up any tiles that were previously allocated.
 void Level::load() {
 	json j;
-	string path = "../../save/" + name + ".json";
-	ifstream load_file(path);
-	load_file >> j;
+	ifstream level_file(absolute_path("save\\" + name + ".json"));
+	level_file >> j;
 
 	// Load tile chunks
 	for (json::iterator it = j["chunks"].begin(); it != j["chunks"].end(); it++) {
@@ -68,6 +65,7 @@ void Level::load() {
 		getline(index_stream, index, ',');
 		int chunk_y = stoi(index);
 
+		// Fill in the tiles in the chunk
 		Chunk& chunk = chunks[Chunk_Index(chunk_x, chunk_y)];
 		json chunk_as_json = it.value();
 		fox_for(itilex, CHUNK_SIZE) {
@@ -95,13 +93,14 @@ void Level::load() {
 
 map<string, Level*> levels;
 void init_levels() {
-	string dir = "..\\..\\save";
-	for (directory_iterator iter(dir); iter != directory_iterator(); ++iter) {
-		if (is_regular_file(iter->status())) {
-			string path = iter->path().string();
-			Level* level = new Level;
-			level->name = strip_extension(name_from_full_path(path));
-			levels[level->name] = level;
-		}
+	json config;
+	ifstream config_file(absolute_path("save\\config.json"));
+	config_file >> config;
+	vector<string> level_names = config["levels"];
+
+	for (auto& name : level_names) {
+		Level* level = new Level;
+		level->name = name;
+		levels[name] = level;
 	}
 }

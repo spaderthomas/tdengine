@@ -10,7 +10,7 @@ struct Graphic_Component : Component {
 	int z;
 
 	void set_animation(const string wish_name);
-	void set_animation2(const string wish_name);
+	void set_animation_unless_already_active(const string wish_name);
 	void add_animation(Animation* anim);
 	Sprite* get_current_frame();
 	void init_from_table(sol::table gc) override;
@@ -18,7 +18,7 @@ struct Graphic_Component : Component {
 };
 struct Position_Component : Component {
 	glm::vec2 screen_pos = glm::vec2(0.f);
-	glm::vec2 scale = glm::vec2(0.f);
+	glm::vec2 scale = glm::vec2(1.f);
 
 	void save(json& j) const override;
 	void load(json& j);
@@ -58,6 +58,18 @@ struct State_Component : Component {
 	void set_state(string state);
 	string name() override;
 };
+struct Door_Component : Component {
+	string to;
+	
+	void init_from_table(sol::table table) override;
+	string name() override;
+};
+struct Collision_Component : Component {
+	sol::function on_collide;
+	
+	void init_from_table(sol::table table) override;
+	string name() override;
+};
 
 union any_component {
 	Graphic_Component graphic_component;
@@ -67,8 +79,24 @@ union any_component {
 	Vision vision;
 	Interaction_Component interaction_component;
 	State_Component state_component;
+	Door_Component door_component;
+	Collision_Component collision_component;
 
 	any_component() {} // Necessary so we can in place new components in the pool.
+	static void fake_destructor_for_sol(any_component* me) {};
 };
 
-Pool<any_component, 1000> component_pool;
+Pool<any_component, DEFAULT_POOL_SIZE> component_pool;
+
+//@metaprogramming
+unordered_map<string, const type_info*> component_map = {
+	{ "Graphic_Component", &typeid(Graphic_Component) },
+	{ "Position_Component", &typeid(Position_Component) },
+	{ "Bounding_Box", &typeid(Bounding_Box) },
+	{ "Movement_Component", &typeid(Movement_Component) },
+	{ "Vision", &typeid(Vision) },
+	{ "Interaction_Component", &typeid(Interaction_Component) },
+	{ "State_Component", &typeid(State_Component) },
+	{ "Door_Component", &typeid(Door_Component) },
+	{ "Collision_Component", &typeid(Collision_Component) }
+};

@@ -121,6 +121,7 @@ struct Game {
 
 	vector<function<void()>> stack;
 
+	//@move to a config file
 	Level dude_ranch;
 	Level cantina;
 	Level* active_level;
@@ -129,6 +130,7 @@ struct Game {
 	Particle_System particle_system;
 	Text_Box text_box;
 
+	void go_through_door(string to);
 	void play_intro();
 	void reload();
 	void undo();

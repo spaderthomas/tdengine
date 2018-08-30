@@ -19,7 +19,7 @@ Entity_Tree* Entity_Tree::create(string dir) {
 }
 pool_handle<Entity> Entity_Tree::find(string lua_id) {
 	for (auto& handle : entities) {
-		if (entity_pool.get(handle)->lua_id == lua_id) {
+		if (handle()->lua_id == lua_id) {
 			return handle;
 		}
 	}
@@ -305,7 +305,7 @@ void Player::init() {
 void Player::update(float dt) {
 	frame_timer -= dt;
 	if (frame_timer <= 0.f) {
-		auto gc = entity_pool.get(boon)->get_component<Graphic_Component>();
+		auto gc = boon()->get_component<Graphic_Component>();
 		auto animation = gc->active_animation;
 		animation->next_frame();
 		frame_timer = 8.f / 60.f;
@@ -398,8 +398,7 @@ void Game::Editor_Selection::translate_entity() {
 		draggable_position = game_input.screen_pos + smooth_drag_offset;
 	}
 
-
-	Position_Component* pc = entity_pool.get(selection)->get_component<Position_Component>();
+	Position_Component* pc = selection()->get_component<Position_Component>();
 	pc->screen_pos = draggable_position;
 }
 void Game::Editor_Selection::draw_component_editor() {
@@ -407,10 +406,10 @@ void Game::Editor_Selection::draw_component_editor() {
 	ImGui::End();
 	ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
 
-	Entity* entity = entity_pool.get(selection);
+	Entity* entity = selection();
 	ImGui::Text(string("/scripts/" + Lua.definitions_to_script[entity->lua_id] + "/" + entity->lua_id).c_str());
 	for (auto& kvp : entity->components) {
-		Component* component = (Component*)component_pool.get(kvp.second);
+		Component* component = (Component*)(kvp.second());
 		if (dynamic_cast<Graphic_Component*>(component)) {
 			if (ImGui::TreeNode("Graphic Component")) {
 				Graphic_Component* gc = dynamic_cast<Graphic_Component*>(component);
@@ -434,6 +433,9 @@ void Game::Editor_Selection::draw_component_editor() {
 	}
 	ImGui::End();
 	ImGui::Begin("tdengine", 0, ImGuiWindowFlags_AlwaysAutoResize);
+}
+void Game::go_through_door(string to) {
+	active_level = levels[to];
 }
 void Game::play_intro() {
 	Center_Box full_screen;
@@ -515,20 +517,9 @@ void Game::init() {
 	cantina.name = "cantina";
 	active_level = &cantina;
 	player.init();
-	auto boon = entity_pool.get(player.boon);
-	auto gc = boon->get_component<Graphic_Component>();
 	particle_system.init();
-	auto boon2 = entity_pool.get(player.boon);
-	auto gc2 = boon2->get_component<Graphic_Component>();
-	int a = 2;
-	sol::table test = Lua.state["npc"]["wilson"]["State_Component"];
-	State_Component sc;
-	sc.init_from_table(test);
-	sc.update(&sc, "fasf", true);
-
 }
 void Game::update(float dt) {
-	
 	static int frame = 0;
 	active_level->draw();
 
@@ -567,7 +558,6 @@ void Game::update(float dt) {
 	}
 
 
-
 	//--GUI (global stuff goes here -- obviously since ImGui smaller things can be put anywhere!)
 	// Top menu
 	if (ImGui::BeginMainMenuBar())
@@ -599,6 +589,7 @@ void Game::update(float dt) {
 		ImGui::Checkbox("Snap to grid", &snap_to_grid);
 		ImGui::Checkbox("Show AABBs", &debug_show_aabb);
 		ImGui::Checkbox("Show Minkowski", &debug_show_minkowski);
+		ImGui::Checkbox("Show framerate", &print_framerate);
 		ImGui::Checkbox("Show ImGui demo", &show_imgui_demo);
 	}
 
@@ -612,7 +603,7 @@ void Game::update(float dt) {
 				// If expanded, draw this folder's tiles
 				int indx = 0;
 				for (auto tile_handle : root->entities) {
-					Entity* tile = entity_pool.get(tile_handle);
+					Entity* tile = tile_handle();
 					Graphic_Component* gc = tile->get_component<Graphic_Component>();
 					if (gc) {
 						Sprite* ent_sprite = gc->get_current_frame();
@@ -702,31 +693,36 @@ void Game::update(float dt) {
 
 	// FSM debugger
 	if (show_fsm_debugger) {
-#if 0
 		if (editor_selection.selection) {
-			auto fsm = editor_selection.selection
+			Entity* entity = editor_selection.selection();
+			State_Component* state = entity->get_component<State_Component>();
+			
+			// If the selection both exists and has a state component, we can run the FSM debugger
+			if (state) {
+				ImGui::Begin("FSM debugger", 0, ImGuiWindowFlags_AlwaysAutoResize);
+				ImGui::Text("Current State: "); ImGui::SameLine(); ImGui::Text(state->current_state.c_str());
+
+				// Display each of the watched variables as a red or green button 
+				for (auto& watched_variable : state->watched_variables) {
+					bool current_status = knowledge_base[watched_variable];
+					if (current_status) {
+						static ImVec4 green_for_true = ImVec4(.06f, .8f, .05f, 1.f);
+						ImGui::PushStyleColor(ImGuiCol_Button, green_for_true);
+					}
+					else {
+						static ImVec4 red_for_false = ImVec4(1.f, .06f, .05f, 1.f);
+						ImGui::PushStyleColor(ImGuiCol_Button, red_for_false);
+					}
+
+					// Toggle the button on click
+					if (ImGui::Button(watched_variable.c_str())) {
+						knowledge_base.update_variable(watched_variable, !current_status);
+					}
+					ImGui::PopStyleColor();
+				}
+				ImGui::End();
+			}
 		}
-		ImGui::Begin("FSM debugger", 0, ImGuiWindowFlags_AlwaysAutoResize);
-		sol::table dialogue_fsm = Lua.state["wilson"]["State_Component"];
-		string current_state = dialogue_fsm["current_state"];
-		ImGui::Text("Current State: "); ImGui::SameLine(); ImGui::Text(current_state.c_str());
-		sol::table watched = dialogue_fsm.get<sol::table>("watched_variables");
-		for (auto& watched_entry : watched) {
-			string watched_variable = watched_entry.second.as<string>();
-			bool current_status = knowledge_base[watched_variable];
-			if (current_status) {
-				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(.06f, .8f, .05f, 1.f));
-			}
-			else {
-				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(1.f, .06f, .05f, 1.f));
-			}
-			if (ImGui::Button(watched_variable.c_str())) {
-				knowledge_base.update_variable(watched_variable, !current_status);
-			}
-			ImGui::PopStyleColor();
-		}
-		ImGui::End();
-#endif
 	}
 
 	//--EDITOR
@@ -735,7 +731,7 @@ void Game::update(float dt) {
 		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			bool clicked_inside_something = false;
 			for (auto& handle : active_level->entity_handles) {
-				Entity* entity = entity_pool.get(handle);
+				Entity* entity = handle();
 				auto box = Center_Box::from_entity(handle);
 				if (box) {
 					if (point_inside_box(game_input.screen_pos, *box)) {
@@ -763,14 +759,15 @@ void Game::update(float dt) {
 			switch (editor_selection.kind) {
 			case Editor_Selection::TILE: {
 				auto grid_pos = grid_pos_from_px_pos(game_input.px_pos);
-				Entity* current_entity = entity_pool.get(active_level->get_tile(grid_pos.x, grid_pos.y));
+				pool_handle<Entity> handle = active_level->get_tile(grid_pos.x, grid_pos.y);
+				Entity* current_entity = handle();
 
 				// We don't want to double paint, so check to make sure we're not doing that
 				bool okay_to_create = true;
 
 				// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
 				if (current_entity) {
-					if (current_entity->lua_id == entity_pool.get(editor_selection.selection)->lua_id) {
+					if (current_entity->lua_id == editor_selection.selection()->lua_id) {
 						okay_to_create = false;
 					}
 				}
@@ -787,7 +784,7 @@ void Game::update(float dt) {
 								stack.push_back(my_lambda);
 
 								active_level->set_tile(editor_selection.selection, grid_pos.x, grid_pos.y);
-								editor_selection.selection = Entity::create(entity_pool.get(editor_selection.selection)->lua_id);
+								editor_selection.selection = Entity::create(editor_selection.selection()->lua_id);
 
 								// Update so we only paint one entity per tile
 								last_grid_pos_drawn = grid_pos;
@@ -806,7 +803,7 @@ void Game::update(float dt) {
 					active_level->entity_handles.push_back(editor_selection.selection);
 
 					// Create a new one of the same kind as the old one
-					Entity* selection = entity_pool.get(editor_selection.selection);
+					Entity* selection = editor_selection.selection();
 					editor_selection.selection = Entity::create(selection->lua_id);
 					editor_selection.smooth_drag_offset = glm::vec2(0.f);
 					editor_selection.translate_entity();
@@ -824,14 +821,14 @@ void Game::update(float dt) {
 			if (bounding_box) {
 				// If you click inside the currently selected thing, start dragging it
 				if (point_inside_box(game_input.screen_pos, *bounding_box)) {
-					editor_selection.smooth_drag_offset = entity_pool.get(editor_selection.selection)->get_component<Position_Component>()->screen_pos - game_input.screen_pos;
+					editor_selection.smooth_drag_offset = editor_selection.selection()->get_component<Position_Component>()->screen_pos - game_input.screen_pos;
 					editor_state = DRAG;
 				}
 				// Otherwise, see if you clicked in something else.
 				else {
 					bool found = false;
 					for (auto& handle : active_level->entity_handles) {
-						Entity* entity = entity_pool.get(handle);
+						Entity* entity = handle();
 						auto box = Center_Box::from_entity(handle);
 						if (box) {
 							if (point_inside_box(game_input.screen_pos, *box)) {
@@ -854,7 +851,7 @@ void Game::update(float dt) {
 		if (game_input.was_pressed(GLFW_KEY_DELETE)) {
 			for (auto it = active_level->entity_handles.begin(); it != active_level->entity_handles.end(); it++) {
 				if (editor_selection.selection == *it) {
-					Entity* entity = entity_pool.get(editor_selection.selection);
+					Entity* entity = editor_selection.selection();
 					entity->clear_components();
 					active_level->entity_handles.erase(it);
 					break;
@@ -888,7 +885,7 @@ void Game::update(float dt) {
 			auto entity_box = Center_Box::from_entity(handle);
 			if (entity_box) {
 				if (are_boxes_colliding(*entity_box, selection_area, dummy_penetration)) {
-					entity_pool.get(handle)->draw(Render_Flags::Highlighted);
+					handle()->draw(Render_Flags::Highlighted);
 				}
 			}
 		}
@@ -900,13 +897,13 @@ void Game::update(float dt) {
 
 
 	//--EXPLORATION
-	Entity* boon = entity_pool.get(player.boon);
+	Entity* boon = player.boon();
 	auto mc = boon->get_component<Movement_Component>();
 	bool moving = false;
 	if (game_input.is_down[GLFW_KEY_W]) {
 		mc->wish += glm::vec2(0.f, .0025f);
 		auto gc = boon->get_component<Graphic_Component>();
-		gc->set_animation2("walk_up");
+		gc->set_animation_unless_already_active("walk_up");
 		moving = true;
 		player.facing = Facing::up;
 	}
@@ -917,7 +914,7 @@ void Game::update(float dt) {
 	if (game_input.is_down[GLFW_KEY_S]) {
 		mc->wish += glm::vec2(0.f, -.0025f);
 		auto gc = boon->get_component<Graphic_Component>();
-		gc->set_animation2("walk_down");
+		gc->set_animation_unless_already_active("walk_down");
 		moving = true;
 		player.facing = Facing::down;
 	}
@@ -933,7 +930,7 @@ void Game::update(float dt) {
 	}
 	if (!moving) {
 		auto gc = boon->get_component<Graphic_Component>();
-		gc->set_animation2("stand");
+		gc->set_animation_unless_already_active("stand");
 	}
 
 	Vision* vision_box = boon->get_component<Vision>();
@@ -965,7 +962,7 @@ void Game::update(float dt) {
 
 	if (game_input.was_pressed(GLFW_KEY_E)) {
 		for (auto& handle : active_level->entity_handles) {
-			Entity* entity = entity_pool.get(handle);
+			Entity* entity = handle();
 			Center_Box boon = Center_Box::from_points(points);
 			auto other = Center_Box::from_entity(handle);
 			if (!other) { continue; }
@@ -975,7 +972,7 @@ void Game::update(float dt) {
 				if (ic) {
 					string script = Lua.definitions_to_script[entity->lua_id];
 					sol::table ic_lua = Lua.state[script][entity->lua_id]["Interaction_Component"];
-					ic->on_interact(ic_lua);
+					ic->on_interact(entity);
 				}
 			}
 		}
@@ -983,7 +980,7 @@ void Game::update(float dt) {
 
 	renderer.draw(boon->get_component<Graphic_Component>(), boon->get_component<Position_Component>(), Render_Flags::None);
 	for (auto& handle : active_level->entity_handles) {
-		if (entity_pool.get(handle)->get_component<Bounding_Box>()) {
+		if (handle()->get_component<Bounding_Box>()) {
 			physics_system.entity_handles.push_back(handle);
 		}
 
@@ -1002,7 +999,7 @@ void Game::update(float dt) {
 }
 void Game::render() {
 	if (editor_selection.selection) { 
-		Entity* selected = entity_pool.get(editor_selection.selection);
+		Entity* selected = editor_selection.selection();
 		selected->draw(Render_Flags::Highlighted); 
 	}
 

@@ -1,4 +1,33 @@
 props = {
+   door = {
+        Bounding_Box = {
+           center = {
+              x = tile_x_to_screen(0),
+              y = 0
+           },
+           extents = {
+              x = tile_x_to_screen(2),
+              y = tile_y_to_screen(2)
+           }
+        },
+        Position_Component = {},
+        Interaction_Component = {
+            on_interact = function(this, other) 
+                show_text("You ran into a door!")
+            end
+        },
+		Door_Component = {
+		   to = "cantina"
+		},
+		Collision_Component = {
+		   on_collide = function(this, other)
+			  any = this:get_component("Door_Component")
+			  to = any.door.to
+			  go_through_door(to)
+		   end
+		}
+   },
+   
     building = {
         Graphic_Component = {
             Animations = {

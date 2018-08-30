@@ -26,7 +26,7 @@ struct Center_Box {
 	}
 
 	static optional<Center_Box> from_entity(pool_handle<Entity> handle) {
-		Entity* entity = entity_pool.get(handle);
+		Entity* entity = handle();
 		Center_Box box;
 		Position_Component* pc = entity->get_component<Position_Component>();
 		Bounding_Box* cc = entity->get_component<Bounding_Box>();

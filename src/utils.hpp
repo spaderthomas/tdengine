@@ -250,6 +250,7 @@ bool is_valid_filename(string& str) {
 	return true;
 }
 
+// Don't use a leading slash
 string absolute_path(string dir_from_project_root) {
 	return root_dir + dir_from_project_root;
 }
@@ -271,6 +272,7 @@ bool debug_show_minkowski = false;
 bool show_imgui_demo = false;
 bool show_fsm_debugger = false;
 bool show_console = false;
+bool print_framerate = false;
 
 
 /* Random shit */
@@ -385,18 +387,19 @@ void fixup_type_name(string& type_name) {
 }
 
 
-// Data structures
-// A templated, fixed size pool of objects which stores them in continuous memory and uses handles to interface with the data elements 
+
+// POOL DECLS
 struct pool_entry_info {
 	bool available : 1;
 };
-#define DEFAULT_POOL_SIZE 1000
+#define DEFAULT_POOL_SIZE 10000
 
 /* fuck cpp */
 template<typename Data_Type>
 struct pool_handle;
 /* fuck cpp */
 
+// A templated, fixed size pool of objects which stores them in continuous memory and uses handles to interface with the data elements 
 template<typename Data_Type, int num_elements>
 struct Pool {
 	Data_Type* entries;
@@ -409,15 +412,18 @@ struct Pool {
 	inline void mark_unavailable(pool_handle<Data_Type> handle);
 };
 
+// A handle to an element in a pool. Wrapper around an int with convenient operators.
 template<typename Data_Type>
 struct pool_handle {
 	int handlecito;
 	Pool<Data_Type, DEFAULT_POOL_SIZE>* pool;
 
 	Data_Type* operator->() {
-		return pool->get(thing);
+		return pool->get(*this);
 	}
-
+	Data_Type* operator()() {
+		return pool->get(*this);
+	}
 	bool operator==(pool_handle<Data_Type> other) {
 		return handlecito == other.handlecito;
 	}
@@ -436,8 +442,11 @@ struct pool_handle {
 	int operator*() {
 		return handlecito;
 	}
+	
 };
 
+
+// POOL DEFNS
 template<typename Data_Type, int num_elements>
 void Pool<Data_Type, num_elements>::init() {
 	entries = (Data_Type*)calloc(sizeof(Data_Type), num_elements);
@@ -452,7 +461,7 @@ void Pool<Data_Type, num_elements>::init() {
 //@slow
 template<typename Data_Type, int num_elements>
 pool_handle<Data_Type> Pool<Data_Type, num_elements>::next_available() {
-	fox_for(handlecito, num_elements) {
+	for (int handlecito = 0; handlecito < num_elements; handlecito++) {
 		pool_entry_info entry = info[handlecito];
 		if (entry.available) {
 			pool_handle<Data_Type> handle = { handlecito, this };
@@ -461,7 +470,9 @@ pool_handle<Data_Type> Pool<Data_Type, num_elements>::next_available() {
 		}
 	}
 
-	return { -1, nullptr };
+	tdns_log.write("Ran out of handles!");
+	fox_assert(false);
+	return { -1, nullptr }; // for the compiler
 };
 
 template<typename Data_Type, int num_elements>

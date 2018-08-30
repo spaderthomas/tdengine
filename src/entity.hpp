@@ -15,6 +15,8 @@ struct Entity {
 	template <typename Component_Type>
 	Component_Type* get_component();
 
+	any_component* get_component(string kind);
+
 	void clear_components();
 
 
@@ -33,5 +35,5 @@ struct Entity {
 };
 int Entity::next_id = 0;
 
-Pool<Entity, 1000> entity_pool;
+Pool<Entity, DEFAULT_POOL_SIZE> entity_pool;
 

@@ -1,27 +1,24 @@
 npc = {
     wilson = {
-        say = function(this) 
-            print(this.current_state)
-            if this.State_Component.current_state == "waiting_for_boon_first_aug" then
-                show_text("Boon! Go to the bar and get your first augmentation!")
-            elseif self.State_Component.current_state == "boon_has_first_aug" then
-                show_text("Alright, now that that's taken care of, here is the rest of the plot")
-            end
-        end,
         State_Component = {
             states = {
-                "waiting_in_library"
+			   "waiting_in_library",
+			   "waiting_in_bar"
             },
             default_state = "waiting_in_library",
-            current_state = "",
             watched_variables = {
-                "begin_cantina"
+			   "begin_cantina",
+			   "talked_to_wilson_in_library"
             },
-            update = function(this, updated_variable, value)
+            update = function(state_component, updated_variable, value)
                 if updated_variable == "begin_cantina" then
                     if value == true then
-                        set_state(this, "waiting_in_library")
+                        state_component:set_state("waiting_in_library")
                     end
+				elseif updated_variable == "talked_to_wilson_in_library" then
+				   if value == true then
+					  state_component:set_state("waiting_in_bar")
+				   end
                 end
             end 
         },
@@ -60,6 +57,16 @@ npc = {
                 depth = px_y_to_screen(32)
             } 
         },
+		say = function(this)
+		   any = this:get_component("State_Component")
+		   state = any.state
+            print(state.current_state)
+            if state.current_state == "waiting_in_library" then
+                show_text("i'm in da library bitch")
+            else
+                show_text("wats even goin on")
+            end
+        end,
         Interaction_Component = {
             on_interact = function(this, other) 
                 npc.wilson.say(this)

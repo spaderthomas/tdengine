@@ -59,7 +59,10 @@ void Text_Box::unwait() {
 	if (!waiting) { return; }
 
 	start_line += 3;
+#pragma warning(push)
+#pragma warning(disable: 4018) // signed/unsigned mismatch
 	if (start_line >= lines.size()) {
+#pragma warning(pop)
 		point = -1;
 		start_line = -1;
 		waiting = false;
@@ -138,7 +141,10 @@ void Text_Box::render() {
 	text_shader.begin();
 	float cur_subpixel_y = (float)text_start_px.y;
 	int characters_drawn = 0;
+#pragma warning(push)
+#pragma warning(disable: 4018) // signed/unsigned mismatch
 	for (int iline = start_line; iline < lines.size(); iline++) {
+#pragma warning(pop)
 		auto& line = lines[iline];
 		// Text is raw 2D, so just use an orthographic projection
 		SRT transform = SRT::no_transform();

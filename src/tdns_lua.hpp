@@ -21,7 +21,7 @@ struct {
 		
 		// Register C++ functions in Lua
 		state.set_function("show_text", &Text_Box::begin, &game_layer.text_box);
-		state.set_function("set_state", &State_Component::set_state);
+		state.set_function("go_through_door", &Game::go_through_door, &game_layer);
 
 
 		// Load scripts
@@ -67,6 +67,34 @@ struct {
 			sort(defined.begin(), defined.end());
 			script_to_definitions[script] = defined;
 		}
+
+		// Create bindings for game objects in Lua
+		sol::table lua_types = Lua.state.create_named_table("types");
+
+		lua_types.new_usertype<Entity>(
+			"Entity",
+			"get_component", &Entity::get_component,
+			"lua_id", &Entity::lua_id);
+
+		lua_types.new_usertype<any_component>(
+			"any_component",
+			sol::meta_function::garbage_collect, sol::destructor(&any_component::fake_destructor_for_sol),
+			"position", &any_component::position_component,
+			"state", &any_component::state_component,
+			"door", &any_component::door_component);
+
+		lua_types.new_usertype<Position_Component>(
+			"Position_Component",
+			"name", &Position_Component::name);
+		lua_types.new_usertype<State_Component>(
+			"State_Component",
+			"current_state", &State_Component::current_state,
+			"set_state", &State_Component::set_state,
+			"name", &State_Component::name);
+		lua_types.new_usertype<Door_Component>(
+			"Door_Component",
+			"name", &Door_Component::name,
+			"to", &Door_Component::to);
 	}
 
 	sol::table get_npc_properties(string name) {

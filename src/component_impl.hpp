@@ -15,7 +15,7 @@ void Graphic_Component::set_animation(const string wish_name) {
 	string msg = "Tried to set active animation to " + wish_name + " but it was not registered in the component!";
 	tdns_log.write(msg);
 }
-void Graphic_Component::set_animation2(const string wish_name) {
+void Graphic_Component::set_animation_unless_already_active(const string wish_name) {
 	if (active_animation) {
 		if (active_animation->name == wish_name) {
 			return;
@@ -40,8 +40,8 @@ Sprite* Graphic_Component::get_current_frame() {
 
 	return active_animation->frames[active_animation->icur_frame];
 }
-//@leak Never free old animations if we call this twice
 void Graphic_Component::init_from_table(sol::table gc) {
+	//@leak Never free old animations if we call this twice
 	sol::table animations = gc["Animations"];
 	this->animations.clear();
 
@@ -121,7 +121,18 @@ void State_Component::init_from_table(sol::table table) {
 
 	sol::table watched_variables = table["watched_variables"];
 	for (auto& watched : watched_variables) {
-		knowledge_base.register_watcher(watched.second.as<string>(), this);
+		string variable = watched.second.as<string>();
+		this->watched_variables.push_back(variable);
 	}
 }
 void State_Component::set_state(string state) { current_state = state; }
+
+string Door_Component::name() { return "Door_Component"; }
+void Door_Component::init_from_table(sol::table table) {
+	to = table["to"];
+}
+
+string Collision_Component::name() { return "Collision_Component"; }
+void Collision_Component::init_from_table(sol::table table) {
+	on_collide = table["on_collide"];
+}
