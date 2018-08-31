@@ -422,6 +422,7 @@ struct pool_handle {
 		return pool->get(*this);
 	}
 	Data_Type* operator()() {
+		if (!*this) return nullptr;
 		return pool->get(*this);
 	}
 	bool operator==(pool_handle<Data_Type> other) {
@@ -477,9 +478,10 @@ pool_handle<Data_Type> Pool<Data_Type, num_elements>::next_available() {
 
 template<typename Data_Type, int num_elements>
 inline Data_Type* Pool<Data_Type, num_elements>::get(pool_handle<Data_Type> handle) {
+	fox_assert(handle);
 	fox_assert(*handle >= 0);
 	fox_assert(*handle < num_elements);
-	fox_assert(!info[*handle].available);
+	fox_assert(this);
 	return entries + *handle;
 }
 

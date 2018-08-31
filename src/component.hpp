@@ -1,5 +1,6 @@
 struct Component {
 	virtual void save(json& j) const;
+	virtual void load(json& j) { cout << "base"; };
 	virtual void init_from_table(sol::table table);
 	virtual string name() { return "Component"; };
 };
@@ -21,7 +22,7 @@ struct Position_Component : Component {
 	glm::vec2 scale = glm::vec2(1.f);
 
 	void save(json& j) const override;
-	void load(json& j);
+	void load(json& j) override;
 	string name() override;
 };
 struct Bounding_Box : Component {
@@ -61,6 +62,8 @@ struct State_Component : Component {
 struct Door_Component : Component {
 	string to;
 	
+	void save(json& j) const override;
+	void load(json& j);
 	void init_from_table(sol::table table) override;
 	string name() override;
 };

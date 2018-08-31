@@ -85,13 +85,16 @@ void Level::load() {
 	// Load entities
 	entity_handles.clear();
 	for (unsigned int i = 0; i < j["entities"].size(); i++) {
-		json entity_as_json = j["entities"][i];
-		pool_handle<Entity> handle = Entity::create(entity_as_json);
+		json entity_json = j["entities"][i];
+		string lua_id = entity_json["lua_id"];
+
+		pool_handle<Entity> handle = Entity::create(lua_id);
+		handle->load(entity_json);
 		entity_handles.push_back(handle);
 	}
 }
 
-map<string, Level*> levels;
+unordered_map<string, Level*> levels;
 void init_levels() {
 	json config;
 	ifstream config_file(absolute_path("save\\config.json"));
@@ -101,6 +104,7 @@ void init_levels() {
 	for (auto& name : level_names) {
 		Level* level = new Level;
 		level->name = name;
+		level->load();
 		levels[name] = level;
 	}
 }

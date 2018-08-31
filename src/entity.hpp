@@ -23,7 +23,6 @@ struct Entity {
 	// Lifetime functions
 	static sol::table get_definition(string lua_id);
 	
-	static pool_handle<Entity> create(json& entity_json);
 	static pool_handle<Entity> create(string lua_id);
 	static void destroy(pool_handle<Entity> handle);
 

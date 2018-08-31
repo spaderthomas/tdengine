@@ -79,11 +79,11 @@ void Position_Component::save(json& j) const {
 	j["pos"]["x"] = screen_pos.x;
 	j["pos"]["y"] = screen_pos.y;
 }
-void Position_Component::load(json& j) {
-	scale.x = j["scale"]["x"];
-	scale.y = j["scale"]["y"];
-	screen_pos.x = j["pos"]["x"];
-	screen_pos.y = j["pos"]["y"];
+void Position_Component::load(json& self) {
+	scale.x = self["scale"]["x"];
+	scale.y = self["scale"]["y"];
+	screen_pos.x = self["pos"]["x"];
+	screen_pos.y = self["pos"]["y"];
 }
 string Position_Component::name() { return "Position_Component"; }
 
@@ -127,6 +127,13 @@ void State_Component::init_from_table(sol::table table) {
 }
 void State_Component::set_state(string state) { current_state = state; }
 
+void Door_Component::save(json& j) const {
+	j["kind"] = "Door_Component";
+	j["to"] = to;
+}
+void Door_Component::load(json& j) {
+	to = j["to"];
+}
 string Door_Component::name() { return "Door_Component"; }
 void Door_Component::init_from_table(sol::table table) {
 	to = table["to"];
@@ -136,3 +143,4 @@ string Collision_Component::name() { return "Collision_Component"; }
 void Collision_Component::init_from_table(sol::table table) {
 	on_collide = table["on_collide"];
 }
+

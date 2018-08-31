@@ -17,7 +17,7 @@ props = {
             end
         },
 		Door_Component = {
-		   to = "cantina"
+		   to = "overworld"
 		},
 		Collision_Component = {
 		   on_collide = function(this, other)

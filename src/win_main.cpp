@@ -118,12 +118,8 @@ int main() {
 	entity_pool.init();
 
 	init_shaders();
-
 	init_mesh();
-
-	for (auto dirname : atlas_folders) {
-		create_texture_atlas(dirname);
-	}
+	create_all_texture_atlas();
 	create_texture("textures\\misc\\text_box.png");
 
 	Lua.init();

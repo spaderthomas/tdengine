@@ -1,11 +1,7 @@
 namespace stdfs = std::experimental::filesystem;
 using namespace stdfs;
 
-string atlas_folders[] = {
-	absolute_path("textures\\characters"),
-	absolute_path("textures\\entities"),
-	absolute_path("textures\\tiles"),
-};
+
 
 #define REGULAR_ATLAS_SIZE 1024
 
@@ -179,5 +175,17 @@ void create_texture_atlas(string assets_dir) {
 	} else {
 		string msg = "Invalid texture atlas name. Expected alpanumeric, but got: " + atlas_name;
 		tdns_log.write(msg);
+	}
+}
+
+void create_all_texture_atlas() {
+	string atlas_dirs[] = {
+		absolute_path("textures\\characters"),
+		absolute_path("textures\\entities"),
+		absolute_path("textures\\tiles"),
+	};
+
+	for (auto& dir : atlas_dirs) {
+			create_texture_atlas(dir);
 	}
 }

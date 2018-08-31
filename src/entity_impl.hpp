@@ -51,17 +51,8 @@ sol::table Entity::get_definition(string lua_id) {
 	return Lua.state[script][lua_id];
 }
 
-pool_handle<Entity> Entity::create(json& entity_json) {
-	//@note 
-	// if you don't explicitly make this a string, it recursively calls
-	// this create (since the result is a json object), then promptly crashes
-	string lua_id = entity_json["lua_id"];
-	pool_handle<Entity> handle = Entity::create(lua_id);
-	Entity* entity = handle();
-	entity->load(entity_json);
-	return handle;
-}
 pool_handle<Entity> Entity::create(string lua_id) {
+	// Creates a template entity from the given Lua ID
 	pool_handle<Entity> entity_handle = entity_pool.next_available();
 	Entity* entity = entity_handle();
 	entity->id = next_id++;
@@ -140,17 +131,24 @@ void Entity::save(json& j) {
 	j["lua_id"] = lua_id;
 	int icomponent = 0;
 	for (auto& kvp : components) {
-		//component->save(j["Components"][icomponent++]);
+		auto handle = kvp.second;
+		Component* component = (Component*)handle();
+
+		if (component) {
+			component->save(j["Components"][icomponent++]);
+		}
 	}
 }
 void Entity::load(json& entity) {
 	auto components_json = entity["Components"];
-	for (auto component_json : components_json) {
-		if (component_json["kind"] == "Position_Component") {
-			pool_handle handle = this->add_component<Position_Component>();
-			Position_Component* component = &handle()->position_component;
-			component->load(component_json);
+	for (auto& component_json : components_json) {
+		// its not splitting it as you would expect w/ iterator
+		string kind = component_json["kind"];
+		if (kind == "NULL") {
+			continue; // NULL just means a component which doesn't require loading
 		}
+		Component* component = (Component*)get_component(kind);
+		component->load(component_json);
 	}
 }
 void Entity::destroy(pool_handle<Entity> handle) {

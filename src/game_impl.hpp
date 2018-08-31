@@ -409,7 +409,10 @@ void Game::Editor_Selection::draw_component_editor() {
 	Entity* entity = selection();
 	ImGui::Text(string("/scripts/" + Lua.definitions_to_script[entity->lua_id] + "/" + entity->lua_id).c_str());
 	for (auto& kvp : entity->components) {
-		Component* component = (Component*)(kvp.second());
+		pool_handle<any_component> handle = kvp.second;
+		Component* component = (Component*)handle();
+		
+		//@metaprogramming
 		if (dynamic_cast<Graphic_Component*>(component)) {
 			if (ImGui::TreeNode("Graphic Component")) {
 				Graphic_Component* gc = dynamic_cast<Graphic_Component*>(component);
@@ -429,6 +432,26 @@ void Game::Editor_Selection::draw_component_editor() {
 				ImGui::SliderFloat2("Scale", glm::value_ptr(gc->scale), 0.f, 1.f);
 				ImGui::TreePop();
 			}
+		}
+		else if (dynamic_cast<Door_Component*>(component)) {
+			if (ImGui::TreeNode("Door Component")) {
+				Door_Component* door = dynamic_cast<Door_Component*>(component);
+				if (ImGui::BeginCombo("##setdoor", door->to.c_str(), 0)) {
+					for (auto& kvp : levels) {
+						const string& name = kvp.first;
+						Level* level = kvp.second;
+						bool is_selected = door->to.c_str() == name;
+						if (ImGui::Selectable(name.c_str(), &is_selected)) {
+							door->to = name;
+						}
+						if (is_selected) {
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+				ImGui::TreePop();
+			}			
 		}
 	}
 	ImGui::End();
@@ -451,7 +474,6 @@ void Game::play_intro() {
 	*/
 }
 void Game::reload() {
-// @save
 #if 0
 	//@leak this one is quite big 
 	for (auto dirname : atlas_folders) {

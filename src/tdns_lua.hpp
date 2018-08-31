@@ -19,11 +19,6 @@ struct {
 	void init() {
 		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io);
 		
-		// Register C++ functions in Lua
-		state.set_function("show_text", &Text_Box::begin, &game_layer.text_box);
-		state.set_function("go_through_door", &Game::go_through_door, &game_layer);
-
-
 		// Load scripts
 		auto error_handler = [](lua_State*, sol::protected_function_result pfr) {
 			sol::error err = pfr;
@@ -68,6 +63,10 @@ struct {
 			script_to_definitions[script] = defined;
 		}
 
+		// Register C++ functions in Lua
+		state.set_function("show_text", &Text_Box::begin, &game_layer.text_box);
+		state.set_function("go_through_door", &Game::go_through_door, &game_layer);
+
 		// Create bindings for game objects in Lua
 		sol::table lua_types = Lua.state.create_named_table("types");
 
@@ -95,10 +94,5 @@ struct {
 			"Door_Component",
 			"name", &Door_Component::name,
 			"to", &Door_Component::to);
-	}
-
-	sol::table get_npc_properties(string name) {
-		sol::table character = state["npc"][name];
-		return character;
 	}
 } Lua;
