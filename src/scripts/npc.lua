@@ -75,6 +75,7 @@ npc = {
 				 {
 					text = "you pressed 2!",
 					terminal = true;
+					responses = {},
 					children = {},
 				 },
 			  },
@@ -82,8 +83,8 @@ npc = {
 		},
         Interaction_Component = {
 		   on_interact = function(this, other)
-			  npc.wilson.scene_dialogue[scene].begin()
-            end
+			  begin_dialogue(this)
+		   end
         },
     },
 

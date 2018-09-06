@@ -43,12 +43,7 @@ Console::Console()
 	Commands.push_back("CLEAR");
 	AddLog("Welcome to Dear ImGui!");
 }
-Console::~Console()
-{
-	ClearLog();
-	for (int i = 0; i < History.Size; i++)
-		free(History[i]);
-}
+Console::~Console() {}
 int   Console::Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }
 int   Console::Strnicmp(const char* str1, const char* str2, int n) {
 	int d = 0;
@@ -411,6 +406,31 @@ struct Dialogue_Node {
 		game_layer.text_box.begin(text);
 		waiting = true;
 	}
+
+	void init_from_table(sol::table& table) {
+		text.clear();
+		responses.clear();
+		response = -1;
+		response_nodes.clear();
+		terminal = false;
+		waiting = false;
+
+		text = table["text"];
+		terminal = table["terminal"];
+		sol::table responses = table["responses"];
+		for (auto& pair : responses) {
+			this->responses.push_back(pair.second.as<string>());
+		}
+
+		sol::table children = table["children"];
+		for (auto& pair : children) {
+			int index = pair.first.as<int>();
+			sol::table child = pair.second;
+			Dialogue_Node* child_node = new Dialogue_Node;
+			child_node->init_from_table(child);
+			this->response_nodes.push_back(child_node);
+		}
+	}
 };
 struct Dialogue_Tree {
 	Dialogue_Node* root;
@@ -449,7 +469,19 @@ struct Dialogue_Tree {
 			cur = cur->response_nodes[*it];
 		}
 	}
+
+	void init_from_table(sol::table& table) {
+		root->init_from_table(table);
+	}
+	
 };
+void Game::begin_dialogue(Entity* entity) {
+	string lua_id = entity->lua_id;
+	string script = Lua.definitions_to_script[lua_id];
+	sol::table dialogue = Lua.state[script][lua_id]["dialogue"][this->scene];
+
+	active_dialogue->init_from_table(dialogue);
+}
 void Game::Editor_Selection::translate_entity() {
 	glm::vec2 draggable_position;
 	glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
@@ -603,6 +635,8 @@ void Game::init() {
 	player.init();
 	particle_system.init();
 
+	scene = "intro";
+		
 	Dialogue_Tree* tree = new Dialogue_Tree;
 	auto j_node = new Dialogue_Node;
 	j_node->text = "you picked j!";
@@ -803,6 +837,52 @@ void Game::update(float dt) {
 		}
 	}
 	#pragma endregion
+
+	// Find the direction of the vision box
+	auto boon = player.boon;
+	Vision* vision_box = boon->get_component<Vision>();
+	Points_Box points;
+	auto pc = boon->get_component<Position_Component>();
+	switch (player.facing) {
+	case up:
+		points.left = pc->screen_pos.x - vision_box->width;
+		points.right = pc->screen_pos.x + vision_box->width;
+		points.top = pc->screen_pos.y + 2 * vision_box->depth;
+		points.bottom = pc->screen_pos.y;
+		break;
+	case down:
+		points.left = pc->screen_pos.x - vision_box->width;
+		points.right = pc->screen_pos.x + vision_box->width;
+		points.top = pc->screen_pos.y;
+		points.bottom = pc->screen_pos.y - 2 * vision_box->depth;
+		break;
+	default:
+		points.left = pc->screen_pos.x - vision_box->width;
+		points.right = pc->screen_pos.x + vision_box->width;
+		points.top = pc->screen_pos.y + 2 * vision_box->depth;
+		points.bottom = pc->screen_pos.y;
+		break;
+	}
+	if (debug_show_aabb) {
+		draw_square_outline(points, red);
+	}
+
+	// Check for interactions
+	if (game_input.was_pressed(GLFW_KEY_E)) {
+		for (auto& handle : active_level->entity_handles) {
+			Entity* entity = handle();
+			Center_Box boon = Center_Box::from_points(points);
+			auto other = Center_Box::from_entity(handle);
+			if (!other) { continue; }
+			glm::vec2 sep;
+			if (are_boxes_colliding(boon, *other, sep)) {
+				auto interaction = entity->get_component<Interaction_Component>();
+				if (interaction) {
+					interaction->on_interact(entity, player.boon);
+				}
+			}
+		}
+	}
 
 	if (game_state == Game_State::GAME) {
 		//--INPUT
@@ -1042,48 +1122,9 @@ void Game::update(float dt) {
 			gc->set_animation_unless_already_active("stand");
 		}
 
-		Vision* vision_box = boon->get_component<Vision>();
-		Points_Box points;
-		auto pc = boon->get_component<Position_Component>();
-		switch (player.facing) {
-		case up:
-			points.left = pc->screen_pos.x - vision_box->width;
-			points.right = pc->screen_pos.x + vision_box->width;
-			points.top = pc->screen_pos.y + 2 * vision_box->depth;
-			points.bottom = pc->screen_pos.y;
-			break;
-		case down:
-			points.left = pc->screen_pos.x - vision_box->width;
-			points.right = pc->screen_pos.x + vision_box->width;
-			points.top = pc->screen_pos.y;
-			points.bottom = pc->screen_pos.y - 2 * vision_box->depth;
-			break;
-		default:
-			points.left = pc->screen_pos.x - vision_box->width;
-			points.right = pc->screen_pos.x + vision_box->width;
-			points.top = pc->screen_pos.y + 2 * vision_box->depth;
-			points.bottom = pc->screen_pos.y;
-			break;
-		}
-		if (debug_show_aabb) {
-			draw_square_outline(points, red);
-		}
+		
 
-		if (game_input.was_pressed(GLFW_KEY_E)) {
-			for (auto& handle : active_level->entity_handles) {
-				Entity* entity = handle();
-				Center_Box boon = Center_Box::from_points(points);
-				auto other = Center_Box::from_entity(handle);
-				if (!other) { continue; }
-				glm::vec2 sep;
-				if (are_boxes_colliding(boon, *other, sep)) {
-					auto interaction = entity->get_component<Interaction_Component>();
-					if (interaction) {
-						interaction->on_interact(entity, player.boon);
-					}
-				}
-			}
-		}
+	
 
 		for (auto& handle : active_level->entity_handles) {
 			if (handle()->get_component<Bounding_Box>()) {

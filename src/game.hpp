@@ -132,6 +132,7 @@ struct Game {
 	Level* active_level;
 	Console console;
 	Dialogue_Tree* active_dialogue;
+	string scene;
 	
 	Particle_System particle_system;
 	Text_Box text_box;
@@ -140,6 +141,7 @@ struct Game {
 
 	void go_through_door(string to);
 	void play_intro();
+	void begin_dialogue(Entity* entity);
 	void reload();
 	void undo();
 	void exec_console_command(const char* command_line);
