@@ -3,7 +3,7 @@ void Component::save(json& j) const {
 };
 void Component::init_from_table(sol::table table) {};
 
-void Graphic_Component::set_animation(const string wish_name) {
+void    Graphic_Component::set_animation(const string wish_name) {
 	for (auto& animation : animations) {
 		if (animation->name == wish_name) {
 			active_animation = animation;
@@ -15,7 +15,7 @@ void Graphic_Component::set_animation(const string wish_name) {
 	string msg = "Tried to set active animation to " + wish_name + " but it was not registered in the component!";
 	tdns_log.write(msg);
 }
-void Graphic_Component::set_animation_unless_already_active(const string wish_name) {
+void    Graphic_Component::set_animation_unless_already_active(const string wish_name) {
 	if (active_animation) {
 		if (active_animation->name == wish_name) {
 			return;
@@ -24,7 +24,7 @@ void Graphic_Component::set_animation_unless_already_active(const string wish_na
 
 	set_animation(wish_name);
 }
-void Graphic_Component::add_animation(Animation* anim) {
+void    Graphic_Component::add_animation(Animation* anim) {
 	animations.push_back(anim);
 }
 Sprite* Graphic_Component::get_current_frame() {
@@ -40,7 +40,7 @@ Sprite* Graphic_Component::get_current_frame() {
 
 	return active_animation->frames[active_animation->icur_frame];
 }
-void Graphic_Component::init_from_table(sol::table gc) {
+void    Graphic_Component::init_from_table(sol::table gc) {
 	//@leak Never free old animations if we call this twice
 	sol::table animations = gc["Animations"];
 	this->animations.clear();
@@ -70,16 +70,16 @@ void Graphic_Component::init_from_table(sol::table gc) {
 	this->scale = glm::vec2((float)default_sprite->width / (float)640, (float)default_sprite->height / (float)360);
 	this->z = gc["z"];
 }
-string Graphic_Component::name() { return "Graphic_Component"; }
+string  Graphic_Component::name() { return "Graphic_Component"; }
 
-void Position_Component::save(json& j) const {
+void   Position_Component::save(json& j) const {
 	j["kind"] = "Position_Component";
 	j["scale"]["x"] = scale.x;
 	j["scale"]["y"] = scale.y;
 	j["pos"]["x"] = screen_pos.x;
 	j["pos"]["y"] = screen_pos.y;
 }
-void Position_Component::load(json& self) {
+void   Position_Component::load(json& self) {
 	scale.x = self["scale"]["x"];
 	scale.y = self["scale"]["y"];
 	screen_pos.x = self["pos"]["x"];
@@ -89,7 +89,7 @@ string Position_Component::name() { return "Position_Component"; }
 
 string Movement_Component::name() { return "Movement_Component"; }
 
-void Bounding_Box::init_from_table(sol::table table) {
+void   Bounding_Box::init_from_table(sol::table table) {
 	screen_center.x = table["center"]["x"];
 	screen_center.y = table["center"]["y"];
 	screen_extents.x = table["extents"]["x"];
@@ -97,19 +97,18 @@ void Bounding_Box::init_from_table(sol::table table) {
 }
 string Bounding_Box::name() { return "Bounding_Box"; }
 
-void Vision::init_from_table(sol::table table) {
+void   Vision::init_from_table(sol::table table) {
 	width = table["extents"]["width"];
 	depth = table["extents"]["depth"];
 }
 string Vision::name() { return "Vision"; }
 
-void Interaction_Component::init_from_table(sol::table table) {
+void   Interaction_Component::init_from_table(sol::table table) {
 	on_interact = table["on_interact"];
 }
 string Interaction_Component::name() { return "Interaction_Component"; }
 
-string State_Component::name() { return "State_Component"; }
-void State_Component::init_from_table(sol::table table) {
+void   State_Component::init_from_table(sol::table table) {
 	update = table["update"];
 	sol::table states_to_add = table["states"];
 	for (auto& state : states_to_add) {
@@ -125,22 +124,23 @@ void State_Component::init_from_table(sol::table table) {
 		this->watched_variables.push_back(variable);
 	}
 }
-void State_Component::set_state(string state) { current_state = state; }
+void   State_Component::set_state(string state) { current_state = state; }
+string State_Component::name() { return "State_Component"; }
 
-void Door_Component::save(json& j) const {
+void   Door_Component::save(json& j) const {
 	j["kind"] = "Door_Component";
 	j["to"] = to;
 }
-void Door_Component::load(json& j) {
+void   Door_Component::load(json& j) {
 	to = j["to"];
 }
-string Door_Component::name() { return "Door_Component"; }
-void Door_Component::init_from_table(sol::table table) {
+void   Door_Component::init_from_table(sol::table table) {
 	to = table["to"];
 }
+string Door_Component::name() { return "Door_Component"; }
 
 string Collision_Component::name() { return "Collision_Component"; }
-void Collision_Component::init_from_table(sol::table table) {
+void   Collision_Component::init_from_table(sol::table table) {
 	on_collide = table["on_collide"];
 }
 

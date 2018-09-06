@@ -273,7 +273,7 @@ bool show_imgui_demo = false;
 bool show_fsm_debugger = false;
 bool show_console = false;
 bool print_framerate = false;
-
+bool dialogue_mode = false;
 
 /* Random shit */
 void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void *userParam) {

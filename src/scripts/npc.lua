@@ -57,21 +57,34 @@ npc = {
                 depth = px_y_to_screen(32)
             } 
         },
-		say = function(this)
-		   any = this:get_component("State_Component")
-		   state = any.state
-            print(state.current_state)
-            if state.current_state == "waiting_in_library" then
-                show_text("i'm in da library bitch")
-            else
-                show_text("wats even goin on")
-            end
-        end,
+		dialogue = {
+		   intro = {
+			  text = "pick one!",
+			  terminal = false;
+			  responses = {
+				 "press 1",
+				 "press 2"
+			  },
+			  children = {
+				 {
+					text = "you pressed 1!",
+					terminal = true;
+					responses = {},
+					children = {},
+				 },
+				 {
+					text = "you pressed 2!",
+					terminal = true;
+					children = {},
+				 },
+			  },
+		   }
+		},
         Interaction_Component = {
-            on_interact = function(this, other) 
-                npc.wilson.say(this)
+		   on_interact = function(this, other)
+			  npc.wilson.scene_dialogue[scene].begin()
             end
-        }
+        },
     },
 
     elia = {
@@ -103,25 +116,7 @@ npc = {
             } 
         },
         Interaction_Component = {
-            dialogue_fsm = {
-                states = {
-                    "waiting_for_boon_first_aug",
-                    "boon_has_first_aug"
-                },
-                default_state = "boon_has_first_aug",
-                current_state = "waiting_for_boon_first_aug",
-                watched_variables = {
-                    "boon_has_first_aug"
-                },
-                update = function(self, updated_variable, value)
-                    if updated_variable == "boon_has_first_aug" then
-                        if value == true then
-                            self.current_state = "boon_has_first_aug"
-                        end
-                    end
-                end
-            },
-            on_interact = function(self, this, other) 
+            on_interact = function(this, other) 
                 show_text("... (He does not look up from his computer as he takes a sip of mead)")
             end
         }
@@ -156,29 +151,8 @@ npc = {
             } 
         },
         Interaction_Component = {
-            dialogue_fsm = {
-                states = {
-                    "waiting_for_boon_first_aug",
-                    "boon_has_first_aug"
-                },
-                default_state = "boon_has_first_aug",
-                current_state = "waiting_for_boon_first_aug",
-                watched_variables = {
-                    "boon_has_first_aug"
-                },
-                update = function(self, updated_variable, value)
-                    if updated_variable == "boon_has_first_aug" then
-                        if value == true then
-                            self.current_state = "boon_has_first_aug"
-                        end
-                    end
-                end
-            },
-            say = function(self) 
+            on_interact = function(this, other) 
                 show_text("Boon! It's so good to see you. Glad I got good news for you for once.")
-            end,
-            on_interact = function(self, this, other) 
-                self:say()
             end
         }
     },
@@ -212,20 +186,9 @@ npc = {
             } 
         },
         Interaction_Component = {
-            dialogue_fsm = {
-                states = {},
-                default_state = "",
-                current_state = "",
-                watched_variables = {},
-                update = function(self, updated_variable, value)
-                end
-            },
-            say = function(self) 
-                show_text("(He looks meek, but not intimidated). So...you're Boon, huh? I kind of expected you to be taller.")
-            end,
-            on_interact = function(self, this, other) 
-                self:say()
-            end
+		   on_interact = function(this, other) 
+			  show_text("(He looks meek, but not intimidated). So...you're Boon, huh? I kind of expected you to be taller.")
+		   end
         }
     }
 }

@@ -142,7 +142,6 @@ void Entity::save(json& j) {
 void Entity::load(json& entity) {
 	auto components_json = entity["Components"];
 	for (auto& component_json : components_json) {
-		// its not splitting it as you would expect w/ iterator
 		string kind = component_json["kind"];
 		if (kind == "NULL") {
 			continue; // NULL just means a component which doesn't require loading

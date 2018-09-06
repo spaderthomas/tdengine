@@ -72,7 +72,9 @@ void Level::load() {
 			fox_for(itiley, CHUNK_SIZE) {
 				auto tile_json = chunk_as_json[itilex][itiley];
 				if (tile_json != "NULL") {
-					pool_handle<Entity> new_ent = Entity::create(tile_json);
+					string lua_id = tile_json["lua_id"];
+					pool_handle<Entity> new_ent = Entity::create(lua_id);
+					new_ent->load(tile_json);
 					chunk.tiles[itilex][itiley] = new_ent;
 				}
 				else {

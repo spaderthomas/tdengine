@@ -49,8 +49,8 @@ Console::~Console()
 	for (int i = 0; i < History.Size; i++)
 		free(History[i]);
 }
-int Console::Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }
-int Console::Strnicmp(const char* str1, const char* str2, int n) {
+int   Console::Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }
+int   Console::Strnicmp(const char* str1, const char* str2, int n) {
 	int d = 0;
 	while (n > 0 && (d = toupper(*str2) - toupper(*str1)) == 0 && *str1) {
 		str1++;
@@ -61,14 +61,14 @@ int Console::Strnicmp(const char* str1, const char* str2, int n) {
 }
 char* Console::Strdup(const char *str) { size_t len = strlen(str) + 1; void* buff = malloc(len); return (char*)memcpy(buff, (const void*)str, len); }
 void  Console::Strtrim(char* str) { char* str_end = str + strlen(str); while (str_end > str && str_end[-1] == ' ') str_end--; *str_end = 0; }
-void Console::ClearLog()
+void  Console::ClearLog()
 {
 	for (int i = 0; i < Items.Size; i++)
 		free(Items[i]);
 	Items.clear();
 	ScrollToBottom = true;
 }
-void Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
+void  Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 {
 	// FIXME-OPT
 	char buf[1024];
@@ -80,7 +80,7 @@ void Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 	Items.push_back(Strdup(buf));
 	ScrollToBottom = true;
 }
-void Console::Draw(const char* title)
+void  Console::Draw(const char* title)
 {
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 	if (!ImGui::Begin(title, NULL))
@@ -157,12 +157,12 @@ void Console::Draw(const char* title)
 
 	ImGui::End();
 }
-int Console::TextEditCallbackStub(ImGuiTextEditCallbackData* data) // In C++11 you are better off using lambdas for this sort of forwarding callbacks
+int   Console::TextEditCallbackStub(ImGuiTextEditCallbackData* data) // In C++11 you are better off using lambdas for this sort of forwarding callbacks
 {
 	Console* console = (Console*)data->UserData;
 	return console->TextEditCallback(data);
 }
-int Console::TextEditCallback(ImGuiTextEditCallbackData* data)
+int   Console::TextEditCallback(ImGuiTextEditCallbackData* data)
 {
 	//AddLog("cursor: %d, selection: %d-%d", data->CursorPos, data->SelectionStart, data->SelectionEnd);
 	switch (data->EventFlag)
@@ -260,7 +260,7 @@ int Console::TextEditCallback(ImGuiTextEditCallbackData* data)
 	}
 	return 0;
 }
-void Console::ExecCommand(const char* command_line)
+void  Console::ExecCommand(const char* command_line)
 {
 	AddLog("# %s\n", command_line);
 
@@ -388,6 +388,68 @@ void Particle_System::update(float dt) {
 	}
 }
 
+struct Dialogue_Node {
+	string text;
+	vector<string> responses;
+	int response = -1; 
+	vector<Dialogue_Node*> response_nodes;
+	bool terminal = false;
+	bool waiting = false;
+
+	void set_response(int response) {
+		if (response >= response_nodes.size()) return;
+		this->response = response;
+	}
+	bool has_response() {
+		return response != -1;
+	}
+	Dialogue_Node* next() {
+		if (has_response()) return response_nodes[response];
+		return nullptr;
+	}
+	void say() {
+		game_layer.text_box.begin(text);
+		waiting = true;
+	}
+};
+struct Dialogue_Tree {
+	Dialogue_Node* root;
+
+	Dialogue_Node* traverse() {
+		Dialogue_Node* cur = root;
+		while(cur && cur->has_response()) {
+			cur = cur->response_nodes[cur->response];
+		}
+
+		return cur;
+	}
+
+	void save() {
+		json tree;
+		Dialogue_Node* cur = root;
+		while(cur && cur->has_response()) {
+			tree.push_back(cur->response);
+			cur = cur->next();
+		}
+		
+		string path = absolute_path("save\\" + string("saved_dialogue") + ".json");
+		ofstream save_file(path);
+		save_file << std::setw(4) << tree << std::endl;
+	}
+
+	void load() {
+		string path = absolute_path("save\\" + string("saved_dialogue") + ".json");
+		ifstream save_file(path);
+		json tree;
+		save_file >> tree;
+
+		Dialogue_Node* cur = root;
+		fox_iter(it, tree) {
+			cur->response = *it;
+			cur = cur->response_nodes[*it];
+		}
+	}
+};
 void Game::Editor_Selection::translate_entity() {
 	glm::vec2 draggable_position;
 	glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
@@ -540,36 +602,30 @@ void Game::init() {
 	active_level = &cantina;
 	player.init();
 	particle_system.init();
+
+	Dialogue_Tree* tree = new Dialogue_Tree;
+	auto j_node = new Dialogue_Node;
+	j_node->text = "you picked j!";
+	j_node->terminal = true;
+	auto k_node = new Dialogue_Node;
+	k_node->text = "you picked k!";
+	k_node->terminal = true;
+
+	auto root = new Dialogue_Node;
+	root->text = "pick one!";
+	root->responses = {
+		"press j!",
+		"press k!",
+	};
+	root->response_nodes = { 
+		j_node, 
+		k_node 
+	};
+	tree->root = root;
+	active_dialogue = tree;
 }
 void Game::update(float dt) {
 	static int frame = 0;
-	active_level->draw();
-
-	//--INPUT
-	if (game_input.is_down[GLFW_KEY_UP]) {
-		camera.y = fox_max(0, camera.y - 1);
-	}
-	if (game_input.is_down[GLFW_KEY_DOWN]) {
-		camera.y = camera.y + 1;
-	}
-	if (game_input.is_down[GLFW_KEY_RIGHT]) {
-		camera.x += 1;
-	}
-	if (game_input.is_down[GLFW_KEY_LEFT]) {
-		camera.x = fox_max(0, camera.x - 1);
-	}
-	if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
-		game_input.was_pressed(GLFW_KEY_Z))
-	{
-		undo();
-	}
-	if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
-		editor_selection.selection = { -1, nullptr };
-		editor_state = IDLE;
-	}
-	if (game_input.was_pressed(GLFW_MOUSE_BUTTON_RIGHT)) {
-		particle_system.start();
-	}
 
 	// Toggle the console on control
 	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
@@ -579,9 +635,8 @@ void Game::update(float dt) {
 		console.Draw("tdnsconsole");
 	}
 
-
 	//--GUI (global stuff goes here -- obviously since ImGui smaller things can be put anywhere!)
-	// Top menu
+	#pragma region IMGUI
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -613,6 +668,7 @@ void Game::update(float dt) {
 		ImGui::Checkbox("Show Minkowski", &debug_show_minkowski);
 		ImGui::Checkbox("Show framerate", &print_framerate);
 		ImGui::Checkbox("Show ImGui demo", &show_imgui_demo);
+		ImGui::Checkbox("Dialogue mode", (bool*)&game_state);
 	}
 
 	// Tile tree
@@ -668,7 +724,7 @@ void Game::update(float dt) {
 
 	// Level selector
 	ImGui::Separator();
-	static string level_current = "choose level";
+	static string level_current = active_level->name;
 	if (ImGui::BeginCombo("##chooselevel", level_current.c_str(), 0)) {
 		fox_iter(it, levels) {
 			string level_name = it->first;
@@ -718,7 +774,7 @@ void Game::update(float dt) {
 		if (editor_selection.selection) {
 			Entity* entity = editor_selection.selection();
 			State_Component* state = entity->get_component<State_Component>();
-			
+
 			// If the selection both exists and has a state component, we can run the FSM debugger
 			if (state) {
 				ImGui::Begin("FSM debugger", 0, ImGuiWindowFlags_AlwaysAutoResize);
@@ -746,60 +802,92 @@ void Game::update(float dt) {
 			}
 		}
 	}
+	#pragma endregion
 
-	//--EDITOR
-	switch (editor_state) {
-	case Editing_State::IDLE: {
-		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-			bool clicked_inside_something = false;
-			for (auto& handle : active_level->entity_handles) {
-				Entity* entity = handle();
-				auto box = Center_Box::from_entity(handle);
-				if (box) {
-					if (point_inside_box(game_input.screen_pos, *box)) {
-						clicked_inside_something = true;
-						editor_selection.selection = handle;
-						editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
-						editor_state = DRAG;
-						break;
-					}
-				}
-			}
-
-			if (!clicked_inside_something) {
-				top_left_drag = game_input.screen_pos;
-				editor_state = RECTANGLE_SELECT;
-			}
+	if (game_state == Game_State::GAME) {
+		//--INPUT
+		if (game_input.is_down[GLFW_KEY_UP]) {
+			camera.y = fox_max(0, camera.y - 1);
 		}
-		break;
-	}
-	case Editing_State::INSERT: {
-		editor_selection.translate_entity();
+		if (game_input.is_down[GLFW_KEY_DOWN]) {
+			camera.y = camera.y + 1;
+		}
+		if (game_input.is_down[GLFW_KEY_RIGHT]) {
+			camera.x += 1;
+		}
+		if (game_input.is_down[GLFW_KEY_LEFT]) {
+			camera.x = fox_max(0, camera.x - 1);
+		}
+		if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
+			game_input.was_pressed(GLFW_KEY_Z))
+		{
+			undo();
+		}
+		if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
+			editor_selection.selection = { -1, nullptr };
+			editor_state = IDLE;
+		}
+		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+			particle_system.start();
+		}
 
-		// And if we click, add it to the level
-		if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-			switch (editor_selection.kind) {
-			case Editor_Selection::TILE: {
-				auto grid_pos = grid_pos_from_px_pos(game_input.px_pos);
-				pool_handle<Entity> handle = active_level->get_tile(grid_pos.x, grid_pos.y);
-				Entity* current_entity = handle();
+		
 
-				// We don't want to double paint, so check to make sure we're not doing that
-				bool okay_to_create = true;
+		
 
-				// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
-				if (current_entity) {
-					if (current_entity->lua_id == editor_selection.selection()->lua_id) {
-						okay_to_create = false;
+		//--EDITOR
+		switch (editor_state) {
+		case Editing_State::IDLE: {
+			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+				bool clicked_inside_something = false;
+				for (auto& handle : active_level->entity_handles) {
+					Entity* entity = handle();
+					auto box = Center_Box::from_entity(handle);
+					if (box) {
+						if (point_inside_box(game_input.screen_pos, *box)) {
+							clicked_inside_something = true;
+							editor_selection.selection = handle;
+							editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
+							editor_state = DRAG;
+							break;
+						}
 					}
 				}
 
-				if (okay_to_create) {
-					// Create a lambda which will undo the tile placement we're about to do
-					auto my_lambda =
-						[&active_level = active_level,
-						x = grid_pos.x, y = grid_pos.y,
-						ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
+				if (!clicked_inside_something) {
+					top_left_drag = game_input.screen_pos;
+					editor_state = RECTANGLE_SELECT;
+				}
+			}
+			break;
+		}
+		case Editing_State::INSERT: {
+			editor_selection.translate_entity();
+
+			// And if we click, add it to the level
+			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+				switch (editor_selection.kind) {
+				case Editor_Selection::TILE: {
+					auto grid_pos = grid_pos_from_px_pos(game_input.px_pos);
+					pool_handle<Entity> handle = active_level->get_tile(grid_pos.x, grid_pos.y);
+					Entity* current_entity = handle();
+
+					// We don't want to double paint, so check to make sure we're not doing that
+					bool okay_to_create = true;
+
+					// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
+					if (current_entity) {
+						if (current_entity->lua_id == editor_selection.selection()->lua_id) {
+							okay_to_create = false;
+						}
+					}
+
+					if (okay_to_create) {
+						// Create a lambda which will undo the tile placement we're about to do
+						auto my_lambda =
+							[&active_level = active_level,
+							x = grid_pos.x, y = grid_pos.y,
+							ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
 								{
 									active_level->set_tile(ent, x, y);
 								};
@@ -811,213 +899,239 @@ void Game::update(float dt) {
 								// Update so we only paint one entity per tile
 								last_grid_pos_drawn = grid_pos;
 								break;
-				}
-				break;
-			}
-			case Editor_Selection::ENTITY: {
-				if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-					auto my_lambda = [&active_level = active_level]() -> void {
-						active_level->entity_handles.pop_back();
-					};
-					stack.push_back(my_lambda);
-
-					// Add the selection to the level
-					active_level->entity_handles.push_back(editor_selection.selection);
-
-					// Create a new one of the same kind as the old one
-					Entity* selection = editor_selection.selection();
-					editor_selection.selection = Entity::create(selection->lua_id);
-					editor_selection.smooth_drag_offset = glm::vec2(0.f);
-					editor_selection.translate_entity();
-				}
-				break;
-			}
-			}
-		}
-		break;
-	}
-	case Editing_State::EDIT: {
-		editor_selection.draw_component_editor();
-		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-			auto bounding_box = Center_Box::from_entity(editor_selection.selection);
-			if (bounding_box) {
-				// If you click inside the currently selected thing, start dragging it
-				if (point_inside_box(game_input.screen_pos, *bounding_box)) {
-					editor_selection.smooth_drag_offset = editor_selection.selection()->get_component<Position_Component>()->screen_pos - game_input.screen_pos;
-					editor_state = DRAG;
-				}
-				// Otherwise, see if you clicked in something else.
-				else {
-					bool found = false;
-					for (auto& handle : active_level->entity_handles) {
-						Entity* entity = handle();
-						auto box = Center_Box::from_entity(handle);
-						if (box) {
-							if (point_inside_box(game_input.screen_pos, *box)) {
-								editor_selection.selection = handle;
-								editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
-								editor_state = DRAG;
-								found = true;
-							}
-						}
 					}
-					if (!found) {
-						editor_selection.selection = { -1, nullptr };
-						editor_state = IDLE;
-					}
-				}
-			}
-		}
-
-		// Delete whatever is selected
-		if (game_input.was_pressed(GLFW_KEY_DELETE)) {
-			for (auto it = active_level->entity_handles.begin(); it != active_level->entity_handles.end(); it++) {
-				if (editor_selection.selection == *it) {
-					Entity* entity = editor_selection.selection();
-					entity->clear_components();
-					active_level->entity_handles.erase(it);
 					break;
 				}
+				case Editor_Selection::ENTITY: {
+					if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+						auto my_lambda = [&active_level = active_level]() -> void {
+							active_level->entity_handles.pop_back();
+						};
+						stack.push_back(my_lambda);
+
+						// Add the selection to the level
+						active_level->entity_handles.push_back(editor_selection.selection);
+
+						// Create a new one of the same kind as the old one
+						Entity* selection = editor_selection.selection();
+						editor_selection.selection = Entity::create(selection->lua_id);
+						editor_selection.smooth_drag_offset = glm::vec2(0.f);
+						editor_selection.translate_entity();
+					}
+					break;
+				}
+				}
 			}
-			editor_selection.selection = { -1, nullptr };
-			editor_state = IDLE;
+			break;
 		}
-		break;
-	}
-	case Editing_State::DRAG: {
-		editor_selection.draw_component_editor();
-		editor_selection.translate_entity();
+		case Editing_State::EDIT: {
+			editor_selection.draw_component_editor();
+			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+				auto bounding_box = Center_Box::from_entity(editor_selection.selection);
+				if (bounding_box) {
+					// If you click inside the currently selected thing, start dragging it
+					if (point_inside_box(game_input.screen_pos, *bounding_box)) {
+						editor_selection.smooth_drag_offset = editor_selection.selection()->get_component<Position_Component>()->screen_pos - game_input.screen_pos;
+						editor_state = DRAG;
+					}
+					// Otherwise, see if you clicked in something else.
+					else {
+						bool found = false;
+						for (auto& handle : active_level->entity_handles) {
+							Entity* entity = handle();
+							auto box = Center_Box::from_entity(handle);
+							if (box) {
+								if (point_inside_box(game_input.screen_pos, *box)) {
+									editor_selection.selection = handle;
+									editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
+									editor_state = DRAG;
+									found = true;
+								}
+							}
+						}
+						if (!found) {
+							editor_selection.selection = { -1, nullptr };
+							editor_state = IDLE;
+						}
+					}
+				}
+			}
 
-		if (!game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-			editor_state = EDIT;
+			// Delete whatever is selected
+			if (game_input.was_pressed(GLFW_KEY_DELETE)) {
+				for (auto it = active_level->entity_handles.begin(); it != active_level->entity_handles.end(); it++) {
+					if (editor_selection.selection == *it) {
+						Entity* entity = editor_selection.selection();
+						entity->clear_components();
+						active_level->entity_handles.erase(it);
+						break;
+					}
+				}
+				editor_selection.selection = { -1, nullptr };
+				editor_state = IDLE;
+			}
+			break;
 		}
-		break;
-	}
-	case Editing_State::RECTANGLE_SELECT: {
-		screen_unit top = top_left_drag.y > game_input.screen_pos.y ? top_left_drag.y : game_input.screen_pos.y;
-		screen_unit bottom = top_left_drag.y > game_input.screen_pos.y ? game_input.screen_pos.y : top_left_drag.y;
-		screen_unit right = top_left_drag.x > game_input.screen_pos.x ? top_left_drag.x : game_input.screen_pos.x;
-		screen_unit left = top_left_drag.x > game_input.screen_pos.x ? game_input.screen_pos.x : top_left_drag.x;
-		Points_Box points = { top, bottom, left, right };
-		draw_square_outline(points, red);
+		case Editing_State::DRAG: {
+			editor_selection.draw_component_editor();
+			editor_selection.translate_entity();
 
-		glm::vec2 dummy_penetration;
-		Center_Box selection_area = Center_Box::from_points(points);
-		for (auto& handle : active_level->entity_handles) {
-			auto entity_box = Center_Box::from_entity(handle);
-			if (entity_box) {
-				if (are_boxes_colliding(*entity_box, selection_area, dummy_penetration)) {
-					handle()->draw(Render_Flags::Highlighted);
+			if (!game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+				editor_state = EDIT;
+			}
+			break;
+		}
+		case Editing_State::RECTANGLE_SELECT: {
+			screen_unit top = top_left_drag.y > game_input.screen_pos.y ? top_left_drag.y : game_input.screen_pos.y;
+			screen_unit bottom = top_left_drag.y > game_input.screen_pos.y ? game_input.screen_pos.y : top_left_drag.y;
+			screen_unit right = top_left_drag.x > game_input.screen_pos.x ? top_left_drag.x : game_input.screen_pos.x;
+			screen_unit left = top_left_drag.x > game_input.screen_pos.x ? game_input.screen_pos.x : top_left_drag.x;
+			Points_Box points = { top, bottom, left, right };
+			draw_square_outline(points, red);
+
+			glm::vec2 dummy_penetration;
+			Center_Box selection_area = Center_Box::from_points(points);
+			for (auto& handle : active_level->entity_handles) {
+				auto entity_box = Center_Box::from_entity(handle);
+				if (entity_box) {
+					if (are_boxes_colliding(*entity_box, selection_area, dummy_penetration)) {
+						handle()->draw(Render_Flags::Highlighted);
+					}
+				}
+			}
+
+			break;
+		}
+		}
+
+
+		//--EXPLORATION
+		Entity* boon = player.boon();
+		auto mc = boon->get_component<Movement_Component>();
+		bool moving = false;
+		if (game_input.is_down[GLFW_KEY_W]) {
+			mc->wish += glm::vec2(0.f, .0025f);
+			auto gc = boon->get_component<Graphic_Component>();
+			gc->set_animation_unless_already_active("walk_up");
+			moving = true;
+			player.facing = Facing::up;
+		}
+		if (game_input.is_down[GLFW_KEY_A]) {
+			mc->wish += glm::vec2(-.0025f, 0.f);
+			player.facing = Facing::left;
+		}
+		if (game_input.is_down[GLFW_KEY_S]) {
+			mc->wish += glm::vec2(0.f, -.0025f);
+			auto gc = boon->get_component<Graphic_Component>();
+			gc->set_animation_unless_already_active("walk_down");
+			moving = true;
+			player.facing = Facing::down;
+		}
+		if (game_input.is_down[GLFW_KEY_D]) {
+			mc->wish += glm::vec2(.0025f, 0.f);
+			player.facing = Facing::right;
+		}
+		if (game_input.was_pressed(GLFW_KEY_SPACE)) {
+			text_box.unwait();
+		}
+		if (game_input.was_pressed(GLFW_KEY_I)) {
+			play_intro();
+		}
+		if (!moving) {
+			auto gc = boon->get_component<Graphic_Component>();
+			gc->set_animation_unless_already_active("stand");
+		}
+
+		Vision* vision_box = boon->get_component<Vision>();
+		Points_Box points;
+		auto pc = boon->get_component<Position_Component>();
+		switch (player.facing) {
+		case up:
+			points.left = pc->screen_pos.x - vision_box->width;
+			points.right = pc->screen_pos.x + vision_box->width;
+			points.top = pc->screen_pos.y + 2 * vision_box->depth;
+			points.bottom = pc->screen_pos.y;
+			break;
+		case down:
+			points.left = pc->screen_pos.x - vision_box->width;
+			points.right = pc->screen_pos.x + vision_box->width;
+			points.top = pc->screen_pos.y;
+			points.bottom = pc->screen_pos.y - 2 * vision_box->depth;
+			break;
+		default:
+			points.left = pc->screen_pos.x - vision_box->width;
+			points.right = pc->screen_pos.x + vision_box->width;
+			points.top = pc->screen_pos.y + 2 * vision_box->depth;
+			points.bottom = pc->screen_pos.y;
+			break;
+		}
+		if (debug_show_aabb) {
+			draw_square_outline(points, red);
+		}
+
+		if (game_input.was_pressed(GLFW_KEY_E)) {
+			for (auto& handle : active_level->entity_handles) {
+				Entity* entity = handle();
+				Center_Box boon = Center_Box::from_points(points);
+				auto other = Center_Box::from_entity(handle);
+				if (!other) { continue; }
+				glm::vec2 sep;
+				if (are_boxes_colliding(boon, *other, sep)) {
+					auto interaction = entity->get_component<Interaction_Component>();
+					if (interaction) {
+						interaction->on_interact(entity, player.boon);
+					}
 				}
 			}
 		}
 
-		break;
-	}
-	}
-	ImGui::End();
-
-
-	//--EXPLORATION
-	Entity* boon = player.boon();
-	auto mc = boon->get_component<Movement_Component>();
-	bool moving = false;
-	if (game_input.is_down[GLFW_KEY_W]) {
-		mc->wish += glm::vec2(0.f, .0025f);
-		auto gc = boon->get_component<Graphic_Component>();
-		gc->set_animation_unless_already_active("walk_up");
-		moving = true;
-		player.facing = Facing::up;
-	}
-	if (game_input.is_down[GLFW_KEY_A]) {
-		mc->wish += glm::vec2(-.0025f, 0.f);
-		player.facing = Facing::left;
-	}
-	if (game_input.is_down[GLFW_KEY_S]) {
-		mc->wish += glm::vec2(0.f, -.0025f);
-		auto gc = boon->get_component<Graphic_Component>();
-		gc->set_animation_unless_already_active("walk_down");
-		moving = true;
-		player.facing = Facing::down;
-	}
-	if (game_input.is_down[GLFW_KEY_D]) {
-		mc->wish += glm::vec2(.0025f, 0.f);
-		player.facing = Facing::right;
-	}
-	if (game_input.was_pressed(GLFW_KEY_SPACE)) {
-		text_box.unwait();
-	}
-	if (game_input.was_pressed(GLFW_KEY_I)) {
-		play_intro();
-	}
-	if (!moving) {
-		auto gc = boon->get_component<Graphic_Component>();
-		gc->set_animation_unless_already_active("stand");
-	}
-
-	Vision* vision_box = boon->get_component<Vision>();
-	Points_Box points;
-	auto pc = boon->get_component<Position_Component>();
-	switch (player.facing) {
-	case up:
-		points.left = pc->screen_pos.x - vision_box->width;
-		points.right = pc->screen_pos.x + vision_box->width;
-		points.top = pc->screen_pos.y + 2 * vision_box->depth;
-		points.bottom = pc->screen_pos.y;
-		break;
-	case down:
-		points.left = pc->screen_pos.x - vision_box->width;
-		points.right = pc->screen_pos.x + vision_box->width;
-		points.top = pc->screen_pos.y;
-		points.bottom = pc->screen_pos.y - 2 * vision_box->depth;
-		break;
-	default:
-		points.left = pc->screen_pos.x - vision_box->width;
-		points.right = pc->screen_pos.x + vision_box->width;
-		points.top = pc->screen_pos.y + 2 * vision_box->depth;
-		points.bottom = pc->screen_pos.y;
-		break;
-	}
-	if (debug_show_aabb) {
-		draw_square_outline(points, red);
-	}
-
-	if (game_input.was_pressed(GLFW_KEY_E)) {
 		for (auto& handle : active_level->entity_handles) {
-			Entity* entity = handle();
-			Center_Box boon = Center_Box::from_points(points);
-			auto other = Center_Box::from_entity(handle);
-			if (!other) { continue; }
-			glm::vec2 sep;
-			if (are_boxes_colliding(boon, *other, sep)) {
-				auto ic = entity->get_component<Interaction_Component>();
-				if (ic) {
-					string script = Lua.definitions_to_script[entity->lua_id];
-					sol::table ic_lua = Lua.state[script][entity->lua_id]["Interaction_Component"];
-					ic->on_interact(entity);
-				}
+			if (handle()->get_component<Bounding_Box>()) {
+				physics_system.entity_handles.push_back(handle);
+			}
+
+		}
+		physics_system.entity_handles.push_back(player.boon);
+
+		physics_system.process(1.f / 60.f);
+	} 
+	else if (game_state == Game_State::DIALOGUE) {
+		Dialogue_Node* cur = active_dialogue->traverse();
+		if (!cur->waiting) {
+			cur->say();
+		}
+		else {
+			if (game_input.was_pressed(GLFW_KEY_1)) {
+				cur->set_response(0);
+			}
+			else if (game_input.was_pressed(GLFW_KEY_2)) {
+				cur->set_response(1);
+			}
+			else if (game_input.was_pressed(GLFW_KEY_3)) {
+				cur->set_response(2);
+			}
+			else if (game_input.was_pressed(GLFW_KEY_4)) {
+				cur->set_response(3);
 			}
 		}
-	}
 
-	renderer.draw(boon->get_component<Graphic_Component>(), boon->get_component<Position_Component>(), Render_Flags::None);
-	for (auto& handle : active_level->entity_handles) {
-		if (handle()->get_component<Bounding_Box>()) {
-			physics_system.entity_handles.push_back(handle);
+		if (game_input.was_pressed(GLFW_KEY_S)) {
+			active_dialogue->save();
 		}
-
+		if (game_input.was_pressed(GLFW_KEY_L)) {
+			active_dialogue->load();
+		}
 	}
-	physics_system.entity_handles.push_back(player.boon);
 
-	physics_system.process(1.f / 60.f);
+	//@hack why is there drawing code here?
+	active_level->draw();
+	renderer.draw(player.boon->get_component<Graphic_Component>(), player.boon->get_component<Position_Component>(), Render_Flags::None); //@hack why is boon different?
 
 	particle_system.update(dt);
 
 	player.update(dt);
 	text_box.update(frame);
 	frame++;
-
-
 }
 void Game::render() {
 	if (editor_selection.selection) { 
@@ -1041,4 +1155,3 @@ void Game::render() {
 
 	text_box.render();
 }
-

@@ -214,7 +214,7 @@ int main() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
-#pragma endregion
+	#pragma endregion
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
@@ -244,6 +244,7 @@ int main() {
 		game_layer.render();
 	
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
+		ImGui::End();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

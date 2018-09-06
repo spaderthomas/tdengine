@@ -91,11 +91,16 @@ struct Particle_System {
 	void update(float dt);
 };
 
-// Only using this for ImGui debugging
+struct Dialogue_Tree;
+struct Dialogue_Node;
 struct Game {
 	Entity_Tree* tile_tree;
 	glm::ivec2 last_grid_pos_drawn;
 	glm::vec2 top_left_drag;
+	enum Game_State {
+		GAME = 0,
+		DIALOGUE = 1
+	} game_state = GAME;
 	enum Editing_State {
 		IDLE,
 		INSERT,
@@ -126,9 +131,12 @@ struct Game {
 	Level cantina;
 	Level* active_level;
 	Console console;
-
+	Dialogue_Tree* active_dialogue;
+	
 	Particle_System particle_system;
 	Text_Box text_box;
+
+	bool in_dialogue = false;
 
 	void go_through_door(string to);
 	void play_intro();
