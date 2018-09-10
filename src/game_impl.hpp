@@ -388,10 +388,11 @@ void Particle_System::update(float dt) {
 struct Dialogue_Node {
 	string text;
 	vector<string> responses;
-	int response = -1; 
 	vector<Dialogue_Node*> children;
-	bool already_drew_line = false;
-	bool terminal = false;;
+	int response = -1;
+
+	bool already_drew_line = false; // To prevent us from spamming the text box with the same string
+	bool terminal = false; // Terminal nodes exit dialogue on spacebar
 
 	void set_response(int response) {
 		if (response >= (int)children.size()) return;
@@ -1157,53 +1158,57 @@ void Game::update(float dt) {
 		physics_system.process(1.f / 60.f);
 	} 
 	else if (game_state == Game_State::DIALOGUE) {
-		Dialogue_Node* cur = active_dialogue->traverse();
+		Dialogue_Node* node = active_dialogue->traverse();
 		if (game_input.was_pressed(GLFW_KEY_1)) {
-			cur->set_response(0);
+			node->set_response(0);
 		}
 		else if (game_input.was_pressed(GLFW_KEY_2)) {
-			cur->set_response(1);
+			node->set_response(1);
 		}
 		else if (game_input.was_pressed(GLFW_KEY_3)) {
-			cur->set_response(2);
+			node->set_response(2);
 		}
 		else if (game_input.was_pressed(GLFW_KEY_4)) {
-			cur->set_response(3);
+			node->set_response(3);
 		}
-		
+
 		if (game_input.was_pressed(GLFW_KEY_S)) {
 			active_dialogue->save();
 		}
 		if (game_input.was_pressed(GLFW_KEY_L)) {
 			active_dialogue->load();
 		}
-		
-		cur->show_line();
+
+		node->show_line();
 
 
 		if (game_input.was_pressed(GLFW_KEY_SPACE)) {
-			// if the dialogue line has fully shown, display the responses
-			// otherwise, go to the next part of the dialogue line
+			// If the dialogue has fully shown
 			if (text_box.is_all_text_displayed()) {
-				string all_response_text;
-				for (auto& response : cur->responses) {
-					all_response_text += response + "\n";
+				// Break if node is terminal
+				if (node->terminal) {
+					text_box.reset_and_hide();
+					game_state = Game_State::GAME;
 				}
-				text_box.begin(all_response_text);
-			} else {
-				if (!text_box.waiting) {
-					//@hack Wouldn't have to do this if the way I checked
-					// a set of lines was not a big and silly.
-					text_box.point = numeric_limits<int>::max();
+				// Show responses if it is not
+				else {
+					string all_response_text;
+					for (auto& response : node->responses) {
+						all_response_text += response + "|";
+					}
+					text_box.begin(all_response_text);
 				}
-				text_box.unwait();
 			}
-		}
-		if (cur->terminal) {
-			if (game_input.was_pressed(GLFW_KEY_SPACE)) {
-				text_box.reset_and_hide();
-				game_state = Game_State::GAME;
+			// If the set has shown fully (but not ALL dialogue), go to the next set
+			else if (text_box.is_current_set_displayed()) {
+				text_box.resume();
 			}
+			// If the dialogue has partially shown, skip to the end of the line set
+			else {
+				Line_Set& set = text_box.current_set();
+				set.point = set.max_point;
+			}
+
 		}
 	}
 

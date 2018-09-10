@@ -95,21 +95,47 @@ void init_fonts() {
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(GLfloat) * 12));
 }
 
+struct Line_Set {
+	vector<string> lines;
+	int point = 0;
+	int max_point = 0;
+
+	void set_max_point() {
+		max_point = 0;
+		for (auto& line : lines) {
+			max_point += line.size();
+		}
+	}
+
+	int count() {
+		return (int)lines.size();
+	}
+	
+	void add(string line) {
+		lines.push_back(line);
+	}
+	
+	string& operator[](int i) {
+		fox_assert(i < lines.size());
+		return lines[i];
+	}
+};
+
 struct Text_Box {
 	string text;
-	vector<string> lines;
-	int index_start_line = -1;           
-	int point = -1;                
 	bool waiting = false;
+	bool active = false;
 	float scale = 1.f;
 
-	vector<array<string, 3>> new_lines;
+	vector<Line_Set> sets;
+	int index_current_line_set;
 
 	void begin(string text);
 	void update(int frame);
-	// Advance forward three lines and move the point to the beginning. If you go past the last line, reset.
-	void unwait();
+	void resume();
 	void render();
 	void reset_and_hide();
 	bool is_all_text_displayed();
+	bool is_current_set_displayed();
+	Line_Set& current_set();
 };

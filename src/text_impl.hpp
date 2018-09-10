@@ -1,9 +1,12 @@
+Line_Set& Text_Box::current_set() {
+	return new_lines[index_current_line_set];
+}
 void Text_Box::begin(string text) {
 	this->text = text;
-	point = 0;
-	index_start_line = 0;
+	index_current_line_set = 0;
 	waiting = false;
-	lines.clear();
+	active = true;
+	new_lines.clear();
 
 	gl_unit size_x = 1.8f, size_y = .5f;
 	gl_unit bottom = -.9f, left = -.9f;
@@ -20,6 +23,8 @@ void Text_Box::begin(string text) {
 	vector<string> words = split(text, ' ');
 	subpixel_unit accumulated_x = 0;
 	string cur_line;
+	Line_Set set;
+	int lines_added = 0;
 	for (auto& word : words) {
 		subpixel_unit this_word_x = 0;
 		for (auto c : word) {
@@ -34,8 +39,22 @@ void Text_Box::begin(string text) {
 		if (accumulated_x >= wrap) {
 			// Get rid of trailing space
 			cur_line.pop_back();
-			// Add line and reset, reset for next line
-			lines.push_back(cur_line);
+			// Add line and reset for next line
+			set.add(cur_line);
+			set.set_max_point();
+
+			// Lines of text are drawn in sets of 3. Once we have three, finish off the set and start fresh.
+			if (set.count() == 3) {
+				// Calculate the max point for this line set
+				for (auto& line : set.lines) {
+					set.max_point += line.size();
+				}
+				new_lines.push_back(set);
+				set.lines.clear();
+				lines_added = 0;
+			}
+			
+			// Add the word that made us spill over into the next line to next set
 			cur_line = word + " ";
 			accumulated_x = this_word_x;
 		}
@@ -44,27 +63,33 @@ void Text_Box::begin(string text) {
 		}
 	}
 
-	lines.push_back(cur_line);
+	// Add the last trailing lineset
+	set.add(cur_line);
+	set.set_max_point();
+	new_lines.push_back(set);
 }
-
 void Text_Box::update(int frame) {
+	if (!active) { return; }
+
 	if (!waiting && frame % 2) {
-		if (point == numeric_limits<int>::max()) return; //@hack
-		point++;
+		Line_Set& set = current_set();
+		set.point = fox_min(set.point + 1, set.max_point);
+
+		// If we've drawn all the text in the set, wait for input to continue.
+		if (set.point == set.max_point) {
+			waiting = true;
+		}
 	}
 }
-
-// Advance forward three lines and move the point to the beginning. If you go past the last line, reset.
-void Text_Box::unwait() {
+void Text_Box::resume() {
 	if (!waiting) { return; }
 
-	index_start_line += 3;
-	if (index_start_line >= (int)lines.size()) {
+	// Try to advance to the next line set. If it doesn't exist, hide the text box.
+	index_current_line_set++;
+	waiting = false;
+	if (index_current_line_set >= (int)new_lines.size()) {
+		index_current_line_set = -1;
 		reset_and_hide();
-	}
-	else {
-		point = 0;
-		waiting = false;
 	}
 }
 void Text_Box::render() {
@@ -133,8 +158,9 @@ void Text_Box::render() {
 	text_shader.begin();
 	float cur_subpixel_y = (float)text_start_px.y;
 	int characters_drawn = 0;
-	for (int iline = index_start_line; iline < (int)lines.size(); iline++) {
-		auto& line = lines[iline];
+	Line_Set set = new_lines[index_current_line_set];
+	for (int iline = 0; iline < (int)set.count(); iline++) {
+		auto& line = set[iline];
 		// Text is raw 2D, so just use an orthographic projection
 		SRT transform = SRT::no_transform();
 		glm::mat3 mat = mat3_from_transform(transform);
@@ -190,43 +216,30 @@ void Text_Box::render() {
 
 			cur_subpixel_x += (freetype_char.advance / 64) * scale;
 
-			//@hack The next 20 lines or so are pretty bad
-			// You have to 'goto end' if you have draw enough characters so that
-			// you don't erroneously trigger the check if youve fully rendered 3 lines
-			// because modulo is a really bad way to do that.
-			
 			// Increment the character until it reaches the point.
 			characters_drawn++;
-			if (characters_drawn > point) {
-				goto end;
+			if (characters_drawn > set.point) {
+				goto end; // Break out of the nested loop
 			}
 		 }
 
 		cur_subpixel_y -= Character::px_largest.y * scale;
-
-		// If we've fully rendered three lines, stop and wait for the signal to continue
-		if (!((iline + 1) % 3)) {  // Add 1 because of zero-indexing
-			waiting = true;
-			goto end;
-		}
-		// If you're at the end of the last line, wait
-		if (iline == lines.size() - 1) {
-			waiting = true;
-			goto end;
-		}
 	}
 
-	// Label so we can break to this from both the inner and outer loop
+	// Label so we can break to this from the inner loop
 	end: text_shader.end();
 }
 void Text_Box::reset_and_hide() {
-	point = -1;
-	index_start_line = -1;
 	waiting = false;
+	active = false;
 	text = "";
-	lines.clear();
+	new_lines.clear();
 }
 bool Text_Box::is_all_text_displayed() {
-	int current_start_line = index_start_line + 1;
-	return (lines.size() - current_start_line < 3);
+	bool on_last_set = (index_current_line_set + 1 == new_lines.size());
+	return on_last_set && waiting;
+}
+bool Text_Box::is_current_set_displayed() {
+	Line_Set& set = current_set();
+	return (set.point == set.max_point) && waiting;
 }
