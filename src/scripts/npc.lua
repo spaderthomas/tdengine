@@ -59,7 +59,7 @@ npc = {
         },
 		dialogue = {
 		   intro = {
-			  text = "pick one!",
+			  text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec lacinia orci. Phasellus vel facilisis tortor. Morbi auctor ultricies lorem a pellentesque. Quisque orci ex!",
 			  terminal = false;
 			  responses = {
 				 "press 1",
@@ -68,9 +68,19 @@ npc = {
 			  children = {
 				 {
 					text = "you pressed 1!",
-					terminal = true;
-					responses = {},
-					children = {},
+					terminal = false;
+					responses = {
+					   "press 1",
+					   "press 2"
+					},
+					children = {
+					   {
+						  text = "you pressed 1 AGAIN! WOW!!",
+						  terminal = true;
+						  responses = {},
+						  children = {}
+					   }
+					},
 				 },
 				 {
 					text = "you pressed 2!",
@@ -116,11 +126,35 @@ npc = {
                 depth = px_y_to_screen(32)
             } 
         },
+        dialogue = {
+		   intro = {
+			  text = "Try starting with hello!",
+			  terminal = false;
+			  responses = {
+				 "press 1",
+				 "press 2"
+			  },
+			  children = {
+				 {
+					text = "Uh..thank-thank you for...that...[nervous laughter] [more nervous laughter] [giggling] [faintly in the background, a hispanic man, yelling] JOEY JOEY and..end scene...",
+					terminal = true;
+					responses = {},
+					children = {},
+				 },
+				 {
+					text = "<an image of a fox appears onscreen>",
+					terminal = true;
+					responses = {},
+					children = {},
+				 },
+			  }
+		   }
+		},
         Interaction_Component = {
-            on_interact = function(this, other) 
-                show_text("... (He does not look up from his computer as he takes a sip of mead)")
-            end
-        }
+		   on_interact = function(this, other)
+			  begin_dialogue(this)
+		   end
+        },
     },
 
     rich = {

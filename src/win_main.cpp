@@ -39,6 +39,7 @@ extern "C" {
 #include <typeindex>
 #include <optional>
 #include <iomanip>
+#include <limits>
 using namespace std;
 
 
@@ -231,9 +232,9 @@ int main() {
 		else { game_input = global_input; }
 
 		// Window resizing requests
-		if (global_input.was_pressed(GLFW_KEY_1)) { use_640_360(window); }
-		if (global_input.was_pressed(GLFW_KEY_2)) { use_720p(window); }
-		if (global_input.was_pressed(GLFW_KEY_3)) { use_1080p(window); }
+		if (global_input.was_pressed(GLFW_KEY_F1)) { use_640_360(window); }
+		if (global_input.was_pressed(GLFW_KEY_F2)) { use_720p(window); }
+		if (global_input.was_pressed(GLFW_KEY_F3)) { use_1080p(window); }
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

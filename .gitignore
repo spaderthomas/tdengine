@@ -13,3 +13,6 @@ story/
 graphics_demo.vcxproj
 log.txt
 todo.org
+GPATH
+GTAGS
+GRTAGS

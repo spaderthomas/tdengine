@@ -383,40 +383,43 @@ void Particle_System::update(float dt) {
 	}
 }
 
+// Contains a line of NPC text, a vector of responses, and a vector of nodes that correspond to those responses.
+// e.g. response = 2 would indicate to go to children[2]
 struct Dialogue_Node {
 	string text;
 	vector<string> responses;
 	int response = -1; 
-	vector<Dialogue_Node*> response_nodes;
-	bool terminal = false;
-	bool waiting = false;
+	vector<Dialogue_Node*> children;
+	bool already_drew_line = false;
+	bool terminal = false;;
 
 	void set_response(int response) {
-		if (response >= response_nodes.size()) return;
+		if (response >= (int)children.size()) return;
 		this->response = response;
 	}
 	bool has_response() {
 		return response != -1;
 	}
 	Dialogue_Node* next() {
-		if (has_response()) return response_nodes[response];
+		if (has_response()) return children[response];
 		return nullptr;
 	}
-	void say() {
-		game_layer.text_box.begin(text);
-		waiting = true;
+	void show_line() {
+		if (!already_drew_line)
+			game_layer.text_box.begin(text);
+		already_drew_line = true;
 	}
 
 	void init_from_table(sol::table& table) {
+		//@leak
 		text.clear();
 		responses.clear();
 		response = -1;
-		response_nodes.clear();
-		terminal = false;
-		waiting = false;
+		children.clear();
+		already_drew_line = false;
 
-		text = table["text"];
 		terminal = table["terminal"];
+		text = table["text"];
 		sol::table responses = table["responses"];
 		for (auto& pair : responses) {
 			this->responses.push_back(pair.second.as<string>());
@@ -428,59 +431,98 @@ struct Dialogue_Node {
 			sol::table child = pair.second;
 			Dialogue_Node* child_node = new Dialogue_Node;
 			child_node->init_from_table(child);
-			this->response_nodes.push_back(child_node);
+			this->children.push_back(child_node);
 		}
 	}
 };
 struct Dialogue_Tree {
 	Dialogue_Node* root;
+	string npc;
+	string scene;
 
 	Dialogue_Node* traverse() {
 		Dialogue_Node* cur = root;
 		while(cur && cur->has_response()) {
-			cur = cur->response_nodes[cur->response];
+			cur = cur->children[cur->response];
 		}
 
 		return cur;
 	}
 
+	// Writes the dialogue tree into dialogue.json under the keys given by npc and scene
+	// Requires that you have an npc and a scene set
 	void save() {
-		json tree;
+		fox_assert(npc != "");
+		fox_assert(scene != "");
+		// Load in all of the saved dialogue
+		string path = absolute_path("save\\dialogue.json");
+		ifstream save_file(path);
+		json dialogue;
+		save_file >> dialogue;
+
+		// Make appropriate keys if they don't exist
+		json this_scene_dialogue;
+		if (dialogue[npc].is_null())  {
+			// We don't have an entry for this NPC's saved dialogue at all
+			json all_npc_dialogue = dialogue[npc] = json::object();
+			all_npc_dialogue[scene] = json::array();
+			this_scene_dialogue = all_npc_dialogue[scene];
+		}
+		else {
+			// There is an entry for this NPC's saved dialogue; we overwrite it
+			dialogue[npc][scene] = json::array();
+			this_scene_dialogue = dialogue[npc][scene];
+		}
+
+		// Traverse the tree and mark decisions
 		Dialogue_Node* cur = root;
 		while(cur && cur->has_response()) {
-			tree.push_back(cur->response);
+			this_scene_dialogue.push_back(cur->response);
 			cur = cur->next();
 		}
 		
-		string path = absolute_path("save\\" + string("saved_dialogue") + ".json");
-		ofstream save_file(path);
-		save_file << std::setw(4) << tree << std::endl;
+		// Save it
+		dialogue[npc][scene] = this_scene_dialogue;
+		ofstream save_file_out(path);	
+		save_file_out << std::setw(4) << dialogue << std::endl;
 	}
 
 	void load() {
-		string path = absolute_path("save\\" + string("saved_dialogue") + ".json");
-		ifstream save_file(path);
-		json tree;
-		save_file >> tree;
+		fox_assert(npc != "");
+		fox_assert(scene != "");
 
+		// Load in the JSON from dialogue.json
+		string path = absolute_path("save\\dialogue.json");
+		ifstream save_file(path);
+		json dialogue;
+		save_file >> dialogue;
+
+		// Traverse the tree by the responses in JSON, marking them as you go
+		json this_scene_dialogue = dialogue[npc][scene];
 		Dialogue_Node* cur = root;
-		fox_iter(it, tree) {
+		fox_iter(it, this_scene_dialogue) {
 			cur->response = *it;
-			cur = cur->response_nodes[*it];
+			cur->already_drew_line = false; //@hack -- should probably figure out where to actually do this
+			cur = cur->children[*it];
 		}
+
 	}
 
-	void init_from_table(sol::table& table) {
-		root->init_from_table(table);
+	void init_from_table(string npc, string scene) {
+		this->npc = npc; this->scene = scene;
+		string script = Lua.definitions_to_script[npc];
+		sol::table dialogue = Lua.state[script][npc]["dialogue"][scene];
+
+		//@leak
+		root = new Dialogue_Node;
+		root->init_from_table(dialogue);
 	}
 	
 };
 void Game::begin_dialogue(Entity* entity) {
-	string lua_id = entity->lua_id;
-	string script = Lua.definitions_to_script[lua_id];
-	sol::table dialogue = Lua.state[script][lua_id]["dialogue"][this->scene];
-
-	active_dialogue->init_from_table(dialogue);
+	string npc = entity->lua_id;
+	active_dialogue->init_from_table(npc, scene);
+	game_state = Game_State::DIALOGUE;
 }
 void Game::Editor_Selection::translate_entity() {
 	glm::vec2 draggable_position;
@@ -636,27 +678,7 @@ void Game::init() {
 	particle_system.init();
 
 	scene = "intro";
-		
-	Dialogue_Tree* tree = new Dialogue_Tree;
-	auto j_node = new Dialogue_Node;
-	j_node->text = "you picked j!";
-	j_node->terminal = true;
-	auto k_node = new Dialogue_Node;
-	k_node->text = "you picked k!";
-	k_node->terminal = true;
-
-	auto root = new Dialogue_Node;
-	root->text = "pick one!";
-	root->responses = {
-		"press j!",
-		"press k!",
-	};
-	root->response_nodes = { 
-		j_node, 
-		k_node 
-	};
-	tree->root = root;
-	active_dialogue = tree;
+	active_dialogue = new Dialogue_Tree;
 }
 void Game::update(float dt) {
 	static int frame = 0;
@@ -1111,9 +1133,7 @@ void Game::update(float dt) {
 			mc->wish += glm::vec2(.0025f, 0.f);
 			player.facing = Facing::right;
 		}
-		if (game_input.was_pressed(GLFW_KEY_SPACE)) {
-			text_box.unwait();
-		}
+		
 		if (game_input.was_pressed(GLFW_KEY_I)) {
 			play_intro();
 		}
@@ -1138,29 +1158,52 @@ void Game::update(float dt) {
 	} 
 	else if (game_state == Game_State::DIALOGUE) {
 		Dialogue_Node* cur = active_dialogue->traverse();
-		if (!cur->waiting) {
-			cur->say();
+		if (game_input.was_pressed(GLFW_KEY_1)) {
+			cur->set_response(0);
 		}
-		else {
-			if (game_input.was_pressed(GLFW_KEY_1)) {
-				cur->set_response(0);
-			}
-			else if (game_input.was_pressed(GLFW_KEY_2)) {
-				cur->set_response(1);
-			}
-			else if (game_input.was_pressed(GLFW_KEY_3)) {
-				cur->set_response(2);
-			}
-			else if (game_input.was_pressed(GLFW_KEY_4)) {
-				cur->set_response(3);
-			}
+		else if (game_input.was_pressed(GLFW_KEY_2)) {
+			cur->set_response(1);
 		}
-
+		else if (game_input.was_pressed(GLFW_KEY_3)) {
+			cur->set_response(2);
+		}
+		else if (game_input.was_pressed(GLFW_KEY_4)) {
+			cur->set_response(3);
+		}
+		
 		if (game_input.was_pressed(GLFW_KEY_S)) {
 			active_dialogue->save();
 		}
 		if (game_input.was_pressed(GLFW_KEY_L)) {
 			active_dialogue->load();
+		}
+		
+		cur->show_line();
+
+
+		if (game_input.was_pressed(GLFW_KEY_SPACE)) {
+			// if the dialogue line has fully shown, display the responses
+			// otherwise, go to the next part of the dialogue line
+			if (text_box.is_all_text_displayed()) {
+				string all_response_text;
+				for (auto& response : cur->responses) {
+					all_response_text += response + "\n";
+				}
+				text_box.begin(all_response_text);
+			} else {
+				if (!text_box.waiting) {
+					//@hack Wouldn't have to do this if the way I checked
+					// a set of lines was not a big and silly.
+					text_box.point = numeric_limits<int>::max();
+				}
+				text_box.unwait();
+			}
+		}
+		if (cur->terminal) {
+			if (game_input.was_pressed(GLFW_KEY_SPACE)) {
+				text_box.reset_and_hide();
+				game_state = Game_State::GAME;
+			}
 		}
 	}
 

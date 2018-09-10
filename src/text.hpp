@@ -98,16 +98,18 @@ void init_fonts() {
 struct Text_Box {
 	string text;
 	vector<string> lines;
-	int start_line = -1;           
+	int index_start_line = -1;           
 	int point = -1;                
 	bool waiting = false;
-	float scale = 1.f;             
+	float scale = 1.f;
+
+	vector<array<string, 3>> new_lines;
 
 	void begin(string text);
 	void update(int frame);
-
 	// Advance forward three lines and move the point to the beginning. If you go past the last line, reset.
 	void unwait();
-
 	void render();
+	void reset_and_hide();
+	bool is_all_text_displayed();
 };

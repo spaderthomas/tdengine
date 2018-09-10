@@ -1,7 +1,7 @@
 void Text_Box::begin(string text) {
 	this->text = text;
 	point = 0;
-	start_line = 0;
+	index_start_line = 0;
 	waiting = false;
 	lines.clear();
 
@@ -34,7 +34,6 @@ void Text_Box::begin(string text) {
 		if (accumulated_x >= wrap) {
 			// Get rid of trailing space
 			cur_line.pop_back();
-			//this_word_x -= (freetype_char.advance / 64) * scale;
 			// Add line and reset, reset for next line
 			lines.push_back(cur_line);
 			cur_line = word + " ";
@@ -50,7 +49,8 @@ void Text_Box::begin(string text) {
 
 void Text_Box::update(int frame) {
 	if (!waiting && frame % 2) {
-		point = fox_min(point + 1, (int)text.size() - 1);
+		if (point == numeric_limits<int>::max()) return; //@hack
+		point++;
 	}
 }
 
@@ -58,23 +58,15 @@ void Text_Box::update(int frame) {
 void Text_Box::unwait() {
 	if (!waiting) { return; }
 
-	start_line += 3;
-#pragma warning(push)
-#pragma warning(disable: 4018) // signed/unsigned mismatch
-	if (start_line >= lines.size()) {
-#pragma warning(pop)
-		point = -1;
-		start_line = -1;
-		waiting = false;
-		text = "";
-		lines.clear();
+	index_start_line += 3;
+	if (index_start_line >= (int)lines.size()) {
+		reset_and_hide();
 	}
 	else {
 		point = 0;
 		waiting = false;
 	}
 }
-
 void Text_Box::render() {
 	if (text == "") { return; }
 
@@ -141,10 +133,7 @@ void Text_Box::render() {
 	text_shader.begin();
 	float cur_subpixel_y = (float)text_start_px.y;
 	int characters_drawn = 0;
-#pragma warning(push)
-#pragma warning(disable: 4018) // signed/unsigned mismatch
-	for (int iline = start_line; iline < lines.size(); iline++) {
-#pragma warning(pop)
+	for (int iline = index_start_line; iline < (int)lines.size(); iline++) {
 		auto& line = lines[iline];
 		// Text is raw 2D, so just use an orthographic projection
 		SRT transform = SRT::no_transform();
@@ -174,21 +163,21 @@ void Text_Box::render() {
 			GLfloat vertices[12][2] = {
 				// Vertices 
 				{ gl_left,  gl_top },
-			{ gl_left,  gl_bottom },
-			{ gl_right, gl_bottom },
+				{ gl_left,  gl_bottom },
+				{ gl_right, gl_bottom },
 
-			{ gl_left,  gl_top },
-			{ gl_right, gl_bottom },
-			{ gl_right, gl_top },
+				{ gl_left,  gl_top },
+				{ gl_right, gl_bottom },
+				{ gl_right, gl_top },
 
-			// Texture coordinates
-			{ 0.f, 0.f },
-			{ 0.f, 1.f },
-			{ 1.f, 1.f },
+				// Texture coordinates
+				{ 0.f, 0.f },
+				{ 0.f, 1.f },
+				{ 1.f, 1.f },
 
-			{ 0.f, 0.f },
-			{ 1.f, 1.f },
-			{ 1.f, 0.f }
+				{ 0.f, 0.f },
+				{ 1.f, 1.f },
+				{ 1.f, 0.f }
 			};
 
 			// Render glyph texture over quad
@@ -201,12 +190,17 @@ void Text_Box::render() {
 
 			cur_subpixel_x += (freetype_char.advance / 64) * scale;
 
+			//@hack The next 20 lines or so are pretty bad
+			// You have to 'goto end' if you have draw enough characters so that
+			// you don't erroneously trigger the check if youve fully rendered 3 lines
+			// because modulo is a really bad way to do that.
+			
 			// Increment the character until it reaches the point.
 			characters_drawn++;
 			if (characters_drawn > point) {
 				goto end;
 			}
-		}
+		 }
 
 		cur_subpixel_y -= Character::px_largest.y * scale;
 
@@ -224,4 +218,15 @@ void Text_Box::render() {
 
 	// Label so we can break to this from both the inner and outer loop
 	end: text_shader.end();
+}
+void Text_Box::reset_and_hide() {
+	point = -1;
+	index_start_line = -1;
+	waiting = false;
+	text = "";
+	lines.clear();
+}
+bool Text_Box::is_all_text_displayed() {
+	int current_start_line = index_start_line + 1;
+	return (lines.size() - current_start_line < 3);
 }
