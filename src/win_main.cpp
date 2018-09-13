@@ -64,6 +64,7 @@ using namespace std;
 #include "data.hpp"
 #include "shader.hpp"
 #include "transform.hpp"
+#include "camera.hpp"
 #include "sprite_impl.hpp"
 #include "mesh.hpp"
 #include "animation_impl.hpp"
@@ -73,7 +74,7 @@ using namespace std;
 #include "draw.hpp"
 #include "collision.hpp"
 #include "level_impl.hpp"
-#include "renderer_functions.hpp"
+#include "renderer_impl.hpp"
 #include "text_impl.hpp"
 #include "game_impl.hpp"
 

@@ -92,7 +92,7 @@ Pixel coordinates have
 	the leftmost coordinate at 0,
 	the rightmost at SCREEN_X,
 	the bottommost at 0,
-	the topmost at SCREEN_Yd
+	the topmost at SCREEN_Y
 
 Below are all the conversion functions. Using them and proper units is a bit verbose, 
 but is worth it to save the confusion of exchanging units (which is unavoidable). Also
@@ -161,7 +161,14 @@ glm::vec2 gl_from_screen(glm::vec2 screen_coords) {
 gl_unit gl_from_screen(screen_unit s) {
 	return s * 2 - 1;
 }
-
+glm::vec2 magnitude_gl_from_screen(glm::vec2 screen_coords) {
+	// Moving .5 units in screen space is moving 1 unit in GL space
+	// i.e. magnitudes are doubled
+	return glm::vec2(screen_coords.x * 2, screen_coords.y * 2);
+}
+gl_unit magnitude_gl_from_screen(screen_unit s) {
+	return s * 2;
+}
 // Converting to screen units
 screen_unit magnitude_screen_from_gl(gl_unit u) {
 	return (screen_unit)(u / 2);

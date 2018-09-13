@@ -1,8 +1,6 @@
 * 1
 Boon has to go to get his first augmentation. This would involve going to see the doctor, getting an explanation on augmentations, and then choosing which one you want to start with. the problem with this is that it's very anti in media res, which i like a lot. maybe the main city isn't the FSF base, but is instead a foreign city where you have to figure out the vibe, who to trust, factions -- so you never exactly feel at home. vampire. 
 
-* 2
-
 * 3
 demon's souls setup: one main hub, and then when you go do a mission it's just the 'dungeon'. this could take a number of different forms. you could have an actual dungeon that you go through, maybe solving puzzles and fighting minibosses (no random encounters!). you could have something that's really just a series of battles. the main hub will be much richer than in demon's souls -- less of a jumping off point and more of the jumping off point of the action.
 
@@ -38,7 +36,7 @@ now. boon. this is where you come in. parts one and two are done, a sealed deal.
 
 but we have heard rumors. any society that places such a high emphasis on tech literacy and has security so locked down is bound to create a rich, rich community of hackers. it's the price you pay. they're no different. 
 
-we can get you in. but we don't necessarily know what's waiting for you. you're not flying totally blind, at least. we have a few threads for you to pull on when you first roll in. 
+-we can get you in. but we don't necessarily know what's waiting for you. you're not flying totally blind, at least. we have a few threads for you to pull on when you first roll in. 
 
 one: super low key tech dude. he's hooked into the routers behind all the traffic that heads into the city. he's used it to build a network of people, who they know, who they talk to. all the messages themselves are encrypted, but just the metadata is worth its weight in gold. he works a bit for both sides. use him at your peril. he doesn't deal in commodities, so he prefers favors. maintaining his hold over the network traffic is hard. he has no muscle of his own. if you want him to help you, you gotta go in and kill one of the maintenence guys at the data center where the router is. he's got most of them under his thumb, but a new guy is thinking of snitching. take care of him.
 

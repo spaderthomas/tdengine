@@ -11,7 +11,6 @@ void Renderer::render_for_frame() {
 	Shader* shader = &textured_shader;
 	shader->begin();
 	shader->set_int("sampler", 0);
-	glm::vec2 camera_pos = glm::vec2(camera.x * GLSCR_TILESIZE_X, -1.f * camera.y * GLSCR_TILESIZE_Y);
 
 	// Algorithm:
 	// Sort by Z-position (as if you were going to do the Painter's algorithm
@@ -29,6 +28,8 @@ void Renderer::render_for_frame() {
 		depth_sorted_render_elements.back().push_back(render_element);
 	}
 
+	// Translate the camera so the player is the center.
+	glm::vec2 camera_translation = magnitude_gl_from_screen(glm::vec2(.5, .5) - _camera.player_coords);
 	for (auto& depth_level_render_elements : depth_sorted_render_elements) {
 		stable_sort(depth_level_render_elements.begin(), depth_level_render_elements.end(), 
 			[](const Render_Element& a, const Render_Element& b) {
@@ -66,7 +67,7 @@ void Renderer::render_for_frame() {
 				SRT transform = SRT::no_transform();
 				transform.scale = render_element.gc->scale;
 				transform.translate = gl_from_screen(render_element.pc->screen_pos);
-				transform.translate -= camera_pos;
+				transform.translate += camera_translation;
 				auto transform_mat = mat3_from_transform(transform);
 				shader->set_mat3("transform", transform_mat);
 

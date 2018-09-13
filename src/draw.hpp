@@ -30,11 +30,15 @@ void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 		solid_shader.begin();
 		glm::vec4 color_ = color; //@hack So I can pass as a reference everywhere else. maybe make it a pointer? but then inconsistent :(
 		solid_shader.set_vec4("color", color_);
+
 		SRT transform = SRT::no_transform();
+		glm::vec2 camera_translation = magnitude_gl_from_screen(glm::vec2(.5, .5) - _camera.player_coords);
 		transform.scale = p2 - p1;
 		transform.translate = glm::vec3(p1, 1.f);
+		transform.translate += camera_translation;
 		auto transform_mat = mat3_from_transform(transform);
 		solid_shader.set_mat3("transform", transform_mat);
+
 		line->bind();
 		solid_shader.check();
 		line->draw(GL_LINES);

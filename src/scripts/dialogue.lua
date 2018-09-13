@@ -28,7 +28,7 @@ npc.intro_police.dialogue = {
 
 npc.wilson.dialogue = {
    intro = {
-	  text = "",
+	  text = "AAAAAAAAAAAAAAAHHHHHHHHHH!",
 	  terminal = false;
 	  responses = {
 		 "press 1",

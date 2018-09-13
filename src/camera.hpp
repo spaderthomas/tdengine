@@ -1,3 +1,9 @@
 struct {
-	glm::ivec2 top_left_tile;
-} camera;
+	glm::vec2 player_coords;
+
+	void update() {
+
+	}
+
+} _camera;
+

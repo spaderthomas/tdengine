@@ -880,19 +880,7 @@ void Game::update(float dt) {
 	}
 
 	if (game_state == Game_State::GAME) {
-		//--INPUT
-		if (game_input.is_down[GLFW_KEY_UP]) {
-			camera.y = fox_max(0, camera.y - 1);
-		}
-		if (game_input.is_down[GLFW_KEY_DOWN]) {
-			camera.y = camera.y + 1;
-		}
-		if (game_input.is_down[GLFW_KEY_RIGHT]) {
-			camera.x += 1;
-		}
-		if (game_input.is_down[GLFW_KEY_LEFT]) {
-			camera.x = fox_max(0, camera.x - 1);
-		}
+		
 		if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
 			game_input.was_pressed(GLFW_KEY_Z))
 		{
@@ -1079,6 +1067,7 @@ void Game::update(float dt) {
 		}
 		}
 
+		//--INPUT
 
 		//--EXPLORATION
 		Entity* boon = player.boon();
@@ -1128,6 +1117,9 @@ void Game::update(float dt) {
 		physics_system.entity_handles.push_back(player.boon);
 
 		physics_system.process(1.f / 60.f);
+
+		auto pc = player.boon->get_component<Position_Component>();
+		_camera.player_coords = pc->screen_pos;
 	} 
 	else if (game_state == Game_State::DIALOGUE) {
 		Dialogue_Node* node = active_dialogue->traverse();
