@@ -1,0 +1,1640 @@
+{
+    "chunks": {
+        "1,0": [
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.26249998807907104,
+                                "y": 0.24444444477558136
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_bottom_left_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.26249998807907104,
+                                "y": 0.2888889014720917
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_left_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.26249998807907104,
+                                "y": 0.3333333432674408
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_left_sand_grass"
+                }
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.2874999940395355,
+                                "y": 0.24444444477558136
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_bottom_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.2874999940395355,
+                                "y": 0.2888889014720917
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.2874999940395355,
+                                "y": 0.3333333432674408
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                }
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3125,
+                                "y": 0.24444444477558136
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_bottom_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3125,
+                                "y": 0.2888889014720917
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3125,
+                                "y": 0.3333333432674408
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                }
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3375000059604645,
+                                "y": 0.24444444477558136
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_bottom_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3375000059604645,
+                                "y": 0.2888889014720917
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3375000059604645,
+                                "y": 0.3333333432674408
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                }
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.36249998211860657,
+                                "y": 0.24444444477558136
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_bottom_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.36249998211860657,
+                                "y": 0.2888889014720917
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.36249998211860657,
+                                "y": 0.3333333432674408
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                }
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.38749998807907104,
+                                "y": 0.24444444477558136
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_bottom_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.38749998807907104,
+                                "y": 0.2888889014720917
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.38749998807907104,
+                                "y": 0.3333333432674408
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                }
+            ]
+        ],
+        "1,1": [
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.26249998807907104,
+                                "y": 0.3777777850627899
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_left_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.26249998807907104,
+                                "y": 0.42222222685813904
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_left_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.26249998807907104,
+                                "y": 0.46666666865348816
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_left_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.26249998807907104,
+                                "y": 0.5111111402511597
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_left_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.26249998807907104,
+                                "y": 0.5555555820465088
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_top_left_sand_grass"
+                },
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.2874999940395355,
+                                "y": 0.3777777850627899
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.2874999940395355,
+                                "y": 0.42222222685813904
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.2874999940395355,
+                                "y": 0.46666666865348816
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.2874999940395355,
+                                "y": 0.5111111402511597
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.2874999940395355,
+                                "y": 0.5555555820465088
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_top_sand_grass"
+                },
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3125,
+                                "y": 0.3777777850627899
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3125,
+                                "y": 0.42222222685813904
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3125,
+                                "y": 0.46666666865348816
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3125,
+                                "y": 0.5111111402511597
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3125,
+                                "y": 0.5555555820465088
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_top_sand_grass"
+                },
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3375000059604645,
+                                "y": 0.3777777850627899
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3375000059604645,
+                                "y": 0.42222222685813904
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3375000059604645,
+                                "y": 0.46666666865348816
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3375000059604645,
+                                "y": 0.5111111402511597
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.3375000059604645,
+                                "y": 0.5555555820465088
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_top_sand_grass"
+                },
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.36249998211860657,
+                                "y": 0.3777777850627899
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.36249998211860657,
+                                "y": 0.42222222685813904
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.36249998211860657,
+                                "y": 0.46666666865348816
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.36249998211860657,
+                                "y": 0.5111111402511597
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.36249998211860657,
+                                "y": 0.5555555820465088
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_top_sand_grass"
+                },
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.38749998807907104,
+                                "y": 0.3777777850627899
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.38749998807907104,
+                                "y": 0.42222222685813904
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.38749998807907104,
+                                "y": 0.46666666865348816
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.38749998807907104,
+                                "y": 0.5111111402511597
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.38749998807907104,
+                                "y": 0.5555555820465088
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_top_sand_grass"
+                },
+                "NULL",
+                "NULL",
+                "NULL"
+            ]
+        ],
+        "2,0": [
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4124999940395355,
+                                "y": 0.24444444477558136
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_bottom_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4124999940395355,
+                                "y": 0.2888889014720917
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4124999940395355,
+                                "y": 0.3333333432674408
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                }
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4375,
+                                "y": 0.24444444477558136
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_bottom_right_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4375,
+                                "y": 0.2888889014720917
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_right_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4375,
+                                "y": 0.3333333432674408
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_right_sand_grass"
+                }
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ]
+        ],
+        "2,1": [
+            [
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4124999940395355,
+                                "y": 0.3777777850627899
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4124999940395355,
+                                "y": 0.42222222685813904
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4124999940395355,
+                                "y": 0.46666666865348816
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4124999940395355,
+                                "y": 0.5111111402511597
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4124999940395355,
+                                "y": 0.5555555820465088
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_top_sand_grass"
+                },
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4375,
+                                "y": 0.3777777850627899
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_right_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4375,
+                                "y": 0.42222222685813904
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_right_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4375,
+                                "y": 0.46666666865348816
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_right_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4375,
+                                "y": 0.5111111402511597
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_right_sand_grass"
+                },
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.4375,
+                                "y": 0.5555555820465088
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_top_right_sand_grass"
+                },
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ]
+        ],
+        "3,1": [
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                {
+                    "Components": [
+                        {
+                            "kind": "NULL"
+                        },
+                        {
+                            "kind": "Position_Component",
+                            "pos": {
+                                "x": 0.6625000238418579,
+                                "y": 0.5111111402511597
+                            },
+                            "scale": {
+                                "x": 1.0,
+                                "y": 1.0
+                            }
+                        }
+                    ],
+                    "lua_id": "border_top_sand_grass"
+                },
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ],
+            [
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL",
+                "NULL"
+            ]
+        ]
+    },
+    "entities": [
+        {
+            "Components": [
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "Position_Component",
+                    "pos": {
+                        "x": 0.34687501192092896,
+                        "y": 0.6791666746139526
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "NULL"
+                }
+            ],
+            "lua_id": "building"
+        },
+        {
+            "Components": [
+                {
+                    "kind": "Position_Component",
+                    "pos": {
+                        "x": 0.3499999940395355,
+                        "y": 0.5805555582046509
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "Door_Component",
+                    "to": "cantina"
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "NULL"
+                }
+            ],
+            "lua_id": "door"
+        }
+    ]
+}
