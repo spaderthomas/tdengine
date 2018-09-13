@@ -13,12 +13,13 @@ struct {
 		"utils",
 		"tiles",
 		"intro",
-		"state"
+		"state",
+		"dialogue"
 	};
 
 	void init() {
 		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io);
-		
+
 		// Load scripts
 		auto error_handler = [](lua_State*, sol::protected_function_result pfr) {
 			sol::error err = pfr;
@@ -26,26 +27,13 @@ struct {
 			tdns_log.write(msg);
 			return pfr;
 		};
+		state.safe_script_file(absolute_path("src\\scripts\\meta.lua"), error_handler);
+		sol::table files = state["files"];
+		for (auto& kvp : files) {
+			sol::table file = kvp.second;
+			string script = file["name"];
+			bool imgui_should_ignore = file["imgui"];
 
-		// Note: this has to go first so utils gets loaded. @hack?
-		for (auto& script : imgui_ignored_scripts) {
-			string path = absolute_path("src\\scripts\\") + script + ".lua";
-			state.safe_script_file(path, error_handler);
-
-			vector<string> defined;
-			sol::optional<sol::table> entities = state[script];
-			if (entities) {
-				for (auto& entity : entities.value()) {
-					string name = entity.first.as<string>();
-					defined.push_back(name);
-					definitions_to_script[name] = script;
-				}
-			}
-			sort(defined.begin(), defined.end());
-			script_to_definitions[script] = defined;
-		}
-
-		for (auto& script : scripts) {
 			string path = absolute_path("src\\scripts\\") + script + ".lua";
 			state.safe_script_file(path, error_handler);
 
@@ -61,6 +49,7 @@ struct {
 
 			sort(defined.begin(), defined.end());
 			script_to_definitions[script] = defined;
+
 		}
 
 		// Register C++ functions in Lua

@@ -1,12 +1,12 @@
 Line_Set& Text_Box::current_set() {
-	return new_lines[index_current_line_set];
+	return sets[index_current_line_set];
 }
 void Text_Box::begin(string text) {
 	this->text = text;
 	index_current_line_set = 0;
 	waiting = false;
 	active = true;
-	new_lines.clear();
+	sets.clear();
 
 	gl_unit size_x = 1.8f, size_y = .5f;
 	gl_unit bottom = -.9f, left = -.9f;
@@ -20,53 +20,66 @@ void Text_Box::begin(string text) {
 	pixel_unit wrap = (pixel_unit)(SCREEN_X * magnitude_screen_from_gl(size_x - 2 * padding_x));
 
 	// Break that bad boy up into lines
-	vector<string> words = split(text, ' ');
-	subpixel_unit accumulated_x = 0;
-	string cur_line;
 	Line_Set set;
-	int lines_added = 0;
-	for (auto& word : words) {
-		subpixel_unit this_word_x = 0;
-		for (auto c : word) {
-			Character freetype_char = characters[c];
-			this_word_x += (freetype_char.advance / 64) * scale;
-		}
-
-		Character space = characters[' '];
-		this_word_x += (space.advance / 64) * scale;
-
-		accumulated_x += this_word_x;
-		if (accumulated_x >= wrap) {
-			// Get rid of trailing space
-			cur_line.pop_back();
-			// Add line and reset for next line
+	string word;
+	string cur_line;
+	subpixel_unit this_word_x = 0;
+	subpixel_unit this_line_x = 0;
+	Character space = characters[' '];
+	fox_for(ichar, text.size()) {
+		char c = text[ichar];
+		if (is_newline(c)) {
+			cur_line += word;
 			set.add(cur_line);
-			set.set_max_point();
-
-			// Lines of text are drawn in sets of 3. Once we have three, finish off the set and start fresh.
 			if (set.count() == 3) {
-				// Calculate the max point for this line set
-				for (auto& line : set.lines) {
-					set.max_point += line.size();
-				}
-				new_lines.push_back(set);
+				set.set_max_point();
+				sets.push_back(set);
 				set.lines.clear();
-				lines_added = 0;
 			}
-			
-			// Add the word that made us spill over into the next line to next set
-			cur_line = word + " ";
-			accumulated_x = this_word_x;
+
+			// Reset everything for the next line
+			cur_line = word = "";
+			this_line_x = this_word_x = 0;
+		}
+		// If we find a space, check to see if this word fits on the line.
+		else if (is_space(c)) {
+			// If it fits, add it and a trailing space
+			if (this_word_x + this_line_x <= wrap) {
+				cur_line += word + " ";
+				this_line_x += this_word_x;
+				this_line_x += (space.advance / 64) * scale;
+			}
+			// If it doesn't, add this line to the set and start a new line.
+			else {
+				cur_line.pop_back(); // remove trailing space
+				set.add(cur_line);
+				if (set.count() == 3) {
+					set.set_max_point();
+					sets.push_back(set);
+					set.lines.clear();
+				}
+
+				// New line starts with the word that spilled us over
+				cur_line = word + " ";
+				this_line_x = this_word_x;
+				this_line_x += (space.advance / 64) * scale;
+			}
+
+			word.clear();
+			this_word_x = 0;
 		}
 		else {
-			cur_line += word + " ";
+			Character freetype_char = characters[c];
+			this_word_x += (freetype_char.advance / 64) * scale;
+			word.push_back(c);
 		}
 	}
 
 	// Add the last trailing lineset
+	cur_line += word;
 	set.add(cur_line);
 	set.set_max_point();
-	new_lines.push_back(set);
+	sets.push_back(set);
 }
 void Text_Box::update(int frame) {
 	if (!active) { return; }
@@ -87,7 +100,7 @@ void Text_Box::resume() {
 	// Try to advance to the next line set. If it doesn't exist, hide the text box.
 	index_current_line_set++;
 	waiting = false;
-	if (index_current_line_set >= (int)new_lines.size()) {
+	if (index_current_line_set >= (int)sets.size()) {
 		index_current_line_set = -1;
 		reset_and_hide();
 	}
@@ -158,7 +171,7 @@ void Text_Box::render() {
 	text_shader.begin();
 	float cur_subpixel_y = (float)text_start_px.y;
 	int characters_drawn = 0;
-	Line_Set set = new_lines[index_current_line_set];
+	Line_Set set = sets[index_current_line_set];
 	for (int iline = 0; iline < (int)set.count(); iline++) {
 		auto& line = set[iline];
 		// Text is raw 2D, so just use an orthographic projection
@@ -233,10 +246,10 @@ void Text_Box::reset_and_hide() {
 	waiting = false;
 	active = false;
 	text = "";
-	new_lines.clear();
+	sets.clear();
 }
 bool Text_Box::is_all_text_displayed() {
-	bool on_last_set = (index_current_line_set + 1 == new_lines.size());
+	bool on_last_set = (index_current_line_set + 1 == sets.size());
 	return on_last_set && waiting;
 }
 bool Text_Box::is_current_set_displayed() {

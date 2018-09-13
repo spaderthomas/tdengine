@@ -611,42 +611,14 @@ void Game::play_intro() {
 	*/
 }
 void Game::reload() {
-#if 0
-	//@leak this one is quite big 
-	for (auto dirname : atlas_folders) {
-		create_texture_atlas(dirname);
-	}
-
 	Lua.init();
+	
+	// @leak
+	create_all_texture_atlas();
+	tile_tree = Entity_Tree::create(absolute_path("textures\\tiles"));
 
-	tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
-
-	// Reload all tiles
-	for (auto it : active_level->chunks) {
-		Chunk& chunk = it.second;
-		fox_for(x, CHUNK_SIZE) {
-			fox_for(y, CHUNK_SIZE) {
-				Entity* entity = chunk.tiles[x][y];
-				if (entity != nullptr) {
-					for (auto& kvp: entity->components) {
-						string script = Lua.definitions_to_script[entity->lua_id];
-						Component* component = component_pool.get<Component>(kvp.second);
-						component->init_from_table(Lua.state[script][entity->lua_id][component->name()]);
-					}
-				}
-			}
-		}
-	}
-
-	// Reload all entities
-	for (auto& entity : active_level->entities) {
-		for (auto& kvp : entity->components) {
-			Component* component = component_pool.get(kvp.second);
-			string script = Lua.definitions_to_script[entity->lua_id];
-			component->init_from_table(Lua.state[script][entity->lua_id][component->name()]);
-		}
-	}
-#endif
+	// Reload level
+	active_level->load();
 }
 void Game::undo() {
 	if (stack.size()) {
@@ -1194,7 +1166,7 @@ void Game::update(float dt) {
 				else {
 					string all_response_text;
 					for (auto& response : node->responses) {
-						all_response_text += response + "|";
+						all_response_text += response + "\r";
 					}
 					text_box.begin(all_response_text);
 				}
@@ -1212,10 +1184,6 @@ void Game::update(float dt) {
 		}
 	}
 
-	//@hack why is there drawing code here?
-	active_level->draw();
-	renderer.draw(player.boon->get_component<Graphic_Component>(), player.boon->get_component<Position_Component>(), Render_Flags::None); //@hack why is boon different?
-
 	particle_system.update(dt);
 
 	player.update(dt);
@@ -1223,6 +1191,9 @@ void Game::update(float dt) {
 	frame++;
 }
 void Game::render() {
+	active_level->draw();
+	renderer.draw(player.boon->get_component<Graphic_Component>(), player.boon->get_component<Position_Component>(), Render_Flags::None); //@hack why is boon different?
+
 	if (editor_selection.selection) { 
 		Entity* selected = editor_selection.selection();
 		selected->draw(Render_Flags::Highlighted); 

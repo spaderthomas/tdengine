@@ -186,6 +186,6 @@ void create_all_texture_atlas() {
 	};
 
 	for (auto& dir : atlas_dirs) {
-			create_texture_atlas(dir);
+		create_texture_atlas(dir);
 	}
 }

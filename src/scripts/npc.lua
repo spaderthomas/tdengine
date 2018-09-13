@@ -57,40 +57,7 @@ npc = {
                 depth = px_y_to_screen(32)
             } 
         },
-		dialogue = {
-		   intro = {
-			  text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque nec lacinia orci. Phasellus vel facilisis tortor. Morbi auctor ultricies lorem a pellentesque. Quisque orci ex!",
-			  terminal = false;
-			  responses = {
-				 "press 1",
-				 "press 2"
-			  },
-			  children = {
-				 {
-					text = "you pressed 1!",
-					terminal = false;
-					responses = {
-					   "press 1",
-					   "press 2"
-					},
-					children = {
-					   {
-						  text = "you pressed 1 AGAIN! WOW!!",
-						  terminal = true;
-						  responses = {},
-						  children = {}
-					   }
-					},
-				 },
-				 {
-					text = "you pressed 2!",
-					terminal = true;
-					responses = {},
-					children = {},
-				 },
-			  },
-		   }
-		},
+		
         Interaction_Component = {
 		   on_interact = function(this, other)
 			  begin_dialogue(this)
@@ -225,5 +192,34 @@ npc = {
 			  show_text("(He looks meek, but not intimidated). So...you're Boon, huh? I kind of expected you to be taller.")
 		   end
         }
-    }
+    },
+
+	intro_police = {
+	   Graphic_Component = {
+            Animations = {
+                    stand = {
+                        "intro_police_stand.png",
+                    },
+                },
+                default_animation = "stand",
+                z = 1
+        },
+        Position_Component = {},
+        Bounding_Box = {
+		   center = {
+			  x = 0,
+			  y = tile_y_to_screen(-.5)
+            },
+            extents = {
+			   x = tile_x_to_screen(1.25),
+			   y = tile_y_to_screen(.5)
+            }
+        },
+        Movement_Component = {},
+        Interaction_Component = {
+		   on_interact = function(this, other)
+			  begin_dialogue(this)
+		   end
+        }
+	},
 }
