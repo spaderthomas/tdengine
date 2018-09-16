@@ -16,9 +16,7 @@ props = {
                 show_text("You ran into a door!")
             end
         },
-		Door_Component = {
-		   to = "overworld"
-		},
+		Door_Component = {},
 		Collision_Component = {
 		   on_collide = function(this, other)
 			  any = this:get_component("Door_Component")

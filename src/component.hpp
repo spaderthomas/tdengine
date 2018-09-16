@@ -18,7 +18,7 @@ struct Graphic_Component : Component {
 	string name() override;
 };
 struct Position_Component : Component {
-	glm::vec2 screen_pos = glm::vec2(0.f);
+	glm::vec2 world_pos = glm::vec2(0.f);
 	glm::vec2 scale = glm::vec2(1.f);
 
 	void save(json& j) const override;
@@ -61,10 +61,10 @@ struct State_Component : Component {
 };
 struct Door_Component : Component {
 	string to;
+	glm::vec2 position;
 	
 	void save(json& j) const override;
 	void load(json& j);
-	void init_from_table(sol::table table) override;
 	string name() override;
 };
 struct Collision_Component : Component {

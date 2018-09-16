@@ -1,5 +1,5 @@
 struct {
-	glm::vec2 player_coords;
+	glm::vec2 offset;
 
 	void update() {
 

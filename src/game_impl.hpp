@@ -527,16 +527,16 @@ void Game::begin_dialogue(Entity* entity) {
 }
 void Game::Editor_Selection::translate_entity() {
 	glm::vec2 draggable_position;
-	glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos) + camera;
+	glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
 	if (snap_to_grid) {
 		draggable_position = screen_from_grid(grid_pos);
 	}
 	else {
-		draggable_position = game_input.screen_pos + smooth_drag_offset;
+		draggable_position = game_input.world_pos + smooth_drag_offset;
 	}
 
 	Position_Component* pc = selection()->get_component<Position_Component>();
-	pc->screen_pos = draggable_position;
+	pc->world_pos = draggable_position;
 }
 void Game::Editor_Selection::draw_component_editor() {
 	// Leave the main tdengine window, and pop up a properties window for this entity
@@ -589,6 +589,13 @@ void Game::Editor_Selection::draw_component_editor() {
 				}
 				ImGui::TreePop();
 			}			
+		}
+		else if (dynamic_cast<Position_Component*>(component)) {
+			if (ImGui::TreeNode("Position Component")) {
+				Position_Component* pc = dynamic_cast<Position_Component*>(component);
+				ImGui::SliderFloat2("Position", glm::value_ptr(pc->world_pos), 0.f, 100.f);
+				ImGui::TreePop();
+			}
 		}
 	}
 	ImGui::End();
@@ -656,6 +663,11 @@ void Game::init() {
 void Game::update(float dt) {
 	static int frame = 0;
 
+	// Set up the camera so that the player is in the center of the screen
+	_camera.offset = player.boon->get_component<Position_Component>()->world_pos;
+	_camera.offset += glm::vec2{-.5, -.5};
+	game_input.world_pos = game_input.screen_pos + _camera.offset;
+
 	// Toggle the console on control
 	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 		show_console = !show_console;
@@ -690,6 +702,7 @@ void Game::update(float dt) {
 	// Tile Selector GUI
 	ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize;
 	ImGui::Begin("tdengine", 0, flags);
+	static glm::vec2 last_click = { 0, 0 };
 	if (ImGui::CollapsingHeader("Options")) {
 		ImGui::Checkbox("Show grid", &show_grid);
 		ImGui::Checkbox("Snap to grid", &snap_to_grid);
@@ -698,6 +711,9 @@ void Game::update(float dt) {
 		ImGui::Checkbox("Show framerate", &print_framerate);
 		ImGui::Checkbox("Show ImGui demo", &show_imgui_demo);
 		ImGui::Checkbox("Dialogue mode", (bool*)&game_state);
+		ImGui::Text("Raw game input: %f, %f", game_input.screen_pos.x, game_input.screen_pos.y);
+		ImGui::Text("Camera offset: %f, %f", _camera.offset.x, _camera.offset.y);
+		ImGui::Text("Last click: %f, %f", last_click.x, last_click.y);
 	}
 
 	// Tile tree
@@ -840,22 +856,22 @@ void Game::update(float dt) {
 	auto pc = boon->get_component<Position_Component>();
 	switch (player.facing) {
 	case up:
-		points.left = pc->screen_pos.x - vision_box->width;
-		points.right = pc->screen_pos.x + vision_box->width;
-		points.top = pc->screen_pos.y + 2 * vision_box->depth;
-		points.bottom = pc->screen_pos.y;
+		points.left = pc->world_pos.x - vision_box->width;
+		points.right = pc->world_pos.x + vision_box->width;
+		points.top = pc->world_pos.y + 2 * vision_box->depth;
+		points.bottom = pc->world_pos.y;
 		break;
 	case down:
-		points.left = pc->screen_pos.x - vision_box->width;
-		points.right = pc->screen_pos.x + vision_box->width;
-		points.top = pc->screen_pos.y;
-		points.bottom = pc->screen_pos.y - 2 * vision_box->depth;
+		points.left = pc->world_pos.x - vision_box->width;
+		points.right = pc->world_pos.x + vision_box->width;
+		points.top = pc->world_pos.y;
+		points.bottom = pc->world_pos.y - 2 * vision_box->depth;
 		break;
 	default:
-		points.left = pc->screen_pos.x - vision_box->width;
-		points.right = pc->screen_pos.x + vision_box->width;
-		points.top = pc->screen_pos.y + 2 * vision_box->depth;
-		points.bottom = pc->screen_pos.y;
+		points.left = pc->world_pos.x - vision_box->width;
+		points.right = pc->world_pos.x + vision_box->width;
+		points.top = pc->world_pos.y + 2 * vision_box->depth;
+		points.bottom = pc->world_pos.y;
 		break;
 	}
 	if (debug_show_aabb) {
@@ -902,25 +918,28 @@ void Game::update(float dt) {
 		switch (editor_state) {
 		case Editing_State::IDLE: {
 			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+				last_click = game_input.world_pos;
 				bool clicked_inside_something = false;
 				for (auto& handle : active_level->entity_handles) {
 					Entity* entity = handle();
 					auto box = Center_Box::from_entity(handle);
 					if (box) {
-						if (point_inside_box(game_input.screen_pos, *box)) {
+						if (point_inside_box(game_input.world_pos, *box)) {
 							clicked_inside_something = true;
 							editor_selection.selection = handle;
-							editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
+							editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - game_input.world_pos; // So we don't jump to the exact mouse position
 							editor_state = DRAG;
 							break;
 						}
 					}
 				}
 
+#if 0
 				if (!clicked_inside_something) {
 					top_left_drag = game_input.screen_pos;
 					editor_state = RECTANGLE_SELECT;
 				}
+#endif
 			}
 			break;
 		}
@@ -973,7 +992,7 @@ void Game::update(float dt) {
 						stack.push_back(my_lambda);
 
 						// Add the selection to the level
-						active_level->entity_handles.push_back(editor_selection.selection);
+					    active_level->entity_handles.push_back(editor_selection.selection);
 
 						// Create a new one of the same kind as the old one
 						Entity* selection = editor_selection.selection();
@@ -993,8 +1012,8 @@ void Game::update(float dt) {
 				auto bounding_box = Center_Box::from_entity(editor_selection.selection);
 				if (bounding_box) {
 					// If you click inside the currently selected thing, start dragging it
-					if (point_inside_box(game_input.screen_pos, *bounding_box)) {
-						editor_selection.smooth_drag_offset = editor_selection.selection()->get_component<Position_Component>()->screen_pos - game_input.screen_pos;
+					if (point_inside_box(game_input.world_pos, *bounding_box)) {
+						editor_selection.smooth_drag_offset = editor_selection.selection()->get_component<Position_Component>()->world_pos - game_input.world_pos;
 						editor_state = DRAG;
 					}
 					// Otherwise, see if you clicked in something else.
@@ -1004,9 +1023,9 @@ void Game::update(float dt) {
 							Entity* entity = handle();
 							auto box = Center_Box::from_entity(handle);
 							if (box) {
-								if (point_inside_box(game_input.screen_pos, *box)) {
+								if (point_inside_box(game_input.world_pos, *box)) {
 									editor_selection.selection = handle;
-									editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->screen_pos - game_input.screen_pos; // So we don't jump to the exact mouse position
+									editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - game_input.world_pos; // So we don't jump to the exact mouse position
 									editor_state = DRAG;
 									found = true;
 								}
@@ -1045,10 +1064,10 @@ void Game::update(float dt) {
 			break;
 		}
 		case Editing_State::RECTANGLE_SELECT: {
-			screen_unit top = top_left_drag.y > game_input.screen_pos.y ? top_left_drag.y : game_input.screen_pos.y;
-			screen_unit bottom = top_left_drag.y > game_input.screen_pos.y ? game_input.screen_pos.y : top_left_drag.y;
-			screen_unit right = top_left_drag.x > game_input.screen_pos.x ? top_left_drag.x : game_input.screen_pos.x;
-			screen_unit left = top_left_drag.x > game_input.screen_pos.x ? game_input.screen_pos.x : top_left_drag.x;
+			screen_unit top = top_left_drag.y > game_input.world_pos.y ? top_left_drag.y : game_input.world_pos.y;
+			screen_unit bottom = top_left_drag.y > game_input.world_pos.y ? game_input.world_pos.y : top_left_drag.y;
+			screen_unit right = top_left_drag.x > game_input.world_pos.x ? top_left_drag.x : game_input.world_pos.x;
+			screen_unit left = top_left_drag.x > game_input.world_pos.x ? game_input.world_pos.x : top_left_drag.x;
 			Points_Box points = { top, bottom, left, right };
 			draw_square_outline(points, red);
 
@@ -1104,9 +1123,6 @@ void Game::update(float dt) {
 			gc->set_animation_unless_already_active("stand");
 		}
 
-		
-
-	
 
 		for (auto& handle : active_level->entity_handles) {
 			if (handle()->get_component<Bounding_Box>()) {
@@ -1117,9 +1133,6 @@ void Game::update(float dt) {
 		physics_system.entity_handles.push_back(player.boon);
 
 		physics_system.process(1.f / 60.f);
-
-		auto pc = player.boon->get_component<Position_Component>();
-		_camera.player_coords = pc->screen_pos;
 	} 
 	else if (game_state == Game_State::DIALOGUE) {
 		Dialogue_Node* node = active_dialogue->traverse();
@@ -1176,8 +1189,8 @@ void Game::update(float dt) {
 		}
 	}
 
-	particle_system.update(dt);
 
+	particle_system.update(dt);
 	player.update(dt);
 	text_box.update(frame);
 	frame++;

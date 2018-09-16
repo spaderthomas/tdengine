@@ -76,14 +76,14 @@ void   Position_Component::save(json& j) const {
 	j["kind"] = "Position_Component";
 	j["scale"]["x"] = scale.x;
 	j["scale"]["y"] = scale.y;
-	j["pos"]["x"] = screen_pos.x;
-	j["pos"]["y"] = screen_pos.y;
+	j["pos"]["x"] = world_pos.x;
+	j["pos"]["y"] = world_pos.y;
 }
 void   Position_Component::load(json& self) {
 	scale.x = self["scale"]["x"];
 	scale.y = self["scale"]["y"];
-	screen_pos.x = self["pos"]["x"];
-	screen_pos.y = self["pos"]["y"];
+	world_pos.x = self["pos"]["x"];
+	world_pos.y = self["pos"]["y"];
 }
 string Position_Component::name() { return "Position_Component"; }
 
@@ -130,12 +130,11 @@ string State_Component::name() { return "State_Component"; }
 void   Door_Component::save(json& j) const {
 	j["kind"] = "Door_Component";
 	j["to"] = to;
+	j["position.x"] = position.x;
+	j["position.y"] = position.y;
 }
 void   Door_Component::load(json& j) {
 	to = j["to"];
-}
-void   Door_Component::init_from_table(sol::table table) {
-	to = table["to"];
 }
 string Door_Component::name() { return "Door_Component"; }
 

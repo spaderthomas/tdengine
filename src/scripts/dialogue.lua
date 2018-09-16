@@ -60,3 +60,41 @@ npc.wilson.dialogue = {
 	  },
    }
 }
+
+npc.intro1.dialogue = {
+   intro = {
+	  text = "...I heard it's part of the new crackdown...",
+	  terminal = false,
+	  responses = {},
+	  children = {}
+   }
+}
+
+npc.intro2.dialogue = {
+   intro = {
+	  text = "All of this racket over neural implants? I don't understand what the big deal is.",
+	  terminal = false,
+	  responses = {
+		 "Neural implants?",
+	  },
+	  children = {
+		 {
+			text = "Don't tell me you don't know. After they put the ban on implants out yesterday, well, I mean, it wasn't really just a ban after all.",
+			terminal = false,
+			responses = {
+			   "How was it more than just a ban?",
+			},
+			children = {
+			   {
+				  text = "Well, if you ban the kids from smoking cigarettes, usually that doesn't mean sending out a death squad to catch underaged smokers...I can't watch this",
+				  terminal = false,
+				  responses = {},
+				  children = {}
+			   }
+			}
+		 }
+	  }
+   }
+   
+}
+

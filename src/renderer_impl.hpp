@@ -28,12 +28,12 @@ void Renderer::render_for_frame() {
 		depth_sorted_render_elements.back().push_back(render_element);
 	}
 
-	// Translate the camera so the player is the center.
-	glm::vec2 camera_translation = magnitude_gl_from_screen(glm::vec2(.5, .5) - _camera.player_coords);
+	// Main render loop
+	glm::vec2 camera_translation = magnitude_gl_from_screen(_camera.offset);
 	for (auto& depth_level_render_elements : depth_sorted_render_elements) {
 		stable_sort(depth_level_render_elements.begin(), depth_level_render_elements.end(), 
 			[](const Render_Element& a, const Render_Element& b) {
-				return a.pc->screen_pos.y > b.pc->screen_pos.y; 
+				return a.pc->world_pos.y > b.pc->world_pos.y; 
 			});
 		
 		// Draw the correctly sorted elements for a depth level
@@ -66,8 +66,8 @@ void Renderer::render_for_frame() {
 				
 				SRT transform = SRT::no_transform();
 				transform.scale = render_element.gc->scale;
-				transform.translate = gl_from_screen(render_element.pc->screen_pos);
-				transform.translate += camera_translation;
+				transform.translate = gl_from_screen(render_element.pc->world_pos);
+				transform.translate -= camera_translation;
 				auto transform_mat = mat3_from_transform(transform);
 				shader->set_mat3("transform", transform_mat);
 

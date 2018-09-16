@@ -95,7 +95,7 @@ struct {
 			}
 
 			if (movement) {
-				position->screen_pos += movement->wish;
+				position->world_pos += movement->wish;
 				movement->wish = glm::vec2(0.f);
 			}
 		}

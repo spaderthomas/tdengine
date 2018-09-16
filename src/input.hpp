@@ -3,6 +3,7 @@ struct Input {
 	bool should_update;
 	glm::vec2 px_pos;
 	glm::vec2 screen_pos;
+	glm::vec2 world_pos;
 	glm::vec2 scroll;
 
 	bool is_down[GLFW_KEY_LAST];

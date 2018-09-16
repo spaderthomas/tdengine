@@ -31,7 +31,7 @@ struct Center_Box {
 		Position_Component* pc = entity->get_component<Position_Component>();
 		Bounding_Box* cc = entity->get_component<Bounding_Box>();
 		if (pc && cc) {
-			box.origin = pc->screen_pos + cc->screen_center;
+			box.origin = pc->world_pos + cc->screen_center;
 			box.extents = cc->screen_extents;
 			return box;
 		}
