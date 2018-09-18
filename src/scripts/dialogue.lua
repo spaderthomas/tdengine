@@ -1,20 +1,20 @@
 npc.intro_police.dialogue = {
    intro = {
-	  text = "I know you haven't forgotten. Come with me, citizen.",
+	  text = "ID?",
 	  terminal = false,
 	  responses = {
-		 "What?"
+		 "<Give him your identification>"
 	  },
 	  children = {
 		 {
-			text = "Everyone got the message sent to their chip. All citizens must attend the public execution. You're not special.",
+			text = "You're a citizen. Why did you ignore the message beamed to your chip?",
 			terminal = false,
 			responses = {
-			   "But I -- of course I got the message. It merely slipped my mind. I'll be on my way."
+			   "What message?"
 			},
 			children = {
 			   {
-				  text = "On your way then. Don't think I won't have my eye out for you.",
+				  text = "I don't have time to listen to you play dumb. Check your chip and do as it says. I've got my eye on you.",
 				  terminal = true,
 				  responses = {},
 				  children = {}

@@ -32,10 +32,10 @@ void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 		solid_shader.set_vec4("color", color_);
 
 		SRT transform = SRT::no_transform();
-		glm::vec2 camera_translation = magnitude_gl_from_screen(glm::vec2(.5, .5) - _camera.offset);
-		transform.scale = p2 - p1;
+		//glm::vec2 camera_translation = magnitude_gl_from_screen(glm::vec2(.5, .5) - _camera.offset);
+ 		transform.scale = p2 - p1;
 		transform.translate = glm::vec3(p1, 1.f);
-		transform.translate += camera_translation;
+		//transform.translate += camera_translation;
 		auto transform_mat = mat3_from_transform(transform);
 		solid_shader.set_mat3("transform", transform_mat);
 

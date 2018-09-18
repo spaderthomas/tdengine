@@ -527,8 +527,8 @@ void Game::begin_dialogue(Entity* entity) {
 }
 void Game::Editor_Selection::translate_entity() {
 	glm::vec2 draggable_position;
-	glm::ivec2 grid_pos = grid_pos_from_px_pos(game_input.px_pos);
 	if (snap_to_grid) {
+		glm::ivec2 grid_pos = grid_from_world(game_input.world_pos);
 		draggable_position = screen_from_grid(grid_pos);
 	}
 	else {
@@ -664,9 +664,11 @@ void Game::update(float dt) {
 	static int frame = 0;
 
 	// Set up the camera so that the player is in the center of the screen
-	_camera.offset = player.boon->get_component<Position_Component>()->world_pos;
-	_camera.offset += glm::vec2{-.5, -.5};
-	game_input.world_pos = game_input.screen_pos + _camera.offset;
+	auto blargh = player.boon->get_component<Position_Component>()->world_pos;
+	player.boon->get_component<Position_Component>()->world_pos = vec2_max(blargh, { .5, .5 });
+	camera.offset = player.boon->get_component<Position_Component>()->world_pos;
+	camera.offset += glm::vec2{-.5, -.5};
+	game_input.world_pos = game_input.screen_pos + camera.offset;
 
 	// Toggle the console on control
 	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
@@ -712,7 +714,8 @@ void Game::update(float dt) {
 		ImGui::Checkbox("Show ImGui demo", &show_imgui_demo);
 		ImGui::Checkbox("Dialogue mode", (bool*)&game_state);
 		ImGui::Text("Raw game input: %f, %f", game_input.screen_pos.x, game_input.screen_pos.y);
-		ImGui::Text("Camera offset: %f, %f", _camera.offset.x, _camera.offset.y);
+		ImGui::Text("Camera offset: %f, %f", camera.offset.x, camera.offset.y);
+		ImGui::Text("Player position: %f, %f", player.boon->get_component<Position_Component>()->world_pos.x, player.boon->get_component<Position_Component>()->world_pos.y);
 		ImGui::Text("Last click: %f, %f", last_click.x, last_click.y);
 	}
 
@@ -950,7 +953,7 @@ void Game::update(float dt) {
 			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 				switch (editor_selection.kind) {
 				case Editor_Selection::TILE: {
-					auto grid_pos = grid_pos_from_px_pos(game_input.px_pos);
+					auto grid_pos = grid_from_world(game_input.world_pos);
 					pool_handle<Entity> handle = active_level->get_tile(grid_pos.x, grid_pos.y);
 					Entity* current_entity = handle();
 
@@ -1209,13 +1212,16 @@ void Game::render() {
 
 	// Render the grid
 	if (show_grid) {
-		// We have to multiply by two because OpenGL uses -1 to 1
-		for (float col_offset = 0; col_offset <= 1; col_offset += SCR_TILESIZE_X) {
-			draw_line_from_points(glm::vec2(col_offset, 0.f), glm::vec2(col_offset, 1.f), glm::vec4(.2f, .1f, .9f, 0.5f));
+		screen_unit x_begin = fmodf(camera.offset.x, SCR_TILESIZE_X);
+		screen_unit y_begin = fmodf(camera.offset.y, SCR_TILESIZE_Y) + (SCR_TILESIZE_Y / 2.f);
+
+		for (float col_offset = 1 - x_begin; col_offset >= 0; col_offset -= SCR_TILESIZE_X) {
+			draw_line_from_points(glm::vec2(col_offset, 0), glm::vec2(col_offset, 1), glm::vec4(.2f, .1f, .9f, 0.5f));
 		}
-		for (float row_offset = 0; row_offset <= 1; row_offset += SCR_TILESIZE_Y) {
-			draw_line_from_points(glm::vec2(0.f, row_offset), glm::vec2(1.f, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
+		for (float row_offset = 1 - y_begin; row_offset >= 0; row_offset -= SCR_TILESIZE_Y) {
+			draw_line_from_points(glm::vec2(0, row_offset), glm::vec2(1, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
 		}
+
 	}
 
 	text_box.render();

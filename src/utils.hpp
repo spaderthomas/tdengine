@@ -153,6 +153,11 @@ glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
 	int closest_y = (int)floor(px_pos.y / CELL_SIZE);
 	return glm::ivec2(closest_x, closest_y);
 }
+glm::ivec2 grid_from_world(glm::vec2 world_pos) {
+	int closest_x = (int)floor(world_pos.x / SCR_TILESIZE_X);
+	int closest_y = (int)floor(world_pos.y / SCR_TILESIZE_Y);
+	return glm::ivec2(closest_x, closest_y);
+}
 
 // Converting to GL units
 glm::vec2 gl_from_screen(glm::vec2 screen_coords) {
@@ -381,7 +386,6 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 }
 
 // This defines which tile is on the upper left of the screen
-glm::ivec2 camera = glm::ivec2(0);
 float seconds_per_update = 1.f / 60.f;
 double pi = 3.14159;
 
@@ -393,6 +397,13 @@ void fixup_type_name(string& type_name) {
 			type_name.erase(erase_pos, str.length());
 		}
 	}
+}
+
+glm::vec2 vec2_max(glm::vec2 a, glm::vec2 b) {
+	return {
+		fox_max(a.x, b.x),
+		fox_max(a.y, b.y)
+	};
 }
 
 

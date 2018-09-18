@@ -5,5 +5,5 @@ struct {
 
 	}
 
-} _camera;
+} camera;
 
