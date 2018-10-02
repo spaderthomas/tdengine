@@ -116,7 +116,7 @@ struct Line_Set {
 	}
 	
 	string& operator[](int i) {
-		fox_assert(i < lines.size());
+		fox_assert(i < (int)lines.size());
 		return lines[i];
 	}
 };

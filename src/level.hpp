@@ -16,7 +16,7 @@ struct Chunk_Index {
 // Implementation of a bijective mapping from NxN to N
 template <>
 struct hash<Chunk_Index> {
-	std::size_t operator()(const Chunk_Index& chunk) const {
+	size_t operator()(const Chunk_Index& chunk) const {
 		return (chunk.x + chunk.y) * (chunk.x + chunk.y + 1) / 2 + chunk.y;
 	}
 };

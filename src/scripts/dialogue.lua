@@ -21,9 +21,8 @@ npc.intro_police.dialogue = {
 			   }
 			}
 		 }
-	   
 	  }
-   },
+   }
 }
 
 npc.wilson.dialogue = {

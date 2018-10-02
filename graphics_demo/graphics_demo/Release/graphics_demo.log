@@ -1,12 +1,14 @@
-﻿  win_main.cpp
-c:\users\dboon\programming\tdengine\src\game.hpp(45): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
-c:\users\dboon\programming\tdengine\src\game.hpp(188): warning C4838: conversion from 'FT_Pos' to 'GLuint' requires a narrowing conversion
+﻿  glad.c
+  imgui.cpp
+  imgui_demo.cpp
+  imgui_draw.cpp
+  win_main.cpp
+c:\users\dboon\programming\tdengine\src\text.hpp(119): warning C4018: '<': signed/unsigned mismatch
      Creating library C:\Users\dboon\programming\tdengine\graphics_demo\Release\graphics_demo.lib and object C:\Users\dboon\programming\tdengine\graphics_demo\Release\graphics_demo.exp
-LINK : warning LNK4098: defaultlib 'MSVCRTD' conflicts with use of other libs; use /NODEFAULTLIB:library
 LINK : warning LNK4098: defaultlib 'LIBCMT' conflicts with use of other libs; use /NODEFAULTLIB:library
   Generating code
-  321 of 4807 functions ( 6.7%) were compiled, the rest were copied from previous compilation.
-    225 functions were new in current compilation
-    274 functions had inline decision re-evaluated but remain unchanged
+  0 of 12507 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
   Finished generating code
   graphics_demo.vcxproj -> C:\Users\dboon\programming\tdengine\graphics_demo\Release\graphics_demo.exe
