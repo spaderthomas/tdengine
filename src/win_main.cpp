@@ -26,6 +26,8 @@ extern "C" {
 
 #include "imgui/imgui.h"
 
+#include "sqlite/sqlite3.h"
+
 // STL
 #include <stdlib.h>
 #include <iostream>
@@ -78,14 +80,16 @@ using namespace std;
 #include "renderer_impl.hpp"
 #include "text_impl.hpp"
 #include "game_impl.hpp"
+#include "testin.hpp"
 
 
 
 
 int main() {
-	test();
 	tdns_log.init();
 
+	sqlite3* db;
+	fox_assert(sqlite3_open(db_dir.c_str(), &db));
 #pragma region GLFW_INIT
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -219,6 +223,10 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
 	#pragma endregion
+
+
+	test();
+
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {

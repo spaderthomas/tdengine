@@ -3,7 +3,8 @@ npc.intro_police.dialogue = {
 	  text = "ID?",
 	  terminal = false,
 	  responses = {
-		 "<Give him your identification>"
+		 "<Give him your identification>",
+		 "Leave me alone!"
 	  },
 	  children = {
 		 {
@@ -20,6 +21,12 @@ npc.intro_police.dialogue = {
 				  children = {}
 			   }
 			}
+		 },
+		 {
+			 text = "Uh...you'll have to come to the station sir!",
+			 terminal = true,
+			 responses = {},
+			 children = {}
 		 }
 	  }
    }
