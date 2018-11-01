@@ -143,3 +143,6 @@ void   Collision_Component::init_from_table(sol::table table) {
 	on_collide = table["on_collide"];
 }
 
+#define def_get_cmp(var, entity, type) type* var = (entity)()->get_component<type>()
+#define get_cmp(entity, type) (entity)()->get_component<type>()
+#define def_cast_cmp(varname, cmp, type) type* varname = dynamic_cast<type*>((cmp))

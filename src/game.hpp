@@ -74,6 +74,12 @@ struct Particle_System {
 struct Dialogue_Tree;
 struct Dialogue_Node;
 
+struct Layer {
+	virtual void update(float dt) = 0;
+	virtual void exec_console_cmd(const char* cmd) {};
+	virtual void render() {};
+};
+
 enum Editor_State {
 	IDLE,
 	INSERT,
@@ -81,85 +87,70 @@ enum Editor_State {
 	DRAG,
 	RECTANGLE_SELECT,
 };
-struct Editor {
+enum Selection_Kind {
+	NONE,
+	TILE,
+	ENTITY
+};
+struct Editor : Layer {
 	// Stores tiles in a tree structure for good display purposes.
 	Entity_Tree* tile_tree;
+	void draw_tile_tree(Entity_Tree* root);
+	int draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index);
 	Editor_State state = IDLE;
+	Selection_Kind kind = NONE;
 
-	glm::ivec2 last_grid_drawn;
-	glm::vec2 top_left_drag;
+	// State for moving things around cleanly
+	glm::ivec2 last_grid_drawn = { 0, 0 };
+	glm::vec2 top_left_drag = { 0.f, 0.f };
+	glm::vec2 smooth_drag_offset = { 0.f, 0.f };
+
+	// State about selected thing
 	
+	pool_handle<Entity> selected;
+	void translate();
+	void draw_component_editor();
 
-	struct Editor_Selection {
-		enum Selected_Kind {
-			TILE,
-			ENTITY
-		} kind;
+	vector<function<void()>> stack;
+	void undo();
 
-		glm::vec2 smooth_drag_offset = glm::vec2(0.f);
-		pool_handle<Entity> selection;
-		pool_handle<Entity> operator->() {
-			return selection;
-		}
-		void translate_entity();
-		void draw_component_editor();
-	} editor_selection;
+	// Big stuff
+	void reload_lua();
+	void reload_assets();
+	void reload_everything();
+	void exec_console_cmd(const char* cmd) override;
+	void update(float dt) override;
+	Console console;
+	Level* active_level;
 };
+Editor editor;
 
-struct Game {
-	Entity_Tree* tile_tree;
-	glm::ivec2 last_grid_pos_drawn;
-	glm::vec2 top_left_drag;
+struct Game : Layer {
 	enum Game_State {
 		GAME = 0,
 		DIALOGUE = 1
 	} game_state = GAME;
-	enum Editing_State {
-		IDLE,
-		INSERT,
-		EDIT,
-		DRAG,
-		RECTANGLE_SELECT,
-	} editor_state;
-
-	struct Editor_Selection {
-		enum Selected_Kind {
-			TILE,
-			ENTITY
-		} kind;
-
-		glm::vec2 smooth_drag_offset = glm::vec2(0.f);
-		pool_handle<Entity> selection;
-		pool_handle<Entity> operator->() {
-			return selection;
-		}
-		void translate_entity();
-		void draw_component_editor();
-	} editor_selection;
-
-	vector<function<void()>> stack;
 
 	//@move to a config file
-	Level dude_ranch;
-	Level cantina;
 	Level* active_level;
-	Console console;
 	Dialogue_Tree* active_dialogue;
 	string scene;
-	
 	Particle_System particle_system;
 	Text_Box text_box;
+	Console console;
 
 	bool in_dialogue = false;
 
 	void go_through_door(string to);
 	void play_intro();
 	void begin_dialogue(Entity* entity);
-	void reload();
-	void undo();
-	void exec_console_command(const char* command_line);
 	void init();
-	void update(float dt);
-	void render();
+	void update(float dt) override;
+	void render() override;
 };
-Game game_layer;
+Game game;
+
+int iactive_layer = 0;
+vector<Layer*> all_layers = { &editor, &game };
+Layer* active_layer = &editor;
+

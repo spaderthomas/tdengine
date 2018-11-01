@@ -160,7 +160,7 @@ int main() {
 
 	init_fonts();
 
-	game_layer.init();
+	game.init();
 #pragma endregion
 
 #pragma region IMGUI_INIT
@@ -246,11 +246,7 @@ int main() {
 
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
-	#pragma endregion
-
-
-	test();
-
+#pragma endregion
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
@@ -273,11 +269,15 @@ int main() {
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+		if (global_input.was_pressed(GLFW_KEY_F4)) {
+			iactive_layer = (iactive_layer + 1) % all_layers.size();
+			active_layer = all_layers[iactive_layer];
+		}
 
 		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();
-		game_layer.update(seconds_per_update);
-		game_layer.render();
+		active_layer->update(seconds_per_update);
+		active_layer->render();
 	
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
 		ImGui::End();

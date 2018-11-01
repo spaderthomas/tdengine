@@ -288,7 +288,7 @@ void  Console::ExecCommand(const char* command_line)
 	}
 	else
 	{
-		game_layer.exec_console_command(command_line);
+		game.exec_console_cmd(command_line);
 	}
 }
 
@@ -382,6 +382,491 @@ void Particle_System::update(float dt) {
 	}
 }
 
+void Editor::translate() {
+	get_cmp(selected, Position_Component)->world_pos =
+		snap_to_grid ?
+		screen_from_grid(grid_from_world(game_input.world_pos)) :
+		game_input.world_pos + smooth_drag_offset;
+}
+void Editor::draw_component_editor() {
+	// Leave the main tdengine window, and pop up a properties window for this entity
+	ImGui::End();
+	ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
+
+	// Iterate through components, displaying whatever you need
+	for (auto& kvp : selected()->components) {
+		pool_handle<any_component> handle = kvp.second;
+		Component* component = (Component*)handle();
+
+		//@metaprogramming
+		if (dynamic_cast<Graphic_Component*>(component)) {
+			if (ImGui::TreeNode("Graphic Component")) {
+				def_cast_cmp(gc, component, Graphic_Component);
+
+				// Display animation info
+				Animation* current_animation = gc->active_animation;
+				if (ImGui::BeginCombo("Animations", current_animation->name.c_str(), 0)) {
+					for (auto anim : gc->animations) {
+						bool is_selected = anim->name == current_animation->name;
+						if (ImGui::Selectable(anim->name.c_str(), is_selected)) {
+							gc->set_animation(anim->name);
+						}
+						if (is_selected) {
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+
+				// Display scale info
+				ImGui::SliderFloat2("Scale", glm::value_ptr(gc->scale), 0.f, 1.f);
+				ImGui::TreePop();
+			}
+		}
+		else if (dynamic_cast<Door_Component*>(component)) {
+			if (ImGui::TreeNode("Door Component")) {
+				def_cast_cmp(door, component, Door_Component);
+				if (ImGui::BeginCombo("##setdoor", door->to.c_str(), 0)) {
+					for (auto& kvp : levels) {
+						const string& name = kvp.first;
+						Level* level = kvp.second;
+						bool is_selected = door->to.c_str() == name;
+						if (ImGui::Selectable(name.c_str(), &is_selected)) {
+							door->to = name;
+						}
+						if (is_selected) {
+							ImGui::SetItemDefaultFocus();
+						}
+					}
+					ImGui::EndCombo();
+				}
+				ImGui::TreePop();
+			}
+		}
+		else if (dynamic_cast<Position_Component*>(component)) {
+			if (ImGui::TreeNode("Position Component")) {
+				def_cast_cmp(pc, component, Position_Component);
+				ImGui::SliderFloat2("Position", glm::value_ptr(pc->world_pos), 0.f, 100.f);
+				ImGui::TreePop();
+			}
+		}
+	}
+
+	// Re-enter main tdengine window
+	ImGui::End();
+	ImGui::Begin("tdengine", 0, ImGuiWindowFlags_AlwaysAutoResize);
+}
+void Editor::draw_tile_tree(Entity_Tree* root) {
+	if (ImGui::CollapsingHeader("Tile Selector")) {
+		for (auto child : root->children) {
+			draw_tile_tree_recursive(child, 0);
+		}
+	}
+}
+int Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) { 
+	// If expanded, draw this folder's tiles
+	if (ImGui::TreeNode(root->dir.c_str())) {
+		fox_for(i, root->entities.size()) {
+			Entity* tile = root->entities[i](); // no pool handle?
+			Graphic_Component* gc = tile->get_component<Graphic_Component>();
+			if (gc) {
+				Sprite* ent_sprite = gc->get_current_frame();
+
+				ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
+				ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
+				ImVec2 button_size = ImVec2(32, 32);
+				ImGui::PushID(unique_btn_index++);
+				if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle,
+					button_size,
+					bottom_left_tex_coords, top_right_tex_coords))
+				{
+					selected = Entity::create(tile->lua_id);
+					this->kind = TILE;
+					this->state = INSERT;
+				}
+				ImGui::PopID();
+				bool is_end_of_row = !((i + 1) % 6);
+				bool is_last_element = i == (root->size - 1);
+				if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
+			}
+		}
+
+		// And draw dropdowns for any children
+		for (auto child : root->children) {
+			unique_btn_index = draw_tile_tree_recursive(child, unique_btn_index);
+		}
+
+		ImGui::TreePop();
+	}
+
+	return unique_btn_index;
+}
+void Editor::exec_console_cmd(const char* cmd) {
+	if (console.Stricmp(cmd, "SAVE") == 0) {
+		active_level->save();
+	}
+	else if (console.Stricmp(cmd, "LOAD") == 0) {
+		active_level->load();
+	}
+	else if (console.Stricmp(cmd, "RELOAD") == 0) {
+		reload_everything();
+	}
+	else {
+		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", cmd);
+	}
+}
+void Editor::reload_lua() {
+	Lua.init();
+	active_level->load();
+}
+void Editor::reload_assets() {
+	// @leak
+	create_all_texture_atlas();
+	tile_tree = Entity_Tree::create(absolute_path("textures\\tiles"));
+	active_level->load();
+}
+void Editor::reload_everything() {
+	reload_lua();
+	reload_assets();
+}
+void Editor::undo() {
+	if (stack.size()) {
+		function<void()> undo = stack.back();
+		stack.pop_back();
+		undo();
+	}
+}
+void Editor::update(float dt) {	
+	if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
+		selected = { -1, nullptr };
+		state = IDLE;
+	}
+	if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
+		game_input.was_pressed(GLFW_KEY_Z)) {
+		undo();
+	}
+
+	#pragma region gui
+	// Toggle the console on control
+	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
+		show_console = !show_console;
+	}
+	if (show_console) {
+		console.Draw("tdconsole");
+	}
+
+	if (ImGui::BeginMainMenuBar())
+	{
+		if (ImGui::BeginMenu("File"))
+		{
+			if (ImGui::MenuItem("Save", "save level")) { 
+				active_level->save(); 
+			}
+			if (ImGui::MenuItem("Load", "load level")) { 
+				active_level->load(); 
+			}
+			if (ImGui::BeginMenu("Reload", "reload")) {
+				if (ImGui::MenuItem("lua")) {
+					reload_lua();
+				}
+				if (ImGui::MenuItem("assets")) {
+					reload_assets();
+				}
+				if (ImGui::MenuItem("everything")) {
+					reload_everything();
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Windows")) {
+				if (ImGui::MenuItem("FSM Debugger")) { 
+					show_fsm_debugger = !show_fsm_debugger; 
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenu();
+		}
+		if (ImGui::BeginMenu("Edit"))
+		{
+			if (ImGui::MenuItem("Undo", "M-z")) { undo(); }
+			ImGui::EndMenu();
+		}
+		ImGui::EndMainMenuBar();
+	}
+
+	// Tile Selector GUI
+	ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize;
+	ImGui::Begin("tdengine", 0, flags);
+	static glm::vec2 last_click = { 0, 0 };
+	if (ImGui::CollapsingHeader("Options")) {
+		ImGui::Checkbox("show grid", &show_grid);
+		ImGui::Checkbox("snap to grid", &snap_to_grid);
+		ImGui::Checkbox("show aabb", &debug_show_aabb);
+		ImGui::Checkbox("show minkowski", &debug_show_minkowski);
+		ImGui::Checkbox("show demo", &show_imgui_demo);
+		ImGui::Text("Raw game input: %f, %f", game_input.screen_pos.x, game_input.screen_pos.y);
+		ImGui::Text("Camera offset: %f, %f", camera.offset.x, camera.offset.y);
+		ImGui::Text("Player position: %f, %f", player.boon->get_component<Position_Component>()->world_pos.x, player.boon->get_component<Position_Component>()->world_pos.y);
+		ImGui::Text("Last click: %f, %f", last_click.x, last_click.y);
+	}
+
+	// Tile tree
+	ImGui::Separator();
+	draw_tile_tree(tile_tree);
+
+	// Level selector
+	ImGui::Separator();
+	static string level_current = active_level->name;
+	if (ImGui::BeginCombo("##chooselevel", level_current.c_str(), 0)) {
+		fox_iter(it, levels) {
+			string level_name = it->first;
+			bool is_selected = level_name == level_current;
+			if (ImGui::Selectable(level_name.c_str(), is_selected)) {
+				level_current = level_name;
+				active_level = it->second;
+			}
+			if (is_selected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+
+	// Script selector
+	ImGui::Separator();
+	static string script_current = Lua.scripts[0];
+	if (ImGui::BeginCombo("##choosescript", (script_current + ".lua").c_str(), 0)) {
+		for (auto script : Lua.scripts) {
+			bool is_selected = script == script_current;
+			if (ImGui::Selectable((script + ".lua").c_str(), is_selected)) {
+				script_current = script;
+			}
+			if (is_selected) {
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndCombo();
+	}
+	
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+	ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
+	// Show each entity in this script. If we select it, create one and move to INSERT mode
+	for (auto& ent : Lua.script_to_definitions[script_current]) {
+		if (ImGui::Selectable(ent.c_str())) {
+			selected = Entity::create(ent.c_str());
+			this->kind = ENTITY;
+			this->state = INSERT;
+		}
+	}
+	ImGui::PopStyleVar();
+	ImGui::EndChild();
+
+	// FSM debugger
+	if (show_fsm_debugger) {
+		if (selected) {
+			Entity* entity = selected();
+			State_Component* state = entity->get_component<State_Component>();
+
+			// If the selection both exists and has a state component, we can run the FSM debugger
+			if (state) {
+				ImGui::Begin("FSM debugger", 0, ImGuiWindowFlags_AlwaysAutoResize);
+				ImGui::Text("Current State: "); ImGui::SameLine(); ImGui::Text(state->current_state.c_str());
+
+				// Display each of the watched variables as a red or green button 
+				for (auto& watched_variable : state->watched_variables) {
+					bool current_status = knowledge_base[watched_variable];
+					if (current_status) {
+						static ImVec4 green_for_true = ImVec4(.06f, .8f, .05f, 1.f);
+						ImGui::PushStyleColor(ImGuiCol_Button, green_for_true);
+					}
+					else {
+						static ImVec4 red_for_false = ImVec4(1.f, .06f, .05f, 1.f);
+						ImGui::PushStyleColor(ImGuiCol_Button, red_for_false);
+					}
+
+					// Toggle the button on click
+					if (ImGui::Button(watched_variable.c_str())) {
+						knowledge_base.update_variable(watched_variable, !current_status);
+					}
+					ImGui::PopStyleColor();
+				}
+				ImGui::End();
+			}
+		}
+	}
+#pragma endregion
+
+	#pragma region editing logic
+	switch (state) {
+	case IDLE: {
+		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+			last_click = game_input.world_pos;
+			bool clicked_inside_something = false;
+			for (auto& handle : active_level->entity_handles) {
+				Entity* entity = handle();
+				auto box = Center_Box::from_entity(handle);
+				if (box) {
+					if (point_inside_box(game_input.world_pos, *box)) {
+						clicked_inside_something = true;
+						selected = handle;
+						smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - game_input.world_pos; // So we don't jump to the exact mouse position
+						state = DRAG;
+						break;
+					}
+				}
+			}
+			#if 0
+			if (!clicked_inside_something) {
+				top_left_drag = game_input.screen_pos;
+				editor_state = RECTANGLE_SELECT;
+			}
+			#endif
+		}
+		break;
+	}
+	case INSERT: {
+		translate();
+
+		// And if we click, add it to the level
+		if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+			switch (kind) {
+			case TILE: {
+				auto grid_pos = grid_from_world(game_input.world_pos);
+				pool_handle<Entity> handle = active_level->get_tile(grid_pos.x, grid_pos.y);
+				Entity* current_entity = handle();
+
+				// We don't want to double paint, so check to make sure we're not doing that
+				bool okay_to_create = true;
+
+				// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
+				if (current_entity) {
+					if (current_entity->lua_id == selected()->lua_id) {
+						okay_to_create = false;
+					}
+				}
+
+				if (okay_to_create) {
+					// Create a lambda which will undo the tile placement we're about to do
+					auto my_lambda =
+						[&active_level = active_level,
+						x = grid_pos.x, y = grid_pos.y,
+						ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
+								{
+									active_level->set_tile(ent, x, y);
+								};
+								stack.push_back(my_lambda);
+
+								active_level->set_tile(selected, grid_pos.x, grid_pos.y);
+								selected = Entity::create(selected()->lua_id);
+
+								// Update so we only paint one entity per tile
+								last_grid_drawn = grid_pos;
+								break;
+				}
+				break;
+			}
+			case ENTITY: {
+				if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+					auto my_lambda = [&active_level = active_level]() -> void {
+						active_level->entity_handles.pop_back();
+					};
+					stack.push_back(my_lambda);
+
+					// Add the selection to the level
+					active_level->entity_handles.push_back(selected);
+
+					// Create a new one of the same kind as the old one
+					Entity* selection = selected();
+					selected = Entity::create(selection->lua_id);
+					smooth_drag_offset = glm::vec2(0.f);
+					translate();
+				}
+				break;
+			}
+			}
+		}
+		break;
+	}
+	case EDIT: {
+		draw_component_editor();
+		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+			auto bounding_box = Center_Box::from_entity(selected);
+			if (bounding_box) {
+				// If you click inside the currently selected thing, start dragging it
+				if (point_inside_box(game_input.world_pos, *bounding_box)) {
+					smooth_drag_offset = get_cmp(selected, Position_Component)->world_pos - game_input.world_pos;
+					state = DRAG;
+				}
+				// Otherwise, see if you clicked in something else.
+				else {
+					bool found = false;
+					for (auto& handle : active_level->entity_handles) {
+						Entity* entity = handle();
+						auto box = Center_Box::from_entity(handle);
+						if (box) {
+							if (point_inside_box(game_input.world_pos, *box)) {
+								selected = handle;
+								smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - game_input.world_pos; // So we don't jump to the exact mouse position
+								state = DRAG;
+								found = true;
+							}
+						}
+					}
+					if (!found) {
+						selected = { -1, nullptr };
+						state = IDLE;
+					}
+				}
+			}
+		}
+
+		// Delete whatever is selected
+		if (game_input.was_pressed(GLFW_KEY_DELETE)) {
+			for (auto it = active_level->entity_handles.begin(); it != active_level->entity_handles.end(); it++) {
+				if (selected == *it) {
+					selected->clear_components();
+					active_level->entity_handles.erase(it);
+					break;
+				}
+			}
+			selected = { -1, nullptr };
+			state = IDLE;
+		}
+		break;
+	}
+	case DRAG: {
+		draw_component_editor();
+		translate();
+
+		if (!game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+			state = EDIT;
+		}
+		break;
+	}
+	case RECTANGLE_SELECT: {
+		screen_unit top = top_left_drag.y > game_input.world_pos.y ? top_left_drag.y : game_input.world_pos.y;
+		screen_unit bottom = top_left_drag.y > game_input.world_pos.y ? game_input.world_pos.y : top_left_drag.y;
+		screen_unit right = top_left_drag.x > game_input.world_pos.x ? top_left_drag.x : game_input.world_pos.x;
+		screen_unit left = top_left_drag.x > game_input.world_pos.x ? game_input.world_pos.x : top_left_drag.x;
+		Points_Box points = { top, bottom, left, right };
+		draw_square_outline(points, red);
+
+		glm::vec2 dummy_penetration;
+		Center_Box selection_area = Center_Box::from_points(points);
+		for (auto& handle : active_level->entity_handles) {
+			auto entity_box = Center_Box::from_entity(handle);
+			if (entity_box) {
+				if (are_boxes_colliding(*entity_box, selection_area, dummy_penetration)) {
+					handle()->draw(Render_Flags::Highlighted);
+				}
+			}
+		}
+
+		break;
+	}
+	}
+	#pragma endregion
+}
+
 // Contains a line of NPC text, a vector of responses, and a vector of nodes that correspond to those responses.
 // e.g. response = 2 would indicate to go to children[2]
 struct Dialogue_Node {
@@ -406,7 +891,7 @@ struct Dialogue_Node {
 	}
 	void show_line() {
 		if (!already_drew_line)
-			game_layer.text_box.begin(text);
+			game.text_box.begin(text);
 		already_drew_line = true;
 	}
 
@@ -524,82 +1009,6 @@ void Game::begin_dialogue(Entity* entity) {
 	active_dialogue->init_from_table(npc, scene);
 	game_state = Game_State::DIALOGUE;
 }
-void Game::Editor_Selection::translate_entity() {
-	glm::vec2 draggable_position;
-	if (snap_to_grid) {
-		glm::ivec2 grid_pos = grid_from_world(game_input.world_pos);
-		draggable_position = screen_from_grid(grid_pos);
-	}
-	else {
-		draggable_position = game_input.world_pos + smooth_drag_offset;
-	}
-
-	Position_Component* pc = selection()->get_component<Position_Component>();
-	pc->world_pos = draggable_position;
-}
-void Game::Editor_Selection::draw_component_editor() {
-	// Leave the main tdengine window, and pop up a properties window for this entity
-	ImGui::End();
-	ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
-
-	Entity* entity = selection();
-	ImGui::Text(string("/scripts/" + Lua.definitions_to_script[entity->lua_id] + "/" + entity->lua_id).c_str());
-	for (auto& kvp : entity->components) {
-		pool_handle<any_component> handle = kvp.second;
-		Component* component = (Component*)handle();
-		
-		//@metaprogramming
-		if (dynamic_cast<Graphic_Component*>(component)) {
-			if (ImGui::TreeNode("Graphic Component")) {
-				Graphic_Component* gc = dynamic_cast<Graphic_Component*>(component);
-				Animation* current_animation = gc->active_animation;
-				if (ImGui::BeginCombo("Animations", current_animation->name.c_str(), 0)) {
-					for (auto anim : gc->animations) {
-						bool is_selected = anim->name == current_animation->name;
-						if (ImGui::Selectable(anim->name.c_str(), is_selected)) {
-							gc->set_animation(anim->name);
-						}
-						if (is_selected) {
-							ImGui::SetItemDefaultFocus();
-						}
-					}
-					ImGui::EndCombo();
-				}
-				ImGui::SliderFloat2("Scale", glm::value_ptr(gc->scale), 0.f, 1.f);
-				ImGui::TreePop();
-			}
-		}
-		else if (dynamic_cast<Door_Component*>(component)) {
-			if (ImGui::TreeNode("Door Component")) {
-				Door_Component* door = dynamic_cast<Door_Component*>(component);
-				if (ImGui::BeginCombo("##setdoor", door->to.c_str(), 0)) {
-					for (auto& kvp : levels) {
-						const string& name = kvp.first;
-						Level* level = kvp.second;
-						bool is_selected = door->to.c_str() == name;
-						if (ImGui::Selectable(name.c_str(), &is_selected)) {
-							door->to = name;
-						}
-						if (is_selected) {
-							ImGui::SetItemDefaultFocus();
-						}
-					}
-					ImGui::EndCombo();
-				}
-				ImGui::TreePop();
-			}			
-		}
-		else if (dynamic_cast<Position_Component*>(component)) {
-			if (ImGui::TreeNode("Position Component")) {
-				Position_Component* pc = dynamic_cast<Position_Component*>(component);
-				ImGui::SliderFloat2("Position", glm::value_ptr(pc->world_pos), 0.f, 100.f);
-				ImGui::TreePop();
-			}
-		}
-	}
-	ImGui::End();
-	ImGui::Begin("tdengine", 0, ImGuiWindowFlags_AlwaysAutoResize);
-}
 void Game::go_through_door(string to) {
 	active_level = levels[to];
 }
@@ -616,43 +1025,7 @@ void Game::play_intro() {
 	which text box to use
 	*/
 }
-void Game::reload() {
-	Lua.init();
-	
-	// @leak
-	create_all_texture_atlas();
-	tile_tree = Entity_Tree::create(absolute_path("textures\\tiles"));
-
-	// Reload level
-	active_level->load();
-}
-void Game::undo() {
-	if (stack.size()) {
-		function<void()> undo = stack.back();
-		stack.pop_back();
-		undo();
-	}
-}
-void Game::exec_console_command(const char* command_line) {
-	if (console.Stricmp(command_line, "SAVE") == 0) {
-		active_level->save();
-	}
-	else if (console.Stricmp(command_line, "LOAD") == 0) {
-		active_level->load();
-	}
-	else if (console.Stricmp(command_line, "RELOAD") == 0) {
-		reload();
-	}
-	else {
-		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);
-	}
-}
 void Game::init() {
-	editor_state = IDLE;
-	tile_tree = Entity_Tree::create("..\\..\\textures\\tiles");
-	dude_ranch.name = "dude_ranch";
-	cantina.name = "cantina";
-	active_level = &cantina;
 	player.init();
 	particle_system.init();
 
@@ -662,194 +1035,13 @@ void Game::init() {
 void Game::update(float dt) {
 	static int frame = 0;
 
+	//@novemberkill
 	// Set up the camera so that the player is in the center of the screen
 	auto blargh = player.boon->get_component<Position_Component>()->world_pos;
 	player.boon->get_component<Position_Component>()->world_pos = vec2_max(blargh, { .5, .5 });
 	camera.offset = player.boon->get_component<Position_Component>()->world_pos;
 	camera.offset += glm::vec2{-.5, -.5};
 	game_input.world_pos = game_input.screen_pos + camera.offset;
-
-	// Toggle the console on control
-	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
-		show_console = !show_console;
-	}
-	if (show_console) {
-		console.Draw("tdnsconsole");
-	}
-
-	//--GUI (global stuff goes here -- obviously since ImGui smaller things can be put anywhere!)
-	#pragma region IMGUI
-	if (ImGui::BeginMainMenuBar())
-	{
-		if (ImGui::BeginMenu("File"))
-		{
-			if (ImGui::MenuItem("Save", "console::save")) { active_level->save(); }
-			if (ImGui::MenuItem("Load", "console::load")) { active_level->load(); }
-			if (ImGui::MenuItem("Reload", "console::reload")) { reload(); }
-			if (ImGui::BeginMenu("Windows")) {
-				if (ImGui::MenuItem("FSM Debugger")) { show_fsm_debugger = !show_fsm_debugger; }
-				ImGui::EndMenu();
-			}
-			ImGui::EndMenu();
-		}
-		if (ImGui::BeginMenu("Edit"))
-		{
-			if (ImGui::MenuItem("Undo", "M-z")) { undo(); }
-			ImGui::EndMenu();
-		}
-		ImGui::EndMainMenuBar();
-	}
-
-	// Tile Selector GUI
-	ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize;
-	ImGui::Begin("tdengine", 0, flags);
-	static glm::vec2 last_click = { 0, 0 };
-	if (ImGui::CollapsingHeader("Options")) {
-		ImGui::Checkbox("Show grid", &show_grid);
-		ImGui::Checkbox("Snap to grid", &snap_to_grid);
-		ImGui::Checkbox("Show AABBs", &debug_show_aabb);
-		ImGui::Checkbox("Show Minkowski", &debug_show_minkowski);
-		ImGui::Checkbox("Show framerate", &print_framerate);
-		ImGui::Checkbox("Show ImGui demo", &show_imgui_demo);
-		ImGui::Checkbox("Dialogue mode", (bool*)&game_state);
-		ImGui::Text("Raw game input: %f, %f", game_input.screen_pos.x, game_input.screen_pos.y);
-		ImGui::Text("Camera offset: %f, %f", camera.offset.x, camera.offset.y);
-		ImGui::Text("Player position: %f, %f", player.boon->get_component<Position_Component>()->world_pos.x, player.boon->get_component<Position_Component>()->world_pos.y);
-		ImGui::Text("Last click: %f, %f", last_click.x, last_click.y);
-	}
-
-	// Tile tree
-	ImGui::Separator();
-	int unique_button_index = 0; // Needed for ImGui
-	auto draw_tile_tree = [&](Entity_Tree* root) -> void {
-		auto lambda = [&](Entity_Tree* root, const auto& lambda) -> void {
-			if (ImGui::TreeNode(root->dir.c_str())) {
-
-				// If expanded, draw this folder's tiles
-				int indx = 0;
-				for (auto tile_handle : root->entities) {
-					Entity* tile = tile_handle();
-					Graphic_Component* gc = tile->get_component<Graphic_Component>();
-					if (gc) {
-						Sprite* ent_sprite = gc->get_current_frame();
-
-						ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
-						ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
-						ImVec2 button_size = ImVec2(32, 32);
-						ImGui::PushID(unique_button_index++);
-						if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle,
-							button_size,
-							bottom_left_tex_coords, top_right_tex_coords))
-						{
-							editor_selection.selection = Entity::create(tile->lua_id);
-							editor_selection.kind = Editor_Selection::TILE;
-							editor_state = INSERT;
-						}
-						ImGui::PopID();
-						bool is_end_of_row = !((indx + 1) % 6);
-						bool is_last_element = indx == (root->size - 1);
-						if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
-						indx++;
-					}
-				}
-
-				// And draw dropdowns for any children
-				for (auto child : root->children) {
-					lambda(child, lambda);
-				}
-
-				ImGui::TreePop();
-			}
-		};
-		if (ImGui::CollapsingHeader("Tile Selector")) {
-			for (auto child : root->children) {
-				lambda(child, lambda);
-			}
-		}
-	};
-	draw_tile_tree(tile_tree);
-
-	// Level selector
-	ImGui::Separator();
-	static string level_current = active_level->name;
-	if (ImGui::BeginCombo("##chooselevel", level_current.c_str(), 0)) {
-		fox_iter(it, levels) {
-			string level_name = it->first;
-			bool is_selected = level_name == level_current;
-			if (ImGui::Selectable(level_name.c_str(), is_selected)) {
-				level_current = level_name;
-				active_level = it->second;
-			}
-			if (is_selected) {
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
-
-	// Script selector
-	ImGui::Separator();
-	static string script_current = Lua.scripts[0];
-	if (ImGui::BeginCombo("##choosescript", (script_current + ".lua").c_str(), 0)) {
-		for (auto script : Lua.scripts) {
-			bool is_selected = script == script_current;
-			if (ImGui::Selectable((script + ".lua").c_str(), is_selected)) {
-				script_current = script;
-			}
-			if (is_selected) {
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
-
-	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-	ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
-	// Show each entity in this script. If we select it, create one and move to INSERT mode
-	for (auto& ent : Lua.script_to_definitions[script_current]) {
-		if (ImGui::Selectable(ent.c_str())) {
-			editor_selection.selection = Entity::create(ent.c_str());
-			editor_selection.kind = Editor_Selection::ENTITY;
-			editor_state = INSERT;
-		}
-	}
-	ImGui::PopStyleVar();
-	ImGui::EndChild();
-
-	// FSM debugger
-	if (show_fsm_debugger) {
-		if (editor_selection.selection) {
-			Entity* entity = editor_selection.selection();
-			State_Component* state = entity->get_component<State_Component>();
-
-			// If the selection both exists and has a state component, we can run the FSM debugger
-			if (state) {
-				ImGui::Begin("FSM debugger", 0, ImGuiWindowFlags_AlwaysAutoResize);
-				ImGui::Text("Current State: "); ImGui::SameLine(); ImGui::Text(state->current_state.c_str());
-
-				// Display each of the watched variables as a red or green button 
-				for (auto& watched_variable : state->watched_variables) {
-					bool current_status = knowledge_base[watched_variable];
-					if (current_status) {
-						static ImVec4 green_for_true = ImVec4(.06f, .8f, .05f, 1.f);
-						ImGui::PushStyleColor(ImGuiCol_Button, green_for_true);
-					}
-					else {
-						static ImVec4 red_for_false = ImVec4(1.f, .06f, .05f, 1.f);
-						ImGui::PushStyleColor(ImGuiCol_Button, red_for_false);
-					}
-
-					// Toggle the button on click
-					if (ImGui::Button(watched_variable.c_str())) {
-						knowledge_base.update_variable(watched_variable, !current_status);
-					}
-					ImGui::PopStyleColor();
-				}
-				ImGui::End();
-			}
-		}
-	}
-	#pragma endregion
 
 	// Find the direction of the vision box
 	auto boon = player.boon;
@@ -898,197 +1090,17 @@ void Game::update(float dt) {
 	}
 
 	if (game_state == Game_State::GAME) {
-		
-		if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
-			game_input.was_pressed(GLFW_KEY_Z))
-		{
-			undo();
-		}
-		if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
-			editor_selection.selection = { -1, nullptr };
-			editor_state = IDLE;
-		}
 		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_RIGHT)) {
 			particle_system.start();
 		}
 
-		
-
-		
-
-		//--EDITOR
-		switch (editor_state) {
-		case Editing_State::IDLE: {
-			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-				last_click = game_input.world_pos;
-				bool clicked_inside_something = false;
-				for (auto& handle : active_level->entity_handles) {
-					Entity* entity = handle();
-					auto box = Center_Box::from_entity(handle);
-					if (box) {
-						if (point_inside_box(game_input.world_pos, *box)) {
-							clicked_inside_something = true;
-							editor_selection.selection = handle;
-							editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - game_input.world_pos; // So we don't jump to the exact mouse position
-							editor_state = DRAG;
-							break;
-						}
-					}
-				}
-
-#if 0
-				if (!clicked_inside_something) {
-					top_left_drag = game_input.screen_pos;
-					editor_state = RECTANGLE_SELECT;
-				}
-#endif
-			}
-			break;
+		// Toggle the console on control
+		if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
+			show_console = !show_console;
 		}
-		case Editing_State::INSERT: {
-			editor_selection.translate_entity();
-
-			// And if we click, add it to the level
-			if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-				switch (editor_selection.kind) {
-				case Editor_Selection::TILE: {
-					auto grid_pos = grid_from_world(game_input.world_pos);
-					pool_handle<Entity> handle = active_level->get_tile(grid_pos.x, grid_pos.y);
-					Entity* current_entity = handle();
-
-					// We don't want to double paint, so check to make sure we're not doing that
-					bool okay_to_create = true;
-
-					// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
-					if (current_entity) {
-						if (current_entity->lua_id == editor_selection.selection()->lua_id) {
-							okay_to_create = false;
-						}
-					}
-
-					if (okay_to_create) {
-						// Create a lambda which will undo the tile placement we're about to do
-						auto my_lambda =
-							[&active_level = active_level,
-							x = grid_pos.x, y = grid_pos.y,
-							ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
-								{
-									active_level->set_tile(ent, x, y);
-								};
-								stack.push_back(my_lambda);
-
-								active_level->set_tile(editor_selection.selection, grid_pos.x, grid_pos.y);
-								editor_selection.selection = Entity::create(editor_selection.selection()->lua_id);
-
-								// Update so we only paint one entity per tile
-								last_grid_pos_drawn = grid_pos;
-								break;
-					}
-					break;
-				}
-				case Editor_Selection::ENTITY: {
-					if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-						auto my_lambda = [&active_level = active_level]() -> void {
-							active_level->entity_handles.pop_back();
-						};
-						stack.push_back(my_lambda);
-
-						// Add the selection to the level
-					    active_level->entity_handles.push_back(editor_selection.selection);
-
-						// Create a new one of the same kind as the old one
-						Entity* selection = editor_selection.selection();
-						editor_selection.selection = Entity::create(selection->lua_id);
-						editor_selection.smooth_drag_offset = glm::vec2(0.f);
-						editor_selection.translate_entity();
-					}
-					break;
-				}
-				}
-			}
-			break;
+		if (show_console) {
+			console.Draw("tdnsconsole");
 		}
-		case Editing_State::EDIT: {
-			editor_selection.draw_component_editor();
-			if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-				auto bounding_box = Center_Box::from_entity(editor_selection.selection);
-				if (bounding_box) {
-					// If you click inside the currently selected thing, start dragging it
-					if (point_inside_box(game_input.world_pos, *bounding_box)) {
-						editor_selection.smooth_drag_offset = editor_selection.selection()->get_component<Position_Component>()->world_pos - game_input.world_pos;
-						editor_state = DRAG;
-					}
-					// Otherwise, see if you clicked in something else.
-					else {
-						bool found = false;
-						for (auto& handle : active_level->entity_handles) {
-							Entity* entity = handle();
-							auto box = Center_Box::from_entity(handle);
-							if (box) {
-								if (point_inside_box(game_input.world_pos, *box)) {
-									editor_selection.selection = handle;
-									editor_selection.smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - game_input.world_pos; // So we don't jump to the exact mouse position
-									editor_state = DRAG;
-									found = true;
-								}
-							}
-						}
-						if (!found) {
-							editor_selection.selection = { -1, nullptr };
-							editor_state = IDLE;
-						}
-					}
-				}
-			}
-
-			// Delete whatever is selected
-			if (game_input.was_pressed(GLFW_KEY_DELETE)) {
-				for (auto it = active_level->entity_handles.begin(); it != active_level->entity_handles.end(); it++) {
-					if (editor_selection.selection == *it) {
-						Entity* entity = editor_selection.selection();
-						entity->clear_components();
-						active_level->entity_handles.erase(it);
-						break;
-					}
-				}
-				editor_selection.selection = { -1, nullptr };
-				editor_state = IDLE;
-			}
-			break;
-		}
-		case Editing_State::DRAG: {
-			editor_selection.draw_component_editor();
-			editor_selection.translate_entity();
-
-			if (!game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-				editor_state = EDIT;
-			}
-			break;
-		}
-		case Editing_State::RECTANGLE_SELECT: {
-			screen_unit top = top_left_drag.y > game_input.world_pos.y ? top_left_drag.y : game_input.world_pos.y;
-			screen_unit bottom = top_left_drag.y > game_input.world_pos.y ? game_input.world_pos.y : top_left_drag.y;
-			screen_unit right = top_left_drag.x > game_input.world_pos.x ? top_left_drag.x : game_input.world_pos.x;
-			screen_unit left = top_left_drag.x > game_input.world_pos.x ? game_input.world_pos.x : top_left_drag.x;
-			Points_Box points = { top, bottom, left, right };
-			draw_square_outline(points, red);
-
-			glm::vec2 dummy_penetration;
-			Center_Box selection_area = Center_Box::from_points(points);
-			for (auto& handle : active_level->entity_handles) {
-				auto entity_box = Center_Box::from_entity(handle);
-				if (entity_box) {
-					if (are_boxes_colliding(*entity_box, selection_area, dummy_penetration)) {
-						handle()->draw(Render_Flags::Highlighted);
-					}
-				}
-			}
-
-			break;
-		}
-		}
-
-		//--INPUT
 
 		//--EXPLORATION
 		Entity* boon = player.boon();
@@ -1191,7 +1203,6 @@ void Game::update(float dt) {
 		}
 	}
 
-
 	particle_system.update(dt);
 	player.update(dt);
 	text_box.update(frame);
@@ -1201,11 +1212,12 @@ void Game::render() {
 	active_level->draw();
 	renderer.draw(player.boon->get_component<Graphic_Component>(), player.boon->get_component<Position_Component>(), Render_Flags::None); //@hack why is boon different?
 
+#if 0
 	if (editor_selection.selection) { 
 		Entity* selected = editor_selection.selection();
 		selected->draw(Render_Flags::Highlighted); 
 	}
-
+#endif
 	// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
 	renderer.render_for_frame();
 

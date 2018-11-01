@@ -53,11 +53,11 @@ struct {
 		}
 
 		// Register C++ functions in Lua
-		state.set_function("show_text", &Text_Box::begin, &game_layer.text_box);
-		state.set_function("go_through_door", &Game::go_through_door, &game_layer);
-		state.set_function("begin_dialogue", &Game::begin_dialogue, &game_layer);
+		state.set_function("show_text", &Text_Box::begin, &game.text_box);
+		state.set_function("go_through_door", &Game::go_through_door, &game);
+		state.set_function("begin_dialogue", &Game::begin_dialogue, &game);
 
-		state.set("game", game_layer);
+		state.set("game", game);
 
 		#pragma region TYPE_BINDINGS
 		sol::table lua_types = Lua.state.create_named_table("types");
