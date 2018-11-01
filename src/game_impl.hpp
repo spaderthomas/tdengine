@@ -382,6 +382,9 @@ void Particle_System::update(float dt) {
 	}
 }
 
+void Editor::init() {
+	active_level = levels["overworld"];
+}
 void Editor::translate() {
 	get_cmp(selected, Position_Component)->world_pos =
 		snap_to_grid ?
@@ -463,7 +466,7 @@ void Editor::draw_tile_tree(Entity_Tree* root) {
 		}
 	}
 }
-int Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) { 
+int  Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) { 
 	// If expanded, draw this folder's tiles
 	if (ImGui::TreeNode(root->dir.c_str())) {
 		fox_for(i, root->entities.size()) {
@@ -633,9 +636,9 @@ void Editor::update(float dt) {
 
 	// Script selector
 	ImGui::Separator();
-	static string script_current = Lua.scripts[0];
+	static string script_current = Lua.imgui_shown_scripts[0];
 	if (ImGui::BeginCombo("##choosescript", (script_current + ".lua").c_str(), 0)) {
-		for (auto script : Lua.scripts) {
+		for (auto script : Lua.imgui_shown_scripts) {
 			bool is_selected = script == script_current;
 			if (ImGui::Selectable((script + ".lua").c_str(), is_selected)) {
 				script_current = script;
@@ -866,7 +869,6 @@ void Editor::update(float dt) {
 	}
 	#pragma endregion
 }
-
 // Contains a line of NPC text, a vector of responses, and a vector of nodes that correspond to those responses.
 // e.g. response = 2 would indicate to go to children[2]
 struct Dialogue_Node {

@@ -4,18 +4,8 @@ struct {
 	map<string, string> definitions_to_script;
 
 	// Some scripts are things we don't wanna be able to select in ImGui, so just load those in separately
-	vector<string> scripts = {
-		"props",
-		"boon",
-		"npc"
-	};
-	vector<string> imgui_ignored_scripts = {
-		"utils",
-		"tiles",
-		"intro",
-		"state",
-		"dialogue"
-	};
+	vector<string> imgui_shown_scripts;
+	vector<string> imgui_ignored_scripts;
 
 	void init() {
 		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io);
@@ -28,13 +18,16 @@ struct {
 			return pfr;
 		};
 		state.safe_script_file(absolute_path("src\\scripts\\meta.lua"), error_handler);
-		sol::table files = state["files"];
+		sol::table files = state["scripts"];
 		for (auto& kvp : files) {
 			sol::table file = kvp.second;
 			string script = file["name"];
-			bool imgui_should_ignore = file["imgui"];
-
 			string path = absolute_path("src\\scripts\\") + script + ".lua";
+
+			file["imgui_ignore"] ? 
+				imgui_ignored_scripts.push_back(script) :
+				imgui_shown_scripts.push_back(script);
+
 			state.safe_script_file(path, error_handler);
 
 			vector<string> defined;

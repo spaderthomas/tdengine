@@ -98,12 +98,10 @@ void Level::load() {
 
 unordered_map<string, Level*> levels;
 void init_levels() {
-	json config;
-	ifstream config_file(absolute_path("save\\config.json"));
-	config_file >> config;
-	vector<string> level_names = config["levels"];
-
-	for (auto& name : level_names) {
+	sol::table level_names = Lua.state["levels"];
+	for (auto& kvp : level_names) {
+		string name = kvp.second.as<string>();
+		if (name == "") continue; //@hack: implicit final entry in table. is this a sol thing or the fact that it's a list?
 		Level* level = new Level;
 		level->name = name;
 		level->load();

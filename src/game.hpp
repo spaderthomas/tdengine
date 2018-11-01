@@ -78,6 +78,7 @@ struct Layer {
 	virtual void update(float dt) = 0;
 	virtual void exec_console_cmd(const char* cmd) {};
 	virtual void render() {};
+	virtual void init() {};
 };
 
 enum Editor_State {
@@ -120,6 +121,7 @@ struct Editor : Layer {
 	void reload_everything();
 	void exec_console_cmd(const char* cmd) override;
 	void update(float dt) override;
+	void init() override;
 	Console console;
 	Level* active_level;
 };
@@ -144,9 +146,9 @@ struct Game : Layer {
 	void go_through_door(string to);
 	void play_intro();
 	void begin_dialogue(Entity* entity);
-	void init();
 	void update(float dt) override;
 	void render() override;
+	void init() override;
 };
 Game game;
 

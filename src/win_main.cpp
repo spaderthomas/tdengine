@@ -161,6 +161,7 @@ int main() {
 	init_fonts();
 
 	game.init();
+	editor.init();
 #pragma endregion
 
 #pragma region IMGUI_INIT
