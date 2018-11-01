@@ -49,25 +49,6 @@ struct Player {
 };
 Player player;
 
-struct Circle_Buffer {
-	int* data = nullptr;
-	int head = 0;
-	int capacity = 0;
-	int len = 0;
-
-	void push_back(int elem);
-	optional<int> pop_front();
-	void clear();
-};
-
-// amp * sin(period * k - phase_shift)
-struct Sine_Func {
-	float amp = 1.f;
-	float period = 1.f;
-	float phase_shift = 1.f;
-
-	float eval_at(float point);
-};
 
 struct Particle {
 	glm::vec2 velocity = glm::vec2(0.f);
@@ -81,7 +62,6 @@ struct Particle {
 	
 	void make_alive();
 };
-
 struct Particle_System {
 	Circle_Buffer free_list;
 	array<Particle, 1024> particles;
@@ -93,6 +73,39 @@ struct Particle_System {
 
 struct Dialogue_Tree;
 struct Dialogue_Node;
+
+enum Editor_State {
+	IDLE,
+	INSERT,
+	EDIT,
+	DRAG,
+	RECTANGLE_SELECT,
+};
+struct Editor {
+	// Stores tiles in a tree structure for good display purposes.
+	Entity_Tree* tile_tree;
+	Editor_State state = IDLE;
+
+	glm::ivec2 last_grid_drawn;
+	glm::vec2 top_left_drag;
+	
+
+	struct Editor_Selection {
+		enum Selected_Kind {
+			TILE,
+			ENTITY
+		} kind;
+
+		glm::vec2 smooth_drag_offset = glm::vec2(0.f);
+		pool_handle<Entity> selection;
+		pool_handle<Entity> operator->() {
+			return selection;
+		}
+		void translate_entity();
+		void draw_component_editor();
+	} editor_selection;
+};
+
 struct Game {
 	Entity_Tree* tile_tree;
 	glm::ivec2 last_grid_pos_drawn;

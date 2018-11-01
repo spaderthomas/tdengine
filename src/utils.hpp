@@ -406,6 +406,14 @@ glm::vec2 vec2_max(glm::vec2 a, glm::vec2 b) {
 	};
 }
 
+// amp * sin(period * k - phase_shift)
+struct Sine_Func {
+	float amp = 1.f;
+	float period = 1.f;
+	float phase_shift = 1.f;
+
+	float eval_at(float point);
+};
 
 
 // POOL DECLS
@@ -517,11 +525,21 @@ void Pool<Data_Type, num_elements>::mark_unavailable(pool_handle<Data_Type> hand
 }
 
 
+struct Circle_Buffer {
+	int* data = nullptr;
+	int head = 0;
+	int capacity = 0;
+	int len = 0;
+
+	void push_back(int elem);
+	optional<int> pop_front();
+	void clear();
+};
+
 struct Key_Type {
 	int x;
 	int y;
 };
-
 
 // two ways you can use a vector:
 // 1 (more common): always push to the back of the vector. linearly assing. this means there are no holes

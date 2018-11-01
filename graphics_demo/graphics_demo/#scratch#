@@ -1,0 +1,6 @@
+    <PreBuildEvent>
+      <Command>CALL C:/Users/dboon/programming/tdengine/sqlite/generate_db_header.bat</Command>
+      <Message>
+		GENERATED THAT HEADER
+      </Message>
+    </PreBuildEvent>

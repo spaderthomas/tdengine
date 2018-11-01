@@ -28,6 +28,9 @@ extern "C" {
 
 #include "sqlite/sqlite3.h"
 
+#include "frozen/unordered_map.h"
+#include "frozen/string.h"
+
 // STL
 #include <stdlib.h>
 #include <iostream>
@@ -50,6 +53,7 @@ using namespace std;
 
 #include "machine_conf.hpp"
 #include "log.hpp"
+#include "db.hpp"
 #include "utils.hpp"
 #include "input.hpp"
 #include "text.hpp"
@@ -83,13 +87,33 @@ using namespace std;
 #include "testin.hpp"
 
 
+sqlite3* db;
 
+constexpr int const_strlen(const char* str) {
+	int i = 0;
+	while (str[i++]);
+	return i;
+}
 
+/*
+constexpr int row_to_index(const frozen::string table, const frozen::string row) {
+	const auto& outer = db_schema.at(table);
+	return outer.at(row);
+}
+*/
 int main() {
 	tdns_log.init();
 
-	sqlite3* db;
-	fox_assert(sqlite3_open(db_dir.c_str(), &db));
+	fox_assert(!sqlite3_open(db_dir.c_str(), &db));
+	const char* sql_query =
+		"select * from levels";
+	const char* query_end = sql_query + strlen(sql_query);
+	sqlite3_stmt* sql_statement;
+	sqlite3_prepare(db, sql_query, 1024, &sql_statement, &query_end);
+	sqlite3_step(sql_statement);
+	const unsigned char* result = sqlite3_column_text(sql_statement, 0);
+	sqlite3_close(db);
+
 #pragma region GLFW_INIT
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
