@@ -1,3 +1,4 @@
+
 Entity_Tree* Entity_Tree::create(string dir) {
 	Entity_Tree* tree = new Entity_Tree;
 	tree->dir = name_from_full_path(dir);
@@ -384,12 +385,13 @@ void Particle_System::update(float dt) {
 
 void Editor::init() {
 	active_level = levels["overworld"];
+	tile_tree = Entity_Tree::create(absolute_path("textures\\tiles"));
 }
 void Editor::translate() {
 	get_cmp(selected, Position_Component)->world_pos =
 		snap_to_grid ?
-		screen_from_grid(grid_from_world(game_input.world_pos)) :
-		game_input.world_pos + smooth_drag_offset;
+		screen_from_grid(grid_from_world(input.world_pos)) :
+		input.world_pos + smooth_drag_offset;
 }
 void Editor::draw_component_editor() {
 	// Leave the main tdengine window, and pop up a properties window for this entity
@@ -540,12 +542,12 @@ void Editor::undo() {
 	}
 }
 void Editor::update(float dt) {	
-	if (game_input.was_pressed(GLFW_KEY_ESCAPE)) {
+	if (input.was_pressed(GLFW_KEY_ESCAPE)) {
 		selected = { -1, nullptr };
 		state = IDLE;
 	}
-	if (game_input.is_down[GLFW_KEY_LEFT_ALT] &&
-		game_input.was_pressed(GLFW_KEY_Z)) {
+	if (input.is_down[GLFW_KEY_LEFT_ALT] &&
+		input.was_pressed(GLFW_KEY_Z)) {
 		undo();
 	}
 
@@ -606,7 +608,7 @@ void Editor::update(float dt) {
 		ImGui::Checkbox("show aabb", &debug_show_aabb);
 		ImGui::Checkbox("show minkowski", &debug_show_minkowski);
 		ImGui::Checkbox("show demo", &show_imgui_demo);
-		ImGui::Text("Raw game input: %f, %f", game_input.screen_pos.x, game_input.screen_pos.y);
+		ImGui::Text("Raw game input: %f, %f", input.screen_pos.x, input.screen_pos.y);
 		ImGui::Text("Camera offset: %f, %f", camera.offset.x, camera.offset.y);
 		ImGui::Text("Player position: %f, %f", player.boon->get_component<Position_Component>()->world_pos.x, player.boon->get_component<Position_Component>()->world_pos.y);
 		ImGui::Text("Last click: %f, %f", last_click.x, last_click.y);
@@ -696,22 +698,24 @@ void Editor::update(float dt) {
 			}
 		}
 	}
+
+	ImGui::End();
 #pragma endregion
 
 	#pragma region editing logic
 	switch (state) {
 	case IDLE: {
-		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-			last_click = game_input.world_pos;
+		if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+			last_click = input.world_pos;
 			bool clicked_inside_something = false;
 			for (auto& handle : active_level->entity_handles) {
 				Entity* entity = handle();
 				auto box = Center_Box::from_entity(handle);
 				if (box) {
-					if (point_inside_box(game_input.world_pos, *box)) {
+					if (point_inside_box(input.world_pos, *box)) {
 						clicked_inside_something = true;
 						selected = handle;
-						smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - game_input.world_pos; // So we don't jump to the exact mouse position
+						smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - input.world_pos; // So we don't jump to the exact mouse position
 						state = DRAG;
 						break;
 					}
@@ -719,7 +723,7 @@ void Editor::update(float dt) {
 			}
 			#if 0
 			if (!clicked_inside_something) {
-				top_left_drag = game_input.screen_pos;
+				top_left_drag = input.screen_pos;
 				editor_state = RECTANGLE_SELECT;
 			}
 			#endif
@@ -730,10 +734,10 @@ void Editor::update(float dt) {
 		translate();
 
 		// And if we click, add it to the level
-		if (game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+		if (input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 			switch (kind) {
 			case TILE: {
-				auto grid_pos = grid_from_world(game_input.world_pos);
+				auto grid_pos = grid_from_world(input.world_pos);
 				pool_handle<Entity> handle = active_level->get_tile(grid_pos.x, grid_pos.y);
 				Entity* current_entity = handle();
 
@@ -768,7 +772,7 @@ void Editor::update(float dt) {
 				break;
 			}
 			case ENTITY: {
-				if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+				if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 					auto my_lambda = [&active_level = active_level]() -> void {
 						active_level->entity_handles.pop_back();
 					};
@@ -791,12 +795,12 @@ void Editor::update(float dt) {
 	}
 	case EDIT: {
 		draw_component_editor();
-		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
+		if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			auto bounding_box = Center_Box::from_entity(selected);
 			if (bounding_box) {
 				// If you click inside the currently selected thing, start dragging it
-				if (point_inside_box(game_input.world_pos, *bounding_box)) {
-					smooth_drag_offset = get_cmp(selected, Position_Component)->world_pos - game_input.world_pos;
+				if (point_inside_box(input.world_pos, *bounding_box)) {
+					smooth_drag_offset = get_cmp(selected, Position_Component)->world_pos - input.world_pos;
 					state = DRAG;
 				}
 				// Otherwise, see if you clicked in something else.
@@ -806,9 +810,9 @@ void Editor::update(float dt) {
 						Entity* entity = handle();
 						auto box = Center_Box::from_entity(handle);
 						if (box) {
-							if (point_inside_box(game_input.world_pos, *box)) {
+							if (point_inside_box(input.world_pos, *box)) {
 								selected = handle;
-								smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - game_input.world_pos; // So we don't jump to the exact mouse position
+								smooth_drag_offset = entity->get_component<Position_Component>()->world_pos - input.world_pos; // So we don't jump to the exact mouse position
 								state = DRAG;
 								found = true;
 							}
@@ -823,7 +827,7 @@ void Editor::update(float dt) {
 		}
 
 		// Delete whatever is selected
-		if (game_input.was_pressed(GLFW_KEY_DELETE)) {
+		if (input.was_pressed(GLFW_KEY_DELETE)) {
 			for (auto it = active_level->entity_handles.begin(); it != active_level->entity_handles.end(); it++) {
 				if (selected == *it) {
 					selected->clear_components();
@@ -840,16 +844,16 @@ void Editor::update(float dt) {
 		draw_component_editor();
 		translate();
 
-		if (!game_input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
+		if (!input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 			state = EDIT;
 		}
 		break;
 	}
 	case RECTANGLE_SELECT: {
-		screen_unit top = top_left_drag.y > game_input.world_pos.y ? top_left_drag.y : game_input.world_pos.y;
-		screen_unit bottom = top_left_drag.y > game_input.world_pos.y ? game_input.world_pos.y : top_left_drag.y;
-		screen_unit right = top_left_drag.x > game_input.world_pos.x ? top_left_drag.x : game_input.world_pos.x;
-		screen_unit left = top_left_drag.x > game_input.world_pos.x ? game_input.world_pos.x : top_left_drag.x;
+		screen_unit top = top_left_drag.y > input.world_pos.y ? top_left_drag.y : input.world_pos.y;
+		screen_unit bottom = top_left_drag.y > input.world_pos.y ? input.world_pos.y : top_left_drag.y;
+		screen_unit right = top_left_drag.x > input.world_pos.x ? top_left_drag.x : input.world_pos.x;
+		screen_unit left = top_left_drag.x > input.world_pos.x ? input.world_pos.x : top_left_drag.x;
 		Points_Box points = { top, bottom, left, right };
 		draw_square_outline(points, red);
 
@@ -869,6 +873,29 @@ void Editor::update(float dt) {
 	}
 	#pragma endregion
 }
+void Editor::render() {
+	active_level->draw();
+	if (selected) { 
+		selected()->draw(Render_Flags::Highlighted); 
+	}
+	// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
+	renderer.render_for_frame();
+
+	// Render the grid
+	if (show_grid) {
+		screen_unit x_begin = fmodf(camera.offset.x, SCR_TILESIZE_X);
+		screen_unit y_begin = fmodf(camera.offset.y, SCR_TILESIZE_Y) + (SCR_TILESIZE_Y / 2.f);
+
+		for (float col_offset = 1 - x_begin; col_offset >= 0; col_offset -= SCR_TILESIZE_X) {
+			draw_line_from_points(glm::vec2(col_offset, 0), glm::vec2(col_offset, 1), glm::vec4(.2f, .1f, .9f, 0.5f));
+		}
+		for (float row_offset = 1 - y_begin; row_offset >= 0; row_offset -= SCR_TILESIZE_Y) {
+			draw_line_from_points(glm::vec2(0, row_offset), glm::vec2(1, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
+		}
+
+	}
+}
+
 // Contains a line of NPC text, a vector of responses, and a vector of nodes that correspond to those responses.
 // e.g. response = 2 would indicate to go to children[2]
 struct Dialogue_Node {
@@ -1006,6 +1033,7 @@ struct Dialogue_Tree {
 	}
 	
 };
+
 void Game::begin_dialogue(Entity* entity) {
 	string npc = entity->lua_id;
 	active_dialogue->init_from_table(npc, scene);
@@ -1030,7 +1058,7 @@ void Game::play_intro() {
 void Game::init() {
 	player.init();
 	particle_system.init();
-
+	active_level = levels["overworld"];
 	scene = "intro";
 	active_dialogue = new Dialogue_Tree;
 }
@@ -1043,7 +1071,7 @@ void Game::update(float dt) {
 	player.boon->get_component<Position_Component>()->world_pos = vec2_max(blargh, { .5, .5 });
 	camera.offset = player.boon->get_component<Position_Component>()->world_pos;
 	camera.offset += glm::vec2{-.5, -.5};
-	game_input.world_pos = game_input.screen_pos + camera.offset;
+	input.world_pos = input.screen_pos + camera.offset;
 
 	// Find the direction of the vision box
 	auto boon = player.boon;
@@ -1075,7 +1103,7 @@ void Game::update(float dt) {
 	}
 
 	// Check for interactions
-	if (game_input.was_pressed(GLFW_KEY_E)) {
+	if (input.was_pressed(GLFW_KEY_E)) {
 		for (auto& handle : active_level->entity_handles) {
 			Entity* entity = handle();
 			Center_Box boon = Center_Box::from_points(points);
@@ -1092,7 +1120,7 @@ void Game::update(float dt) {
 	}
 
 	if (game_state == Game_State::GAME) {
-		if (game_input.was_pressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+		if (input.was_pressed(GLFW_MOUSE_BUTTON_RIGHT)) {
 			particle_system.start();
 		}
 
@@ -1108,30 +1136,30 @@ void Game::update(float dt) {
 		Entity* boon = player.boon();
 		auto mc = boon->get_component<Movement_Component>();
 		bool moving = false;
-		if (game_input.is_down[GLFW_KEY_W]) {
+		if (input.is_down[GLFW_KEY_W]) {
 			mc->wish += glm::vec2(0.f, .0025f);
 			auto gc = boon->get_component<Graphic_Component>();
 			gc->set_animation_unless_already_active("walk_up");
 			moving = true;
 			player.facing = Facing::up;
 		}
-		if (game_input.is_down[GLFW_KEY_A]) {
+		if (input.is_down[GLFW_KEY_A]) {
 			mc->wish += glm::vec2(-.0025f, 0.f);
 			player.facing = Facing::left;
 		}
-		if (game_input.is_down[GLFW_KEY_S]) {
+		if (input.is_down[GLFW_KEY_S]) {
 			mc->wish += glm::vec2(0.f, -.0025f);
 			auto gc = boon->get_component<Graphic_Component>();
 			gc->set_animation_unless_already_active("walk_down");
 			moving = true;
 			player.facing = Facing::down;
 		}
-		if (game_input.is_down[GLFW_KEY_D]) {
+		if (input.is_down[GLFW_KEY_D]) {
 			mc->wish += glm::vec2(.0025f, 0.f);
 			player.facing = Facing::right;
 		}
 		
-		if (game_input.was_pressed(GLFW_KEY_I)) {
+		if (input.was_pressed(GLFW_KEY_I)) {
 			play_intro();
 		}
 		if (!moving) {
@@ -1152,30 +1180,30 @@ void Game::update(float dt) {
 	} 
 	else if (game_state == Game_State::DIALOGUE) {
 		Dialogue_Node* node = active_dialogue->traverse();
-		if (game_input.was_pressed(GLFW_KEY_1)) {
+		if (input.was_pressed(GLFW_KEY_1)) {
 			node->set_response(0);
 		}
-		else if (game_input.was_pressed(GLFW_KEY_2)) {
+		else if (input.was_pressed(GLFW_KEY_2)) {
 			node->set_response(1);
 		}
-		else if (game_input.was_pressed(GLFW_KEY_3)) {
+		else if (input.was_pressed(GLFW_KEY_3)) {
 			node->set_response(2);
 		}
-		else if (game_input.was_pressed(GLFW_KEY_4)) {
+		else if (input.was_pressed(GLFW_KEY_4)) {
 			node->set_response(3);
 		}
 
-		if (game_input.was_pressed(GLFW_KEY_S)) {
+		if (input.was_pressed(GLFW_KEY_S)) {
 			active_dialogue->save();
 		}
-		if (game_input.was_pressed(GLFW_KEY_L)) {
+		if (input.was_pressed(GLFW_KEY_L)) {
 			active_dialogue->load();
 		}
 
 		node->show_line();
 
 
-		if (game_input.was_pressed(GLFW_KEY_SPACE)) {
+		if (input.was_pressed(GLFW_KEY_SPACE)) {
 			// If the dialogue has fully shown
 			if (text_box.is_all_text_displayed()) {
 				// Break if node is terminal
@@ -1214,28 +1242,6 @@ void Game::render() {
 	active_level->draw();
 	renderer.draw(player.boon->get_component<Graphic_Component>(), player.boon->get_component<Position_Component>(), Render_Flags::None); //@hack why is boon different?
 
-#if 0
-	if (editor_selection.selection) { 
-		Entity* selected = editor_selection.selection();
-		selected->draw(Render_Flags::Highlighted); 
-	}
-#endif
-	// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
 	renderer.render_for_frame();
-
-	// Render the grid
-	if (show_grid) {
-		screen_unit x_begin = fmodf(camera.offset.x, SCR_TILESIZE_X);
-		screen_unit y_begin = fmodf(camera.offset.y, SCR_TILESIZE_Y) + (SCR_TILESIZE_Y / 2.f);
-
-		for (float col_offset = 1 - x_begin; col_offset >= 0; col_offset -= SCR_TILESIZE_X) {
-			draw_line_from_points(glm::vec2(col_offset, 0), glm::vec2(col_offset, 1), glm::vec4(.2f, .1f, .9f, 0.5f));
-		}
-		for (float row_offset = 1 - y_begin; row_offset >= 0; row_offset -= SCR_TILESIZE_Y) {
-			draw_line_from_points(glm::vec2(0, row_offset), glm::vec2(1, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
-		}
-
-	}
-
 	text_box.render();
 }

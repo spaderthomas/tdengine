@@ -55,6 +55,7 @@ using namespace std;
 #include "log.hpp"
 #include "db.hpp"
 #include "utils.hpp"
+#include "camera.hpp"
 #include "input.hpp"
 #include "text.hpp"
 #include "asset_table.hpp"
@@ -71,7 +72,6 @@ using namespace std;
 #include "data.hpp"
 #include "shader.hpp"
 #include "transform.hpp"
-#include "camera.hpp"
 #include "sprite_impl.hpp"
 #include "mesh.hpp"
 #include "animation_impl.hpp"
@@ -261,7 +261,7 @@ int main() {
 		auto io = ImGui::GetIO();
 		give_imgui_mouse_input();
 		if (io.WantCaptureKeyboard || io.WantCaptureMouse) { fill_imgui_input(); } 
-		else { game_input = global_input; }
+		else { active_layer->input = global_input; }
 
 		// Window resizing requests
 		if (global_input.was_pressed(GLFW_KEY_F1)) { use_640_360(window); }
@@ -281,7 +281,6 @@ int main() {
 		active_layer->render();
 	
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
-		ImGui::End();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 

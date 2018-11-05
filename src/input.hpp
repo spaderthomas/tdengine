@@ -22,7 +22,6 @@ struct Input {
 	
 };
 Input global_input;
-Input game_input;
 bool game_input_active = true;
 
 // ImGui gets the mouse coordinates every frame, so it knows if we're hovering it
@@ -60,11 +59,13 @@ void fill_imgui_input() {
 	io.KeySuper = io.KeysDown[GLFW_KEY_LEFT_SUPER] || io.KeysDown[GLFW_KEY_RIGHT_SUPER];
 }
 
+
 // GLFW Callbacks
 static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypos) {
 	xpos = max<double>(xpos, 0); ypos = max<double>(ypos, 0);
 	global_input.px_pos = glm::vec2(xpos, SCREEN_Y - ypos);
 	global_input.screen_pos = glm::vec2(xpos / SCREEN_X, (SCREEN_Y - ypos) / SCREEN_Y);
+	global_input.world_pos = global_input.screen_pos + camera.offset;
 }
 
 void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int mods) {

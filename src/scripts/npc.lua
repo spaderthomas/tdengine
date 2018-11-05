@@ -102,6 +102,7 @@ npc = {
 			 }
 		  },
 		  default_animation = "stand",
+		  z = 1
 	   },
 	   Position_Component = {},
 	   Bounding_Box = {
@@ -130,6 +131,7 @@ npc = {
 			 }
 		  },
 		  default_animation = "stand",
+		  z = 1
 	   },
 	   Position_Component = {},
 	   Bounding_Box = {

@@ -8,7 +8,7 @@ struct {
 	vector<string> imgui_ignored_scripts;
 
 	void init() {
-		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io);
+		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io, sol::lib::package, sol::lib::math, sol::lib::table);
 
 		// Load scripts
 		auto error_handler = [](lua_State*, sol::protected_function_result pfr) {

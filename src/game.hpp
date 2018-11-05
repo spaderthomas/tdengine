@@ -75,6 +75,8 @@ struct Dialogue_Tree;
 struct Dialogue_Node;
 
 struct Layer {
+	Input input;
+
 	virtual void update(float dt) = 0;
 	virtual void exec_console_cmd(const char* cmd) {};
 	virtual void render() {};
@@ -121,6 +123,7 @@ struct Editor : Layer {
 	void reload_everything();
 	void exec_console_cmd(const char* cmd) override;
 	void update(float dt) override;
+	void render() override;
 	void init() override;
 	Console console;
 	Level* active_level;
