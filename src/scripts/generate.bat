@@ -1,1 +1,0 @@
-python C:/Users/dboon/programming/tdengine/src/scripts/generate_tiles.py
