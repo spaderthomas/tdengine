@@ -159,3 +159,6 @@ int iactive_layer = 0;
 vector<Layer*> all_layers = { &editor, &game };
 Layer* active_layer = &editor;
 
+bool lua_is_down(GLFW_KEY_TYPE key);
+bool lua_was_down(GLFW_KEY_TYPE key);
+bool lua_was_pressed(GLFW_KEY_TYPE key);

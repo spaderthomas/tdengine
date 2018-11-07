@@ -63,20 +63,20 @@ void PhysicsSystem::debug_draw_bounding_box(pool_handle<Entity> handle, glm::vec
 void PhysicsSystem::process(float dt) {
 	// Render collision boxes
 	if (debug_show_aabb) {
-		for (auto handle : entity_handles) {
+		for (auto handle : entities) {
 			debug_draw_bounding_box(handle, white4);
 
 		}
 	}
 
-	for (auto& handle1 : entity_handles) {
+	for (auto& handle1 : entities) {
 		Entity* entity = handle1();
 		auto position = entity->get_component<Position_Component>();
 		auto collider = entity->get_component<Collision_Component>();
 		auto movement = entity->get_component<Movement_Component>();
 
 		if (!(position)) { continue; }
-		for (auto& handle2 : entity_handles) {
+		for (auto& handle2 : entities) {
 			if (handle1 == handle2) { continue; }
 			auto entity_box = Center_Box::from_entity(handle1);
 			auto other_box = Center_Box::from_entity(handle2);
@@ -95,7 +95,7 @@ void PhysicsSystem::process(float dt) {
 			movement->wish = glm::vec2(0.f);
 		}
 	}
-	entity_handles.clear();
+	entities.clear();
 }
 
 // Lua exports
@@ -109,4 +109,8 @@ bool are_entities_colliding(EntityHandle a, EntityHandle b) {
 	}
 
 	return are_boxes_colliding(*a_box, *b_box, penetration);
+}
+
+void register_collider_entity(EntityHandle entity) {
+	physics_system.entities.push_back(entity);
 }

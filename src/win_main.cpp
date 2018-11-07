@@ -155,11 +155,12 @@ int main() {
 	create_all_texture_atlas();
 	create_texture("textures\\misc\\text_box.png");
 
-	Lua.init();
 
+	Lua.init();
 	init_levels();
 
 	init_fonts();
+
 
 	game.init();
 	editor.init();
@@ -261,14 +262,16 @@ int main() {
 		// Pass all inputs to ImGui BEFORE ImGui::NewFrame
 		auto io = ImGui::GetIO();
 		give_imgui_mouse_input();
-		if (io.WantCaptureKeyboard || io.WantCaptureMouse) { fill_imgui_input(); } 
-		else { active_layer->input = global_input; }
+		if (io.WantCaptureKeyboard || io.WantCaptureMouse)
+			fill_imgui_input();
+		else
+			active_layer->input = global_input;
 
 		// Window resizing requests
 		if (global_input.was_pressed(GLFW_KEY_F1)) { use_640_360(window); }
 		if (global_input.was_pressed(GLFW_KEY_F2)) { use_720p(window); }
 		if (global_input.was_pressed(GLFW_KEY_F3)) { use_1080p(window); }
-
+	
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (global_input.was_pressed(GLFW_KEY_F4)) {

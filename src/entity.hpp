@@ -40,3 +40,5 @@ typedef pool_handle<Entity> EntityHandle;
 string entity_name(EntityHandle entity);
 int entity_id(EntityHandle entity); 
 void on_collide(EntityHandle me, EntityHandle other);
+void update_animation(EntityHandle me, float dt);
+int collider_kind(EntityHandle me);

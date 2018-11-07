@@ -1,3 +1,4 @@
+
 struct LuaState {
 	sol::state state;
 	map<string, vector<string>> script_to_definitions;
@@ -15,6 +16,12 @@ struct LuaState {
 		state.set_function("entity_name", &entity_name);
 		state.set_function("entity_id", &entity_id);
 		state.set_function("on_collide", &on_collide);
+		state.set_function("update_animation", &update_animation);
+		state.set_function("was_pressed", &lua_was_pressed);
+		state.set_function("is_down", &lua_is_down);
+		state.set_function("was_down", &lua_was_down);
+		state.set_function("collider_kind", &collider_kind);
+		state.set_function("get_level", &get_level);
 
 		state.new_usertype<EntityHandle>(
 			"EntityHandle"

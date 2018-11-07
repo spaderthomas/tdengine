@@ -45,7 +45,6 @@ void Entity::clear_components() {
 	}
 }
 
-
 sol::table Entity::get_definition(string lua_id) {
 	string script = Lua.definitions_to_script[lua_id];
 	return Lua.state[script][lua_id];
@@ -166,4 +165,18 @@ int entity_id(EntityHandle entity) {
 void on_collide(EntityHandle me, EntityHandle other) {
 	def_get_cmp(cc, me, Collision_Component);
 	cc->on_collide(me, other);
+}
+void update_animation(EntityHandle me, float dt) {
+	def_get_cmp(gc, me.deref(), Graphic_Component);
+	auto anim = gc->active_animation;
+	anim->time_to_next_frame -= dt;
+	if (anim->time_to_next_frame <= 0.f) {
+		anim->next_frame();
+	}
+}
+int collider_kind(EntityHandle me) {
+	def_get_cmp(cc, me.deref(), Collision_Component);
+	return cc ?
+		cc->kind :
+		Collider_Kind::NO_COLLIDER;
 }

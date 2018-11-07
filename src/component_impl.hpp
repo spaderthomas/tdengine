@@ -132,6 +132,8 @@ string Door_Component::name() { return "Door_Component"; }
 
 string Collision_Component::name() { return "Collision_Component"; }
 void   Collision_Component::init_from_table(sol::table table) {
+	kind = (Collider_Kind)table["kind"];
+
 	bounding_box.screen_center.x = table["bounding_box"]["center"]["x"];
 	bounding_box.screen_center.y = table["bounding_box"]["center"]["y"];
 	bounding_box.screen_extents.x = table["bounding_box"]["extents"]["x"];

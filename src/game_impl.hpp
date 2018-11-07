@@ -1043,6 +1043,10 @@ void Game::go_through_door(string to) {
 	active_level = levels[to];
 }
 void Game::init() {
+	//@hack. The game initialization starts it off with a default level
+	// But the levels aren't loaded until you initialize Lua. 
+	Lua.state.script("game = Game:new()");
+	Lua.state.script("local inspect = require('inspect'); print(inspect(game))");
 	player.init();
 	particle_system.init();
 	active_level = levels["overworld"];
@@ -1087,13 +1091,14 @@ void Game::update(float dt) {
 
 		// Toggle the console on control
 		// Keep this here
+#if 0
 		if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 			show_console = !show_console;
 		}
 		if (show_console) {
 			console.Draw("tdnsconsole");
 		}
-
+#endif
 		//--EXPLORATION
 		// Export to Lua:
 		// GLFW input enums
@@ -1206,4 +1211,13 @@ void Game::render() {
 
 	renderer.render_for_frame();
 	text_box.render();
+}
+bool lua_is_down(GLFW_KEY_TYPE key) {
+	return game.input.is_down[key];
+}
+bool lua_was_down(GLFW_KEY_TYPE key) {
+	return game.input.was_down[key];
+}
+bool lua_was_pressed(GLFW_KEY_TYPE key) {
+	return game.input.was_pressed(key);
 }

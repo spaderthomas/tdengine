@@ -17,3 +17,9 @@ end
 function px_y_to_screen (px_y)
     return px_y / screen_y
 end
+
+Collider_Kind = {
+   STATIC = 0,
+   DYNAMIC = 1,
+   NO_COLLIDER = 2
+}

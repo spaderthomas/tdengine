@@ -60,6 +60,7 @@ void fill_imgui_input() {
 }
 
 
+
 // GLFW Callbacks
 static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypos) {
 	xpos = max<double>(xpos, 0); ypos = max<double>(ypos, 0);

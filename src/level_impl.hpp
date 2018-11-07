@@ -111,3 +111,9 @@ void init_levels() {
 		levels[name] = level;
 	}
 }
+
+Level* get_level(string name) {
+	auto level = levels[name];
+	fox_assert(level);
+	return level;
+}

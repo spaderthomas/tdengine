@@ -8,6 +8,7 @@ props = {
         },
 		Door_Component = {},
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = tile_x_to_screen(0),
@@ -37,6 +38,7 @@ props = {
             z = 1
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = tile_x_to_screen(-1),
@@ -68,6 +70,7 @@ props = {
           z = 1,
 	   },
 	   Collision_Component = {
+		  kind = Collider_Kind.STATIC,
 		  bounding_box = {
 			 center = {
 				x = 0,
@@ -99,6 +102,7 @@ props = {
            z = 1,
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -131,6 +135,7 @@ props = {
            z = 1,
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -162,6 +167,7 @@ props = {
            z = 1,
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -193,6 +199,7 @@ props = {
            z = 1,
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -224,6 +231,7 @@ props = {
             z = 1
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -281,6 +289,7 @@ props = {
             z = 1
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -312,6 +321,7 @@ props = {
             z = 1
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -343,6 +353,7 @@ props = {
             z = 1
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -374,6 +385,7 @@ props = {
             z = 1
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -405,6 +417,7 @@ props = {
             z = 1
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -436,6 +449,7 @@ props = {
             z = 1
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
@@ -467,6 +481,7 @@ props = {
             z = 1
         },
 		Collision_Component = {
+		   kind = Collider_Kind.STATIC,
 		   bounding_box = {
 			  center = {
 				 x = 0,
