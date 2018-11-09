@@ -1,13 +1,18 @@
-bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration);
-struct PhysicsSystem {
-	vector<pool_handle<Entity>> entities;
+struct Collision_Element {
+	EntityHandle me;
+	EntityHandle other;
+};
 
-	void debug_draw_bounding_box(pool_handle<Entity> handle, glm::vec4 color);
+struct Physics_System {
+	vector<Collision_Element> collisions;
+	vector<EntityHandle> movers;
+
+	void debug_draw_bounding_box(EntityHandle handle, glm::vec4 color);
 	void process(float dt);
 };
-PhysicsSystem physics_system;
+Physics_System physics_system;
 
 
 // Lua exports
 bool are_entities_colliding(EntityHandle a, EntityHandle b);
-void register_collider_entity(EntityHandle ent);
+void register_potential_collision(EntityHandle me, EntityHandle other);

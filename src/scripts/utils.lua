@@ -23,3 +23,9 @@ Collider_Kind = {
    DYNAMIC = 1,
    NO_COLLIDER = 2
 }
+
+Render_Flags = {
+   NO_FLAGS = 0,
+   HIGHLIGHTED = 1
+}
+

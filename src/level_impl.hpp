@@ -25,6 +25,12 @@ void Level::draw() {
 	for (auto handle : entity_handles) {
 		if (handle) handle->draw(Render_Flags::None);
 	}
+
+	if (debug_show_aabb) {
+		for (auto& entity : entity_handles) {
+			debug_draw_bounding_box(entity, white4);
+		}
+	}
 }
 
 // The chunk index is used as an index into the JSON save object

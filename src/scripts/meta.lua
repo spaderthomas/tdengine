@@ -1,4 +1,5 @@
-scripts = {
+meta = {}
+meta.scripts = {
    -- Order matters!
    {
 	  name = "machine_conf",

@@ -1,14 +1,9 @@
 props = {
    door = {
         Position_Component = {},
-        Interaction_Component = {
-            on_interact = function(this, other) 
-                show_text("You ran into a door!")
-            end
-        },
 		Door_Component = {},
 		Collision_Component = {
-		   kind = Collider_Kind.STATIC,
+		   kind = Collider_Kind.DYNAMIC, -- @hack: this will check door-static collisions
 		   bounding_box = {
 			  center = {
 				 x = tile_x_to_screen(0),
@@ -20,6 +15,7 @@ props = {
 			  }	  
 		   },
 		   on_collide = function(this, other)
+			  print("door")
 			  any = this:get_component("Door_Component")
 			  to = any.door.to
 			  go_through_door(to)

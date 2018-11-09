@@ -54,48 +54,31 @@ bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
 	return false;
 }
 
-void PhysicsSystem::debug_draw_bounding_box(pool_handle<Entity> handle, glm::vec4 color) {
-	auto box = Center_Box::from_entity(handle);
-	if (box) {
-		draw_square_outline((*box).as_points(), color);
-	}
-}
-void PhysicsSystem::process(float dt) {
-	// Render collision boxes
-	if (debug_show_aabb) {
-		for (auto handle : entities) {
-			debug_draw_bounding_box(handle, white4);
 
-		}
-	}
-
-	for (auto& handle1 : entities) {
-		Entity* entity = handle1();
-		auto position = entity->get_component<Position_Component>();
-		auto collider = entity->get_component<Collision_Component>();
-		auto movement = entity->get_component<Movement_Component>();
-
-		if (!(position)) { continue; }
-		for (auto& handle2 : entities) {
-			if (handle1 == handle2) { continue; }
-			auto entity_box = Center_Box::from_entity(handle1);
-			auto other_box = Center_Box::from_entity(handle2);
-			if (entity_box && other_box) {
-				glm::vec2 penetration;
-				if (are_boxes_colliding(*entity_box, *other_box, penetration)) {
-					if (!collider) { continue; }
-					collider->on_collide(handle1(), handle2());
-				}
-			}
-
-		}
+void Physics_System::process(float dt) {
+	for (auto& mover : movers) {
+		def_get_cmp(position, mover.deref(), Position_Component);
+		def_get_cmp(movement, mover.deref(), Movement_Component);
 
 		if (movement) {
 			position->world_pos += movement->wish;
 			movement->wish = glm::vec2(0.f);
 		}
 	}
-	entities.clear();
+
+	for (auto& element : collisions) {
+		auto me_box = Center_Box::from_entity(element.me);
+		auto other_box = Center_Box::from_entity(element.other);
+		if (me_box && other_box) {
+			glm::vec2 penetration;
+			if (are_boxes_colliding(*me_box, *other_box, penetration)) {
+				def_get_cmp(cc, element.me.deref(), Collision_Component);
+				cc->on_collide(element.me, element.other);
+			}
+		}
+	}
+	collisions.clear();
+	movers.clear();
 }
 
 // Lua exports
@@ -110,7 +93,9 @@ bool are_entities_colliding(EntityHandle a, EntityHandle b) {
 
 	return are_boxes_colliding(*a_box, *b_box, penetration);
 }
-
-void register_collider_entity(EntityHandle entity) {
-	physics_system.entities.push_back(entity);
+void register_potential_collision(EntityHandle me, EntityHandle other) {
+	physics_system.collisions.push_back(
+		{ me, other }
+	);
 }
+

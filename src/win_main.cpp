@@ -7,6 +7,7 @@
 #include "glm/glm.hpp"
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb/stb_image.h"
 #define STB_RECT_PACK_IMPLEMENTATION
@@ -15,12 +16,15 @@
 #include "stb/stb_image_write.h"
 #define STB_TRUETYPE_IMPLEMENTATION
 #include "stb/stb_truetype.h"
+
 #include "nlohmann/json.hpp"
 using json = nlohmann::json;
+
 extern "C" {
 #include <ft2build.h>
 #include FT_FREETYPE_H  
 }
+
 #include "lua/lua.hpp"
 #include "sol/sol.hpp"
 
@@ -55,8 +59,6 @@ using namespace std;
 #include "log.hpp"
 #include "db.hpp"
 #include "utils.hpp"
-#include "camera.hpp"
-#include "input.hpp"
 #include "text.hpp"
 #include "asset_table.hpp"
 #include "sprite.hpp"
@@ -65,6 +67,8 @@ using namespace std;
 #include "component.hpp"
 #include "renderer.hpp"
 #include "entity.hpp"
+#include "camera.hpp"
+#include "input.hpp"
 #include "level.hpp"
 #include "game.hpp"
 #include "box.hpp"
@@ -78,8 +82,8 @@ using namespace std;
 #include "mesh.hpp"
 #include "animation_impl.hpp"
 #include "component_impl.hpp"
-#include "entity_impl.hpp"
 #include "draw.hpp"
+#include "entity_impl.hpp"
 #include "collision_impl.hpp"
 #include "level_impl.hpp"
 #include "renderer_impl.hpp"
@@ -155,15 +159,14 @@ int main() {
 	create_all_texture_atlas();
 	create_texture("textures\\misc\\text_box.png");
 
-
 	Lua.init();
+
 	init_levels();
-
 	init_fonts();
-
-
 	game.init();
 	editor.init();
+
+	Lua.init_after_load();
 #pragma endregion
 
 #pragma region IMGUI_INIT

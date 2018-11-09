@@ -1,1 +1,104 @@
-{}
+{
+    "entities": [
+        {
+            "Components": [
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "Position_Component",
+                    "pos": {
+                        "x": 0.6148437261581421,
+                        "y": 0.7083333134651184
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "NULL"
+                }
+            ],
+            "lua_id": "tree"
+        },
+        {
+            "Components": [
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "Position_Component",
+                    "pos": {
+                        "x": 0.8062499761581421,
+                        "y": 0.7097222208976746
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "NULL"
+                }
+            ],
+            "lua_id": "tree"
+        },
+        {
+            "Components": [
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "Position_Component",
+                    "pos": {
+                        "x": 0.1421874761581421,
+                        "y": 0.2736111283302307
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "NULL"
+                }
+            ],
+            "lua_id": "tree"
+        },
+        {
+            "Components": [
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "Position_Component",
+                    "pos": {
+                        "x": 0.3414062261581421,
+                        "y": 0.22777777910232544
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "NULL"
+                }
+            ],
+            "lua_id": "tree"
+        }
+    ]
+}

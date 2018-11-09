@@ -94,6 +94,8 @@ typedef unsigned char tdbyte;
  	the bottommost at 0,
  	the topmost at SCREEN_Y
 
+
+
  Below are all the conversion functions. Using them and proper units is a bit verbose, 
  but is worth it to save the confusion of exchanging units (which is unavoidable). Also
  of note is that since we're using GLM vectors, it's not really convenient to have 
@@ -399,7 +401,7 @@ void fixup_type_name(string& type_name) {
 	}
 }
 
-glm::vec2 vec2_max(glm::vec2 a, glm::vec2 b) {
+glm::vec2 vec2_pairwise_max(glm::vec2 a, glm::vec2 b) {
 	return {
 		fox_max(a.x, b.x),
 		fox_max(a.y, b.y)

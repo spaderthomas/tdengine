@@ -22,6 +22,18 @@ struct LuaState {
 		state.set_function("was_down", &lua_was_down);
 		state.set_function("collider_kind", &collider_kind);
 		state.set_function("get_level", &get_level);
+		state.set_function("register_potential_collision", &register_potential_collision);
+		state.set_function("go_through_door", &go_through_door);
+		state.set_function("create_entity", &Entity::create);
+		state.set_function("update_entity", &update_entity);
+		state.set_function("draw_entity", &draw_entity);
+		state.set_function("set_animation", &set_animation);
+		state.set_function("set_animation2", &set_animation2);
+		state.set_function("teleport_entity", &teleport_entity);
+		state.set_function("move_entity", &move_entity);
+		state.set_function("camera_follow", &camera_follow);
+		state.set_function("are_interacting", &are_interacting);
+		state.set_function("tdengine_debug", &debug);
 
 		state.new_usertype<EntityHandle>(
 			"EntityHandle"
@@ -37,6 +49,7 @@ struct LuaState {
 			"Level",
 			"name", &Level::name,
 			"load", &Level::load,
+			"draw", &Level::draw,
 			"entities", &Level::entity_handles,
 			"count_entities", &Level::count_entities
 		);
@@ -49,7 +62,9 @@ struct LuaState {
 			return pfr;
 		};
 		state.safe_script_file(absolute_path("src\\scripts\\meta.lua"), error_handler);
-		sol::table files = state["scripts"];
+		sol::table files = state["meta"]["scripts"];
+
+		// Load everything that needs to be in the global namespace from scripts
 		for (auto& kvp : files) {
 			sol::table file = kvp.second;
 			string script = file["name"];
@@ -75,6 +90,26 @@ struct LuaState {
 				script_to_definitions[script] = defined;
 			}
 		}
+	}
+
+	void init_after_load() {
+		// Initialize game objects and things once all scripts + engine is loaded
+		sol::table files = state["meta"]["scripts"];
+		for (auto& kvp : files) {
+			sol::table file = kvp.second;
+			string script = file["name"];
+			string path = absolute_path("src\\scripts\\") + script + ".lua";
+
+			sol::optional<sol::function> after_load = state["meta"][script]["after_load"];
+			if (after_load != sol::nullopt) {
+				(*after_load)();
+			}
+		}
+	}
+
+	void run_game_update(float dt) {
+		sol::function lua_update = state["Game"]["__declaredMethods"]["update"];
+		lua_update(state["game"], dt);
 	}
 };
 LuaState Lua;

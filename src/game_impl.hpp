@@ -294,19 +294,6 @@ void  Console::ExecCommand(const char* command_line)
 }
 
 
-void Player::init() {
-	boon = Entity::create("boon");
-}
-void Player::update(float dt) {
-	frame_timer -= dt;
-	if (frame_timer <= 0.f) {
-		auto gc = boon()->get_component<Graphic_Component>();
-		auto animation = gc->active_animation;
-		animation->next_frame();
-		frame_timer = 8.f / 60.f;
-	}
-}
-
 void Circle_Buffer::push_back(int elem) {
 	fox_assert(len <= capacity);
 	fox_assert(head >= 0 && head < capacity);
@@ -414,7 +401,7 @@ void Editor::draw_component_editor() {
 					for (auto anim : gc->animations) {
 						bool is_selected = anim->name == current_animation->name;
 						if (ImGui::Selectable(anim->name.c_str(), is_selected)) {
-							gc->set_animation(anim->name);
+							set_animation(selected, anim->name);
 						}
 						if (is_selected) {
 							ImGui::SetItemDefaultFocus();
@@ -610,7 +597,6 @@ void Editor::update(float dt) {
 		ImGui::Checkbox("show demo", &show_imgui_demo);
 		ImGui::Text("Raw game input: %f, %f", input.screen_pos.x, input.screen_pos.y);
 		ImGui::Text("Camera offset: %f, %f", camera.offset.x, camera.offset.y);
-		ImGui::Text("Player position: %f, %f", player.boon->get_component<Position_Component>()->world_pos.x, player.boon->get_component<Position_Component>()->world_pos.y);
 		ImGui::Text("Last click: %f, %f", last_click.x, last_click.y);
 	}
 
@@ -1034,122 +1020,40 @@ struct Dialogue_Tree {
 	
 };
 
-void Game::begin_dialogue(Entity* entity) {
-	string npc = entity->lua_id;
-	active_dialogue->init_from_table(npc, scene);
-	game_state = Game_State::DIALOGUE;
-}
-void Game::go_through_door(string to) {
-	active_level = levels[to];
-}
 void Game::init() {
-	//@hack. The game initialization starts it off with a default level
-	// But the levels aren't loaded until you initialize Lua. 
-	Lua.state.script("game = Game:new()");
-	Lua.state.script("local inspect = require('inspect'); print(inspect(game))");
-	player.init();
 	particle_system.init();
 	active_level = levels["overworld"];
 	scene = "intro";
 	active_dialogue = new Dialogue_Tree;
 }
 void Game::update(float dt) {
-	sol::function lua_update = Lua.state["Game"]["__declaredMethods"]["update"];
-	lua_update(Lua.state["game"], dt);
 	static int frame = 0;
 
-	// Should have a way for Lua to register a player character on which you want the screen to be centered
-	// Set up the camera so that the player is in the center of the screen
-	auto blargh = player.boon->get_component<Position_Component>()->world_pos;
-	player.boon->get_component<Position_Component>()->world_pos = vec2_max(blargh, { .5, .5 });
-	camera.offset = player.boon->get_component<Position_Component>()->world_pos;
+	// Toggle the console
+	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
+		show_console = !show_console;
+	}
+	if (show_console) {
+		console.Draw("tdnsconsole");
+	}
+	
+	// Set up the camera so that the entity it's following is centered
+	def_get_cmp(follow_pc, camera.following.deref(), Position_Component);
+	camera.offset = follow_pc->world_pos;
 	camera.offset += glm::vec2{-.5, -.5};
 	input.world_pos = input.screen_pos + camera.offset;
+
+	Lua.run_game_update(dt);
 
 
 	// Check for interactions
 	// Export to Lua:
 	// are_interacting(initiator, receiver)
-#if 0
-	if (input.was_pressed(GLFW_KEY_E)) {
-		for (auto& handle : active_level->entity_handles) {
-			Entity* entity = handle();
-			Center_Box boon = Center_Box::from_points(points);
-			auto other = Center_Box::from_entity(handle);
-			if (!other) { continue; }
-			glm::vec2 sep;
-			if (are_boxes_colliding(boon, *other, sep)) {
-				auto interaction = entity->get_component<Interaction_Component>();
-				if (interaction) {
-					interaction->on_interact(entity, player.boon);
-				}
-			}
-		}
-	}
-#endif
-	if (game_state == Game_State::GAME) {
+	if (Lua.state["game"]["state"] == Game_State::GAME) {
 
-		// Toggle the console on control
-		// Keep this here
-#if 0
-		if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
-			show_console = !show_console;
-		}
-		if (show_console) {
-			console.Draw("tdnsconsole");
-		}
-#endif
-		//--EXPLORATION
-		// Export to Lua:
-		// GLFW input enums
-		// Way to query input 
-		// Way to set animation
-		Entity* boon = player.boon();
-		auto mc = boon->get_component<Movement_Component>();
-		bool moving = false;
-		if (input.is_down[GLFW_KEY_W]) {
-			mc->wish += glm::vec2(0.f, .0025f);
-			auto gc = boon->get_component<Graphic_Component>();
-			gc->set_animation_unless_already_active("walk_up");
-			moving = true;
-			player.facing = Facing::up;
-		}
-		if (input.is_down[GLFW_KEY_A]) {
-			mc->wish += glm::vec2(-.0025f, 0.f);
-			player.facing = Facing::left;
-		}
-		if (input.is_down[GLFW_KEY_S]) {
-			mc->wish += glm::vec2(0.f, -.0025f);
-			auto gc = boon->get_component<Graphic_Component>();
-			gc->set_animation_unless_already_active("walk_down");
-			moving = true;
-			player.facing = Facing::down;
-		}
-		if (input.is_down[GLFW_KEY_D]) {
-			mc->wish += glm::vec2(.0025f, 0.f);
-			player.facing = Facing::right;
-		}
-		
-		if (!moving) {
-			auto gc = boon->get_component<Graphic_Component>();
-			gc->set_animation_unless_already_active("stand");
-		}
-
-
-		// Export to Lua:
-		// A way to register entities with the physics system
-#if 0
-		for (auto& handle : active_level->entity_handles) {
-			if (handle->get_component<Bounding_Box>()) {
-				physics_system.entity_handles.push_back(handle);
-			}
-
-		}
-		physics_system.entity_handles.push_back(player.boon);
-#endif
 		physics_system.process(1.f / 60.f);
 	} 
-	else if (game_state == Game_State::DIALOGUE) {
+	else if (Lua.state["game"]["state"] == Game_State::DIALOGUE) {
 		// Export to Lua:
 		// Dialogue_Tree and Dialogue_Node
 		Dialogue_Node* node = active_dialogue->traverse();
@@ -1176,7 +1080,7 @@ void Game::update(float dt) {
 				// Break if node is terminal
 				if (node->terminal) {
 					text_box.reset_and_hide();
-					game_state = Game_State::GAME;
+					Lua.state["game"]["state"] = Game_State::GAME;
 				}
 				// Show responses if it is not
 				else {
@@ -1201,17 +1105,16 @@ void Game::update(float dt) {
 	}
 
 	particle_system.update(dt);
-	player.update(dt);
 	text_box.update(frame);
 	frame++;
 }
 void Game::render() {
-	active_level->draw();
-	renderer.draw(player.boon->get_component<Graphic_Component>(), player.boon->get_component<Position_Component>(), Render_Flags::None); //@hack why is boon different?
-
 	renderer.render_for_frame();
 	text_box.render();
 }
+
+
+// Lua exports
 bool lua_is_down(GLFW_KEY_TYPE key) {
 	return game.input.is_down[key];
 }
@@ -1220,4 +1123,12 @@ bool lua_was_down(GLFW_KEY_TYPE key) {
 }
 bool lua_was_pressed(GLFW_KEY_TYPE key) {
 	return game.input.was_pressed(key);
+}
+void go_through_door(string dest_level) {
+	Lua.state["game"]["level"] = levels[dest_level];
+}
+void begin_dialogue(EntityHandle entity) {
+	string npc = entity->lua_id;
+	game.active_dialogue->init_from_table(npc, "intro");
+	Lua.state["game"]["state"] = Game_State::DIALOGUE;
 }

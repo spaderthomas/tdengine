@@ -1,3 +1,5 @@
+local GLFW = require('glfw')
+
 boon = {}
 
 -- Boon
@@ -55,6 +57,24 @@ boon.boon.Vision = {
    } 
 }
 
-boon.boon.update = function(this)
-   
-end
+boon.boon.Update_Component = {
+   update = function(this, dt)
+	  if (is_down(GLFW.KEY_W)) then
+		 move_entity(this, 0, .0025)
+		 set_animation2(this, "walk_up")
+	  end
+	  if (is_down(GLFW.KEY_A)) then
+		 move_entity(this, -.0025, 0)
+	  end
+	  if (is_down(GLFW.KEY_S)) then
+		 move_entity(this, 0, -.0025)
+		 set_animation2(this, "walk_down")
+	  end
+	  if (is_down(GLFW.KEY_D)) then
+		 move_entity(this, .0025, 0)
+	  end
+
+	  update_animation(this, dt)
+	  tdengine_debug(this)
+   end
+}

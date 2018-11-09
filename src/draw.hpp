@@ -96,3 +96,10 @@ void draw_square(Center_Box box, glm::vec4 color) {
 	};
 	renderer.primitives.push_back(draw);
 }
+
+void debug_draw_bounding_box(EntityHandle handle, glm::vec4 color) {
+	auto box = Center_Box::from_entity(handle);
+	if (box) {
+		draw_square_outline((*box).as_points(), color);
+	}
+}

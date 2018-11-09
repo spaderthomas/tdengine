@@ -33,22 +33,6 @@ struct Console {
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
 };
 
-enum Facing {
-	left,
-	right,
-	up,
-	down
-};
-struct Player {
-	pool_handle<Entity> boon;
-	glm::vec2 position = glm::vec2(.25, .25);
-	Facing facing;
-	float frame_timer = 8.f / 60.f;
-	void init();
-	void update(float dt);
-};
-Player player;
-
 
 struct Particle {
 	glm::vec2 velocity = glm::vec2(0.f);
@@ -130,12 +114,11 @@ struct Editor : Layer {
 };
 Editor editor;
 
+enum Game_State {
+	GAME = 0,
+	DIALOGUE = 1
+};
 struct Game : Layer {
-	enum Game_State {
-		GAME = 0,
-		DIALOGUE = 1
-	} game_state = GAME;
-
 	//@move to a config file
 	Level* active_level;
 
@@ -147,8 +130,6 @@ struct Game : Layer {
 
 	bool in_dialogue = false;
 
-	void go_through_door(string to);
-	void begin_dialogue(Entity* entity);
 	void update(float dt) override;
 	void render() override;
 	void init() override;
@@ -162,3 +143,5 @@ Layer* active_layer = &editor;
 bool lua_is_down(GLFW_KEY_TYPE key);
 bool lua_was_down(GLFW_KEY_TYPE key);
 bool lua_was_pressed(GLFW_KEY_TYPE key);
+void go_through_door(string dest_level);
+void begin_dialogue(EntityHandle entity);
