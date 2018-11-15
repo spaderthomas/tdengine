@@ -93,7 +93,6 @@ struct Editor : Layer {
 	glm::vec2 smooth_drag_offset = { 0.f, 0.f };
 
 	// State about selected thing
-	
 	pool_handle<Entity> selected;
 	void translate();
 	void draw_component_editor();
@@ -140,8 +139,3 @@ int iactive_layer = 0;
 vector<Layer*> all_layers = { &editor, &game };
 Layer* active_layer = &editor;
 
-bool lua_is_down(GLFW_KEY_TYPE key);
-bool lua_was_down(GLFW_KEY_TYPE key);
-bool lua_was_pressed(GLFW_KEY_TYPE key);
-void go_through_door(string dest_level);
-void begin_dialogue(EntityHandle entity);

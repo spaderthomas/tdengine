@@ -32,8 +32,6 @@ extern "C" {
 
 #include "sqlite/sqlite3.h"
 
-#include "frozen/unordered_map.h"
-#include "frozen/string.h"
 
 // STL
 #include <stdlib.h>
@@ -73,6 +71,7 @@ using namespace std;
 #include "game.hpp"
 #include "box.hpp"
 #include "collision.hpp"
+#include "lua_exports.hpp"
 #include "tdns_lua.hpp"
 #include "fsm.hpp"
 #include "data.hpp"
@@ -89,7 +88,8 @@ using namespace std;
 #include "renderer_impl.hpp"
 #include "text_impl.hpp"
 #include "game_impl.hpp"
-#include "testin.hpp"
+#include "lua_exports_impl.hpp"
+
 
 
 sqlite3* db;

@@ -33,6 +33,12 @@ npc.intro_police.dialogue.intro = {
    }
 }
 
+npc.intro_police.dialogue.two = {
+   text = "This is the second scene.",
+   terminal = true,
+   responses = {},
+   children = {}
+}
 
 -- Intro2
 -- Intro

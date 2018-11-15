@@ -178,7 +178,8 @@
     <ClInclude Include="..\..\src\input.hpp" />
     <ClInclude Include="..\..\src\level_impl.hpp" />
     <ClInclude Include="..\..\src\log.hpp" />
-    <ClInclude Include="..\..\src\lua_register.hpp" />
+    <ClInclude Include="..\..\src\lua_exports.hpp" />
+    <ClInclude Include="..\..\src\lua_exports_impl.hpp" />
     <ClInclude Include="..\..\src\machine_conf.hpp" />
     <ClInclude Include="..\..\src\mesh.hpp" />
     <ClInclude Include="..\..\src\renderer.hpp" />

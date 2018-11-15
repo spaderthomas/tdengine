@@ -1,4 +1,5 @@
 local GLFW = require('glfw')
+local Default_Components = require('default_components')
 
 boon = {}
 
@@ -35,16 +36,7 @@ boon.boon.Position_Component = {}
 
 boon.boon.Collision_Component = {
    kind = Collider_Kind.DYNAMIC,
-   bounding_box = {
-	  center = {
-		 x = 0,
-		 y = tile_y_to_screen(-.5)
-	  },
-	  extents = {
-		 x = tile_x_to_screen(1.25),
-		 y = tile_y_to_screen(.5)
-	  }
-   },
+   bounding_box = Default_Components.Human_Bounding_Box,
    on_collide = function(this, other) end
 }
 
@@ -61,20 +53,19 @@ boon.boon.Update_Component = {
    update = function(this, dt)
 	  if (is_down(GLFW.KEY_W)) then
 		 move_entity(this, 0, .0025)
-		 set_animation2(this, "walk_up")
+		 set_animation_no_reset(this, "walk_up")
 	  end
 	  if (is_down(GLFW.KEY_A)) then
 		 move_entity(this, -.0025, 0)
 	  end
 	  if (is_down(GLFW.KEY_S)) then
 		 move_entity(this, 0, -.0025)
-		 set_animation2(this, "walk_down")
+		 set_animation_no_reset(this, "walk_down")
 	  end
 	  if (is_down(GLFW.KEY_D)) then
 		 move_entity(this, .0025, 0)
 	  end
 
 	  update_animation(this, dt)
-	  tdengine_debug(this)
    end
 }

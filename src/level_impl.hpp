@@ -25,12 +25,6 @@ void Level::draw() {
 	for (auto handle : entity_handles) {
 		if (handle) handle->draw(Render_Flags::None);
 	}
-
-	if (debug_show_aabb) {
-		for (auto& entity : entity_handles) {
-			debug_draw_bounding_box(entity, white4);
-		}
-	}
 }
 
 // The chunk index is used as an index into the JSON save object
@@ -106,6 +100,7 @@ void Level::load() {
 	}
 }
 
+
 void init_levels() {
 	sol::table level_names = Lua.state["levels"];
 	for (auto& kvp : level_names) {
@@ -116,10 +111,4 @@ void init_levels() {
 		level->load();
 		levels[name] = level;
 	}
-}
-
-Level* get_level(string name) {
-	auto level = levels[name];
-	fox_assert(level);
-	return level;
 }

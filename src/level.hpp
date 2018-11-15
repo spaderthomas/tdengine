@@ -41,5 +41,3 @@ struct Level {
 	void load();
 };
 unordered_map<string, Level*> levels;
-
-Level* get_level(string name);

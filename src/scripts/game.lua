@@ -9,10 +9,9 @@ local GameState = {
 
 
 Game = class('Game')
-Game.static.default_level = "overworld"
 function Game:initialize()
    self.state = GameState.GAME
-   self.level = get_level(Game.default_level)
+   self.level = get_level("overworld")
    self.hero = create_entity("boon")
    camera_follow(self.hero)
 end
@@ -24,7 +23,8 @@ function Game:update(dt)
 	  draw_entity(self.hero, Render_Flags.NO_FLAGS)
 	  
 	  -- Check for collisions
-	  for i = 1, self.level:count_entities() do
+	  -- for i = 1, self.level:count_entities() do
+	  for i = 1, #self.level.entities do
 		 local this = self.level.entities[i]
 		 local collider = collider_kind(this)
 
@@ -33,10 +33,10 @@ function Game:update(dt)
 			for j = i + 1, self.level:count_entities() do
 			   local other = self.level.entities[j]
 			   local collider = collider_kind(other)
-
 			   -- A dynamic collider can collide with anything
 			   if (collider ~= Collider_Kind.NONE) then
 				  register_potential_collision(this, other)
+				  are_interacting(this, other)
 			   end
 			end
 		 end

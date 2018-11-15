@@ -20,9 +20,6 @@ bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
 	minkowski_.top = top_right.y;
 	minkowski_.left = top_left.x;
 	minkowski_.right = top_right.x;
-	if (debug_show_minkowski) {
-		draw_square_outline(minkowski_, red);
-	}
 
 	// If the Minkowski difference intersects the origin, there's a collision
 	auto verts = minkowski.as_points();
@@ -53,7 +50,10 @@ bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
 	penetration = glm::vec2(0.f);
 	return false;
 }
-
+bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration) {
+	//@hack just write this
+	return are_boxes_colliding(a.as_center_box(), b.as_center_box(), penetration);
+}
 
 void Physics_System::process(float dt) {
 	for (auto& mover : movers) {

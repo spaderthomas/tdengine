@@ -28,6 +28,8 @@ struct Movement_Component : Component {
 	string name() override;
 };
 struct Vision_Component : Component {
+	// Defines the dimensions for a box whose bottom/top center (depending on orientation) 
+	// is the position (i.e. center) of the entity
 	float width;
 	float depth;
 

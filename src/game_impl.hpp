@@ -841,7 +841,7 @@ void Editor::update(float dt) {
 		screen_unit right = top_left_drag.x > input.world_pos.x ? top_left_drag.x : input.world_pos.x;
 		screen_unit left = top_left_drag.x > input.world_pos.x ? input.world_pos.x : top_left_drag.x;
 		Points_Box points = { top, bottom, left, right };
-		draw_square_outline(points, red);
+		//@draw draw_square_outline(points, red);
 
 		glm::vec2 dummy_penetration;
 		Center_Box selection_area = Center_Box::from_points(points);
@@ -1111,24 +1111,4 @@ void Game::update(float dt) {
 void Game::render() {
 	renderer.render_for_frame();
 	text_box.render();
-}
-
-
-// Lua exports
-bool lua_is_down(GLFW_KEY_TYPE key) {
-	return game.input.is_down[key];
-}
-bool lua_was_down(GLFW_KEY_TYPE key) {
-	return game.input.was_down[key];
-}
-bool lua_was_pressed(GLFW_KEY_TYPE key) {
-	return game.input.was_pressed(key);
-}
-void go_through_door(string dest_level) {
-	Lua.state["game"]["level"] = levels[dest_level];
-}
-void begin_dialogue(EntityHandle entity) {
-	string npc = entity->lua_id;
-	game.active_dialogue->init_from_table(npc, "intro");
-	Lua.state["game"]["state"] = Game_State::DIALOGUE;
 }

@@ -173,106 +173,30 @@ void Entity::destroy(pool_handle<Entity> handle) {
 	entity_pool.mark_available(handle);
 }
 
-
-// Lua defs
-string entity_name(EntityHandle entity) {
-	return entity->lua_id;
-}
-int entity_id(EntityHandle entity) {
-	return entity->id;
-}
-void on_collide(EntityHandle me, EntityHandle other) {
-	def_get_cmp(cc, me, Collision_Component);
-	if (cc)
-		cc->on_collide(me, other);
-}
-void update_animation(EntityHandle me, float dt) {
-	def_get_cmp(gc, me.deref(), Graphic_Component);
-	auto anim = gc->active_animation;
-	anim->time_to_next_frame -= dt;
-	if (anim->time_to_next_frame <= 0.f) {
-		anim->next_frame();
-	}
-}
-int collider_kind(EntityHandle me) {
-	def_get_cmp(cc, me.deref(), Collision_Component);
-	return cc ?
-		cc->kind :
-		Collider_Kind::NO_COLLIDER;
-}
-void draw_entity(EntityHandle me, Render_Flags flags) {
-	def_get_cmp(gc, me.deref(), Graphic_Component);
+// Internal API 
+Points_Box get_vision_box(EntityHandle me) {
 	def_get_cmp(pc, me.deref(), Position_Component);
-	if (gc && pc) {
-		renderer.draw(gc, pc, flags);
-	}
-}
-void teleport_entity(EntityHandle me, float x, float y) {
-	def_get_cmp(pc, me.deref(), Position_Component);
-	if (pc)
-		pc->world_pos = { x, y };
-}
-void move_entity(EntityHandle me, float dx, float dy) {
-	def_get_cmp(mc, me.deref(), Movement_Component);
-	mc->wish += glm::vec2(dx, dy);
-
-	// Tell the Physics system to check + resolve if this movement causes collisions
-	physics_system.movers.push_back(me);
-}
-void set_animation(EntityHandle me, string wish_name) {
-	def_get_cmp(gc, me.deref(), Graphic_Component);
-	for (auto& animation : gc->animations) {
-		if (animation->name == wish_name) {
-			gc->active_animation = animation;
-			gc->active_animation->icur_frame = 0;
-			return;
-		}
-	}
-
-	string msg = "Tried to set active animation to " + wish_name + " but it was not registered in the component!";
-	tdns_log.write(msg);
-}
-void set_animation2(EntityHandle me, string wish_name) {
-	def_get_cmp(gc, me.deref(), Graphic_Component);
-	if (gc->active_animation) {
-		if (gc->active_animation->name == wish_name) {
-			return;
-		}
-	}
-
-	set_animation(me, wish_name);
-}
-void update_entity(EntityHandle me, float dt) {
-	def_get_cmp(uc, me.deref(), Update_Component);
-	if (uc)
-		uc->update(me, dt);
-}
-
-// Where I'm at: Trying to get the interactions to work, but first I need box-box collision for vision boxes
-// and bounding boxes. But I'm having unit errors again :( 
-bool are_interacting(EntityHandle initiator, EntityHandle receiver) {
-	def_get_cmp(initiator_pc, initiator.deref(), Position_Component);
-	def_get_cmp(receiver_pc, receiver.deref(), Position_Component);
-	def_get_cmp(vision, receiver.deref(), Vision_Component);
-	def_get_cmp(ic, initiator.deref(), Interaction_Component);
-	def_get_cmp(cc, receiver.deref(), Collision_Component);
-	if (!(ic && cc && initiator_pc && receiver_pc)) return false;
-
-	screen_unit centerx = 0.f;
-	screen_unit centery = 0.f;
-	glm::vec2 top_left = glm::vec2(centerx - .5f * vision->width, centery + .5f * vision->depth);
-	glm::vec2 top_right = glm::vec2(centerx + .5f * vision->width, centery + .5f * vision->depth);
-	glm::vec2 bottom_right = glm::vec2(centerx + .5f * vision->width, centery - .5f * vision->depth);
-	glm::vec2 bottom_left = glm::vec2(centerx - .5f * vision->width, centery - .5f * vision->depth);
-}
-void debug(EntityHandle me) {
 	def_get_cmp(vision, me.deref(), Vision_Component);
+
+	Points_Box vision_box;
+	vision_box.top = pc->world_pos.y + vision->depth;
+	vision_box.bottom = pc->world_pos.y;
+	vision_box.left = pc->world_pos.x - vision->width / 2.f;
+	vision_box.right = pc->world_pos.x + vision->width / 2.f;
+
+	return vision_box;
+}
+Points_Box get_bounding_box_world(EntityHandle me) {
 	def_get_cmp(pc, me.deref(), Position_Component);
-	screen_unit centerx = pc->world_pos.x + .5f;
-	screen_unit centery = pc->world_pos.y + .5f;
-	glm::vec2 top_left = glm::vec2(centerx - .5f * vision->width, centery + .5f * vision->depth);
-	glm::vec2 top_right = glm::vec2(centerx + .5f * vision->width, centery + .5f * vision->depth);
-	glm::vec2 bottom_right = glm::vec2(centerx + .5f * vision->width, centery - .5f * vision->depth);
-	glm::vec2 bottom_left = glm::vec2(centerx - .5f * vision->width, centery - .5f * vision->depth);
-	draw_square_outline(top_left, top_right, bottom_right, bottom_left, hannah_color);
+	def_get_cmp(cc, me.deref(), Collision_Component);
+	fox_assert(cc);
+	fox_assert(pc);
+
+	Points_Box bounding_box;
+	bounding_box.top = pc->world_pos.y + cc->bounding_box.screen_center.y + cc->bounding_box.screen_extents.y / 2;
+	bounding_box.bottom = pc->world_pos.y + cc->bounding_box.screen_center.y - cc->bounding_box.screen_extents.y / 2;
+	bounding_box.right = pc->world_pos.x + cc->bounding_box.screen_center.x + cc->bounding_box.screen_extents.x / 2;
+	bounding_box.left = pc->world_pos.x + cc->bounding_box.screen_center.x - cc->bounding_box.screen_extents.x / 2;
+
+	return bounding_box;
 }

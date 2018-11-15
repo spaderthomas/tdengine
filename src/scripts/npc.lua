@@ -1,4 +1,4 @@
-local class = require('middleclass')
+local Default_Components = require('default_components')
 
 npc = {}
 
@@ -49,16 +49,7 @@ npc.wilson.Position_Component = {}
 
 npc.wilson.Collision_Component = {
    kind = Collider_Kind.DYNAMIC,
-   bounding_box = {
-	  center = {
-		 x = 0,
-		 y = tile_y_to_screen(-.5)
-	  },
-	  extents = {
-		 x = tile_x_to_screen(1.25),
-		 y = tile_y_to_screen(.5)
-	  }
-   },
+   bounding_box = Default_Components.Human_Bounding_Box,
    on_collide = function(this, other) end
 }
 
@@ -95,16 +86,7 @@ npc.intro2.Position_Component = {}
 
 npc.intro2.Collision_Component = {
    kind = Collider_Kind.DYNAMIC,
-   bounding_box = {
-	  center = {
-		 x = 0,
-		 y = tile_y_to_screen(-.5)
-	  },
-	  extents = {
-		 x = tile_x_to_screen(1.25),
-		 y = tile_y_to_screen(.5)
-	  }
-   },
+   bounding_box = Default_Components.Human_Bounding_Box,
    on_collide = function(this, other) end
 }
 
@@ -131,15 +113,10 @@ npc.intro_police.Graphic_Component = {
 
 npc.intro_police.Position_Component = {}
 
-npc.intro_police.Bounding_Box = {
-   center = {
-	  x = 0,
-	  y = tile_y_to_screen(-.5)
-   },
-   extents = {
-	  x = tile_x_to_screen(1.25),
-	  y = tile_y_to_screen(.5)
-   }
+npc.intro_police.Collision_Component = {
+   kind = Collider_Kind.DYNAMIC,
+   bounding_box = Default_Components.Human_Bounding_Box,
+   on_collide = function(this, other) end
 }
 
 npc.intro_police.Movement_Component = {}

@@ -139,10 +139,13 @@
     <ClInclude Include="..\..\src\db.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\lua_register.hpp">
+    <ClInclude Include="..\..\src\collision_impl.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\collision_impl.hpp">
+    <ClInclude Include="..\..\src\lua_exports_impl.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\lua_exports.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

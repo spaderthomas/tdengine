@@ -12,6 +12,11 @@ meta.scripts = {
 	  check_for_defs = false
    },
    {
+	  name = "default_components",
+	  imgui_ignore = true,
+	  check_for_defs = false
+   },
+   {
 	  name = "npc",
 	  imgui_ignore = false,
 	  check_for_defs = true
