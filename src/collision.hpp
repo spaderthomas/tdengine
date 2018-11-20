@@ -15,7 +15,17 @@ Physics_System physics_system;
 bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration);
 bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration);
 
+enum Collider_Kind {
+	STATIC,
+	DYNAMIC,
+	HERO,
+	DOOR,
+	NO_COLLIDER
+};
 
-// Lua exports
-bool are_entities_colliding(EntityHandle a, EntityHandle b);
-void register_potential_collision(EntityHandle me, EntityHandle other);
+
+bool collider_matrix[Collider_Kind::NO_COLLIDER][Collider_Kind::NO_COLLIDER] = {};
+void collider_matrix_add(Collider_Kind me, Collider_Kind other, bool should_test);
+bool should_test_collision(Collider_Kind me, Collider_Kind other);
+void init_collider_matrix();
+

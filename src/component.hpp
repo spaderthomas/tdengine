@@ -60,11 +60,8 @@ struct Door_Component : Component {
 	void load(json& j);
 	string name() override;
 };
-enum Collider_Kind {
-	STATIC,
-	DYNAMIC,
-	NO_COLLIDER
-};
+
+enum Collider_Kind;
 struct Collision_Component : Component {
 	struct {
 		glm::vec2 screen_center;

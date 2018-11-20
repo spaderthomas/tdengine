@@ -73,6 +73,7 @@ using namespace std;
 #include "collision.hpp"
 #include "lua_exports.hpp"
 #include "tdns_lua.hpp"
+#include "bind_functions.hpp"
 #include "fsm.hpp"
 #include "data.hpp"
 #include "shader.hpp"
@@ -94,18 +95,6 @@ using namespace std;
 
 sqlite3* db;
 
-constexpr int const_strlen(const char* str) {
-	int i = 0;
-	while (str[i++]);
-	return i;
-}
-
-/*
-constexpr int row_to_index(const frozen::string table, const frozen::string row) {
-	const auto& outer = db_schema.at(table);
-	return outer.at(row);
-}
-*/
 int main() {
 	tdns_log.init();
 
@@ -165,6 +154,7 @@ int main() {
 	init_fonts();
 	game.init();
 	editor.init();
+	init_collider_matrix();
 
 	Lua.init_after_load();
 #pragma endregion

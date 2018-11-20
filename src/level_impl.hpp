@@ -1,7 +1,3 @@
-int Level::count_entities() {
-	return entity_handles.size();
-}
-
 pool_handle<Entity> Level::get_tile(int x, int y) {
 	Chunk& chunk = chunks[Chunk_Index(chunk_of(x), chunk_of(y))];
 	return chunk.tiles[index_into_chunk(x)][index_into_chunk(y)];

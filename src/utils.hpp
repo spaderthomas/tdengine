@@ -1,11 +1,13 @@
- // Small quality of life macros and typedefs
- #define fox_max(a, b) (a) > (b) ? (a) : (b)
- #define fox_min(a, b) (a) > (b) ? (b) : (a)
- #define fox_for(iterName, iterCount) for (unsigned int iterName = 0; iterName < (iterCount); ++iterName)
- #define fox_iter(iter_name, container) for (auto iter_name = (container).begin(); (iter_name) != (container).end(); (iter_name)++)
- #define rand_float(max) (static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (max)))
- #define is_newline(c) ((c) == '\n' || (c) == '\r')
- #define is_space(c) ((c) == ' ')
+// Small quality of life macros and typedefs
+#define fox_max(a, b) (a) > (b) ? (a) : (b)
+#define fox_min(a, b) (a) > (b) ? (b) : (a)
+#define fox_for(iterName, iterCount) for (unsigned int iterName = 0; iterName < (iterCount); ++iterName)
+#define fox_iter(iter_name, container) for (auto iter_name = (container).begin(); (iter_name) != (container).end(); (iter_name)++)
+#define rand_float(max) (static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (max)))
+#define is_newline(c) ((c) == '\n' || (c) == '\r')
+#define is_space(c) ((c) == ' ')
+#define dont_care false
+#define tdapi 
 
  //Assert
  #ifdef _MSC_VER

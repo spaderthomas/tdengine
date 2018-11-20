@@ -77,6 +77,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <IncludePath>C:\Users\dboon\programming\tdengine\;C:\Users\dboon\programming\tdengine\include\lua;C:\Users\dboon\programming\tdengine\include;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\dboon\programming\tdengine\lib;$(LibraryPath)</LibraryPath>
+    <PreBuildEventUseInBuild>true</PreBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -95,8 +96,7 @@
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
     <PreBuildEvent>
-      <Command>
-      </Command>
+      <Command>$(projectDir)metaprogramming.bat</Command>
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -126,8 +126,7 @@
       <AdditionalDependencies>sqlite3.dll;opengl32.lib;glfw3.lib;freetyped.lib;lua53.lib;kernel32.lib;user32.lib;gdi32.lib;winspool.lib;comdlg32.lib;advapi32.lib;shell32.lib;ole32.lib;oleaut32.lib;uuid.lib;odbc32.lib;odbccp32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
-      <Command>
-      </Command>
+      <Command>$(projectDir)/../../metaprogramming.bat</Command>
     </PreBuildEvent>
     <PreBuildEvent>
       <Message>
@@ -160,6 +159,7 @@
     <ClInclude Include="..\..\src\animation.hpp" />
     <ClInclude Include="..\..\src\animation_impl.hpp" />
     <ClInclude Include="..\..\src\asset_table.hpp" />
+    <ClInclude Include="..\..\src\bind_functions.hpp" />
     <ClInclude Include="..\..\src\box.hpp" />
     <ClInclude Include="..\..\src\camera.hpp" />
     <ClInclude Include="..\..\src\collision.hpp" />
@@ -188,8 +188,6 @@
     <ClInclude Include="..\..\src\shader.hpp" />
     <ClInclude Include="..\..\src\sprite_impl.hpp" />
     <ClInclude Include="..\..\src\tdns_lua.hpp" />
-    <ClInclude Include="..\..\src\test.hpp" />
-    <ClInclude Include="..\..\src\testin.hpp" />
     <ClInclude Include="..\..\src\text.hpp" />
     <ClInclude Include="..\..\src\texture.hpp" />
     <ClInclude Include="..\..\src\text_impl.hpp" />

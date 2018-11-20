@@ -32,7 +32,6 @@ struct Level {
 	string name;
 	unordered_map<Chunk_Index, Chunk> chunks;
 	vector<pool_handle<Entity>> entity_handles;
-	int count_entities();
 
 	pool_handle<Entity> get_tile(int x, int y);
 	void set_tile(pool_handle<Entity> handle, int x, int y);

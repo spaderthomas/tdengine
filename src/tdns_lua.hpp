@@ -10,37 +10,7 @@ struct LuaState {
 	void init() {
 		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io, sol::lib::package, sol::lib::math, sol::lib::table);
 
-		// CPP -> Lua bindings
-		// Entity management
-		state.set_function("entity_name", &entity_name);
-		state.set_function("entity_id", &entity_id);
-		state.set_function("update_animation", &update_animation);
-		state.set_function("create_entity", &Entity::create);
-		state.set_function("update_entity", &update_entity);
-		state.set_function("draw_entity", &draw_entity);
-		state.set_function("teleport_entity", &teleport_entity);
-		state.set_function("move_entity", &move_entity);
-		state.set_function("set_animation", &set_animation);
-		state.set_function("set_animation_no_reset", &set_animation_no_reset);
-
-		// Collision checking
-		state.set_function("are_colliding", &are_entities_colliding);
-		state.set_function("on_collide", &on_collide);
-		state.set_function("collider_kind", &collider_kind);
-		state.set_function("register_potential_collision", &register_potential_collision);
-		state.set_function("are_interacting", &are_interacting);
-		state.set_function("begin_dialogue", &begin_dialogue);
-
-		// Input
-		state.set_function("was_pressed", &lua_was_pressed);
-		state.set_function("is_down", &lua_is_down);
-		state.set_function("was_down", &lua_was_down);
-
-		// Utilities
-		state.set_function("get_level", &get_level);
-		state.set_function("go_through_door", &go_through_door);
-		state.set_function("camera_follow", &camera_follow);
-
+		bind_functions();
 
 		// Userdata
 		state.new_usertype<EntityHandle>(
@@ -58,8 +28,7 @@ struct LuaState {
 			"name", &Level::name,
 			"load", &Level::load,
 			"draw", &Level::draw,
-			"entities", &Level::entity_handles,
-			"count_entities", &Level::count_entities
+			"entities", &Level::entity_handles
 		);
 
 		
@@ -117,7 +86,8 @@ struct LuaState {
 	}
 
 	void run_game_update(float dt) {
-		sol::function lua_update = state["Game"]["__declaredMethods"]["update"];
+		//@hack either a better way to find the function with middleclass or dont use middleclass
+		sol::function lua_update = state["Game"]["__declaredMethods"]["update"]; 
 		lua_update(state["game"], dt);
 	}
 };

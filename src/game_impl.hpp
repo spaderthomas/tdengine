@@ -882,8 +882,6 @@ void Editor::render() {
 	}
 }
 
-// Contains a line of NPC text, a vector of responses, and a vector of nodes that correspond to those responses.
-// e.g. response = 2 would indicate to go to children[2]
 struct Dialogue_Node {
 	string full_text;
 	vector<string> responses;
@@ -1046,14 +1044,8 @@ void Game::update(float dt) {
 	Lua.run_game_update(dt);
 
 
-	// Check for interactions
-	// Export to Lua:
-	// are_interacting(initiator, receiver)
-	if (Lua.state["game"]["state"] == Game_State::GAME) {
-
-		physics_system.process(1.f / 60.f);
-	} 
-	else if (Lua.state["game"]["state"] == Game_State::DIALOGUE) {
+	physics_system.process(1.f / 60.f);
+	if (false) {
 		// Export to Lua:
 		// Dialogue_Tree and Dialogue_Node
 		Dialogue_Node* node = active_dialogue->traverse();

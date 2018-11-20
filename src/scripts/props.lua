@@ -15,10 +15,7 @@ props = {
 			  }	  
 		   },
 		   on_collide = function(this, other)
-			  print("door")
-			  any = this:get_component("Door_Component")
-			  to = any.door.to
-			  go_through_door(to)
+			  go_through_door(this, other)
 		   end
 		}
    },

@@ -2,51 +2,34 @@ local class = require('middleclass')
 local inspect = require('inspect')
 local GLFW = require('glfw')
 
-local GameState = {
-   GAME = 0,
-   DIALOGUE = 1
-}
-
-
 Game = class('Game')
 function Game:initialize()
-   self.state = GameState.GAME
    self.level = get_level("overworld")
    self.hero = create_entity("boon")
    camera_follow(self.hero)
 end
 
 function Game:update(dt)
-   if (self.state == GameState.GAME) then
-
-	  -- Check for interactions
-	  draw_entity(self.hero, Render_Flags.NO_FLAGS)
+	  -- Check for collisions among PC and NPCs
+	  for i = 1, #self.level.entities do
+		 local other = self.level.entities[i]
+		 register_potential_collision(self.hero, other)
+		 are_interacting(self.hero, other)
+	  end
 	  
-	  -- Check for collisions
-	  -- for i = 1, self.level:count_entities() do
+	  -- Check for collisions among NPCs
 	  for i = 1, #self.level.entities do
 		 local this = self.level.entities[i]
-		 local collider = collider_kind(this)
-
-		 -- Only check collisions for dynamic objects
-		 if (collider == Collider_Kind.DYNAMIC) then
-			for j = i + 1, self.level:count_entities() do
+			for j = i + 1, #self.level.entities do
 			   local other = self.level.entities[j]
-			   local collider = collider_kind(other)
-			   -- A dynamic collider can collide with anything
-			   if (collider ~= Collider_Kind.NONE) then
 				  register_potential_collision(this, other)
-				  are_interacting(this, other)
-			   end
 			end
-		 end
 	  end
 
 	  update_entity(self.hero, dt)
 
+	  draw_entity(self.hero, Render_Flags.NO_FLAGS)
 	  self.level:draw()
-	  
-   end
 end
 
 meta.game = {}

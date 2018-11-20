@@ -72,7 +72,11 @@ void Physics_System::process(float dt) {
 		if (me_box && other_box) {
 			glm::vec2 penetration;
 			if (are_boxes_colliding(*me_box, *other_box, penetration)) {
+				cout << "Collision found between " << entity_name(element.me) << ", " << entity_name(element.other) <<  endl;
 				def_get_cmp(cc, element.me.deref(), Collision_Component);
+				def_get_cmp(mypos, element.me.deref(), Position_Component);
+				def_get_cmp(otherpos, element.other.deref(), Position_Component);
+				mypos->world_pos -= penetration;
 				cc->on_collide(element.me, element.other);
 			}
 		}
@@ -81,21 +85,40 @@ void Physics_System::process(float dt) {
 	movers.clear();
 }
 
-// Lua exports
-bool are_entities_colliding(EntityHandle a, EntityHandle b) {
-	optional<Center_Box> a_box = Center_Box::from_entity(a);
-	optional<Center_Box> b_box = Center_Box::from_entity(b);
-	glm::vec2 penetration;
-
-	if (!a_box || !b_box) {
-		return false;
-	}
-
-	return are_boxes_colliding(*a_box, *b_box, penetration);
+void collider_matrix_add(Collider_Kind me, Collider_Kind other, bool should_test) {
+	collider_matrix[me][other] = should_test;
 }
-void register_potential_collision(EntityHandle me, EntityHandle other) {
-	physics_system.collisions.push_back(
-		{ me, other }
-	);
+bool should_test_collision(Collider_Kind me, Collider_Kind other) {
+	return collider_matrix[me][other];
 }
+void init_collider_matrix() {
+	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::STATIC, true);
+	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::DYNAMIC, true);
+	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::HERO, true);
+	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::DOOR, false);
+	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::NO_COLLIDER, false);
 
+	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::STATIC, false);
+	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::DYNAMIC, false);
+	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::HERO, false);
+	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::DOOR, false);
+	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::NO_COLLIDER, false);
+
+	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::STATIC, true);
+	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::DYNAMIC, true);
+	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::HERO, dont_care);
+	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::DOOR, false);
+	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::NO_COLLIDER, false);
+
+	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::STATIC, false);
+	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::DYNAMIC, false);
+	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::HERO, false);
+	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::DOOR, false);
+	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::NO_COLLIDER, false);
+
+	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::STATIC, false);
+	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::DYNAMIC, false);
+	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::HERO, false);
+	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::DOOR, false);
+	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::NO_COLLIDER, false);
+}

@@ -21,7 +21,9 @@ end
 Collider_Kind = {
    STATIC = 0,
    DYNAMIC = 1,
-   NO_COLLIDER = 2
+   HERO = 2,
+   DOOR = 3,
+   NO_COLLIDER = 4
 }
 
 Render_Flags = {

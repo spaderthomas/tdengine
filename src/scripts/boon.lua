@@ -67,5 +67,6 @@ boon.boon.Update_Component = {
 	  end
 
 	  update_animation(this, dt)
+	  
    end
 }

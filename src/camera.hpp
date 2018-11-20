@@ -6,6 +6,3 @@ struct {
 	EntityHandle following = {-1, nullptr};
 } camera;
 
-void camera_follow(EntityHandle entity) {
-	camera.following = entity;
-}
