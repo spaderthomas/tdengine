@@ -87,6 +87,7 @@ pool_handle<Entity> Entity::create(string lua_id) {
 			else if (component_type == "Movement_Component") {
 				pool_handle<any_component> handle = entity->add_component<Movement_Component>();
 				Movement_Component* component = &handle()->movement_component;
+				component->init_from_table(table);
 				component->wish = glm::vec2(0.f);
 
 			}

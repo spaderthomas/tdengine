@@ -40,7 +40,7 @@ boon.boon.Collision_Component = {
    on_collide = function(this, other) end
 }
 
-boon.boon.Movement_Component = {}
+boon.boon.Movement_Component = Default_Components.Human_Movement_Component
 
 boon.boon.Vision = {
    extents = {
@@ -52,18 +52,18 @@ boon.boon.Vision = {
 boon.boon.Update_Component = {
    update = function(this, dt)
 	  if (is_down(GLFW.KEY_W)) then
-		 move_entity(this, 0, .0025)
+		 move_entity(this, true, false, false, false)
 		 set_animation_no_reset(this, "walk_up")
 	  end
 	  if (is_down(GLFW.KEY_A)) then
-		 move_entity(this, -.0025, 0)
+		 move_entity(this, false, false, true, false)
 	  end
 	  if (is_down(GLFW.KEY_S)) then
-		 move_entity(this, 0, -.0025)
+		 move_entity(this, false, true, false, false)
 		 set_animation_no_reset(this, "walk_down")
 	  end
 	  if (is_down(GLFW.KEY_D)) then
-		 move_entity(this, .0025, 0)
+		 move_entity(this, false, false, false, true)
 	  end
 
 	  update_animation(this, dt)

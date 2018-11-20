@@ -53,7 +53,7 @@ npc.wilson.Collision_Component = {
    on_collide = function(this, other) end
 }
 
-npc.wilson.Movement_Component = {}
+npc.wilson.Movement_Component = Default_Components.Human_Movement_Component
 
 npc.wilson.Vision = {
    extents = {
@@ -90,7 +90,7 @@ npc.intro2.Collision_Component = {
    on_collide = function(this, other) end
 }
 
-npc.intro2.Movement_Component = {}
+npc.intro2.Movement_Component = Default_Components.Human_Movement_Component
 
 npc.intro2.Interaction_Component = {
    on_interact = function(this, other)
@@ -119,7 +119,7 @@ npc.intro_police.Collision_Component = {
    on_collide = function(this, other) end
 }
 
-npc.intro_police.Movement_Component = {}
+npc.intro_police.Movement_Component = Default_Components.Human_Movement_Component
 
 npc.intro_police.Interaction_Component = {
    on_interact = function(this, other)

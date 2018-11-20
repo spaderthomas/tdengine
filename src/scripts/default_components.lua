@@ -8,6 +8,12 @@ local defaults = {
 		 x = tile_x_to_screen(1.25),
 		 y = tile_y_to_screen(.5)
 	  }
+   },
+   Human_Movement_Component = {
+	  speed = {
+		 x = .0025,
+		 y = .0025
+	  }
    }
 }
 

@@ -24,7 +24,9 @@ struct Position_Component : Component {
 	string name() override;
 };
 struct Movement_Component : Component {
+	glm::vec2 speed;
 	glm::vec2 wish;
+	void init_from_table(sol::table table) override;
 	string name() override;
 };
 struct Vision_Component : Component {

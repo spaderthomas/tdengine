@@ -59,6 +59,10 @@ void Position_Component::load(json& self) {
 }
 string Position_Component::name() { return "Position_Component"; }
 
+void Movement_Component::init_from_table(sol::table table) {
+	speed.x = table["speed"]["x"];
+	speed.y = table["speed"]["y"];
+}
 string Movement_Component::name() { return "Movement_Component"; }
 
 void Vision_Component::init_from_table(sol::table table) {

@@ -9,7 +9,7 @@ tdapi void update_animation(EntityHandle me, float dt);
 tdapi int collider_kind(EntityHandle me);
 tdapi void draw_entity(EntityHandle me, Render_Flags flags);
 tdapi void teleport_entity(EntityHandle me, float x, float y);
-tdapi void move_entity(EntityHandle me, float dx, float dy);
+tdapi void move_entity(EntityHandle me, bool up, bool down, bool left, bool right);
 tdapi EntityHandle create_entity(string lua_id);
 tdapi void set_animation(EntityHandle me, string wish_name);
 tdapi void set_animation_no_reset(EntityHandle me, string wish_name);

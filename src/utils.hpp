@@ -54,6 +54,15 @@ typedef unsigned char tdbyte;
 
  	return glm::normalize(vec);
  }
+
+#define DEFAULT_FLOAT_TOLERANCE .005
+ bool float_almost_equals(float a, float b) {
+	 return (a - b) < DEFAULT_FLOAT_TOLERANCE;
+ }
+ bool vec_almost_equals(glm::vec2 vec, glm::vec2 target) {
+	 return glm::length(vec - target) < DEFAULT_FLOAT_TOLERANCE;
+ }
+
  // Colors
  glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's favorite three floating point numbers.
  glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
