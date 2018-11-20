@@ -57,7 +57,7 @@ typedef unsigned char tdbyte;
 
 #define DEFAULT_FLOAT_TOLERANCE .005
  bool float_almost_equals(float a, float b) {
-	 return (a - b) < DEFAULT_FLOAT_TOLERANCE;
+	 return glm::abs(a - b) < DEFAULT_FLOAT_TOLERANCE;
  }
  bool vec_almost_equals(glm::vec2 vec, glm::vec2 target) {
 	 return glm::length(vec - target) < DEFAULT_FLOAT_TOLERANCE;
@@ -428,6 +428,10 @@ struct Sine_Func {
 	float eval_at(float point);
 };
 
+float Sine_Func::eval_at(float point) {
+	return amp * glm::sin(period * point - phase_shift);
+}
+
 
 // POOL DECLS
 struct pool_entry_info {
@@ -559,6 +563,33 @@ struct Key_Type {
 	int y;
 };
 
+
+
+void Circle_Buffer::push_back(int elem) {
+	fox_assert(len <= capacity);
+	fox_assert(head >= 0 && head < capacity);
+	if (len == capacity) { return; }
+	data[(head + len) % capacity] = elem;
+	len++;
+}
+optional<int> Circle_Buffer::pop_front() {
+	fox_assert(len <= capacity);
+	fox_assert(head >= 0 && head < capacity);
+	if (len) {
+		int ret = data[head];
+		head = (head + 1) % capacity;
+		len--;
+		return ret;
+	}
+	return {};
+}
+void Circle_Buffer::clear() {
+	memset(data, 0, sizeof(data));
+	head = 0;
+	len = 0;
+}
+
+
 // two ways you can use a vector:
 // 1 (more common): always push to the back of the vector. linearly assing. this means there are no holes
 // 2: push to random indices and remove things from it. problem with this is that you have holes in your memory
@@ -681,5 +712,3 @@ struct Hasher {
 		return (int)key & 0x00000001;
 	}
 } hasher;
-
-

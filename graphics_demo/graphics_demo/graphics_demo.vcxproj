@@ -187,6 +187,8 @@
     <ClInclude Include="..\..\src\sprite.hpp" />
     <ClInclude Include="..\..\src\shader.hpp" />
     <ClInclude Include="..\..\src\sprite_impl.hpp" />
+    <ClInclude Include="..\..\src\task.hpp" />
+    <ClInclude Include="..\..\src\task_impl.hpp" />
     <ClInclude Include="..\..\src\tdns_lua.hpp" />
     <ClInclude Include="..\..\src\text.hpp" />
     <ClInclude Include="..\..\src\texture.hpp" />

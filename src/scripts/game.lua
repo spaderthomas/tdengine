@@ -35,4 +35,5 @@ end
 meta.game = {}
 meta.game.after_load = function()
    game = Game:new()
+   print(inspect(game))
 end

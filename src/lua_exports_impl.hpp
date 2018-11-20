@@ -163,48 +163,5 @@ tdapi void camera_follow(EntityHandle entity) {
 	camera.following = entity;
 }
 
-struct Action {
-	virtual bool update(float dt);
-};
 
-struct Movement_Action : Action {
-	glm::vec2 dest;
-	EntityHandle actor;
 
-	bool update(float dt) override {
-		def_get_cmp(mc, actor.deref(), Movement_Component);
-		def_get_cmp(pc, actor.deref(), Position_Component);
-
-		if (vec_almost_equals(pc->world_pos, dest)) {
-			return true;
-		}
-
-		bool up, down, left, right;
-		if (!float_almost_equals(pc->world_pos.x, dest.x)) {
-			up = pc->world_pos.y < dest.y;
-			down = pc->world_pos.y > dest.y;
-		}
-		if (!float_almost_equals(pc->world_pos.x, dest.x)) {
-			right = pc->world_pos.x < dest.x;
-			left = pc->world_pos.x > dest.x;
-		}
-
-		move_entity(actor, up, down, left, right);
-		return false;
-	}
-
-};
-
-struct Task {
-	queue<Action> action_queue;
-
-	bool update(float dt) {
-		if (!action_queue.size()) return true;
-
-		auto& current_action = action_queue.front();
-		if (current_action.update(dt)) {
-			action_queue.pop();
-		}
-		return false;
-	}
-};

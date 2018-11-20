@@ -66,6 +66,7 @@ using namespace std;
 #include "component.hpp"
 #include "renderer.hpp"
 #include "entity.hpp"
+#include "task.hpp"
 #include "camera.hpp"
 #include "input.hpp"
 #include "level.hpp"
@@ -79,6 +80,7 @@ using namespace std;
 #include "data.hpp"
 #include "shader.hpp"
 #include "transform.hpp"
+#include "task_impl.hpp"
 #include "sprite_impl.hpp"
 #include "mesh.hpp"
 #include "animation_impl.hpp"
@@ -158,6 +160,21 @@ int main() {
 	init_collider_matrix();
 
 	Lua.init_after_load();
+
+	Task walk_task;
+
+	Movement_Action* move = new Movement_Action;
+	move->dest = { .4, .4 };
+	move->actor = Lua.state["game"]["hero"];
+	walk_task.add_action(move);
+
+	Movement_Action* move2 = new Movement_Action;
+	move2->dest = { -.4, -.4 };
+	move2->actor = Lua.state["game"]["hero"];
+	walk_task.add_action(move2);
+
+	game.tasks.push_back(walk_task);
+
 #pragma endregion
 
 #pragma region IMGUI_INIT

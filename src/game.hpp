@@ -33,7 +33,6 @@ struct Console {
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
 };
 
-
 struct Particle {
 	glm::vec2 velocity = glm::vec2(0.f);
 	glm::vec2 position = glm::vec2(0.f);
@@ -113,6 +112,7 @@ struct Editor : Layer {
 };
 Editor editor;
 
+
 enum Game_State {
 	GAME = 0,
 	DIALOGUE = 1
@@ -121,6 +121,7 @@ struct Game : Layer {
 	//@move to a config file
 	Level* active_level;
 
+	vector<Task> tasks;
 	Dialogue_Tree* active_dialogue;
 	string scene;
 	Particle_System particle_system;

@@ -294,34 +294,6 @@ void  Console::ExecCommand(const char* command_line)
 }
 
 
-void Circle_Buffer::push_back(int elem) {
-	fox_assert(len <= capacity);
-	fox_assert(head >= 0 && head < capacity);
-	if (len == capacity) { return; }
-	data[(head + len) % capacity] = elem;
-	len++;
-}
-optional<int> Circle_Buffer::pop_front() {
-	fox_assert(len <= capacity);
-	fox_assert(head >= 0 && head < capacity);
-	if (len) {
-		int ret = data[head];
-		head = (head + 1) % capacity;
-		len--;
-		return ret;
-	}
-	return {};
-}
-void Circle_Buffer::clear() {
-	memset(data, 0, sizeof(data));
-	head = 0;
-	len = 0;
-}
-
-float Sine_Func::eval_at(float point) {
-	return amp * glm::sin(period * point - phase_shift);
-}
-
 void Particle::make_alive() {
 	velocity = glm::vec2(0.f);
 	color = brown;
@@ -1015,7 +987,6 @@ struct Dialogue_Tree {
 		root = new Dialogue_Node;
 		root->init_from_table(dialogue);
 	}
-	
 };
 
 void Game::init() {
@@ -1026,6 +997,10 @@ void Game::init() {
 }
 void Game::update(float dt) {
 	static int frame = 0;
+
+	for (auto& task : tasks) {
+		task.update(dt);
+	}
 
 	// Toggle the console
 	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
@@ -1042,9 +1017,8 @@ void Game::update(float dt) {
 	input.world_pos = input.screen_pos + camera.offset;
 
 	Lua.run_game_update(dt);
-
-
 	physics_system.process(1.f / 60.f);
+	
 	if (false) {
 		// Export to Lua:
 		// Dialogue_Tree and Dialogue_Node
@@ -1096,7 +1070,6 @@ void Game::update(float dt) {
 		}
 	}
 
-	particle_system.update(dt);
 	text_box.update(frame);
 	frame++;
 }
