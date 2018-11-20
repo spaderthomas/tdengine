@@ -256,3 +256,4 @@ bool Text_Box::is_current_set_displayed() {
 	Line_Set& set = current_set();
 	return (set.point == set.max_point) && waiting;
 }
+

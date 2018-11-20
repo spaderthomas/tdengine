@@ -54,9 +54,6 @@ struct Particle_System {
 	void update(float dt);
 };
 
-struct Dialogue_Tree;
-struct Dialogue_Node;
-
 struct Layer {
 	Input input;
 
@@ -112,7 +109,6 @@ struct Editor : Layer {
 };
 Editor editor;
 
-
 enum Game_State {
 	GAME = 0,
 	DIALOGUE = 1
@@ -125,7 +121,6 @@ struct Game : Layer {
 	Dialogue_Tree* active_dialogue;
 	string scene;
 	Particle_System particle_system;
-	Text_Box text_box;
 	Console console;
 
 	bool in_dialogue = false;

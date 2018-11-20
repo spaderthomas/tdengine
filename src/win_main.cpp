@@ -66,6 +66,7 @@ using namespace std;
 #include "component.hpp"
 #include "renderer.hpp"
 #include "entity.hpp"
+#include "dialogue.hpp"
 #include "task.hpp"
 #include "camera.hpp"
 #include "input.hpp"
@@ -75,6 +76,7 @@ using namespace std;
 #include "collision.hpp"
 #include "lua_exports.hpp"
 #include "tdns_lua.hpp"
+#include "dialogue_impl.hpp"
 #include "bind_functions.hpp"
 #include "fsm.hpp"
 #include "data.hpp"
@@ -161,19 +163,21 @@ int main() {
 
 	Lua.init_after_load();
 
-	Task walk_task;
+	Task task;
+
+	Dialogue_Action* doit = new Dialogue_Action;
+	doit->init();
+	Dialogue_Tree* thetree = new Dialogue_Tree;
+	thetree->init_from_table("intro_police", "intro");
+	doit->tree = thetree;
+	task.add_action(doit);
 
 	Movement_Action* move = new Movement_Action;
 	move->dest = { .4, .4 };
 	move->actor = Lua.state["game"]["hero"];
-	walk_task.add_action(move);
+	task.add_action(move);
 
-	Movement_Action* move2 = new Movement_Action;
-	move2->dest = { -.4, -.4 };
-	move2->actor = Lua.state["game"]["hero"];
-	walk_task.add_action(move2);
-
-	game.tasks.push_back(walk_task);
+	game.tasks.push_back(task);
 
 #pragma endregion
 

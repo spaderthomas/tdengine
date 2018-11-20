@@ -168,6 +168,8 @@
     <ClInclude Include="..\..\src\component_impl.hpp" />
     <ClInclude Include="..\..\src\data.hpp" />
     <ClInclude Include="..\..\src\db.hpp" />
+    <ClInclude Include="..\..\src\dialogue.hpp" />
+    <ClInclude Include="..\..\src\dialogue_impl.hpp" />
     <ClInclude Include="..\..\src\draw.hpp" />
     <ClInclude Include="..\..\src\entity.hpp" />
     <ClInclude Include="..\..\src\entity_impl.hpp" />

@@ -139,3 +139,5 @@ struct Text_Box {
 	bool is_current_set_displayed();
 	Line_Set& current_set();
 };
+
+Text_Box text_box;

@@ -11,8 +11,12 @@ struct Movement_Action : Action {
 	bool update(float dt) override;
 };
 
+struct Dialogue_Tree;
+struct Dialogue_Node;
 struct Dialogue_Action : Action {
-
+	Dialogue_Tree* tree;
+	bool update(float dt) override;
+	void init() override;
 };
 
 struct Action_Queue {
@@ -50,7 +54,6 @@ struct Action_Queue {
 		index = 0;
 	}
 };
-
 struct Task {
 	Action_Queue action_queue;
 	bool update(float dt);
