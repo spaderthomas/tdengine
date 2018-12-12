@@ -622,41 +622,6 @@ void Editor::update(float dt) {
 	}
 	ImGui::PopStyleVar();
 	ImGui::EndChild();
-
-	// FSM debugger
-	if (show_fsm_debugger) {
-		if (selected) {
-			Entity* entity = selected();
-			State_Component* state = entity->get_component<State_Component>();
-
-			// If the selection both exists and has a state component, we can run the FSM debugger
-			if (state) {
-				ImGui::Begin("FSM debugger", 0, ImGuiWindowFlags_AlwaysAutoResize);
-				ImGui::Text("Current State: "); ImGui::SameLine(); ImGui::Text(state->current_state.c_str());
-
-				// Display each of the watched variables as a red or green button 
-				for (auto& watched_variable : state->watched_variables) {
-					bool current_status = knowledge_base[watched_variable];
-					if (current_status) {
-						static ImVec4 green_for_true = ImVec4(.06f, .8f, .05f, 1.f);
-						ImGui::PushStyleColor(ImGuiCol_Button, green_for_true);
-					}
-					else {
-						static ImVec4 red_for_false = ImVec4(1.f, .06f, .05f, 1.f);
-						ImGui::PushStyleColor(ImGuiCol_Button, red_for_false);
-					}
-
-					// Toggle the button on click
-					if (ImGui::Button(watched_variable.c_str())) {
-						knowledge_base.update_variable(watched_variable, !current_status);
-					}
-					ImGui::PopStyleColor();
-				}
-				ImGui::End();
-			}
-		}
-	}
-
 	ImGui::End();
 #pragma endregion
 
@@ -864,8 +829,9 @@ void Game::init() {
 void Game::update(float dt) {
 	static int frame = 0;
 
-	for (auto& task : tasks) {
-		task.update(dt);
+	for (auto& entity : active_level->entities) {
+		def_get_cmp(tc, entity.deref(), Task_Component);
+		if (tc) tc->task->update(dt);
 	}
 
 	// Toggle the console

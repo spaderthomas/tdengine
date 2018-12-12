@@ -89,7 +89,6 @@ pool_handle<Entity> Entity::create(string lua_id) {
 				Movement_Component* component = &handle()->movement_component;
 				component->init_from_table(table);
 				component->wish = glm::vec2(0.f);
-
 			}
 			else if (component_type == "Vision") {
 				pool_handle<any_component> handle = entity->add_component<Vision_Component>();
@@ -101,17 +100,6 @@ pool_handle<Entity> Entity::create(string lua_id) {
 				Interaction_Component* component = &handle()->interaction_component;
 				component->init_from_table(table);
 			}
-			else if (component_type == "State_Component") {
-				pool_handle<any_component> handle = entity->add_component<State_Component>();
-				State_Component* component = &handle()->state_component;
-				component->init_from_table(table);
-
-				sol::table watched_variables = table["watched_variables"];
-				for (auto& watched : watched_variables) {
-					string variable = watched.second.as<string>();
-					knowledge_base.register_watcher(watched.second.as<string>(), handle);
-				}
-			}
 			else if (component_type == "Door_Component") {
 				pool_handle<any_component> handle = entity->add_component<Door_Component>();
 				Door_Component* component = &handle()->door_component;
@@ -122,10 +110,16 @@ pool_handle<Entity> Entity::create(string lua_id) {
 				Collision_Component* component = &handle()->collision_component;
 				component->init_from_table(table);
 			}
-			else if (component_type == "Action_Component") {
-				pool_handle<any_component> handle = entity->add_component<Action_Component>();
-				Action_Component* component = &handle()->action_component;
+			else if (component_type == "Task_Component") {
+				pool_handle<any_component> handle = entity->add_component<Task_Component>();
+				Task_Component* component = &handle()->task_component;
 				component->init_from_table(table);
+
+				// Get the entity's state from the database and initialize the task it says
+				string entity_state = state_system.entity_state(lua_id);
+				Task* task = new Task;
+				task->init_from_table(Lua.state["npc"][lua_id]["scripts"][entity_state], entity_handle);
+				component->task = task;
 			}
 			else if (component_type == "Update_Component") {
 				pool_handle<any_component> handle = entity->add_component<Update_Component>();

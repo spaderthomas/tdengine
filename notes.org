@@ -107,7 +107,7 @@ of any kind of entity in existence at one time. there aren't, say, guards that
 you want to have 4-5 of. that simplifies things. you can just loop over all the
 entities in your game, and if their state should change, you change it.
 
---- 12/11
+--- 12/11, 9:00 PM
 
 right, so here's what i'm going to do. every character's state is going to be
 kept in a database. the key being the character's lua id and the value being the
@@ -115,3 +115,27 @@ index into that character's state machine table.
 
 when a piece of state gets updated, i'm going to go through every character and
 check if the transitions for their current state are satisfied. 
+
+cool. so now that's done. now what i have to do is make sure that when entities
+are loaded, they get the appropriate task loaded in from
+npc.name.State_Machine.my_state. also, i need to make sure that this works with
+entities other than NPCs. honestly, this will probably just entail changing the
+npc.lua script to entities.lua and then modifying the table names accordingly
+
+-- 12/12, 5:31 PM
+
+the above still holds. however, i also need to think of the best way to store
+tasks in the game. i already have all the task definitions in lua. the complete
+mapping of state to task is there -- it's just, when you need to update
+something's task, what structure is that in? probably a component, right?
+anything that is done 
+
+maybe formalizing it will help me make sure that it sounds good.
+
+to add scripting to an entity:
+1. give the entity an empty Task_Component
+2. make sure there is an entry for the entity in the entity_state table
+3. add scripts to npc.entity_name.scripts
+   - names of scripts much match names of states
+   - ditto transitions
+4. 

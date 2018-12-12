@@ -31,9 +31,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\src\data.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\log.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -97,9 +94,6 @@
     <ClInclude Include="..\..\src\box.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\fsm.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\text_impl.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -155,6 +149,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\dialogue_impl.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\state.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

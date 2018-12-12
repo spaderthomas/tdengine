@@ -24,6 +24,5 @@ tdapi bool was_down(GLFW_KEY_TYPE key);
 tdapi bool was_pressed(GLFW_KEY_TYPE key);
 tdapi void go_through_door(EntityHandle door, EntityHandle other);
 tdapi void camera_follow(EntityHandle entity);
-tdapi void add_task(Task task);
 
 void bind_functions();

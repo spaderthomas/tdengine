@@ -62,11 +62,11 @@ using namespace std;
 #include "sprite.hpp"
 #include "texture.hpp"
 #include "animation.hpp"
+#include "dialogue.hpp"
+#include "task.hpp"
 #include "component.hpp"
 #include "renderer.hpp"
 #include "entity.hpp"
-#include "dialogue.hpp"
-#include "task.hpp"
 #include "camera.hpp"
 #include "input.hpp"
 #include "level.hpp"
@@ -152,17 +152,6 @@ int main() {
 	init_collider_matrix();
 
 	Lua.init_after_load();
-
-
-	EntityHandle wilson = Entity::create("wilson");
-	teleport_entity(wilson, 0, 0);
-	game.active_level->entities.push_back(wilson);
-	sol::table task_table = Lua.state["npc"]["wilson"]["script"]["intro"];
-	Task task;
-	task.init_from_table(task_table, wilson);
-
-	game.tasks.push_back(task);
-
 #pragma endregion
 
 #pragma region IMGUI_INIT
@@ -250,7 +239,6 @@ int main() {
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
 #pragma endregion
 
-	state_system.update_state("a", 1);
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {
@@ -272,7 +260,10 @@ int main() {
 		if (global_input.was_pressed(GLFW_KEY_F1)) { use_640_360(window); }
 		if (global_input.was_pressed(GLFW_KEY_F2)) { use_720p(window); }
 		if (global_input.was_pressed(GLFW_KEY_F3)) { use_1080p(window); }
-	
+
+		if (global_input.was_pressed(GLFW_KEY_J)) 
+			state_system.update_state("a", 1);
+
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 		if (global_input.was_pressed(GLFW_KEY_F4)) {

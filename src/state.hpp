@@ -18,6 +18,14 @@ struct State_System {
 		sqlite3_step(*statement);
 		if (finalize) sqlite3_finalize(*statement);
 	}
+	string entity_state(string entity_name) {
+		string query = "select * from entity_state where name = '" + entity_name + "'";
+		sqlite3_stmt* statement;
+		sql_wrapper(query.c_str(), &statement, false);
+		const char* c_state = (const char*)sqlite3_column_text(statement, db_schema["entity_state"]["state"]);
+		fox_assert(c_state);
+		return string(c_state);
+	}
 
 	void update_state(string var, bool value) {
 		// Update the value of the variable in the database
@@ -59,6 +67,14 @@ struct State_System {
 					query = "update entity_state set state = '" + new_state + "' where name = '" + entity_name + "'";
 					sqlite3_stmt* sql_statement3;
 					sql_wrapper(query.c_str(), &sql_statement3, true);
+
+					for (auto& entity : game.active_level->entities) {
+						if (entity->lua_id == entity_name) {
+							def_get_cmp(tc, entity.deref(), Task_Component);
+							sol::table new_task = Lua.state["npc"][entity_name]["scripts"][new_state];
+							tc->change_task(new_task);
+						}
+					}
 					continue;
 				}
 			}

@@ -69,73 +69,8 @@ npc.intro2.dialogue.intro = {
    }
 }
 
-npc.wilson.script = {}
-npc.wilson.script.intro = {
-   {
-	  kind = "And_Action",
-	  actions = {
-		 {
-			kind = "Wait_For_Interaction_Action",
-			is_blocking = false
-		 },
-		 {
-			kind = "Movement_Action",
-			is_blocking = false,
-			dest = {
-			   x = .4,
-			   y = .4
-			}
-		 }
-	  }
-   },
-   {
-	  kind = "Dialogue_Action",
-	  dialogue = {
-		 text = "*intro dialogue*",
-		 terminal = true,
-		 responses = {
-			"dialogue makes games fun lol"
-		 },
-		 children = {}
-	  }
-   }
-}
-
-npc.wilson.script.main1 = {
-   {
-	  kind = "Wait_For_Interaction_Action",
-	  is_blocking = false
-   },
-   {
-	  kind = "Dialogue_Action",
-	  dialogue = {
-		 text = "*main1 dialogue*",
-		 terminal = true,
-		 responses = {},
-		 children = {}
-	  }
-   }
-}
-
-npc.wilson.State_Machine = {}
-npc.wilson.State_Machine.intro = {
-   task = npc.wilson.script.intro,
-   transitions = {
-	  {
-		 vars = {
-			a = true,
-		 },
-		 next_state = "main1"
-	  }
-   }
-}
-
-npc.wilson.State_Machine.main1 = {
-   task = npc.wilson.script.main1,
-   transitions = {}
-}
 
 meta.dialogue = {}
 meta.dialogue.after_load = function()
-   print(inspect(npc.wilson.script.intro))
+   print(inspect(npc.wilson.State_Machine.intro))
 end

@@ -168,6 +168,8 @@ void Task::add_action(Action* a) {
 }
 
 void Task::init_from_table(sol::table table, EntityHandle actor) {
+	this->actor = actor;
+
 	for (auto it : table) {
 		sol::table action_table = it.second.as<sol::table>();
 		Action* action = action_from_table(action_table, actor);

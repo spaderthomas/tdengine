@@ -66,6 +66,8 @@ struct Action_Queue {
 };
 struct Task {
 	Action_Queue action_queue;
+	EntityHandle actor;
+
 	bool update(float dt);
 	void add_action(Action* a);
 	void init_from_table(sol::table table, EntityHandle actor);

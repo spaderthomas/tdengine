@@ -26,5 +26,4 @@ void bind_functions() {
 	state.set_function("was_pressed", &was_pressed);
 	state.set_function("go_through_door", &go_through_door);
 	state.set_function("camera_follow", &camera_follow);
-	state.set_function("add_task", &add_task);
 }

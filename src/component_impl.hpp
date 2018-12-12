@@ -119,11 +119,12 @@ void Collision_Component::init_from_table(sol::table table) {
 	on_collide = table["on_collide"];
 }
 
-string Action_Component::name() { return "Action_Component"; }
-void Action_Component::init_from_table(sol::table table) {
-	update = table["update"];
+string Task_Component::name() { return "Task_Component"; }
+void Task_Component::change_task(sol::table new_task) {
+	EntityHandle actor = this->task->actor;
+	this->task = new Task;
+	this->task->init_from_table(new_task, actor);
 }
-
 string Update_Component::name() { return "Update_Component"; }
 void Update_Component::init_from_table(sol::table table) {
 	update = table["update"];

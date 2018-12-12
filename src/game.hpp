@@ -117,7 +117,6 @@ struct Game : Layer {
 	//@move to a config file
 	Level* active_level;
 
-	vector<Task> tasks;
 	Dialogue_Tree* active_dialogue;
 	string scene;
 	Particle_System particle_system;

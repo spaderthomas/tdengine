@@ -169,8 +169,5 @@ tdapi void go_through_door(EntityHandle door, EntityHandle other) {
 tdapi void camera_follow(EntityHandle entity) {
 	camera.following = entity;
 }
-tdapi void add_task(Task task) {
-	game.tasks.push_back(task);
-}
 
 

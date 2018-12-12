@@ -4,29 +4,6 @@ npc = {}
 
 -- Wilson
 npc.wilson = {}
-npc.wilson.State_Component = {
-   states = {
-	  "waiting_in_library",
-	  "waiting_in_bar"
-   },
-   default_state = "waiting_in_library",
-   watched_variables = {
-	  "begin_cantina",
-	  "talked_to_wilson_in_library"
-   },
-   update = function(state_component, updated_variable, value)
-	  if updated_variable == "begin_cantina" then
-		 if value == true then
-			state_component:set_state("waiting_in_library")
-		 end
-	  elseif updated_variable == "talked_to_wilson_in_library" then
-		 if value == true then
-			state_component:set_state("waiting_in_bar")
-		 end
-	  end
-   end 
-}
-
 npc.wilson.Graphic_Component = {
    Animations = {
 	  stand = {
@@ -65,6 +42,75 @@ npc.wilson.Vision = {
 npc.wilson.Interaction_Component = {
    on_interact = function(this, other) end
 }
+
+npc.wilson.Task_Component = {}
+
+npc.wilson.scripts = {}
+npc.wilson.scripts.intro = {
+   {
+	  kind = "And_Action",
+	  actions = {
+		 {
+			kind = "Wait_For_Interaction_Action",
+			is_blocking = false
+		 },
+		 {
+			kind = "Movement_Action",
+			is_blocking = false,
+			dest = {
+			   x = .4,
+			   y = .4
+			}
+		 }
+	  }
+   },
+   {
+	  kind = "Dialogue_Action",
+	  dialogue = {
+		 text = "*intro dialogue*",
+		 terminal = true,
+		 responses = {
+			"dialogue makes games fun lol"
+		 },
+		 children = {}
+	  }
+   }
+}
+
+npc.wilson.scripts.main1 = {
+   {
+	  kind = "Wait_For_Interaction_Action",
+	  is_blocking = true
+   },
+   {
+	  kind = "Dialogue_Action",
+	  dialogue = {
+		 text = "*main1 dialogue*",
+		 terminal = true,
+		 responses = {},
+		 children = {}
+	  }
+   }
+}
+
+npc.wilson.State_Machine = {}
+npc.wilson.State_Machine.intro = {
+   task = npc.wilson.scripts.intro,
+   transitions = {
+	  {
+		 vars = {
+			a = true,
+		 },
+		 next_state = "main1"
+	  }
+   }
+}
+
+npc.wilson.State_Machine.main1 = {
+   task = npc.wilson.scripts.main1,
+   transitions = {}
+}
+
 
 
 -- Intro2

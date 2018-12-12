@@ -6,6 +6,9 @@
                     "kind": "NULL"
                 },
                 {
+                    "kind": "NULL"
+                },
+                {
                     "kind": "Position_Component",
                     "pos": {
                         "x": 0.6148437261581421,
@@ -18,15 +21,15 @@
                 },
                 {
                     "kind": "NULL"
-                },
-                {
-                    "kind": "NULL"
                 }
             ],
             "lua_id": "tree"
         },
         {
             "Components": [
+                {
+                    "kind": "NULL"
+                },
                 {
                     "kind": "NULL"
                 },
@@ -43,15 +46,15 @@
                 },
                 {
                     "kind": "NULL"
-                },
-                {
-                    "kind": "NULL"
                 }
             ],
             "lua_id": "tree"
         },
         {
             "Components": [
+                {
+                    "kind": "NULL"
+                },
                 {
                     "kind": "NULL"
                 },
@@ -68,15 +71,15 @@
                 },
                 {
                     "kind": "NULL"
-                },
-                {
-                    "kind": "NULL"
                 }
             ],
             "lua_id": "tree"
         },
         {
             "Components": [
+                {
+                    "kind": "NULL"
+                },
                 {
                     "kind": "NULL"
                 },
@@ -93,12 +96,43 @@
                 },
                 {
                     "kind": "NULL"
+                }
+            ],
+            "lua_id": "tree"
+        },
+        {
+            "Components": [
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "Position_Component",
+                    "pos": {
+                        "x": 0.2726562023162842,
+                        "y": 0.33249998092651367
+                    },
+                    "scale": {
+                        "x": 1.0,
+                        "y": 1.0
+                    }
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "NULL"
+                },
+                {
+                    "kind": "NULL"
                 },
                 {
                     "kind": "NULL"
                 }
             ],
-            "lua_id": "tree"
+            "lua_id": "wilson"
         }
     ]
 }

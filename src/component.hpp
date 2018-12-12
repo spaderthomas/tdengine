@@ -77,11 +77,11 @@ struct Collision_Component : Component {
 	void init_from_table(sol::table table) override;
 	string name() override;
 };
-struct Action_Component : Component {
-	sol::function update;
+struct Task_Component : Component {
+	Task* task;
 
-	void init_from_table(sol::table table) override;
 	string name() override;
+	void change_task(sol::table new_task);
 };
 struct Update_Component : Component {
 	sol::function update;
@@ -90,6 +90,7 @@ struct Update_Component : Component {
 	string name() override;
 };
 
+//@metaprogramming
 union any_component {
 	Graphic_Component graphic_component;
 	Position_Component position_component;
@@ -99,7 +100,7 @@ union any_component {
 	State_Component state_component;
 	Door_Component door_component;
 	Collision_Component collision_component;
-	Action_Component action_component;
+	Task_Component task_component;
 	Update_Component update_component;
 
 	any_component() {} // Necessary so we can in place new components in the pool.
@@ -109,7 +110,6 @@ union any_component {
 Pool<any_component, DEFAULT_POOL_SIZE> component_pool;
 typedef pool_handle<any_component> ComponentHandle;
 
-//@metaprogramming
 unordered_map<string, const type_info*> component_map = {
 	{ "Graphic_Component", &typeid(Graphic_Component) },
 	{ "Position_Component", &typeid(Position_Component) },
@@ -118,7 +118,7 @@ unordered_map<string, const type_info*> component_map = {
 	{ "Interaction_Component", &typeid(Interaction_Component) },
 	{ "State_Component", &typeid(State_Component) },
 	{ "Door_Component", &typeid(Door_Component) },
-	{ "Action_Component", &typeid(Action_Component) },
+	{ "Task_Component", &typeid(Task_Component) },
 	{ "Update_Component", &typeid(Update_Component) },
 };
 
