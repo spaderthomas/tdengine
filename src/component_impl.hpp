@@ -72,6 +72,7 @@ void Vision_Component::init_from_table(sol::table table) {
 string Vision_Component::name() { return "Vision"; }
 
 void Interaction_Component::init_from_table(sol::table table) {
+	other = { 0, nullptr };
 	on_interact = table["on_interact"];
 }
 string Interaction_Component::name() { return "Interaction_Component"; }

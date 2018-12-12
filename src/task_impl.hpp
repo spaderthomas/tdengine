@@ -1,3 +1,62 @@
+Action* action_from_table(sol::table table, EntityHandle actor) {
+	string kind = table["kind"];
+	if (kind == "Wait_For_Interaction_Action") {
+		Wait_For_Interaction_Action* action = new Wait_For_Interaction_Action;
+		action->is_blocking = table["is_blocking"];
+		action->actor = actor;
+		return action;
+	}
+	else if (kind == "Dialogue_Action") {
+		Dialogue_Tree* tree = new Dialogue_Tree;
+		sol::table dialogue = table["dialogue"];
+		tree->init_from_table(dialogue);
+
+		Dialogue_Action* action = new Dialogue_Action;
+		action->init();
+		action->is_blocking = true;
+		action->tree = tree;
+		action->actor = actor;
+		return action;
+	}
+	else if (kind == "Movement_Action") {
+		Movement_Action* action = new Movement_Action;
+		action->dest.x = table["dest"]["x"];
+		action->dest.y = table["dest"]["y"];
+		action->actor = actor;
+		return action;
+	}
+	else if (kind == "And_Action") {
+		And_Action* action = new And_Action;
+		action->is_blocking = true;
+		sol::table actions = table["actions"];
+		for (auto& kvp : actions) {
+			sol::table action_definition = kvp.second;
+			action->actions.push_back(action_from_table(action_definition, actor));
+		}
+
+		return action;
+	}
+
+	tdns_log.write("Tried to create an action with an invalid kind: " + kind);
+	return nullptr;
+}
+
+bool And_Action::update(float dt) {
+	bool done = true;
+	for (auto it = actions.begin(); it != actions.end();) {
+		Action* action = *it;
+		if (action->update(dt)) {
+			it = actions.erase(it);
+		}
+		else {
+			done = false;
+			it++;
+		}
+	}
+
+	return done;
+}
+
 bool Movement_Action::update(float dt) {
 	def_get_cmp(mc, actor.deref(), Movement_Component);
 	def_get_cmp(pc, actor.deref(), Position_Component);
@@ -14,6 +73,21 @@ bool Movement_Action::update(float dt) {
 	move_entity(actor, up, down, left, right);
 	return false;
 }	
+
+bool Wait_For_Interaction_Action::update(float dt) {
+	def_get_cmp(ic, actor.deref(), Interaction_Component);
+	if (ic->was_interacted_with) {
+		ic->on_interact(actor, ic->other);
+
+		// Clear the IC so we don't call this again next frame.
+		ic->was_interacted_with = false;
+		ic->other = { 0, nullptr };
+
+		return true;
+	}
+
+	return false;
+}
 
 void Dialogue_Action::init() {
 	is_blocking = true;
@@ -91,4 +165,12 @@ bool Task::update(float dt) {
 
 void Task::add_action(Action* a) {
 	action_queue.push(a);
+}
+
+void Task::init_from_table(sol::table table, EntityHandle actor) {
+	for (auto it : table) {
+		sol::table action_table = it.second.as<sol::table>();
+		Action* action = action_from_table(action_table, actor);
+		this->add_action(action);
+	}
 }

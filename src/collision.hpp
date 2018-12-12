@@ -16,15 +16,16 @@ bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration);
 bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration);
 
 enum Collider_Kind {
+	NO_COLLIDER,
 	STATIC,
 	DYNAMIC,
 	HERO,
 	DOOR,
-	NO_COLLIDER
+	COUNT_COLLIDERS
 };
 
 
-bool collider_matrix[Collider_Kind::NO_COLLIDER][Collider_Kind::NO_COLLIDER] = {};
+bool collider_matrix[Collider_Kind::COUNT_COLLIDERS][Collider_Kind::COUNT_COLLIDERS];
 void collider_matrix_add(Collider_Kind me, Collider_Kind other, bool should_test);
 bool should_test_collision(Collider_Kind me, Collider_Kind other);
 void init_collider_matrix();

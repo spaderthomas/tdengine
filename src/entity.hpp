@@ -1,24 +1,18 @@
 struct Entity {
 	int id;
 	static int next_id;
-	string lua_id; // The global Lua object which defines this entity
+	string lua_id; 
 	unordered_map<const type_info*, pool_handle<any_component>> components;
-
 
 	// Component functions
 	template <typename Component_Type>
 	pool_handle<any_component> add_component();
-
 	template <typename Component_Type>
 	bool remove_component();
-
 	template <typename Component_Type>
 	Component_Type* get_component();
-
 	any_component* get_component(string kind);
-
 	void clear_components();
-
 
 	// Lifetime functions
 	static sol::table get_definition(string lua_id);
@@ -35,4 +29,3 @@ struct Entity {
 int Entity::next_id = 0;
 
 Pool<Entity, DEFAULT_POOL_SIZE> entity_pool;
-typedef pool_handle<Entity> EntityHandle;

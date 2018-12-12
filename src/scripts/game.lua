@@ -14,7 +14,16 @@ function Game:update(dt)
 	  for i = 1, #self.level.entities do
 		 local other = self.level.entities[i]
 		 register_potential_collision(self.hero, other)
-		 are_interacting(self.hero, other)
+	  end
+
+	  -- Check for interactions between hero and NPCs
+	  if was_pressed(GLFW.KEY_E) then
+		 for i = 1, #self.level.entities do
+			local other = self.level.entities[i]
+			if are_interacting(self.hero, other) then
+			   set_interaction(self.hero, other)
+			end
+		 end
 	  end
 	  
 	  -- Check for collisions among NPCs
@@ -35,5 +44,4 @@ end
 meta.game = {}
 meta.game.after_load = function()
    game = Game:new()
-   print(inspect(game))
 end

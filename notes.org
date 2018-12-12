@@ -1,0 +1,117 @@
+* state
+-- 12/10
+kind of like triggers in a database, or a wave propagation algorithm. which
+sounds hard to write -- it's like you have some arbitrary piece of state
+change. that goes through a state manager which holds a bunch of callbacks for
+when that state changes. problem with this is that each piece of state has to be
+uniquely identified in some way, and i saw that when i wrote it naively with
+that FSM stuff that that quickly becomes cumbersome. you have really long names
+for all the pieces of state or scenes that you can be in, and it's hard to
+remember which one you need when you're scripting. now, maybe a good gui could
+solve that problem. 
+
+dichotomy between where state needs to be know. for example, if there's some
+small insular quest that you need to do, probably only the entity involved in
+the quest needs to know about that piece of state. but what if you make a big
+story decision that affects things which are going to propagate to pretty much
+everything? is it alright to store that globally? having global structs and
+things that you interact with is, in all honesty, not that bad of a model. on
+the one hand it puts all the places you e.g. interact with state in one
+place. but on the other hand, it lets you actually change shit from about a
+thousand different places. have i actually had a problem with that?
+
+example: the interaction system. here's what happens with interactions:
+1. the main game loop checks if you've pressed the interaction button and if you
+   are close enough to interact with the thing.
+2. tdapi are_interacting() gets called. if the appropriate boxes intersect, then
+   you set the interaction component's was_interacted_with flag. this is so that
+   you can defer decisions about what to do on interaction to a later point in
+   time.
+3. when a task needs to tell if something was interacted with, it checks this
+   flag and resets it
+
+but there are some problems here. first off, are_interacting isn't a big system
+that everything goes through -- it's not really clear that this is the thing
+that's modifying all these interaction components. it's just a random API
+function. this, i think, is the appeal behind functional programming. you need
+to have side effects somewhere in your program, yeah, but spreading them out
+in a million places makes your shit hard to debug. so, middle of the road
+approach here -- i don't want to follow some strict paradigm where i can only
+change things in highly specific circumstances. just make sure, generally, that
+when you are merely /checking/ something that you aren't also doing a thing
+based on that result. make sure that the thing that gets done is (generally) in
+a centralized place. 
+
+so, what do i do about components which need to hold ephemeral state? 
+
+also, as an aside, about the interactions. the current way of doing it might
+actually be correct -- when you interact with something, you store that it was
+interacted with and you hold onto that value until there is a task with that
+entity that needs to know about interactions.
+
+also, tasks vs components. because it's kind of weird that behavior can be
+stored in either. so i think that components serve two purposes:
+1. storing data
+2. defining behavior
+
+tasks serve one purpose:
+1. synthesize the data and behavior definitions into high-level goals
+
+systems serve one purpose:
+1. use data to do low-level computations (rendering, collision detection)
+
+but there should never be a function of a component that actually updates stuff!
+it's like a plugin for some piece of data or behavior. a graphic component tells
+you what animations you have and what you should draw this frame, but it does
+not actually do the drawing!
+
+systems in the game: 
+1. input system: low-level determining of what buttons were pressed, absolutely
+   no game logic
+2. physics system: also low-level -- at it's core, this is just getting a bunch
+   of boxes and making them not touch
+3. task system: 
+4. rendering system: grab pictures and render them in the right place
+
+ok god damn it, it actually seems pretty good. task stuff is in its infancy but
+i like where it's going. 
+
+again, a clear definition of the problem at hand. the only thing entities ever
+do is tasks. i need to figure out what tasks need to be active. this is a
+function of actions the player has taken throughout the course of the game, and
+nothing else. then the problem is really to create a mapping between game state
+and entity tasks which:
+1. is easy to edit
+2. scales
+
+idea 1: triggers
+- keep every decision the player can make (i.e. state) in a database.
+- register callbacks for each piece of state. when that state changes, the game
+  will run all of the callbacks associated with it.
+- a callback will:
+  - have an associated entity
+  - check if the entity's current states' transitions have been satisfied
+  - update the database to mark the new state
+  - set the entity's task to the new one
+
+now, problems with this. first of all, how can you guarantee that the handle
+passed in is still the one you care about? imagine changing levels, unloading a
+bunch of entities, and then loading some new ones. now, the handle that you
+passed in is not the same handle you're updating. the solution to this is to
+modify things in the /database/, that way when entities get reloaded, they have
+the new state they should be in. but -- what happens if the handle passed in IS
+valid, and you do want to update its state -right now-? 
+
+now, don't forget the assumption that in this game there will only every be one
+of any kind of entity in existence at one time. there aren't, say, guards that
+you want to have 4-5 of. that simplifies things. you can just loop over all the
+entities in your game, and if their state should change, you change it.
+
+--- 12/11
+
+right, so here's what i'm going to do. every character's state is going to be
+kept in a database. the key being the character's lua id and the value being the
+index into that character's state machine table. 
+
+when a piece of state gets updated, i'm going to go through every character and
+check if the transitions for their current state are satisfied. 

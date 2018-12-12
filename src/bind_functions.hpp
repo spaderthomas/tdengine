@@ -15,6 +15,7 @@ void bind_functions() {
 	state.set_function("create_entity", &create_entity);
 	state.set_function("set_animation", &set_animation);
 	state.set_function("set_animation_no_reset", &set_animation_no_reset);
+	state.set_function("set_interaction", &set_interaction);
 	state.set_function("update_entity", &update_entity);
 	state.set_function("are_interacting", &are_interacting);
 	state.set_function("draw_aabb", &draw_aabb);
@@ -24,6 +25,6 @@ void bind_functions() {
 	state.set_function("was_down", &was_down);
 	state.set_function("was_pressed", &was_pressed);
 	state.set_function("go_through_door", &go_through_door);
-	state.set_function("begin_dialogue", &begin_dialogue);
 	state.set_function("camera_follow", &camera_follow);
+	state.set_function("add_task", &add_task);
 }

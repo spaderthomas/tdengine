@@ -39,6 +39,8 @@ struct Vision_Component : Component {
 	string name() override;
 };
 struct Interaction_Component : Component {
+	bool was_interacted_with = false;
+	EntityHandle other;
 	sol::function on_interact;
 
 	void init_from_table(sol::table table) override;

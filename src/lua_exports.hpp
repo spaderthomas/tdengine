@@ -13,6 +13,7 @@ tdapi void move_entity(EntityHandle me, bool up, bool down, bool left, bool righ
 tdapi EntityHandle create_entity(string lua_id);
 tdapi void set_animation(EntityHandle me, string wish_name);
 tdapi void set_animation_no_reset(EntityHandle me, string wish_name);
+tdapi void set_interaction(EntityHandle hero, EntityHandle other);
 tdapi void update_entity(EntityHandle me, float dt);
 tdapi bool are_interacting(EntityHandle initiator, EntityHandle receiver);
 tdapi void draw_aabb(EntityHandle me);
@@ -22,7 +23,7 @@ tdapi bool is_down(GLFW_KEY_TYPE key);
 tdapi bool was_down(GLFW_KEY_TYPE key);
 tdapi bool was_pressed(GLFW_KEY_TYPE key);
 tdapi void go_through_door(EntityHandle door, EntityHandle other);
-tdapi void begin_dialogue(EntityHandle entity, string scene);
 tdapi void camera_follow(EntityHandle entity);
+tdapi void add_task(Task task);
 
 void bind_functions();

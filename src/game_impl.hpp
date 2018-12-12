@@ -666,7 +666,7 @@ void Editor::update(float dt) {
 		if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			last_click = input.world_pos;
 			bool clicked_inside_something = false;
-			for (auto& handle : active_level->entity_handles) {
+			for (auto& handle : active_level->entities) {
 				Entity* entity = handle();
 				auto box = Center_Box::from_entity(handle);
 				if (box) {
@@ -732,12 +732,12 @@ void Editor::update(float dt) {
 			case ENTITY: {
 				if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 					auto my_lambda = [&active_level = active_level]() -> void {
-						active_level->entity_handles.pop_back();
+						active_level->entities.pop_back();
 					};
 					stack.push_back(my_lambda);
 
 					// Add the selection to the level
-					active_level->entity_handles.push_back(selected);
+					active_level->entities.push_back(selected);
 
 					// Create a new one of the same kind as the old one
 					Entity* selection = selected();
@@ -764,7 +764,7 @@ void Editor::update(float dt) {
 				// Otherwise, see if you clicked in something else.
 				else {
 					bool found = false;
-					for (auto& handle : active_level->entity_handles) {
+					for (auto& handle : active_level->entities) {
 						Entity* entity = handle();
 						auto box = Center_Box::from_entity(handle);
 						if (box) {
@@ -786,10 +786,10 @@ void Editor::update(float dt) {
 
 		// Delete whatever is selected
 		if (input.was_pressed(GLFW_KEY_DELETE)) {
-			for (auto it = active_level->entity_handles.begin(); it != active_level->entity_handles.end(); it++) {
+			for (auto it = active_level->entities.begin(); it != active_level->entities.end(); it++) {
 				if (selected == *it) {
 					selected->clear_components();
-					active_level->entity_handles.erase(it);
+					active_level->entities.erase(it);
 					break;
 				}
 			}
@@ -817,7 +817,7 @@ void Editor::update(float dt) {
 
 		glm::vec2 dummy_penetration;
 		Center_Box selection_area = Center_Box::from_points(points);
-		for (auto& handle : active_level->entity_handles) {
+		for (auto& handle : active_level->entities) {
 			auto entity_box = Center_Box::from_entity(handle);
 			if (entity_box) {
 				if (are_boxes_colliding(*entity_box, selection_area, dummy_penetration)) {

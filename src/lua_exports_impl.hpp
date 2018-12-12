@@ -1,9 +1,11 @@
+// @todo: perhaps organize these differently? e.g. ones which modify entity state vs those that don't?
+
 // Level 
 tdapi Level* get_level(string name) {
 	return levels[name];
 }
 tdapi void add_entity(Level* level, EntityHandle entity) {
-	level->entity_handles.push_back(entity);
+	level->entities.push_back(entity);
 }
 
 // Entity
@@ -80,10 +82,16 @@ tdapi void set_animation_no_reset(EntityHandle me, string wish_name) {
 
 	set_animation(me, wish_name);
 }
+tdapi void set_interaction(EntityHandle hero, EntityHandle other) {
+	def_get_cmp(ic, other.deref(), Interaction_Component);
+	if (ic) {
+		ic->was_interacted_with = true;
+		ic->other = hero;
+	}
+}
 tdapi void update_entity(EntityHandle me, float dt) {
 	def_get_cmp(uc, me.deref(), Update_Component);
-	if (uc)
-		uc->update(me, dt);
+	if (uc) uc->update(me, dt);
 }
 tdapi bool are_interacting(EntityHandle initiator, EntityHandle receiver) {
 	// Check if the initiator's vision box collides with the receiver's bounding box
@@ -104,7 +112,11 @@ tdapi bool are_interacting(EntityHandle initiator, EntityHandle receiver) {
 		return false;
 	}
 	else {
-		return are_boxes_colliding(get_vision_box(initiator), get_bounding_box_world(receiver), penetration);
+		bool collision = are_boxes_colliding(get_vision_box(initiator), get_bounding_box_world(receiver), penetration);
+		if (collision) {
+			def_get_cmp(ic, receiver.deref(), Interaction_Component);
+		}
+		return collision;
 	}
 }
 tdapi void draw_aabb(EntityHandle me) {
@@ -154,14 +166,11 @@ tdapi void go_through_door(EntityHandle door, EntityHandle other) {
 		Lua.state["game"]["level"] = levels[dc->to];
 	}
 }
-tdapi void begin_dialogue(EntityHandle entity, string scene) {
-	string npc = entity->lua_id;
-	game.active_dialogue->init_from_table(npc, scene);
-	Lua.state["game"]["state"] = Game_State::DIALOGUE;
-}
 tdapi void camera_follow(EntityHandle entity) {
 	camera.following = entity;
 }
-
+tdapi void add_task(Task task) {
+	game.tasks.push_back(task);
+}
 
 

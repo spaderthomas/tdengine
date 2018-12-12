@@ -18,7 +18,7 @@ void Level::draw() {
 		}
 	}
 
-	for (auto handle : entity_handles) {
+	for (auto handle : entities) {
 		if (handle) handle->draw(Render_Flags::None);
 	}
 }
@@ -40,7 +40,7 @@ void Level::save() {
 	}
 
 	int indx = 0;
-	for (auto handle : entity_handles) {
+	for (auto handle : entities) {
 		handle->save(j["entities"][indx++]);
 	}
 	
@@ -85,14 +85,14 @@ void Level::load() {
 	}
 
 	// Load entities
-	entity_handles.clear();
+	entities.clear();
 	for (unsigned int i = 0; i < j["entities"].size(); i++) {
 		json entity_json = j["entities"][i];
 		string lua_id = entity_json["lua_id"];
 
 		pool_handle<Entity> handle = Entity::create(lua_id);
 		handle->load(entity_json);
-		entity_handles.push_back(handle);
+		entities.push_back(handle);
 	}
 }
 

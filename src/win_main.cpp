@@ -32,7 +32,6 @@ extern "C" {
 
 #include "sqlite/sqlite3.h"
 
-
 // STL
 #include <stdlib.h>
 #include <iostream>
@@ -75,11 +74,11 @@ using namespace std;
 #include "box.hpp"
 #include "collision.hpp"
 #include "lua_exports.hpp"
+
 #include "tdns_lua.hpp"
 #include "dialogue_impl.hpp"
 #include "bind_functions.hpp"
-#include "fsm.hpp"
-#include "data.hpp"
+#include "state.hpp"
 #include "shader.hpp"
 #include "transform.hpp"
 #include "task_impl.hpp"
@@ -98,20 +97,9 @@ using namespace std;
 
 
 
-sqlite3* db;
 
 int main() {
 	tdns_log.init();
-
-	fox_assert(!sqlite3_open(db_dir.c_str(), &db));
-	const char* sql_query =
-		"select * from levels";
-	const char* query_end = sql_query + strlen(sql_query);
-	sqlite3_stmt* sql_statement;
-	sqlite3_prepare(db, sql_query, 1024, &sql_statement, &query_end);
-	sqlite3_step(sql_statement);
-	const unsigned char* result = sqlite3_column_text(sql_statement, 0);
-	sqlite3_close(db);
 
 #pragma region GLFW_INIT
 	glfwInit();
@@ -145,6 +133,8 @@ int main() {
 #pragma endregion 
 
 #pragma region DATA_INIT
+	state_system.init();
+
 	component_pool.init();
 	entity_pool.init();
 
@@ -163,19 +153,13 @@ int main() {
 
 	Lua.init_after_load();
 
+
+	EntityHandle wilson = Entity::create("wilson");
+	teleport_entity(wilson, 0, 0);
+	game.active_level->entities.push_back(wilson);
+	sol::table task_table = Lua.state["npc"]["wilson"]["script"]["intro"];
 	Task task;
-
-	Dialogue_Action* doit = new Dialogue_Action;
-	doit->init();
-	Dialogue_Tree* thetree = new Dialogue_Tree;
-	thetree->init_from_table("intro_police", "intro");
-	doit->tree = thetree;
-	task.add_action(doit);
-
-	Movement_Action* move = new Movement_Action;
-	move->dest = { .4, .4 };
-	move->actor = Lua.state["game"]["hero"];
-	task.add_action(move);
+	task.init_from_table(task_table, wilson);
 
 	game.tasks.push_back(task);
 
@@ -265,6 +249,8 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
 #pragma endregion
+
+	state_system.update_state("a", 1);
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(window)) {

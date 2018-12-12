@@ -21,5 +21,5 @@ struct Dialogue_Tree {
 	Dialogue_Node* traverse();
 	void save();
 	void load();
-	void init_from_table(string npc, string scene);
+	void init_from_table(sol::table table);
 };

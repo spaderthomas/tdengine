@@ -1,23 +1,33 @@
 struct Action {
+	EntityHandle actor;
 	bool is_blocking = false;
 	virtual bool update(float dt) = 0;
 	virtual void init() {};
 };
+Action* action_from_table(sol::table table, EntityHandle actor);
+
+// Conjunction of actions which blocks until all are complete
+struct And_Action : Action {
+	vector<Action*> actions;
+	bool update(float dt) override;
+};
 
 struct Movement_Action : Action {
 	glm::vec2 dest;
-	EntityHandle actor;
 
 	bool update(float dt) override;
 };
 
-struct Dialogue_Tree;
-struct Dialogue_Node;
+struct Wait_For_Interaction_Action : Action {
+	bool update(float dt) override;
+};
+
 struct Dialogue_Action : Action {
 	Dialogue_Tree* tree;
 	bool update(float dt) override;
 	void init() override;
 };
+
 
 struct Action_Queue {
 	deque<Action*> actions;
@@ -58,4 +68,6 @@ struct Task {
 	Action_Queue action_queue;
 	bool update(float dt);
 	void add_action(Action* a);
+	void init_from_table(sol::table table, EntityHandle actor);
 };
+

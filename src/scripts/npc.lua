@@ -62,10 +62,8 @@ npc.wilson.Vision = {
    } 
 }
 
-Interaction_Component = {
-   on_interact = function(this, other)
-	  begin_dialogue(this)
-   end
+npc.wilson.Interaction_Component = {
+   on_interact = function(this, other) end
 }
 
 
@@ -93,9 +91,7 @@ npc.intro2.Collision_Component = {
 npc.intro2.Movement_Component = Default_Components.Human_Movement_Component
 
 npc.intro2.Interaction_Component = {
-   on_interact = function(this, other)
-	  begin_dialogue(this)
-   end
+   on_interact = function(this, other) end
 }
 
 
@@ -122,15 +118,11 @@ npc.intro_police.Collision_Component = {
 npc.intro_police.Movement_Component = Default_Components.Human_Movement_Component
 
 npc.intro_police.Interaction_Component = {
-   on_interact = function(this, other)
-	  begin_dialogue(this)
-   end
+   on_interact = function(this, other) end
 }
 
 npc.intro_police.Action_Component = {
-   update = function(this, dt)
-	  
-   end
+   update = function(this, dt) end
 }
 
 

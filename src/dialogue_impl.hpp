@@ -107,12 +107,7 @@ void Dialogue_Tree::load() {
 
 }
 
-void Dialogue_Tree::init_from_table(string npc, string scene) {
-	this->npc = npc; this->scene = scene;
-	string script = Lua.definitions_to_script[npc];
-	sol::table dialogue = Lua.state[script][npc]["dialogue"][scene];
-
-	//@leak
+void Dialogue_Tree::init_from_table(sol::table table) {
 	root = new Dialogue_Node;
-	root->init_from_table(dialogue);
+	root->init_from_table(table);
 }

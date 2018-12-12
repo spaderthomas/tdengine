@@ -28,7 +28,7 @@ struct LuaState {
 			"name", &Level::name,
 			"load", &Level::load,
 			"draw", &Level::draw,
-			"entities", &Level::entity_handles
+			"entities", &Level::entities
 		);
 
 		

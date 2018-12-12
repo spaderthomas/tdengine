@@ -53,10 +53,5 @@ meta.scripts = {
 	  name = "levels",
 	  imgui_ignore = true,
 	  check_for_defs = false
-   },
-   {
-	  name = "state",
-	  imgui_ignore = true,
-	  check_for_defs = true
    }
 }
