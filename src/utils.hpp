@@ -334,7 +334,12 @@ bool is_png(string& asset_path) {
 	return true;
 }
 
-
+bool is_lua(string& path) {
+	if (path.size() < 5) { return false; } // "x.png" is the shortest name
+	string should_be_lua_extension = path.substr(path.size() - 4, 4);
+	if (should_be_lua_extension.compare(".lua")) return false;
+	return true;
+}
 /* ImGui options */
 bool show_grid = false;
 bool snap_to_grid = false;

@@ -1,4 +1,3 @@
-
 Entity_Tree* Entity_Tree::create(string dir) {
 	Entity_Tree* tree = new Entity_Tree;
 	tree->dir = name_from_full_path(dir);
@@ -594,34 +593,6 @@ void Editor::update(float dt) {
 		ImGui::EndCombo();
 	}
 
-	// Script selector
-	ImGui::Separator();
-	static string script_current = Lua.imgui_shown_scripts[0];
-	if (ImGui::BeginCombo("##choosescript", (script_current + ".lua").c_str(), 0)) {
-		for (auto script : Lua.imgui_shown_scripts) {
-			bool is_selected = script == script_current;
-			if (ImGui::Selectable((script + ".lua").c_str(), is_selected)) {
-				script_current = script;
-			}
-			if (is_selected) {
-				ImGui::SetItemDefaultFocus();
-			}
-		}
-		ImGui::EndCombo();
-	}
-	
-	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-	ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
-	// Show each entity in this script. If we select it, create one and move to INSERT mode
-	for (auto& ent : Lua.script_to_definitions[script_current]) {
-		if (ImGui::Selectable(ent.c_str())) {
-			selected = Entity::create(ent.c_str());
-			this->kind = ENTITY;
-			this->state = INSERT;
-		}
-	}
-	ImGui::PopStyleVar();
-	ImGui::EndChild();
 	ImGui::End();
 #pragma endregion
 

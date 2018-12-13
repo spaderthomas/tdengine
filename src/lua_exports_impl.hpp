@@ -139,7 +139,7 @@ tdapi bool are_entities_colliding(EntityHandle a, EntityHandle b) {
 tdapi void register_potential_collision(EntityHandle me, EntityHandle other) {
 	// Check the collision matrix to see if these two collider kinds even need to test
 	def_get_cmp(my_cc, me.deref(), Collision_Component);
-	def_get_cmp(other_cc, me.deref(), Collision_Component);
+	def_get_cmp(other_cc, other.deref(), Collision_Component);
 	if (should_test_collision(my_cc->kind, other_cc->kind)) {
 		physics_system.collisions.push_back(
 			{ me, other }

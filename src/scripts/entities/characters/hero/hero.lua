@@ -4,8 +4,8 @@ local Default_Components = require('default_components')
 boon = {}
 
 -- Boon
-boon.boon = {}
-boon.boon.Graphic_Component = {
+entity.boon = {}
+entity.boon.Graphic_Component = {
    Animations = {
 	  
 	  stand = {
@@ -32,24 +32,24 @@ boon.boon.Graphic_Component = {
    z = 1
 }
 
-boon.boon.Position_Component = {}
+entity.boon.Position_Component = {}
 
-boon.boon.Collision_Component = {
+entity.boon.Collision_Component = {
    kind = Collider_Kind.DYNAMIC,
    bounding_box = Default_Components.Human_Bounding_Box,
    on_collide = function(this, other) end
 }
 
-boon.boon.Movement_Component = Default_Components.Human_Movement_Component
+entity.boon.Movement_Component = Default_Components.Human_Movement_Component
 
-boon.boon.Vision = {
+entity.boon.Vision = {
    extents = {
 	  width = px_x_to_screen(8),
 	  depth = px_y_to_screen(32)
    } 
 }
 
-boon.boon.Update_Component = {
+entity.boon.Update_Component = {
    update = function(this, dt)
 	  if (is_down(GLFW.KEY_W)) then
 		 move_entity(this, true, false, false, false)

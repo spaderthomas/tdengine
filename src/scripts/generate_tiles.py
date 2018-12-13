@@ -35,26 +35,22 @@ tiles = [
     ]
 
 
-with open("tiles.lua", "w") as file:
-    file.write('''
-tiles = {
-''')
-    for tile in tiles:
+with open("entities/outdoor_props/tiles.lua", "w") as f:
+    for i, tile in enumerate(tiles):
         path = tile + '.png'
         lua_def = '''
-    %s = {
-        Graphic_Component = {
-            Animations = {
-                %s = {
-                    "%s.png"
-                }
-            },
-            default_animation = "%s",
-            z = 0
+entity.%s = {
+    Graphic_Component = {
+        Animations = {
+            %s = {
+                "%s.png"
+            }
         },
-        Position_Component = {
-        }
+        default_animation = "%s",
+        z = 0
     },
-        ''' % (tile, tile, tile, tile)
-        file.write(lua_def)
-    file.write("}")
+    Position_Component = {}
+}
+''' % (tile, tile, tile, tile)
+        
+        f.write(lua_def)

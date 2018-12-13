@@ -3,55 +3,24 @@ meta.scripts = {
    -- Order matters!
    {
 	  name = "machine_conf",
-	  imgui_ignore = true,
-	  check_for_defs = false
+	  is_dir = false
    },
    {
 	  name = "utils",
-	  imgui_ignore = true,
-	  check_for_defs = false
+	  is_dir = false
    },
    {
 	  name = "default_components",
-	  imgui_ignore = true,
-	  check_for_defs = false
+	  is_dir = false
    },
    {
-	  name = "npc",
+	  name = "entities",
 	  imgui_ignore = false,
-	  check_for_defs = true
-   },
-   {
-	  name = "dialogue",
-	  imgui_ignore = true,
-	  check_for_defs = true
-   },
-   {
-	  name = "props",
-	  imgui_ignore = false,
-	  check_for_defs = true
-   },
-   {
-	  name = "tiles",
-	  imgui_ignore = true,
-	  check_for_defs = true
-   },
-   {
-	  name = "boon",
-	  imgui_ignore = false,
-	  check_for_defs = true
+	  check_for_defs = true,
+	  is_dir = true
    },
    {
 	  name = "game",
-	  imgui_ignore = true,
-	  check_for_defs = false
-   },
-   
-   -- Order doesn't matter!
-   
-   {
-	  name = "levels",
-	  imgui_ignore = true,
-	  check_for_defs = false
+	  is_dir = false
    }
 }

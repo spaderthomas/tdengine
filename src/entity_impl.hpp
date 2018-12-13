@@ -45,11 +45,6 @@ void Entity::clear_components() {
 	}
 }
 
-sol::table Entity::get_definition(string lua_id) {
-	string script = Lua.definitions_to_script[lua_id];
-	return Lua.state[script][lua_id];
-}
-
 pool_handle<Entity> Entity::create(string lua_id) {
 	// Creates a template entity from the given Lua ID
 	pool_handle<Entity> entity_handle = entity_pool.next_available();
@@ -57,7 +52,7 @@ pool_handle<Entity> Entity::create(string lua_id) {
 	entity->id = next_id++;
 	entity->lua_id = lua_id;
 
-	sol::table lua_components = Entity::get_definition(lua_id);
+	sol::table lua_components = Lua.state["entity"][lua_id];
 	for (auto it : lua_components) {
 		string component_type = it.first.as<string>();
 		if (it.second.get_type() == sol::type::table) {
@@ -118,7 +113,7 @@ pool_handle<Entity> Entity::create(string lua_id) {
 				// Get the entity's state from the database and initialize the task it says
 				string entity_state = state_system.entity_state(lua_id);
 				Task* task = new Task;
-				task->init_from_table(Lua.state["npc"][lua_id]["scripts"][entity_state], entity_handle);
+				task->init_from_table(Lua.entity_table()[lua_id]["scripts"][entity_state], entity_handle);
 				component->task = task;
 			}
 			else if (component_type == "Update_Component") {

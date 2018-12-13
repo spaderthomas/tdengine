@@ -42,7 +42,7 @@ struct State_System {
 			string entity_name = (const char*)sqlite3_column_text(sql_statement, db_schema["entity_state"]["name"]);
 			string state = (const char*)sqlite3_column_text(sql_statement, db_schema["entity_state"]["state"]);
 
-			sol::table transitions = Lua.state["npc"][entity_name]["State_Machine"][state]["transitions"];
+			sol::table transitions = Lua.state["entity"][entity_name]["State_Machine"][state]["transitions"];
 			for (auto& kvp : transitions) {
 				sol::table transition = kvp.second;
 				sol::table vars = transition["vars"];
@@ -71,7 +71,7 @@ struct State_System {
 					for (auto& entity : game.active_level->entities) {
 						if (entity->lua_id == entity_name) {
 							def_get_cmp(tc, entity.deref(), Task_Component);
-							sol::table new_task = Lua.state["npc"][entity_name]["scripts"][new_state];
+							sol::table new_task = Lua.entity_table()[entity_name]["scripts"][new_state];
 							tc->change_task(new_task);
 						}
 					}

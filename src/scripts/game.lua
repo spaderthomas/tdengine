@@ -41,7 +41,7 @@ function Game:update(dt)
 	  self.level:draw()
 end
 
-meta.game = {}
-meta.game.after_load = function()
+meta.after_load.game = {}
+meta.after_load.game = function()
    game = Game:new()
 end

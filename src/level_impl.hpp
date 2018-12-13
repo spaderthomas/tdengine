@@ -98,13 +98,17 @@ void Level::load() {
 
 
 void init_levels() {
-	sol::table level_names = Lua.state["levels"];
-	for (auto& kvp : level_names) {
-		string name = kvp.second.as<string>();
-		if (name == "") continue; //@hack: implicit final entry in table. is this a sol thing or the fact that it's a list?
+	const char* sql_query = "select * from levels";
+	sqlite3_stmt* statement;
+	state_system.sql_wrapper(sql_query, &statement, false);
+
+	do {
+		string name = (const char*)sqlite3_column_text(statement, db_schema["levels"]["name"]);
+
 		Level* level = new Level;
 		level->name = name;
 		level->load();
 		levels[name] = level;
-	}
+
+	} while (sqlite3_step(statement) != SQLITE_DONE);
 }

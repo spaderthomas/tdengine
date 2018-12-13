@@ -172,6 +172,7 @@
     <ClInclude Include="..\..\src\draw.hpp" />
     <ClInclude Include="..\..\src\entity.hpp" />
     <ClInclude Include="..\..\src\entity_impl.hpp" />
+    <ClInclude Include="..\..\src\script_to_def.hpp" />
     <ClInclude Include="..\..\src\state.hpp" />
     <ClInclude Include="..\..\src\game.hpp" />
     <ClInclude Include="..\..\src\game_impl.hpp" />

@@ -19,11 +19,11 @@ function px_y_to_screen (px_y)
 end
 
 Collider_Kind = {
-   STATIC = 0,
-   DYNAMIC = 1,
-   HERO = 2,
-   DOOR = 3,
-   NO_COLLIDER = 4
+   NO_COLLIDER = 0,
+   STATIC = 1,
+   DYNAMIC = 2,
+   HERO = 3,
+   DOOR = 4
 }
 
 Render_Flags = {
