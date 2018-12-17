@@ -2,31 +2,31 @@
 
 unordered_map<string, vector<string>> script_to_entity = {
 	{
-		"scripts/entities/buildings/cantina.lua",
+		"entities/buildings/cantina.lua",
 		{"building", "table_", "chair_left", "chair_right", "bar", "liquor_cabinet", "bookcase", "picture"}
 	},
 	{
-		"scripts/entities/characters/hero/hero.lua",
+		"entities/characters/hero/hero.lua",
 		{"boon"}
 	},
 	{
-		"scripts/entities/characters/intro_police/components.lua",
+		"entities/characters/intro_police/components.lua",
 		{"intro_police"}
 	},
 	{
-		"scripts/entities/characters/wilson/components.lua",
+		"entities/characters/wilson/components.lua",
 		{"wilson"}
 	},
 	{
-		"scripts/entities/outdoor_props/fences.lua",
+		"entities/outdoor_props/fences.lua",
 		{"fence_left", "fence_middle", "fence_right", "fence_post"}
 	},
 	{
-		"scripts/entities/outdoor_props/foliage.lua",
+		"entities/outdoor_props/foliage.lua",
 		{"tree", "cactus"}
 	},
 	{
-		"scripts/entities/outdoor_props/tiles.lua",
+		"entities/outdoor_props/tiles.lua",
 		{"grass", "grass_flower1", "grass_flower2", "grass_flower3", "sand", "sand_cracked", "sand_path_top", "sand_path_bottom", "sand_path_left", "sand_path_right", "sand_path_topleft_inner", "sand_path_topright_inner", "sand_path_bottomleft_inner", "sand_path_bottomright_inner", "sand_path_topleft_outer", "sand_path_topright_outer", "sand_path_bottomleft_outer", "border_left_sand_grass", "sand_path_bottomright_outer", "border_bottom_sand_grass", "border_top_sand_grass", "border_right_sand_grass", "border_bottom_right_sand_grass", "border_bottom_left_sand_grass", "border_top_left_sand_grass", "border_top_right_sand_grass", "border_bottom_right_grass", "border_bottom_left_grass", "border_top_left_grass", "border_top_right_grass", "wood_floor"}
 	}
 };

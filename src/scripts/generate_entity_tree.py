@@ -29,7 +29,7 @@ def recursive_add(full_parent_path):
             should_be_lua = full_child_path[-4:]
             if should_be_lua != ".lua":
                 continue
-            just_script_dir_path = full_parent_path.replace(project_root_dir, "")
+            just_script_dir_path = full_parent_path.replace(script_root_dir + "/", "")
             just_script_file_path = just_script_dir_path + "/" + name
             defs[just_script_file_path] = []
 

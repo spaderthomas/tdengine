@@ -556,7 +556,7 @@ void Editor::update(float dt) {
 		ImGui::EndMainMenuBar();
 	}
 
-	// Tile Selector GUI
+	// Global for debug display
 	ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize;
 	ImGui::Begin("tdengine", 0, flags);
 	static glm::vec2 last_click = { 0, 0 };
@@ -566,6 +566,7 @@ void Editor::update(float dt) {
 		ImGui::Checkbox("show aabb", &debug_show_aabb);
 		ImGui::Checkbox("show minkowski", &debug_show_minkowski);
 		ImGui::Checkbox("show demo", &show_imgui_demo);
+		ImGui::Checkbox("show framerate", &print_framerate);
 		ImGui::Text("Raw game input: %f, %f", input.screen_pos.x, input.screen_pos.y);
 		ImGui::Text("Camera offset: %f, %f", camera.offset.x, camera.offset.y);
 		ImGui::Text("Last click: %f, %f", last_click.x, last_click.y);
@@ -574,6 +575,32 @@ void Editor::update(float dt) {
 	// Tile tree
 	ImGui::Separator();
 	draw_tile_tree(tile_tree);
+
+	ImGui::Separator();
+	static string script_current = script_to_entity.begin()->first;
+	if (ImGui::BeginCombo("##choose_script", script_current.c_str(), 0)) {
+		for (auto& kvp : script_to_entity) {
+			auto& script = kvp.first;
+			bool is_selected = (script == script_current);
+			if (ImGui::Selectable(script.c_str(), is_selected)) {
+				script_current = script;
+			}
+			if (is_selected) ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndCombo();
+	}
+
+	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+	ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
+	for (auto& entity : script_to_entity[script_current]) {
+		if (ImGui::Selectable(entity.c_str())) {
+			selected = Entity::create(entity);
+			this->kind = ENTITY;
+			this->state = INSERT;
+		}
+	}
+	ImGui::PopStyleVar();
+	ImGui::EndChild();
 
 	// Level selector
 	ImGui::Separator();

@@ -138,4 +138,8 @@ to add scripting to an entity:
 3. add scripts to npc.entity_name.scripts
    - names of scripts much match names of states
    - ditto transitions
-4. 
+
+* goals
+- EITHER:
+  - smart movement algorithms (navmesh + bezier curves or something)
+  - point and line interpolation
