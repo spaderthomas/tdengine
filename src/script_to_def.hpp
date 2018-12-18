@@ -10,7 +10,7 @@ unordered_map<string, vector<string>> script_to_entity = {
 		{"building", "table_", "chair_left", "chair_right", "bar", "liquor_cabinet", "bookcase", "picture"}
 	},
 	{
-		"entities/characters/hero/hero.lua",
+		"entities/characters/hero.lua",
 		{"boon"}
 	},
 	{
@@ -18,7 +18,7 @@ unordered_map<string, vector<string>> script_to_entity = {
 		{"intro_police"}
 	},
 	{
-		"entities/characters/wilson/components.lua",
+		"entities/characters/wilson/init.lua",
 		{"wilson"}
 	},
 	{

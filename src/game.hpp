@@ -68,7 +68,7 @@ enum Editor_State {
 	INSERT,
 	EDIT,
 	DRAG,
-	RECTANGLE_SELECT,
+	RECTANGLE_SELECT
 };
 enum Selection_Kind {
 	NONE,

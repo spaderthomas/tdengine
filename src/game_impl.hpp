@@ -93,7 +93,7 @@ void  Console::Draw(const char* title)
 
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 	static ImGuiTextFilter filter;
-	filter.Draw("Filter (\"incl,-excl\") (\"error\")", 180);
+	filter.Draw("Filter", 180);
 	ImGui::PopStyleVar();
 	ImGui::Separator();
 
@@ -332,8 +332,6 @@ void Editor::translate() {
 		input.world_pos + smooth_drag_offset;
 }
 void Editor::draw_component_editor() {
-	// Leave the main tdengine window, and pop up a properties window for this entity
-	ImGui::End();
 	ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
 
 	// Iterate through components, displaying whatever you need
@@ -389,15 +387,13 @@ void Editor::draw_component_editor() {
 		else if (dynamic_cast<Position_Component*>(component)) {
 			if (ImGui::TreeNode("Position Component")) {
 				def_cast_cmp(pc, component, Position_Component);
-				ImGui::SliderFloat2("Position", glm::value_ptr(pc->world_pos), 0.f, 100.f);
+				ImGui::SliderFloat2("Position", glm::value_ptr(pc->world_pos), 0.f, 2.f);
 				ImGui::TreePop();
 			}
 		}
 	}
 
-	// Re-enter main tdengine window
 	ImGui::End();
-	ImGui::Begin("tdengine", 0, ImGuiWindowFlags_AlwaysAutoResize);
 }
 void Editor::draw_tile_tree(Entity_Tree* root) {
 	if (ImGui::CollapsingHeader("Tile Selector")) {
@@ -501,6 +497,15 @@ void Editor::undo() {
 	}
 }
 void Editor::update(float dt) {	
+	static bool open = true;
+	//ShowExampleAppCustomNodeGraph(&open);
+
+	// Set up the camera so that the entity it's following is centered
+	def_get_cmp(follow_pc, camera.following.deref(), Position_Component);
+	camera.offset = follow_pc->world_pos;
+	camera.offset += glm::vec2{ -.5, -.5 };
+	input.world_pos = input.screen_pos + camera.offset;
+
 	if (input.was_pressed(GLFW_KEY_ESCAPE)) {
 		selected = { -1, nullptr };
 		state = IDLE;
@@ -541,6 +546,27 @@ void Editor::update(float dt) {
 				}
 				ImGui::EndMenu();
 			}
+			if (ImGui::BeginMenu("Options", "options")) {
+				if (ImGui::BeginMenu("Editor", "editor_options")) {
+					ImGui::MenuItem("Show Grid", "", &show_grid);
+					ImGui::MenuItem("Snap To Grid", "", &snap_to_grid);
+					ImGui::EndMenu();
+				}
+				if (ImGui::BeginMenu("Debug", "debug_options")) {
+					ImGui::MenuItem("Show Bounding Boxes", "", &debug_show_aabb);
+					ImGui::MenuItem("Show Minkowski Differences", "", &debug_show_minkowski);
+					ImGui::MenuItem("Show ImGui Demo", "", &show_imgui_demo);
+					ImGui::MenuItem("Show Framerate", "", &print_framerate);
+					ImGui::EndMenu();
+				}
+				ImGui::EndMenu();
+			}
+			if (ImGui::BeginMenu("Windows", "windows")) {
+				ImGui::MenuItem("Tile Selector", "", &show_tile_selector);
+				ImGui::MenuItem("Script Selector", "", &show_script_selector);
+				ImGui::MenuItem("Level Selector", "", &show_level_selector);
+				ImGui::EndMenu();
+			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
@@ -553,76 +579,112 @@ void Editor::update(float dt) {
 	
 	// Global for debug display
 	ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize;
-	ImGui::Begin("tdengine", 0, flags);
-	static glm::vec2 last_click = { 0, 0 };
-	if (ImGui::CollapsingHeader("Options")) {
-		ImGui::Checkbox("show grid", &show_grid);
-		ImGui::Checkbox("snap to grid", &snap_to_grid);
-		ImGui::Checkbox("show aabb", &debug_show_aabb);
-		ImGui::Checkbox("show minkowski", &debug_show_minkowski);
-		ImGui::Checkbox("show demo", &show_imgui_demo);
-		ImGui::Checkbox("show framerate", &print_framerate);
-		ImGui::Text("Raw game input: %f, %f", input.screen_pos.x, input.screen_pos.y);
-		ImGui::Text("Camera offset: %f, %f", camera.offset.x, camera.offset.y);
-		ImGui::Text("Last click: %f, %f", last_click.x, last_click.y);
+
+	if (show_tile_selector) {
+		ImGui::Begin("Tiles", 0, flags);
+		draw_tile_tree(tile_tree);
+		ImGui::End();
 	}
 
-	// Tile tree
-	ImGui::Separator();
-	draw_tile_tree(tile_tree);
+	if (show_task_editor) {
+		ImGui::Begin("Task Editor", 0, flags);
+		// Create our child canvas
+		ImGui::SameLine(ImGui::GetWindowWidth() - 100);
+		ImGui::Checkbox("Show grid", &show_grid);
+		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(1, 1));
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+		ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, IM_COL32(60, 60, 70, 200));
+		ImGui::BeginChild("scrolling_region", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
+		ImGui::PushItemWidth(120.0f);
 
-	ImGui::Separator();
-	static string script_current = script_to_entity.begin()->first;
-	if (ImGui::BeginCombo("##choose_script", script_current.c_str(), 0)) {
-		for (auto& kvp : script_to_entity) {
-			auto& script = kvp.first;
-			bool is_selected = (script == script_current);
-			if (ImGui::Selectable(script.c_str(), is_selected)) {
-				script_current = script;
+		static ImVec2 scrolling = ImVec2(0.0f, 0.0f);
+		ImVec2 offset = ImGui::GetCursorScreenPos() + scrolling;
+		ImDrawList* draw_list = ImGui::GetWindowDrawList();
+		// Display grid
+		if (show_grid)
+		{
+			ImU32 GRID_COLOR = IM_COL32(200, 200, 200, 40);
+			float GRID_SZ = 64.0f;
+			ImVec2 win_pos = ImGui::GetCursorScreenPos();
+			ImVec2 canvas_sz = ImGui::GetWindowSize();
+			for (float x = fmodf(scrolling.x, GRID_SZ); x < canvas_sz.x; x += GRID_SZ)
+				draw_list->AddLine(ImVec2(x, 0.0f) + win_pos, ImVec2(x, canvas_sz.y) + win_pos, GRID_COLOR);
+			for (float y = fmodf(scrolling.y, GRID_SZ); y < canvas_sz.y; y += GRID_SZ)
+				draw_list->AddLine(ImVec2(0.0f, y) + win_pos, ImVec2(canvas_sz.x, y) + win_pos, GRID_COLOR);
+		}
+		ImGui::PopItemWidth();
+		ImGui::EndChild();
+		ImGui::PopStyleColor();
+		ImGui::PopStyleVar(2);
+		ImGui::End();
+	}
+	
+	if (show_script_selector) {
+		ImGui::Begin("Scripts", 0, flags);
+		static ImGuiTextFilter filter;
+		filter.Draw("Filter");
+
+		static string script_current = script_to_entity.begin()->first;
+
+		// Note: I'm not entirely sure why this name has to include ##
+		// It certainly has something to do with the ImGui stack, but I thought
+		// that only mattered in the case of duplicate names in the same window
+		if (ImGui::BeginCombo("##choose_script", script_current.c_str(), 0)) {
+			for (auto& kvp : script_to_entity) {
+				auto& script = kvp.first;
+				if (filter.PassFilter(script.c_str())) {
+					bool is_selected = (script == script_current);
+					if (ImGui::Selectable(script.c_str(), is_selected)) {
+						script_current = script;
+					}
+					if (is_selected) ImGui::SetItemDefaultFocus();
+				}
 			}
-			if (is_selected) ImGui::SetItemDefaultFocus();
+			ImGui::EndCombo();
 		}
-		ImGui::EndCombo();
+		
+
+		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+		ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
+		for (auto& entity : script_to_entity[script_current]) {
+			if (ImGui::Selectable(entity.c_str())) {
+				selected = Entity::create(entity);
+				this->kind = ENTITY;
+				this->state = INSERT;
+			}
+		}
+		ImGui::PopStyleVar();
+		ImGui::EndChild();
+		ImGui::End();
 	}
 
-	ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-	ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
-	for (auto& entity : script_to_entity[script_current]) {
-		if (ImGui::Selectable(entity.c_str())) {
-			selected = Entity::create(entity);
-			this->kind = ENTITY;
-			this->state = INSERT;
-		}
-	}
-	ImGui::PopStyleVar();
-	ImGui::EndChild();
 
 	// Level selector
-	ImGui::Separator();
-	static string level_current = active_level->name;
-	if (ImGui::BeginCombo("##chooselevel", level_current.c_str(), 0)) {
-		fox_iter(it, levels) {
-			string level_name = it->first;
-			bool is_selected = level_name == level_current;
-			if (ImGui::Selectable(level_name.c_str(), is_selected)) {
-				level_current = level_name;
-				active_level = it->second;
+	if (show_level_selector) {
+		ImGui::Begin("Levels", 0, flags);
+		static string level_current = active_level->name;
+		if (ImGui::BeginCombo("##chooselevel", level_current.c_str(), 0)) {
+			fox_iter(it, levels) {
+				string level_name = it->first;
+				bool is_selected = level_name == level_current;
+				if (ImGui::Selectable(level_name.c_str(), is_selected)) {
+					level_current = level_name;
+					active_level = it->second;
+				}
+				if (is_selected) {
+					ImGui::SetItemDefaultFocus();
+				}
 			}
-			if (is_selected) {
-				ImGui::SetItemDefaultFocus();
-			}
+			ImGui::EndCombo();
 		}
-		ImGui::EndCombo();
+		ImGui::End();
 	}
-
-	ImGui::End();
 #pragma endregion
 
-	#pragma region editing logic
+	// Editing logic
 	switch (state) {
 	case IDLE: {
 		if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
-			last_click = input.world_pos;
 			bool clicked_inside_something = false;
 			for (auto& handle : active_level->entities) {
 				Entity* entity = handle();
@@ -644,6 +706,20 @@ void Editor::update(float dt) {
 			}
 			#endif
 		}
+
+		// Since we want the camera to be centered around the hero, when we want to 
+		// move around in the editor, we just teleport the entity
+		EntityHandle hero = Lua.get_hero();
+		def_get_cmp(pc, hero.deref(), Position_Component);
+		glm::vec2& position = pc->world_pos;
+
+		if (input.is_down[GLFW_KEY_W]) position += glm::vec2(0, .025);
+		if (input.is_down[GLFW_KEY_S]) position -= glm::vec2(0, .025);
+		if (input.is_down[GLFW_KEY_A]) position -= glm::vec2(.025, 0);
+		if (input.is_down[GLFW_KEY_D]) position += glm::vec2(.025, 0);
+
+		teleport_entity(hero, position.x, position.y);
+
 		break;
 	}
 	case INSERT: {
@@ -787,7 +863,6 @@ void Editor::update(float dt) {
 		break;
 	}
 	}
-	#pragma endregion
 }
 void Editor::render() {
 	active_level->draw();
