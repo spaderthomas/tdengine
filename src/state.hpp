@@ -14,7 +14,7 @@ struct State_System {
 
 	void sql_wrapper(const char* query, sqlite3_stmt** statement, bool finalize) {
 		const char* query_end = query + strlen(query);
-		sqlite3_prepare(db_conn, query, 1024, statement, &query_end);
+		sqlite3_prepare(db_conn, query, strlen(query), statement, &query_end);
 		sqlite3_step(*statement);
 		if (finalize) sqlite3_finalize(*statement);
 	}
@@ -68,7 +68,8 @@ struct State_System {
 					sqlite3_stmt* sql_statement3;
 					sql_wrapper(query.c_str(), &sql_statement3, true);
 
-					for (auto& entity : game.active_level->entities) {
+					auto level = Lua.get_active_level();
+					for (auto& entity : level->entities) {
 						if (entity->lua_id == entity_name) {
 							def_get_cmp(tc, entity.deref(), Task_Component);
 							sol::table new_task = Lua.entity_table()[entity_name]["scripts"][new_state];

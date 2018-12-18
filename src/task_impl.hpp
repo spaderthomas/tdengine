@@ -1,9 +1,12 @@
 Action* action_from_table(sol::table table, EntityHandle actor) {
+	bool good_action = false;
+
 	string kind = table["kind"];
 	if (kind == "Wait_For_Interaction_Action") {
 		Wait_For_Interaction_Action* action = new Wait_For_Interaction_Action;
-		action->is_blocking = table["is_blocking"];
 		action->actor = actor;
+		init_is_blocking(action, table);
+
 		return action;
 	}
 	else if (kind == "Dialogue_Action") {
@@ -13,9 +16,10 @@ Action* action_from_table(sol::table table, EntityHandle actor) {
 
 		Dialogue_Action* action = new Dialogue_Action;
 		action->init();
-		action->is_blocking = true;
 		action->tree = tree;
 		action->actor = actor;
+		init_is_blocking(action, table);
+
 		return action;
 	}
 	else if (kind == "Movement_Action") {
@@ -23,11 +27,13 @@ Action* action_from_table(sol::table table, EntityHandle actor) {
 		action->dest.x = table["dest"]["x"];
 		action->dest.y = table["dest"]["y"];
 		action->actor = actor;
+		init_is_blocking(action, table);
+
 		return action;
 	}
 	else if (kind == "And_Action") {
 		And_Action* action = new And_Action;
-		action->is_blocking = true;
+		init_is_blocking(action, table);
 		sol::table actions = table["actions"];
 		for (auto& kvp : actions) {
 			sol::table action_definition = kvp.second;
@@ -36,9 +42,33 @@ Action* action_from_table(sol::table table, EntityHandle actor) {
 
 		return action;
 	}
+	else if (kind == "Set_State_Action") {
+		Set_State_Action* action = new Set_State_Action;
+		action->var = table["var"];
+		action->value = table["value"];
+		init_is_blocking(action, table);
+
+		return action;
+	}
+	else if (kind == "Teleport_Action") {
+		Teleport_Action* action = new Teleport_Action;
+		action->actor = actor;
+		action->x = table["x"];
+		action->y = table["y"];
+		init_is_blocking(action, table);
+
+		return action;
+	}
 
 	tdns_log.write("Tried to create an action with an invalid kind: " + kind);
 	return nullptr;
+}
+
+void init_is_blocking(Action* action, sol::table& table) {
+	sol::optional<bool> maybe_is_blocking = table["is_blocking"];
+	if (maybe_is_blocking) {
+		action->is_blocking = maybe_is_blocking.value();
+	}
 }
 
 bool And_Action::update(float dt) {
@@ -139,6 +169,16 @@ bool Dialogue_Action::update(float dt) {
 	}
 
 	return false;
+}
+
+bool Set_State_Action::update(float dt) {
+	state_system.update_state(this->var, this->value);
+	return true;
+}
+
+bool Teleport_Action::update(float dt) {
+	teleport_entity(this->actor, this->x, this->y);
+	return true;
 }
 
 bool Task::update(float dt) {

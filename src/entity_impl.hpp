@@ -127,14 +127,6 @@ pool_handle<Entity> Entity::create(string lua_id) {
 	return entity_handle;
 }
 
-// @c-style
-void Entity::draw(Render_Flags flags) {
-	auto graphic_component = get_component<Graphic_Component>();
-	auto position_component = get_component<Position_Component>();
-	if (graphic_component && position_component) {
-		renderer.draw(graphic_component, position_component, flags);
-	}
-};
 void Entity::save(json& j) {
 	j["lua_id"] = lua_id;
 	int icomponent = 0;

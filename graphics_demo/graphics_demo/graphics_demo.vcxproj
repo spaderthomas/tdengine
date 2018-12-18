@@ -71,7 +71,7 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>C:\Users\dboon\programming\tdengine\include\lua;C:\Users\dboon\programming\tdengine\include;C:\Users\dboon\programming\tdengine;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\dboon\programming\tdengine\include\imgui;C:\Users\dboon\programming\tdengine\include\lua;C:\Users\dboon\programming\tdengine\include;C:\Users\dboon\programming\tdengine;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\dboon\programming\tdengine\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -153,6 +153,7 @@
     <ClCompile Include="..\..\src\imgui.cpp" />
     <ClCompile Include="..\..\src\imgui_demo.cpp" />
     <ClCompile Include="..\..\src\imgui_draw.cpp" />
+    <ClCompile Include="..\..\src\imgui_widgets.cpp" />
     <ClCompile Include="..\..\src\win_main.cpp" />
   </ItemGroup>
   <ItemGroup>

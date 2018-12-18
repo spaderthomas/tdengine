@@ -35,10 +35,12 @@ tdapi int collider_kind(EntityHandle me) {
 		Collider_Kind::NO_COLLIDER;
 }
 tdapi void draw_entity(EntityHandle me, Render_Flags flags) {
+	if (!me) return;
+
 	def_get_cmp(gc, me.deref(), Graphic_Component);
 	def_get_cmp(pc, me.deref(), Position_Component);
 	if (gc && pc) {
-		renderer.draw(gc, pc, flags);
+		renderer.draw(gc, pc, me, flags);
 	}
 }
 tdapi void teleport_entity(EntityHandle me, float x, float y) {
@@ -123,6 +125,10 @@ tdapi void draw_aabb(EntityHandle me) {
 	Points_Box box = get_bounding_box_world(me);
 	draw_rect_world(box, green);
 }
+tdapi void update_task(EntityHandle me, float dt) {
+	def_get_cmp(tc, me.deref(), Task_Component);
+	if (tc) tc->task->update(dt);
+}
 
 // Collision
 tdapi bool are_entities_colliding(EntityHandle a, EntityHandle b) {
@@ -169,5 +175,7 @@ tdapi void go_through_door(EntityHandle door, EntityHandle other) {
 tdapi void camera_follow(EntityHandle entity) {
 	camera.following = entity;
 }
-
+tdapi void set_state(string var, bool val) {
+	state_system.update_state(var, val);
+}
 

@@ -10,10 +10,6 @@ if __name__ == "__main__":
     
     c = sqlite3.connect('tdengine.db')
 
-    cursor = c.execute('''PRAGMA table_info(entity_state)''')
-    for row in cursor:
-        print(row)
-
     # Clean out the database and remake the tables
     if args.init:
         # Kill all the old tables
@@ -27,21 +23,24 @@ if __name__ == "__main__":
 
         # Recreate them
         c.execute('''create table levels(
-                       name text not null
+                       name text not null,
+                       id integer primary key asc
                      )''')
         
         c.execute('''create table entities(
                        lua_id  text,
                        game_id integer,
                        level   integer,
-                         foreign key(level) references levels(rowid)
+                       id integer primary key asc,
+                         foreign key(level) references levels(id)
                      )''')
         
         c.execute('''create table position_components(
                        x      integer,
                        y      integer,
                        entity integer,
-                         foreign key(entity) references entiites(rowid)
+                       id integer primary key asc,
+                         foreign key(entity) references entities(id)
                      )''')
 
         # 0: False
@@ -61,8 +60,8 @@ if __name__ == "__main__":
 
     # If you just need to update the database, do it here
     if args.update:
-        c.execute('''insert into state values('a', 0)''')
-        c.execute('''insert into entity_state values('wilson', 'intro')''')
+        c.execute('''insert into levels(name) values('overworld')''')
+        c.execute('''insert into entity_state(name, state) values('wilson', 'intro')''')
         c.commit()
         
     c.close()

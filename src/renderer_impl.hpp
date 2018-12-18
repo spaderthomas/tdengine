@@ -1,6 +1,6 @@
 
-void Renderer::draw(Graphic_Component* gc, Position_Component* pc, Render_Flags flags) {
-	Render_Element info = { gc, pc, flags };
+void Renderer::draw(Graphic_Component* gc, Position_Component* pc, EntityHandle e, Render_Flags flags) {
+	Render_Element info = { gc, pc, e, flags };
 	render_list.push_back(info);
 }
 void Renderer::render_for_frame() {

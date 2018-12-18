@@ -6,20 +6,38 @@ void Level::set_tile(pool_handle<Entity> tile, int x, int y) {
 	Chunk& chunk = chunks[Chunk_Index(chunk_of(x), chunk_of(y))];
 	chunk.tiles[index_into_chunk(x)][index_into_chunk(y)] = tile;
 }
+EntityHandle Level::get_first_matching_entity(string lua_id) {
+	for (auto& entity : entities) {
+		if (entity_name(entity) == lua_id) return entity;
+	}
+
+	return { -1, nullptr };
+}
+EntityHandle Level::erase_first_matching_entity(string lua_id) {
+	for (auto it = entities.begin(); it != entities.end(); it++) {
+		auto entity = *it;
+		if (entity_name(entity) == lua_id) {
+			entities.erase(it);
+			return entity;
+		}
+	}
+
+	return { -1, nullptr };
+}
 
 void Level::draw() {
 	for (auto it : chunks) {
 		Chunk& chunk = it.second;
 		fox_for(itilex, CHUNK_SIZE) {
 			fox_for(itiley, CHUNK_SIZE) {
-				pool_handle<Entity> handle = chunk.tiles[itilex][itiley];
-				if (handle) handle->draw(Render_Flags::None);
+				EntityHandle entity = chunk.tiles[itilex][itiley];
+				draw_entity(entity, Render_Flags::None);
 			}
 		}
 	}
 
-	for (auto handle : entities) {
-		if (handle) handle->draw(Render_Flags::None);
+	for (auto entity : entities) {
+		draw_entity(entity, Render_Flags::None);
 	}
 }
 
@@ -53,6 +71,7 @@ void Level::save() {
 void Level::load() {
 	json j;
 	ifstream level_file(absolute_path("save\\" + name + ".json"));
+	if (!level_file.good()) return;
 	level_file >> j;
 
 	// Load tile chunks
@@ -96,6 +115,24 @@ void Level::load() {
 	}
 }
 
+void add_level(string name) {
+	Level* level = new Level;
+	level->name = name;
+	level->load();
+	levels[name] = level;
+
+	// Add the level to the database if it does not already exist 
+	string sql_query = "";
+	ostringstream query_stream;
+	query_stream << "insert into levels(name) ";
+	query_stream << "select '" << name << "' ";
+	query_stream << "where not exists";
+	query_stream << "(select name from levels ";
+	query_stream << "where name = '" << name << "')";
+	string query = query_stream.str();	
+	sqlite3_stmt* statement;
+	state_system.sql_wrapper(query.c_str(), &statement, true);
+}
 
 void init_levels() {
 	const char* sql_query = "select * from levels";
@@ -104,11 +141,6 @@ void init_levels() {
 
 	do {
 		string name = (const char*)sqlite3_column_text(statement, db_schema["levels"]["name"]);
-
-		Level* level = new Level;
-		level->name = name;
-		level->load();
-		levels[name] = level;
-
+		add_level(name);
 	} while (sqlite3_step(statement) != SQLITE_DONE);
 }

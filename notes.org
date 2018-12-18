@@ -143,3 +143,12 @@ to add scripting to an entity:
 - EITHER:
   - smart movement algorithms (navmesh + bezier curves or something)
   - point and line interpolation
+- task editor
+  - specify a scene and entity
+  - graphically create tasks
+  - write the lua code back for the tasks
+- click to drag position
+- zooming
+- new levels (put in database)
+- move level storage to SQL
+- design boon's house!

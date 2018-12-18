@@ -17,14 +17,11 @@ struct Entity {
 	// Lifetime functions
 	static sol::table get_definition(string lua_id);
 	
-	static pool_handle<Entity> create(string lua_id);
-	static void destroy(pool_handle<Entity> handle);
+	static EntityHandle create(string lua_id);
+	static void destroy(EntityHandle handle);
 
 	void save(json& j);
 	void load(json& entity);
-
-
-	void draw(Render_Flags flags);
 };
 int Entity::next_id = 0;
 

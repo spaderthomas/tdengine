@@ -35,6 +35,12 @@ function Game:update(dt)
 			end
 	  end
 
+	  -- Check for collisions among NPCs
+	  for i = 1, #self.level.entities do
+		 local this = self.level.entities[i]
+		 update_task(this, dt)
+	  end
+	  
 	  update_entity(self.hero, dt)
 
 	  draw_entity(self.hero, Render_Flags.NO_FLAGS)

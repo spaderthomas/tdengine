@@ -254,7 +254,7 @@ int   Console::TextEditCallback(ImGuiTextEditCallbackData* data)
 	}
 	return 0;
 }
-void  Console::ExecCommand(const char* command_line)
+void  Console::ExecCommand(char* command_line)
 {
 	AddLog("# %s\n", command_line);
 
@@ -269,27 +269,7 @@ void  Console::ExecCommand(const char* command_line)
 		}
 	History.push_back(Strdup(command_line));
 
-	// Process command
-	if (Stricmp(command_line, "CLEAR") == 0)
-	{
-		ClearLog();
-	}
-	else if (Stricmp(command_line, "HELP") == 0)
-	{
-		AddLog("Commands:");
-		for (int i = 0; i < Commands.Size; i++)
-			AddLog("- %s", Commands[i]);
-	}
-	else if (Stricmp(command_line, "HISTORY") == 0)
-	{
-		int first = History.Size - 10;
-		for (int i = first > 0 ? first : 0; i < History.Size; i++)
-			AddLog("%3d: %s\n", i, History[i]);
-	}
-	else
-	{
-		game.exec_console_cmd(command_line);
-	}
+	active_layer->exec_console_cmd(command_line);
 }
 
 
@@ -464,18 +444,39 @@ int  Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 
 	return unique_btn_index;
 }
-void Editor::exec_console_cmd(const char* cmd) {
-	if (console.Stricmp(cmd, "SAVE") == 0) {
+void Editor::exec_console_cmd(char* command_line) {
+	char* command = strtok((char*)command_line, " ");
+	if (!command) return;
+
+
+	if (console.Stricmp(command, "save") == 0) {
 		active_level->save();
 	}
-	else if (console.Stricmp(cmd, "LOAD") == 0) {
+	else if (console.Stricmp(command, "load") == 0) {
 		active_level->load();
 	}
-	else if (console.Stricmp(cmd, "RELOAD") == 0) {
+	else if (console.Stricmp(command, "reload") == 0) {
 		reload_everything();
 	}
+	else if (console.Stricmp(command, "new") == 0) {
+		string next = strtok(NULL, " ");
+		if (next == "level") {
+			string name = strtok(NULL, " ");
+			add_level(name);
+		}
+	}
+	else if (console.Stricmp(command, "goto") == 0) {
+		string level_name = strtok(NULL, " ");
+		Level* new_level = levels[level_name];
+		Lua.set_active_level(new_level);
+		this->active_level = new_level;
+
+		auto hero = Lua.get_hero();
+		def_get_cmp(pc, hero.deref(), Position_Component);
+		pc->world_pos = { 0.f, 0.f };
+	}
 	else {
-		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", cmd);
+		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);
 	}
 }
 void Editor::reload_lua() {
@@ -540,12 +541,6 @@ void Editor::update(float dt) {
 				}
 				ImGui::EndMenu();
 			}
-			if (ImGui::BeginMenu("Windows")) {
-				if (ImGui::MenuItem("FSM Debugger")) { 
-					show_fsm_debugger = !show_fsm_debugger; 
-				}
-				ImGui::EndMenu();
-			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
@@ -555,7 +550,7 @@ void Editor::update(float dt) {
 		}
 		ImGui::EndMainMenuBar();
 	}
-
+	
 	// Global for debug display
 	ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize;
 	ImGui::Begin("tdengine", 0, flags);
@@ -780,11 +775,11 @@ void Editor::update(float dt) {
 
 		glm::vec2 dummy_penetration;
 		Center_Box selection_area = Center_Box::from_points(points);
-		for (auto& handle : active_level->entities) {
-			auto entity_box = Center_Box::from_entity(handle);
+		for (auto& entity : active_level->entities) {
+			auto entity_box = Center_Box::from_entity(entity);
 			if (entity_box) {
 				if (are_boxes_colliding(*entity_box, selection_area, dummy_penetration)) {
-					handle()->draw(Render_Flags::Highlighted);
+					draw_entity(entity, Render_Flags::Highlighted);
 				}
 			}
 		}
@@ -796,8 +791,8 @@ void Editor::update(float dt) {
 }
 void Editor::render() {
 	active_level->draw();
-	if (selected) { 
-		selected()->draw(Render_Flags::Highlighted); 
+	if (selected) {
+		draw_entity(selected, Render_Flags::Highlighted); 
 	}
 	// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
 	renderer.render_for_frame();
@@ -820,17 +815,11 @@ void Editor::render() {
 
 void Game::init() {
 	particle_system.init();
-	active_level = levels["overworld"];
 	scene = "intro";
 	active_dialogue = new Dialogue_Tree;
 }
 void Game::update(float dt) {
 	static int frame = 0;
-
-	for (auto& entity : active_level->entities) {
-		def_get_cmp(tc, entity.deref(), Task_Component);
-		if (tc) tc->task->update(dt);
-	}
 
 	// Toggle the console
 	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {

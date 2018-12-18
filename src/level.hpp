@@ -35,8 +35,12 @@ struct Level {
 
 	pool_handle<Entity> get_tile(int x, int y);
 	void set_tile(pool_handle<Entity> handle, int x, int y);
+	EntityHandle get_first_matching_entity(string lua_id);
+	EntityHandle erase_first_matching_entity(string lua_id);
 	void draw();
 	void save();
 	void load();
 };
+
 unordered_map<string, Level*> levels;
+void add_level(string name);

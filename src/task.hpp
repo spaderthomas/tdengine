@@ -5,6 +5,7 @@ struct Action {
 	virtual void init() {};
 };
 Action* action_from_table(sol::table table, EntityHandle actor);
+void init_is_blocking(Action* action, sol::table& table);
 
 // Conjunction of actions which blocks until all are complete
 struct And_Action : Action {
@@ -28,6 +29,19 @@ struct Dialogue_Action : Action {
 	void init() override;
 };
 
+struct Set_State_Action : Action {
+	string var;
+	bool value;
+
+	bool update(float dt) override;
+};
+
+struct Teleport_Action : Action {
+	float x;
+	float y;
+
+	bool update(float dt) override;
+};
 
 struct Action_Queue {
 	deque<Action*> actions;

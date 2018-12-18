@@ -85,8 +85,20 @@ struct LuaState {
 		sol::function lua_update = state["Game"]["__declaredMethods"]["update"]; 
 		lua_update(state["game"], dt);
 	}
+
 	sol::table entity_table() {
 		return state["entity"];
+	}
+
+	Level* get_active_level() {
+		return state["game"]["level"];
+	}
+	void set_active_level(Level* level) {
+		state["game"]["level"] = level;
+	}
+
+	EntityHandle get_hero() {
+		return state["game"]["hero"];
 	}
 };
 LuaState Lua;

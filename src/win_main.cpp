@@ -159,6 +159,8 @@ int main() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui_ImplGlfwGL3_Init(window, false);
+	auto& imio = ImGui::GetIO();
+	imio.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::StyleColorsDark();
 #pragma endregion
 

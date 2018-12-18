@@ -27,7 +27,7 @@ struct Console {
 	void ClearLog();
 	void AddLog(const char* fmt, ...) IM_FMTARGS(2);
 	void Draw(const char* title);
-	void ExecCommand(const char* command_line);
+	void ExecCommand(char* command_line);
 
 	static int TextEditCallbackStub(ImGuiTextEditCallbackData* data); 
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
@@ -58,9 +58,9 @@ struct Layer {
 	Input input;
 
 	virtual void update(float dt) = 0;
-	virtual void exec_console_cmd(const char* cmd) {};
-	virtual void render() {};
-	virtual void init() {};
+	virtual void exec_console_cmd(char* cmd) {}
+	virtual void render() {}
+	virtual void init() {}
 };
 
 enum Editor_State {
@@ -100,7 +100,7 @@ struct Editor : Layer {
 	void reload_lua();
 	void reload_assets();
 	void reload_everything();
-	void exec_console_cmd(const char* cmd) override;
+	void exec_console_cmd(char* cmd) override;
 	void update(float dt) override;
 	void render() override;
 	void init() override;
@@ -114,9 +114,6 @@ enum Game_State {
 	DIALOGUE = 1
 };
 struct Game : Layer {
-	//@move to a config file
-	Level* active_level;
-
 	Dialogue_Tree* active_dialogue;
 	string scene;
 	Particle_System particle_system;

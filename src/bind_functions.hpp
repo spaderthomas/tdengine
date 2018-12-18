@@ -19,6 +19,7 @@ void bind_functions() {
 	state.set_function("update_entity", &update_entity);
 	state.set_function("are_interacting", &are_interacting);
 	state.set_function("draw_aabb", &draw_aabb);
+	state.set_function("update_task", &update_task);
 	state.set_function("are_entities_colliding", &are_entities_colliding);
 	state.set_function("register_potential_collision", &register_potential_collision);
 	state.set_function("is_down", &is_down);
@@ -26,4 +27,5 @@ void bind_functions() {
 	state.set_function("was_pressed", &was_pressed);
 	state.set_function("go_through_door", &go_through_door);
 	state.set_function("camera_follow", &camera_follow);
+	state.set_function("set_state", &set_state);
 }

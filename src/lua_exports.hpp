@@ -17,6 +17,7 @@ tdapi void set_interaction(EntityHandle hero, EntityHandle other);
 tdapi void update_entity(EntityHandle me, float dt);
 tdapi bool are_interacting(EntityHandle initiator, EntityHandle receiver);
 tdapi void draw_aabb(EntityHandle me);
+tdapi void update_task(EntityHandle me, float dt);
 tdapi bool are_entities_colliding(EntityHandle a, EntityHandle b);
 tdapi void register_potential_collision(EntityHandle me, EntityHandle other);
 tdapi bool is_down(GLFW_KEY_TYPE key);
@@ -24,5 +25,6 @@ tdapi bool was_down(GLFW_KEY_TYPE key);
 tdapi bool was_pressed(GLFW_KEY_TYPE key);
 tdapi void go_through_door(EntityHandle door, EntityHandle other);
 tdapi void camera_follow(EntityHandle entity);
+tdapi void set_state(string var, bool val);
 
 void bind_functions();

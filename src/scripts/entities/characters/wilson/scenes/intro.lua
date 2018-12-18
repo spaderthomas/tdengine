@@ -2,6 +2,7 @@
 entity.wilson.scripts.intro = {
    {
 	  kind = "And_Action",
+	  is_blocking = "true",
 	  actions = {
 		 {
 			kind = "Wait_For_Interaction_Action",
