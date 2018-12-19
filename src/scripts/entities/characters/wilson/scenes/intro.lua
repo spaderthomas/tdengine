@@ -1,3 +1,5 @@
+local Default_Actions = require('default_actions')
+
 -- Script
 entity.wilson.scripts.intro = {
    {
@@ -28,9 +30,40 @@ entity.wilson.scripts.intro = {
 		 },
 		 children = {}
 	  }
+   },
+   {
+	  kind = "Teleport_Action",
+	  dest = {
+		 x = 100,
+		 y = 100
+	  },
+	  is_blocking = true
+   },
+   {
+	  kind = "Teleport_Action",
+	  dest = {
+		 x = 100,
+		 y = 100
+	  },
+	  is_blocking = true
+   },
+   {
+	  kind = "Teleport_Action",
+	  dest = {
+		 x = 100,
+		 y = 100
+	  },
+	  is_blocking = true
+   },
+   {
+	  kind = "Teleport_Action",
+	  dest = {
+		 x = 100,
+		 y = 100
+	  },
+	  is_blocking = true
    }
 }
-
 
 -- State machine
 entity.wilson.State_Machine.intro = {

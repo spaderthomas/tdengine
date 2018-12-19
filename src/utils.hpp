@@ -769,6 +769,9 @@ struct Hasher {
 	}
 } hasher;
 
+
+
+
 // Creating a node graph editor for ImGui
 // Quick demo, not production code! This is more of a demo of how to use ImGui to create custom stuff.
 // Better version by @daniel_collin here https://gist.github.com/emoon/b8ff4b4ce4f1b43e79f2
@@ -804,10 +807,25 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		ImVec4  Color;
 		int     InputsCount, OutputsCount;
 
-		Node(int id, const char* name, const ImVec2& pos, float value, const ImVec4& color, int inputs_count, int outputs_count) { ID = id; strncpy(Name, name, 31); Name[31] = 0; Pos = pos; Value = value; Color = color; InputsCount = inputs_count; OutputsCount = outputs_count; }
+		Node(int id, const char* name, const ImVec2& pos, float value, const ImVec4& color, int inputs_count, int outputs_count) { 
+			ID = id; 
+			strncpy(Name, name, 31); 
+			Name[31] = 0; 
+			Pos = pos; 
+			Value = value; 
+			Color = color; 
+			InputsCount = inputs_count; 
+			OutputsCount = outputs_count; }
 
-		ImVec2 GetInputSlotPos(int slot_no) const { return ImVec2(Pos.x, Pos.y + Size.y * ((float)slot_no + 1) / ((float)InputsCount + 1)); }
-		ImVec2 GetOutputSlotPos(int slot_no) const { return ImVec2(Pos.x + Size.x, Pos.y + Size.y * ((float)slot_no + 1) / ((float)OutputsCount + 1)); }
+		ImVec2 GetInputSlotPos(int slot_no) const { 
+			float x = Pos.x + Size.x * ((float)slot_no + 1) / ((float)InputsCount + 1);
+			float y = Pos.y + Size.y;
+			return ImVec2(x, y); 
+		}
+		ImVec2 GetOutputSlotPos(int slot_no) const {
+			float x = Pos.x + Size.x * ((float)slot_no + 1) / ((float)InputsCount + 1);
+			float y = Pos.y;
+			return ImVec2(x, y); }
 	};
 	struct NodeLink
 	{
@@ -861,6 +879,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 	const ImVec2 NODE_WINDOW_PADDING(8.0f, 8.0f);
 
 	// Create our child canvas
+	ImGui::Text("%f, %f", ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y);
 	ImGui::Text("Hold middle mouse button to scroll (%.2f,%.2f)", scrolling.x, scrolling.y);
 	ImGui::SameLine(ImGui::GetWindowWidth() - 100);
 	ImGui::Checkbox("Show grid", &show_grid);
@@ -937,7 +956,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 
 		ImU32 node_bg_color = (node_hovered_in_list == node->ID || node_hovered_in_scene == node->ID || (node_hovered_in_list == -1 && node_selected == node->ID)) ? IM_COL32(75, 75, 75, 255) : IM_COL32(60, 60, 60, 255);
 		draw_list->AddRectFilled(node_rect_min, node_rect_max, node_bg_color, 4.0f);
-		draw_list->AddRect(node_rect_min, node_rect_max, IM_COL32(100, 100, 100, 255), 4.0f);
+		//draw_list->AddRect(node_rect_min, node_rect_max, IM_COL32(100, 100, 100, 255), 4.0f);
 		for (int slot_idx = 0; slot_idx < node->InputsCount; slot_idx++)
 			draw_list->AddCircleFilled(offset + node->GetInputSlotPos(slot_idx), NODE_SLOT_RADIUS, IM_COL32(150, 150, 150, 150));
 		for (int slot_idx = 0; slot_idx < node->OutputsCount; slot_idx++)

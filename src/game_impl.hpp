@@ -461,8 +461,21 @@ void Editor::exec_console_cmd(char* command_line) {
 			add_level(name);
 		}
 	}
-	else if (console.Stricmp(command, "goto") == 0) {
+	else if (console.Stricmp(command, "level") == 0) {
 		string level_name = strtok(NULL, " ");
+
+		bool is_valid_level_name = false;
+		for (auto& kvp : levels) {
+			if (kvp.first == level_name) {
+				is_valid_level_name = true;
+				break;
+			}
+		}
+		if (!is_valid_level_name) {
+			console.AddLog("Invalid level name");
+			return;
+		}
+
 		Level* new_level = levels[level_name];
 		Lua.set_active_level(new_level);
 		this->active_level = new_level;
@@ -498,7 +511,7 @@ void Editor::undo() {
 }
 void Editor::update(float dt) {	
 	static bool open = true;
-	//ShowExampleAppCustomNodeGraph(&open);
+	ShowExampleAppCustomNodeGraph(&open);
 
 	// Set up the camera so that the entity it's following is centered
 	def_get_cmp(follow_pc, camera.following.deref(), Position_Component);
@@ -587,36 +600,20 @@ void Editor::update(float dt) {
 	}
 
 	if (show_task_editor) {
-		ImGui::Begin("Task Editor", 0, flags);
-		// Create our child canvas
-		ImGui::SameLine(ImGui::GetWindowWidth() - 100);
-		ImGui::Checkbox("Show grid", &show_grid);
-		ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(1, 1));
-		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-		ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, IM_COL32(60, 60, 70, 200));
-		ImGui::BeginChild("scrolling_region", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
-		ImGui::PushItemWidth(120.0f);
+		static bool init = false;
+		static TaskEditorNode* task_graph = nullptr;
+		static int id = 0;
 
-		static ImVec2 scrolling = ImVec2(0.0f, 0.0f);
-		ImVec2 offset = ImGui::GetCursorScreenPos() + scrolling;
-		ImDrawList* draw_list = ImGui::GetWindowDrawList();
-		// Display grid
-		if (show_grid)
-		{
-			ImU32 GRID_COLOR = IM_COL32(200, 200, 200, 40);
-			float GRID_SZ = 64.0f;
-			ImVec2 win_pos = ImGui::GetCursorScreenPos();
-			ImVec2 canvas_sz = ImGui::GetWindowSize();
-			for (float x = fmodf(scrolling.x, GRID_SZ); x < canvas_sz.x; x += GRID_SZ)
-				draw_list->AddLine(ImVec2(x, 0.0f) + win_pos, ImVec2(x, canvas_sz.y) + win_pos, GRID_COLOR);
-			for (float y = fmodf(scrolling.y, GRID_SZ); y < canvas_sz.y; y += GRID_SZ)
-				draw_list->AddLine(ImVec2(0.0f, y) + win_pos, ImVec2(canvas_sz.x, y) + win_pos, GRID_COLOR);
+		// Pull in a random task 
+		if (!init) {
+			Task* test = new Task;
+			sol::table tbl = Lua.state["entity"]["wilson"]["scripts"]["intro"];
+			test->init_from_table(tbl, Lua.get_hero());
+			task_editor.task_graph = make_task_graph(test, ImVec2(200, 200));
+			init = true;
 		}
-		ImGui::PopItemWidth();
-		ImGui::EndChild();
-		ImGui::PopStyleColor();
-		ImGui::PopStyleVar(2);
-		ImGui::End();
+
+		task_editor.show();
 	}
 	
 	if (show_script_selector) {

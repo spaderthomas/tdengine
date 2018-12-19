@@ -127,7 +127,9 @@ tdapi void draw_aabb(EntityHandle me) {
 }
 tdapi void update_task(EntityHandle me, float dt) {
 	def_get_cmp(tc, me.deref(), Task_Component);
-	if (tc) tc->task->update(dt);
+	if (tc) {
+		tc->task->update(dt);
+	}
 }
 
 // Collision

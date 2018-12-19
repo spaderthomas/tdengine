@@ -1,4 +1,5 @@
 local Default_Components = require('default_components')
+local Default_Actions = require('default_actions')
 
 entity.intro_police = {}
 
@@ -37,19 +38,16 @@ entity.intro_police.Task_Component = {}
 entity.intro_police.scripts = {}
 
 entity.intro_police.scripts.intro = {
-   {
-	  kind = "Teleport_Action",
-	  x = 100,
-	  y = 100,
-	  is_blocking = false
-   }
+   Default_Actions.Teleport_Off_Screen,
 }
    
 entity.intro_police.scripts.intro1 = {
    {
 	  kind = "Teleport_Action",
-	  x = 0,
-	  y = 0,
+	  dest = {
+		 x = .5,
+		 y = .5
+	  },
 	  is_blocking = true
    },
    {
@@ -77,7 +75,16 @@ entity.intro_police.scripts.intro1 = {
 			}
 		 }
 	  }
-   }
+   },
+   {
+	  kind = "Movement_Action",
+	  dest = {
+		 x = 0,
+		 y = 0
+	  },
+	  is_blocking = true
+   },
+   Default_Actions.Teleport_Off_Screen
 }
 
 

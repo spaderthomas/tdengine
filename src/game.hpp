@@ -82,6 +82,7 @@ struct Editor : Layer {
 	int draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index);
 	Editor_State state = IDLE;
 	Selection_Kind kind = NONE;
+	TaskEditor task_editor;
 
 	// State for moving things around cleanly
 	glm::ivec2 last_grid_drawn = { 0, 0 };

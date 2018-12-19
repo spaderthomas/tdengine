@@ -53,8 +53,8 @@ Action* action_from_table(sol::table table, EntityHandle actor) {
 	else if (kind == "Teleport_Action") {
 		Teleport_Action* action = new Teleport_Action;
 		action->actor = actor;
-		action->x = table["x"];
-		action->y = table["y"];
+		action->x = table["dest"]["x"];
+		action->y = table["dest"]["y"];
 		init_is_blocking(action, table);
 
 		return action;
