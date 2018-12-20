@@ -100,5 +100,9 @@ struct LuaState {
 	EntityHandle get_hero() {
 		return state["game"]["hero"];
 	}
+
+	sol::table get_task(string entity, string scene) {
+		return state["entity"][entity]["scripts"][scene];
+	}
 };
 LuaState Lua;

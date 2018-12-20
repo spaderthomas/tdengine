@@ -32,6 +32,14 @@ entity.wilson.scripts.intro = {
 	  }
    },
    {
+	  kind = "Movement_Action",
+	  is_blocking = false,
+	  dest = {
+		 x = .4,
+		 y = .4
+	  }
+   },
+   {
 	  kind = "Teleport_Action",
 	  dest = {
 		 x = 100,
