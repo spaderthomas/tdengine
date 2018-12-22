@@ -117,27 +117,33 @@ enum ASTNodeType {
 };
 struct ASTNode {
 	ASTNodeType type;
+	virtual void im_a_real_boy() = 0;
 };
 struct IntegerNode : ASTNode {
 	int value;
 	IntegerNode() { type = ANK_IntegerNode; }
+	void im_a_real_boy() override {};
 };
 struct FloatNode : ASTNode {
 	float value;
 	FloatNode() { type = ANK_FloatNode; }
+	void im_a_real_boy() override {};
 };
 struct StringLiteralNode : ASTNode {
 	string value;
 	StringLiteralNode() { type = ANK_StringLiteralNode; }
+	void im_a_real_boy() override {};
 };
 struct AssignNode : ASTNode {
 	string key;
 	ASTNode* value;
 	AssignNode() { type = ANK_AssignNode; }
+	void im_a_real_boy() override {};
 };
 struct TableNode : ASTNode {
 	vector<ASTNode*> assignments;
 	TableNode() { type = ANK_TableNode; }
+	void im_a_real_boy() override {};
 };
 
 enum Symbol {
@@ -353,6 +359,12 @@ struct Lexer {
 struct Parser {
 	Lexer lexer;
 
+	bool is_nested_identifier(string key) {
+		for (auto& c : key) {
+			if (c == '.') return true;
+		}
+	}
+
 	ASTNode* parse(string script_path) {
 		lexer.init(script_path);
 		lexer.lex();
@@ -447,10 +459,96 @@ struct Parser {
 	}
 };
 
+struct Primitive {
+	enum Type {
+		PRIM_ERROR,
+		STRING,
+		INTEGER,
+		FLOAT
+	} type;
+
+	union PrimitiveUnion {
+		const char* _string;
+		int _int;
+		float _float;
+	} _union;
+};
+
+struct {
+	Parser parser;
+	TableNode* global_scope = nullptr;
+
+	void script_file(string script_path) {
+		ASTNode* ast = parser.parse(script_path);
+		TableNode* script_table = dynamic_cast<TableNode*>(ast);
+		if (!global_scope) global_scope = script_table; return; // On first use, whatever the parser gives us is the AST
+
+		concat<ASTNode*>(global_scope->assignments, script_table->assignments);
+	}
+
+	template<typename T>
+	Primitive get(vector<string> keys) {
+		TableNode* current_scope = global_scope;
+		for (int key_idx = 0; key_idx < keys.size(); key_idx++) {
+			auto& key = keys[key_idx];
+			for (ASTNode* node : current_scope->assignments) {
+				if (node->type != ASTNodeType::ANK_AssignNode) continue;
+
+				AssignNode* assignment = (AssignNode*)node;
+				if (assignment->key == key) {
+					// If we're at the bottom, check that the node we reached really does have an int
+					if (key_idx == keys.size() - 1) {
+						ASTNode* payload = assignment->value;
+						Primitive prim;
+						if (typeid(T) == typeid(int)) {
+							fox_assert(payload->type == ASTNodeType::ANK_IntegerNode);
+							prim.type = Primitive::Type::INTEGER;
+							prim._union._int = ((IntegerNode*)payload)->value;
+						}
+						else if (typeid(T) == typeid(string)) {
+							fox_assert(payload->type == ASTNodeType::ANK_StringLiteralNode);
+							prim.type = Primitive::Type::STRING;
+							prim._union._string = ((StringLiteralNode*)payload)->value.c_str();
+						}
+						return prim;
+
+					}
+					// Otherwise, it better be a table we can index into
+					else {
+						ASTNode* next_scope = assignment->value;
+						fox_assert(next_scope->type = ASTNodeType::ANK_TableNode);
+						current_scope = (TableNode*)next_scope;
+					}
+				}
+			}
+		}
+
+		Primitive error;
+		error.type = Primitive::Type::PRIM_ERROR;
+		return error;
+	}
+
+	int get_int(vector<string> keys) {
+		Primitive prim = get<int>(keys);
+		fox_assert(prim.type == Primitive::Type::INTEGER);
+		return prim._union._int;
+	}
+	string get_string(vector<string> keys) {
+		Primitive prim = get<string>(keys);
+		fox_assert(prim.type == Primitive::Type::STRING);
+		return prim._union._string;
+	}
+} TDScript;
+#define tds_int(...) TDScript.get_int({__VA_ARGS__})
+#define tds_string(...) TDScript.get_string({__VA_ARGS__})
 
 void test_tdscript() {
-	Parser p;
-	ASTNode* ast = p.parse("src\\scripts\\test.tds");
+	TDScript.script_file("src\\scripts\\test.tds");
+	int test = tds_int("test");
+	int test2 = tds_int("test2");
+	int table_inner1 = tds_int("table", "inner1");
+	int table_inner2 = tds_int("table", "inner2");
+	string strval = tds_string("strval");
 	int x = 0;
 }
 
