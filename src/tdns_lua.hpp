@@ -144,6 +144,7 @@ enum Symbol {
 	LEFT_BRACKET,
 	RIGHT_BRACKET,
 	EQUALS,
+	COMMA
 };
 struct Token {
 	enum Type {
@@ -297,7 +298,20 @@ struct Lexer {
 				token.symbol = Symbol::EQUALS;
 				return token;
 			}
-
+			else if (c == ',') {
+				Token token;
+				token.type = Token::Type::SYMBOL;
+				token.symbol = Symbol::COMMA;
+				return token;
+			}
+			else {
+				string error_msg = "Found unrecognized token: " + c;
+				error_msg += "\nLine number: " + to_string(line_number);
+				tdns_log.write(error_msg);
+				fox_assert(0);
+				Token dummy_for_compiler;
+				return dummy_for_compiler;
+			}
 		}
 	}
 
@@ -337,8 +351,9 @@ struct Lexer {
 };
 
 struct Parser {
+	Lexer lexer;
+
 	ASTNode* parse(string script_path) {
-		Lexer lexer; 
 		lexer.init(script_path);
 		lexer.lex();
 
@@ -357,8 +372,18 @@ struct Parser {
 		while ((assign_node = parse_assign())) {
 			table_node->assignments.push_back(assign_node);
 			Token cur_token = lexer.peek_token();
+
+			// No trailing comma
 			if (cur_token.symbol == Symbol::RIGHT_BRACKET) {
 				return table_node;
+			}
+			// Yes trailing comma
+			if (cur_token.symbol == Symbol::COMMA) {
+				lexer.next_token();
+				cur_token = lexer.peek_token();
+				if (cur_token.symbol == Symbol::RIGHT_BRACKET) {
+					return table_node;
+				}
 			}
 		}
 
@@ -417,10 +442,9 @@ struct Parser {
 			string error_msg = "Found identifier without assignment on line " + to_string(lexer.line_number);
 			tdns_log.write(error_msg);
 			fox_assert(0);
+			return nullptr;
 		}
 	}
-
-
 };
 
 
