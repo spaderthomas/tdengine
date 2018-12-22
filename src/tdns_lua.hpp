@@ -348,7 +348,7 @@ struct Lexer {
 		return c == '_';
 	}
 	bool is_valid_identifier_char(char c) {
-		return is_alpha(c) || is_numeric(c) || is_underscore(c);
+		return is_alpha(c) || is_numeric(c) || is_underscore(c) || is_dot(c);
 	}
 	bool is_whitespace(char c) {
 		return c == ' ' || c == '\t' || c == '\n';
@@ -356,26 +356,91 @@ struct Lexer {
 
 };
 
-struct Parser {
-	Lexer lexer;
 
-	bool is_nested_identifier(string key) {
+struct Primitive {
+	enum Type {
+		PRIM_ERROR,
+		STRING,
+		INTEGER,
+		FLOAT
+	} type;
+
+	union PrimitiveUnion {
+		const char* _string;
+		int _int;
+		float _float;
+	} _union;
+};
+
+struct {
+	Lexer lexer;
+	TableNode* global_scope = nullptr;
+
+	bool is_nested_identifier(string& key) {
 		for (auto& c : key) {
 			if (c == '.') return true;
 		}
+
+		return false;
+	}
+
+	TableNode* get_table(vector<string> keys) {
+		if (!keys.size()) return global_scope;
+
+		TableNode* current_scope = global_scope;
+		for (int key_idx = 0; key_idx < keys.size(); key_idx++) {
+			auto& key = keys[key_idx];
+			for (ASTNode* node : current_scope->assignments) {
+				if (node->type != ASTNodeType::ANK_AssignNode) continue;
+
+				AssignNode* assignment = (AssignNode*)node;
+				if (assignment->key == key) {
+					// Move on to the next table
+					ASTNode* next_scope = assignment->value;
+					fox_assert(next_scope->type = ASTNodeType::ANK_TableNode);
+					current_scope = (TableNode*)next_scope;
+
+					// Return the table if we're at the end
+					if (key_idx == keys.size() - 1) return current_scope;
+				}
+			}
+		}
+
+		return nullptr;
 	}
 
 	ASTNode* parse(string script_path) {
 		lexer.init(script_path);
 		lexer.lex();
 
-		TableNode* root = new TableNode;
+		if (!global_scope) global_scope = new TableNode;
 		ASTNode* assignment;
 		while ((assignment = parse_assign())) {
-			root->assignments.push_back(assignment);
+			string& key = ((AssignNode*)assignment)->key;
+
+			// If we're adding to a table which already exists, put this assignment in that table's node
+			if (is_nested_identifier(key)) {
+				char* c_key = (char*)key.c_str();
+				char* table_id = strtok(c_key, ".");
+				vector<string> keys;
+				while (table_id) {
+					keys.push_back(table_id);
+					table_id = strtok(NULL, ".");
+				}
+
+				string value_key = keys.back();
+				keys.erase(keys.end() - 1);
+
+				TableNode* existing_table = get_table(keys);
+				((AssignNode*)assignment)->key = value_key;
+				existing_table->assignments.push_back(assignment);
+			}
+			else {
+				global_scope->assignments.push_back(assignment);
+			}
 		}
 
-		return root;
+		return global_scope;
 	}
 
 	ASTNode* parse_table() {
@@ -457,71 +522,36 @@ struct Parser {
 			return nullptr;
 		}
 	}
-};
-
-struct Primitive {
-	enum Type {
-		PRIM_ERROR,
-		STRING,
-		INTEGER,
-		FLOAT
-	} type;
-
-	union PrimitiveUnion {
-		const char* _string;
-		int _int;
-		float _float;
-	} _union;
-};
-
-struct {
-	Parser parser;
-	TableNode* global_scope = nullptr;
 
 	void script_file(string script_path) {
-		ASTNode* ast = parser.parse(script_path);
-		TableNode* script_table = dynamic_cast<TableNode*>(ast);
-		if (!global_scope) global_scope = script_table; return; // On first use, whatever the parser gives us is the AST
-
-		concat<ASTNode*>(global_scope->assignments, script_table->assignments);
+		ASTNode* ast = parse(script_path);
 	}
 
 	template<typename T>
 	Primitive get(vector<string> keys) {
-		TableNode* current_scope = global_scope;
-		for (int key_idx = 0; key_idx < keys.size(); key_idx++) {
-			auto& key = keys[key_idx];
-			for (ASTNode* node : current_scope->assignments) {
-				if (node->type != ASTNodeType::ANK_AssignNode) continue;
+		string value_key = keys.back();
+		keys.erase(keys.end() - 1);
+		TableNode* containing_table = get_table(keys);
 
-				AssignNode* assignment = (AssignNode*)node;
-				if (assignment->key == key) {
-					// If we're at the bottom, check that the node we reached really does have an int
-					if (key_idx == keys.size() - 1) {
-						ASTNode* payload = assignment->value;
-						Primitive prim;
-						if (typeid(T) == typeid(int)) {
-							fox_assert(payload->type == ASTNodeType::ANK_IntegerNode);
-							prim.type = Primitive::Type::INTEGER;
-							prim._union._int = ((IntegerNode*)payload)->value;
-						}
-						else if (typeid(T) == typeid(string)) {
-							fox_assert(payload->type == ASTNodeType::ANK_StringLiteralNode);
-							prim.type = Primitive::Type::STRING;
-							prim._union._string = ((StringLiteralNode*)payload)->value.c_str();
-						}
-						return prim;
+		for (auto& node : containing_table->assignments) {
+			AssignNode* assignment = (AssignNode*)node;
+			if (assignment->key != value_key) continue;
 
-					}
-					// Otherwise, it better be a table we can index into
-					else {
-						ASTNode* next_scope = assignment->value;
-						fox_assert(next_scope->type = ASTNodeType::ANK_TableNode);
-						current_scope = (TableNode*)next_scope;
-					}
-				}
+			ASTNode* payload = assignment->value;
+			Primitive prim;
+			if (typeid(T) == typeid(int)) {
+				fox_assert(payload->type == ASTNodeType::ANK_IntegerNode);
+				prim.type = Primitive::Type::INTEGER;
+				prim._union._int = ((IntegerNode*)payload)->value;
 			}
+			else if (typeid(T) == typeid(string)) {
+				fox_assert(payload->type == ASTNodeType::ANK_StringLiteralNode);
+				prim.type = Primitive::Type::STRING;
+				prim._union._string = ((StringLiteralNode*)payload)->value.c_str();
+			}
+			return prim;
 		}
+
 
 		Primitive error;
 		error.type = Primitive::Type::PRIM_ERROR;
@@ -549,6 +579,7 @@ void test_tdscript() {
 	int table_inner1 = tds_int("table", "inner1");
 	int table_inner2 = tds_int("table", "inner2");
 	string strval = tds_string("strval");
+	string nested_str = tds_string("table", "inner3");
 	int x = 0;
 }
 

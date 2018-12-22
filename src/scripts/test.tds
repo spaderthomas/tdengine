@@ -5,4 +5,4 @@ table = {
 	inner2 = 2,	
 }
 strval = "i'm a striiiiing!"
-
+table.inner3 = "wasup!"
