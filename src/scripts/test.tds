@@ -1,8 +1,18 @@
-test = 1
-test2 = 2
-table = {
-    inner1 = 1,
-	inner2 = 2,	
+# Bare values in global scope
+strval = "i'm a striiiiiing!"
+intval = 1
+fval = 2.3
+
+# Bare tables
+table = {}
+table2 = {
+    strval = "i'm a striiiiiing!", # Commas
+	intval = 1                     # No commas is fine too
+	fval = 2.3,                    # Trailing commas are fine
 }
-strval = "i'm a striiiiing!"
-table.inner3 = "wasup!"
+
+# Assign to table that was previously created
+table2.nested_str = "i'm nested!"
+table2.nested_tbl = {
+    intval = 1
+}

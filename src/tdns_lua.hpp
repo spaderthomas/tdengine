@@ -351,6 +351,11 @@ struct Lexer {
 		return is_alpha(c) || is_numeric(c) || is_underscore(c) || is_dot(c);
 	}
 	bool is_whitespace(char c) {
+		static bool is_in_comment;
+		if (c == '#') is_in_comment = true;
+		if (c == '\n') is_in_comment = false;
+		if (is_in_comment) return true;
+
 		return c == ' ' || c == '\t' || c == '\n';
 	}
 
@@ -384,25 +389,41 @@ struct {
 		return false;
 	}
 
+	// get_table("a", "b", "c") returns the table global_scope["a"]["b"]["c"]
 	TableNode* get_table(vector<string> keys) {
 		if (!keys.size()) return global_scope;
 
 		TableNode* current_scope = global_scope;
+		string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
 		for (int key_idx = 0; key_idx < keys.size(); key_idx++) {
 			auto& key = keys[key_idx];
+
+			bool found = false;
 			for (ASTNode* node : current_scope->assignments) {
-				if (node->type != ASTNodeType::ANK_AssignNode) continue;
+				fox_assert(node->type == ASTNodeType::ANK_AssignNode);
 
 				AssignNode* assignment = (AssignNode*)node;
 				if (assignment->key == key) {
-					// Move on to the next table
+					found = true;
+
+					// Move on to the next table if there are keys left
 					ASTNode* next_scope = assignment->value;
 					fox_assert(next_scope->type = ASTNodeType::ANK_TableNode);
 					current_scope = (TableNode*)next_scope;
 
 					// Return the table if we're at the end
 					if (key_idx == keys.size() - 1) return current_scope;
+
+					// Write the table we just indexed into to the erorr message
+					error_msg += "[" + key + "]";
+					break;
 				}
+			}
+
+			if (!found) {
+				// If we go through all assignments in a table without finding the next one, that's a key error
+				error_msg += "[" + key + "]";
+				tdns_log.write(error_msg);
 			}
 		}
 
@@ -445,10 +466,15 @@ struct {
 
 	ASTNode* parse_table() {
 		TableNode* table_node = new TableNode;
+
+		// If we immediately read an end bracket, just return the empty table
+		Token cur_token = lexer.peek_token();
+		if (cur_token.symbol == Symbol::RIGHT_BRACKET) return table_node;
+
 		ASTNode* assign_node = new AssignNode;
 		while ((assign_node = parse_assign())) {
 			table_node->assignments.push_back(assign_node);
-			Token cur_token = lexer.peek_token();
+			cur_token = lexer.peek_token();
 
 			// No trailing comma
 			if (cur_token.symbol == Symbol::RIGHT_BRACKET) {
@@ -464,9 +490,9 @@ struct {
 			}
 		}
 
-		// In the case that parse_assign() returns nullptr, but there's no closing bracket, 
-		// it means that we forgot to close the table 
-		return nullptr;
+		// We only reach this statement if the script forgot to close the table
+		fox_assert(0);
+		return nullptr; // Just for the compiler
 	}
 
 	ASTNode* parse_assign() {
@@ -519,7 +545,7 @@ struct {
 			string error_msg = "Found identifier without assignment on line " + to_string(lexer.line_number);
 			tdns_log.write(error_msg);
 			fox_assert(0);
-			return nullptr;
+			return nullptr; // Just for the compiler
 		}
 	}
 
@@ -532,7 +558,8 @@ struct {
 		string value_key = keys.back();
 		keys.erase(keys.end() - 1);
 		TableNode* containing_table = get_table(keys);
-
+		fox_assert(containing_table);
+		
 		for (auto& node : containing_table->assignments) {
 			AssignNode* assignment = (AssignNode*)node;
 			if (assignment->key != value_key) continue;
@@ -548,6 +575,11 @@ struct {
 				fox_assert(payload->type == ASTNodeType::ANK_StringLiteralNode);
 				prim.type = Primitive::Type::STRING;
 				prim._union._string = ((StringLiteralNode*)payload)->value.c_str();
+			}
+			else if (typeid(T) == typeid(float)) {
+				fox_assert(payload->type == ASTNodeType::ANK_FloatNode);
+				prim.type = Primitive::Type::FLOAT;
+				prim._union._float = ((FloatNode*)payload)->value;
 			}
 			return prim;
 		}
@@ -568,18 +600,30 @@ struct {
 		fox_assert(prim.type == Primitive::Type::STRING);
 		return prim._union._string;
 	}
+	float get_float(vector<string> keys) {
+		Primitive prim = get<float>(keys);
+		fox_assert(prim.type == Primitive::Type::FLOAT);
+		return prim._union._float;
+	}
 } TDScript;
 #define tds_int(...) TDScript.get_int({__VA_ARGS__})
 #define tds_string(...) TDScript.get_string({__VA_ARGS__})
+#define tds_float(...) TDScript.get_float({__VA_ARGS__})
 
 void test_tdscript() {
 	TDScript.script_file("src\\scripts\\test.tds");
-	int test = tds_int("test");
-	int test2 = tds_int("test2");
-	int table_inner1 = tds_int("table", "inner1");
-	int table_inner2 = tds_int("table", "inner2");
 	string strval = tds_string("strval");
-	string nested_str = tds_string("table", "inner3");
+	int intval = tds_int("intval");
+	float fval = tds_float("fval");
+	string table2_strval = tds_string("table2", "strval");
+	int table2_intval = tds_int("table2", "intval");
+	float table2_fval = tds_float("table2", "fval");
+	string table2_nestedstr = tds_string("table2", "nested_str");
+	int table2_nestedtbl_val = tds_int("table2", "nested_tbl", "intval");
+
+	TDScript.script_file("src\\scripts\\test2.tds");
+	int table_intval = tds_int("table", "intval");
+
 	int x = 0;
 }
 
