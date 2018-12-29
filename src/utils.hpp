@@ -323,6 +323,10 @@ typedef unsigned char tdbyte;
 
 // Don't use a leading slash
 string absolute_path(string dir_from_project_root) {
+	// Check that we didn't pass this function an absolute path already
+	if (dir_from_project_root.find(root_dir) != std::string::npos) {
+		return dir_from_project_root;
+	}
 	return root_dir + dir_from_project_root;
 }
 
@@ -335,9 +339,15 @@ bool is_png(string& asset_path) {
 }
 
 bool is_lua(string& path) {
-	if (path.size() < 5) { return false; } // "x.png" is the shortest name
+	if (path.size() < 5) { return false; } // "x.lua" is the shortest name
 	string should_be_lua_extension = path.substr(path.size() - 4, 4);
 	if (should_be_lua_extension.compare(".lua")) return false;
+	return true;
+}
+bool is_tds(string& path) {
+	if (path.size() < 5) { return false; } // "x.tds" is the shortest name
+	string should_be_lua_extension = path.substr(path.size() - 4, 4);
+	if (should_be_lua_extension.compare(".tds")) return false;
 	return true;
 }
 /* ImGui options */

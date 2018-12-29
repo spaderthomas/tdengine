@@ -5,7 +5,7 @@ import pprint
 pp = pprint.PrettyPrinter(indent=2)
 
 
-print("---Generating entity tree")
+print("/src/scripts/generate_entity_tree.py: Generating entity tree")
 
 script_root_dir = "C:/Users/dboon/programming/tdengine/src/scripts"
 project_root_dir = "C:/Users/dboon/programming/tdengine/src/"

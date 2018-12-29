@@ -19,10 +19,3 @@ table2.nested_bval = true
 table2.nested_tbl = {
     intval = 1
 }
-
-# Tables as arrays
-array = {
-    "index 0",
-	"index 1",
-	2
-}

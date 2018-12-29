@@ -23,7 +23,6 @@ struct LuaState {
 			else if (is_directory(it->status())) {
 				recursive_add_dir(path);
 			}
-
 		}
 	}
 
@@ -107,11 +106,12 @@ struct LuaState {
 };
 LuaState Lua;
 
-
+// AST nodes
 enum ASTNodeType {
 	ANK_StringLiteralNode,
 	ANK_IntegerNode,
 	ANK_FloatNode,
+	ANK_BoolNode,
 	ANK_AssignNode,
 	ANK_TableNode,
 };
@@ -129,6 +129,11 @@ struct FloatNode : ASTNode {
 	FloatNode() { type = ANK_FloatNode; }
 	void im_a_real_boy() override {};
 };
+struct BoolNode : ASTNode {
+	bool value;
+	BoolNode() { type = ANK_BoolNode; }
+	void im_a_real_boy() override {};
+};
 struct StringLiteralNode : ASTNode {
 	string value;
 	StringLiteralNode() { type = ANK_StringLiteralNode; }
@@ -137,7 +142,7 @@ struct StringLiteralNode : ASTNode {
 struct AssignNode : ASTNode {
 	string key;
 	ASTNode* value;
-	AssignNode() { type = ANK_AssignNode; }
+	AssignNode() { type = ANK_AssignNode; key = ""; }
 	void im_a_real_boy() override {};
 };
 struct TableNode : ASTNode {
@@ -146,6 +151,8 @@ struct TableNode : ASTNode {
 	void im_a_real_boy() override {};
 };
 
+
+// Lexing
 enum Symbol {
 	LEFT_BRACKET,
 	RIGHT_BRACKET,
@@ -159,15 +166,16 @@ struct Token {
 		STRING_LITERAL,
 		INTEGER,
 		_FLOAT,
+		BOOL,
 		_EOF
 	} type;
 
 	string str_val;
 	int int_val;
 	float float_val;
+	bool bool_val;
 	Symbol symbol;
 };
-
 struct Lexer {
 	ifstream file;
 	int line_number = 1;
@@ -211,7 +219,7 @@ struct Lexer {
 
 			file.get(c);
 
-			// Scan for identifiers
+			// Scan for identifiers and bools
 			if (is_alpha(c)) {
 				Token token;
 				token.type = Token::Type::IDENTIFIER;
@@ -219,6 +227,12 @@ struct Lexer {
 
 				while (is_valid_identifier_char(file.peek())) {
 					token.str_val.push_back(file.get());
+				}
+
+				if (token.str_val == "true" || token.str_val == "false") {
+					token.type = Token::Type::BOOL;
+					token.bool_val = token.str_val == "true" ? true : false;
+					token.str_val = "";
 				}
 
 				return token;
@@ -324,13 +338,13 @@ struct Lexer {
 
 	Token next_token() {
 		fox_assert(tokens.size());
-		fox_assert(token_idx < tokens.size());
+		fox_assert(token_idx < (int)tokens.size());
 		if (token_idx == tokens.size()) return tokens[token_idx];
 		return tokens[token_idx++];
 	}
 	Token peek_token() {
 		fox_assert(tokens.size());
-		fox_assert(token_idx < tokens.size());
+		fox_assert(token_idx < (int)tokens.size());
 		return tokens[token_idx];
 	}
 
@@ -358,36 +372,30 @@ struct Lexer {
 
 		return c == ' ' || c == '\t' || c == '\n';
 	}
-
 };
 
 
+// Parsing and interface
 struct Primitive {
 	enum Type {
 		PRIM_ERROR,
 		STRING,
 		INTEGER,
+		BOOL,
 		FLOAT
 	} type;
 
 	union PrimitiveUnion {
-		const char* _string;
-		int _int;
-		float _float;
-	} _union;
+		const char* strval;
+		int intval;
+		float floatval;
+		bool boolval;
+	} values;
 };
 
 struct {
 	Lexer lexer;
 	TableNode* global_scope = nullptr;
-
-	bool is_nested_identifier(string& key) {
-		for (auto& c : key) {
-			if (c == '.') return true;
-		}
-
-		return false;
-	}
 
 	// get_table("a", "b", "c") returns the table global_scope["a"]["b"]["c"]
 	TableNode* get_table(vector<string> keys) {
@@ -395,7 +403,7 @@ struct {
 
 		TableNode* current_scope = global_scope;
 		string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
-		for (int key_idx = 0; key_idx < keys.size(); key_idx++) {
+		for (int key_idx = 0; key_idx < (int)keys.size(); key_idx++) {
 			auto& key = keys[key_idx];
 
 			bool found = false;
@@ -430,11 +438,19 @@ struct {
 		return nullptr;
 	}
 
+	bool is_nested_identifier(string& key) {
+		for (auto& c : key) {
+			if (c == '.') return true;
+		}
+
+		return false;
+	}
 	ASTNode* parse(string script_path) {
 		lexer.init(script_path);
 		lexer.lex();
 
 		if (!global_scope) global_scope = new TableNode;
+
 		ASTNode* assignment;
 		while ((assignment = parse_assign())) {
 			string& key = ((AssignNode*)assignment)->key;
@@ -463,9 +479,9 @@ struct {
 
 		return global_scope;
 	}
-
 	ASTNode* parse_table() {
 		TableNode* table_node = new TableNode;
+		int arr_len = 0; // This is for tables which have unnamed keys (i.e. an array)
 
 		// If we immediately read an end bracket, just return the empty table
 		Token cur_token = lexer.peek_token();
@@ -473,6 +489,9 @@ struct {
 
 		ASTNode* assign_node = new AssignNode;
 		while ((assign_node = parse_assign())) {
+			if (((AssignNode*)assign_node)->key == "") {
+				((AssignNode*)assign_node)->key = to_string(arr_len++);
+			}
 			table_node->assignments.push_back(assign_node);
 			cur_token = lexer.peek_token();
 
@@ -494,7 +513,6 @@ struct {
 		fox_assert(0);
 		return nullptr; // Just for the compiler
 	}
-
 	ASTNode* parse_assign() {
 		Token cur_token = lexer.next_token();
 		if (cur_token.type == Token::Type::_EOF) {
@@ -502,55 +520,139 @@ struct {
 		}
 
 		auto assign_node = new AssignNode;
-		assign_node->key = cur_token.str_val;
-		cur_token = lexer.next_token();
-		if (cur_token.symbol == Symbol::EQUALS) {
-			cur_token = lexer.next_token();
-			ASTNode* val_node = nullptr;
+		ASTNode* val_node = nullptr;
 
-			// Parse out any literals
-			if (cur_token.type == Token::Type::INTEGER) {
-				auto integer_node = new IntegerNode; val_node = integer_node;
-				integer_node->value = cur_token.int_val;
-			}
-			else if (cur_token.type == Token::Type::STRING_LITERAL) {
-				auto string_literal_node = new StringLiteralNode; val_node = string_literal_node;
-				string_literal_node->value = cur_token.str_val;
-			}
-			else if (cur_token.type == Token::Type::_FLOAT) {
-				auto float_node = new FloatNode; val_node = float_node;
-				float_node->value = cur_token.float_val;
-			}
-			else if (cur_token.type == Token::Type::SYMBOL) {
-				if (cur_token.symbol == Symbol::LEFT_BRACKET) {
-					auto table_node = parse_table(); val_node = table_node;
-					cur_token = lexer.next_token();
-					if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
-						string error_msg = "Unfinished table at line " + to_string(lexer.line_number);
-						tdns_log.write(error_msg);
-						fox_assert(0);
-					}
-				}
-			}
-			else {
-				string error_msg = "Malformed assignment on line " + to_string(lexer.line_number);
+		// An array table assignment that has no key e.g.
+		// my_table = {
+		//     { my_var = 2 },
+		//     my_var = 0
+		// }
+		if (cur_token.symbol == Symbol::LEFT_BRACKET) {
+			auto table_node = parse_table();
+			cur_token = lexer.next_token();
+			if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
+				string error_msg = "Unfinished table at line " + to_string(lexer.line_number);
 				tdns_log.write(error_msg);
 				fox_assert(0);
 			}
 
-			assign_node->value = val_node;
-			return assign_node;
+			assign_node->value = table_node;
+			return table_node;
+		}
+		else if (cur_token.type == Token::Type::INTEGER) {
+			auto integer_node = new IntegerNode; val_node = integer_node;
+			integer_node->value = cur_token.int_val;
+		}
+		else if (cur_token.type == Token::Type::STRING_LITERAL) {
+			auto string_literal_node = new StringLiteralNode; val_node = string_literal_node;
+			string_literal_node->value = cur_token.str_val;
+		}
+		else if (cur_token.type == Token::Type::_FLOAT) {
+			auto float_node = new FloatNode; val_node = float_node;
+			float_node->value = cur_token.float_val;
+		}
+		else if (cur_token.type == Token::Type::BOOL) {
+			auto bool_node = new BoolNode; val_node = bool_node;
+			bool_node->value = cur_token.bool_val;
+		}
+		else if (cur_token.type == Token::Type::SYMBOL) {
+			if (cur_token.symbol == Symbol::LEFT_BRACKET) {
+				auto table_node = parse_table(); val_node = table_node;
+				cur_token = lexer.next_token();
+				if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
+					string error_msg = "Unfinished table at line " + to_string(lexer.line_number);
+					tdns_log.write(error_msg);
+					fox_assert(0);
+				}
+			}
+		}
+
+		// A regular assignment (i.e. my_var = {bool, int, table, ...})
+		else if (cur_token.type == Token::Type::IDENTIFIER) {
+			assign_node->key = cur_token.str_val;
+			cur_token = lexer.next_token();
+			if (cur_token.symbol == Symbol::EQUALS) {
+				cur_token = lexer.next_token();
+
+				// Parse out any literals
+				if (cur_token.type == Token::Type::INTEGER) {
+					auto integer_node = new IntegerNode; val_node = integer_node;
+					integer_node->value = cur_token.int_val;
+				}
+				else if (cur_token.type == Token::Type::STRING_LITERAL) {
+					auto string_literal_node = new StringLiteralNode; val_node = string_literal_node;
+					string_literal_node->value = cur_token.str_val;
+				}
+				else if (cur_token.type == Token::Type::_FLOAT) {
+					auto float_node = new FloatNode; val_node = float_node;
+					float_node->value = cur_token.float_val;
+				}
+				else if (cur_token.type == Token::Type::BOOL) {
+					auto bool_node = new BoolNode; val_node = bool_node;
+					bool_node->value = cur_token.bool_val;
+				}
+				else if (cur_token.type == Token::Type::SYMBOL) {
+					if (cur_token.symbol == Symbol::LEFT_BRACKET) {
+						auto table_node = parse_table(); val_node = table_node;
+						cur_token = lexer.next_token();
+						if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
+							string error_msg = "Unfinished table at line " + to_string(lexer.line_number);
+							tdns_log.write(error_msg);
+							fox_assert(0);
+						}
+					}
+				}
+				else {
+					string error_msg = "Malformed assignment on line " + to_string(lexer.line_number);
+					tdns_log.write(error_msg);
+					fox_assert(0);
+				}
+
+			}
+			else {
+				string error_msg = "Found identifier without assignment on line " + to_string(lexer.line_number);
+				tdns_log.write(error_msg);
+				fox_assert(0);
+				return nullptr; // Just for the compiler
+			}
 		}
 		else {
-			string error_msg = "Found identifier without assignment on line " + to_string(lexer.line_number);
+			string error_msg = "Expected identifier at line " + to_string(lexer.line_number);
 			tdns_log.write(error_msg);
 			fox_assert(0);
-			return nullptr; // Just for the compiler
+			return nullptr;
 		}
+
+		assign_node->value = val_node;
+		return assign_node;
 	}
 
 	void script_file(string script_path) {
 		ASTNode* ast = parse(script_path);
+	}
+	void script_dir(string dir_path) {
+		// Always check for the directory's init file first
+		string maybe_init_file = dir_path + "\\init.tds";
+		ifstream f(maybe_init_file.c_str());
+		if (f.good()) {
+			script_file(maybe_init_file);
+		}
+
+		for (auto it = directory_iterator(dir_path); it != directory_iterator(); it++) {
+			string path = it->path().string();
+			if (is_regular_file(it->status())) {
+				if (is_tds(path)) {
+					// Don't double run the init file 
+					if (!path.compare(maybe_init_file)) {
+						continue;
+					}
+					script_file(path);
+				}
+			}
+			else if (is_directory(it->status())) {
+				script_dir(path);
+			}
+		}
 	}
 
 	template<typename T>
@@ -569,17 +671,22 @@ struct {
 			if (typeid(T) == typeid(int)) {
 				fox_assert(payload->type == ASTNodeType::ANK_IntegerNode);
 				prim.type = Primitive::Type::INTEGER;
-				prim._union._int = ((IntegerNode*)payload)->value;
+				prim.values.intval = ((IntegerNode*)payload)->value;
 			}
 			else if (typeid(T) == typeid(string)) {
 				fox_assert(payload->type == ASTNodeType::ANK_StringLiteralNode);
 				prim.type = Primitive::Type::STRING;
-				prim._union._string = ((StringLiteralNode*)payload)->value.c_str();
+				prim.values.strval = ((StringLiteralNode*)payload)->value.c_str();
 			}
 			else if (typeid(T) == typeid(float)) {
 				fox_assert(payload->type == ASTNodeType::ANK_FloatNode);
 				prim.type = Primitive::Type::FLOAT;
-				prim._union._float = ((FloatNode*)payload)->value;
+				prim.values.floatval = ((FloatNode*)payload)->value;
+			}
+			else if (typeid(T) == typeid(bool)) {
+				fox_assert(payload->type == ASTNodeType::ANK_BoolNode);
+				prim.type = Primitive::Type::BOOL;
+				prim.values.boolval = ((BoolNode*)payload)->value;
 			}
 			return prim;
 		}
@@ -593,34 +700,52 @@ struct {
 	int get_int(vector<string> keys) {
 		Primitive prim = get<int>(keys);
 		fox_assert(prim.type == Primitive::Type::INTEGER);
-		return prim._union._int;
+		return prim.values.intval;
 	}
 	string get_string(vector<string> keys) {
 		Primitive prim = get<string>(keys);
 		fox_assert(prim.type == Primitive::Type::STRING);
-		return prim._union._string;
+		return prim.values.strval;
 	}
 	float get_float(vector<string> keys) {
 		Primitive prim = get<float>(keys);
 		fox_assert(prim.type == Primitive::Type::FLOAT);
-		return prim._union._float;
+		return prim.values.floatval;
+	}
+	bool get_bool(vector<string> keys) {
+		Primitive prim = get<bool>(keys);
+		fox_assert(prim.type == Primitive::Type::BOOL);
+		return prim.values.boolval;
 	}
 } TDScript;
 #define tds_int(...) TDScript.get_int({__VA_ARGS__})
 #define tds_string(...) TDScript.get_string({__VA_ARGS__})
 #define tds_float(...) TDScript.get_float({__VA_ARGS__})
+#define tds_bool(...) TDScript.get_bool({__VA_ARGS__})
+
+void init_tdscript() {
+	TDScript.script_dir(absolute_path("\\src\\scripts\\tds_test"));
+}
 
 void test_tdscript() {
+	//TDScript.script_dir(absolute_path("src\\scripts\\tds_test"));
+	//bool my_init = tds_bool("my_init");
+
 	TDScript.script_file("src\\scripts\\test.tds");
 	string strval = tds_string("strval");
 	int intval = tds_int("intval");
 	float fval = tds_float("fval");
+	bool bval = tds_bool("bval");
 	string table2_strval = tds_string("table2", "strval");
 	int table2_intval = tds_int("table2", "intval");
 	float table2_fval = tds_float("table2", "fval");
+	bool table2_bval = tds_bool("table2", "bval");
 	string table2_nestedstr = tds_string("table2", "nested_str");
 	int table2_nestedtbl_val = tds_int("table2", "nested_tbl", "intval");
-
+	bool table2_nestedbval = tds_bool("table2", "nested_bval");
+	string array_0 = tds_string("array", "0");
+	string array_1 = tds_string("array", "1");
+	int array_2 = tds_int("array", "2");
 	TDScript.script_file("src\\scripts\\test2.tds");
 	int table_intval = tds_int("table", "intval");
 

@@ -63,7 +63,7 @@ struct Action_Queue {
 	}
 
 	Action* next() {
-		if (index < actions.size()) {
+		if (index < (int)actions.size()) {
 			Action* ret = actions[index];
 			index++;
 			return ret;

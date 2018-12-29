@@ -1,7 +1,7 @@
 import sqlite3
 import os
 
-print("---Generating SQL column definitions")
+print("/sqlite/generate_db_header.py: Generating SQL column definitions")
 
 # Make sure to run this script in the root project directory
 old_cwd = os.getcwd()
