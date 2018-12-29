@@ -1,0 +1,7 @@
+table2 = {}
+table2.nested_tbl = {
+	{
+        intval = 1,
+		boolval = true
+	}
+}

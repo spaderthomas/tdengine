@@ -101,6 +101,7 @@ using namespace std;
 
 int main() {
 	tdns_log.init();
+	init_tdscript();
 	test_tdscript();
 
 #pragma region GLFW_INIT

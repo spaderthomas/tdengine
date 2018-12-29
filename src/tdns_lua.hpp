@@ -1,110 +1,4 @@
-struct LuaState {
-	sol::state state;
 
-	void recursive_add_dir(string dir) {
-		// Always check for the directory's init file first
-		string maybe_init_file = dir + "\\init.lua";
-		ifstream f(maybe_init_file.c_str());
-		if (f.good()) {
-			state.script_file(maybe_init_file);
-		}
-
-		for (auto it = directory_iterator(dir); it != directory_iterator(); it++) {
-			string path = it->path().string();
-			if (is_regular_file(it->status())) {
-				if (is_lua(path)) {
-					// Don't double run the init file 
-					if (!path.compare(maybe_init_file)) {
-						continue;
-					}
-					state.script_file(path);
-				}
-			}
-			else if (is_directory(it->status())) {
-				recursive_add_dir(path);
-			}
-		}
-	}
-
-	void init() {
-		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io, sol::lib::package, sol::lib::math, sol::lib::table);
-		bind_functions();
-
-		// Userdata
-		state.new_usertype<EntityHandle>(
-			"EntityHandle"
-		);	
-
-		state.new_usertype<Entity>(
-			"Entity",
-			"get_component", &Entity::get_component,
-			"lua_id", &Entity::lua_id
-		);
-		
-		state.new_usertype<Level>(
-			"Level",
-			"name", &Level::name,
-			"load", &Level::load,
-			"draw", &Level::draw,
-			"entities", &Level::entities
-		);
-
-		
-		// Load scripts
-		state.script_file(absolute_path("src\\scripts\\meta.lua"));
-		state.script_file(absolute_path("src\\scripts\\init.lua"));
-		sol::table files = state["meta"]["scripts"];
-
-		// Load everything that needs to be in the global namespace from scripts
-		for (auto& kvp : files) {
-			sol::table file = kvp.second;
-			string script = file["name"];
-			if (script == "init.lua") continue;
-
-			if (file["is_dir"]) {
-				recursive_add_dir(absolute_path("src\\scripts\\") + script);
-				continue;
-			}
-
-			string path = absolute_path("src\\scripts\\") + script + ".lua";
-			state.script_file(path);
-		}
-	}
-
-	void init_after_load() {
-		sol::table after_load = state["meta"]["after_load"];
-		for (auto& kvp : after_load) {
-			sol::function func = kvp.second;
-			func();
-		}
-	}
-
-	void run_game_update(float dt) {
-		//@hack either a better way to find the function with middleclass or dont use middleclass
-		sol::function lua_update = state["Game"]["__declaredMethods"]["update"]; 
-		lua_update(state["game"], dt);
-	}
-
-	sol::table entity_table() {
-		return state["entity"];
-	}
-
-	Level* get_active_level() {
-		return state["game"]["level"];
-	}
-	void set_active_level(Level* level) {
-		state["game"]["level"] = level;
-	}
-
-	EntityHandle get_hero() {
-		return state["game"]["hero"];
-	}
-
-	sol::table get_task(string entity, string scene) {
-		return state["entity"][entity]["scripts"][scene];
-	}
-};
-LuaState Lua;
 
 // AST nodes
 enum ASTNodeType {
@@ -148,6 +42,7 @@ struct AssignNode : ASTNode {
 struct TableNode : ASTNode {
 	vector<ASTNode*> assignments;
 	TableNode() { type = ANK_TableNode; }
+	
 	void im_a_real_boy() override {};
 };
 
@@ -397,47 +292,6 @@ struct {
 	Lexer lexer;
 	TableNode* global_scope = nullptr;
 
-	// get_table("a", "b", "c") returns the table global_scope["a"]["b"]["c"]
-	TableNode* get_table(vector<string> keys) {
-		if (!keys.size()) return global_scope;
-
-		TableNode* current_scope = global_scope;
-		string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
-		for (int key_idx = 0; key_idx < (int)keys.size(); key_idx++) {
-			auto& key = keys[key_idx];
-
-			bool found = false;
-			for (ASTNode* node : current_scope->assignments) {
-				fox_assert(node->type == ASTNodeType::ANK_AssignNode);
-
-				AssignNode* assignment = (AssignNode*)node;
-				if (assignment->key == key) {
-					found = true;
-
-					// Move on to the next table if there are keys left
-					ASTNode* next_scope = assignment->value;
-					fox_assert(next_scope->type = ASTNodeType::ANK_TableNode);
-					current_scope = (TableNode*)next_scope;
-
-					// Return the table if we're at the end
-					if (key_idx == keys.size() - 1) return current_scope;
-
-					// Write the table we just indexed into to the erorr message
-					error_msg += "[" + key + "]";
-					break;
-				}
-			}
-
-			if (!found) {
-				// If we go through all assignments in a table without finding the next one, that's a key error
-				error_msg += "[" + key + "]";
-				tdns_log.write(error_msg);
-			}
-		}
-
-		return nullptr;
-	}
-
 	bool is_nested_identifier(string& key) {
 		for (auto& c : key) {
 			if (c == '.') return true;
@@ -536,8 +390,7 @@ struct {
 				fox_assert(0);
 			}
 
-			assign_node->value = table_node;
-			return table_node;
+			val_node = table_node;
 		}
 		else if (cur_token.type == Token::Type::INTEGER) {
 			auto integer_node = new IntegerNode; val_node = integer_node;
@@ -717,21 +570,174 @@ struct {
 		fox_assert(prim.type == Primitive::Type::BOOL);
 		return prim.values.boolval;
 	}
+	TableNode* get_table(vector<string> keys) {
+		if (!keys.size()) return global_scope;
+
+		TableNode* current_scope = global_scope;
+		string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
+		for (int key_idx = 0; key_idx < (int)keys.size(); key_idx++) {
+			auto& key = keys[key_idx];
+
+			bool found = false;
+			for (ASTNode* node : current_scope->assignments) {
+				fox_assert(node->type == ASTNodeType::ANK_AssignNode);
+
+				AssignNode* assignment = (AssignNode*)node;
+				if (assignment->key == key) {
+					found = true;
+
+					// Move on to the next table if there are keys left
+					ASTNode* next_scope = assignment->value;
+					fox_assert(next_scope->type = ASTNodeType::ANK_TableNode);
+					current_scope = (TableNode*)next_scope;
+
+					// Return the table if we're at the end
+					if (key_idx == keys.size() - 1) return current_scope;
+
+					// Write the table we just indexed into to the erorr message
+					error_msg += "[" + key + "]";
+					break;
+				}
+			}
+
+			if (!found) {
+				// If we go through all assignments in a table without finding the next one, that's a key error
+				error_msg += "[" + key + "]";
+				tdns_log.write(error_msg);
+			}
+		}
+
+		return nullptr;
+	}
+
 } TDScript;
 #define tds_int(...) TDScript.get_int({__VA_ARGS__})
 #define tds_string(...) TDScript.get_string({__VA_ARGS__})
 #define tds_float(...) TDScript.get_float({__VA_ARGS__})
 #define tds_bool(...) TDScript.get_bool({__VA_ARGS__})
+#define tds_table(...) TDScript.get_table({__VA_ARGS__})
+
+struct LuaState {
+	sol::state state;
+
+	void recursive_add_dir(string dir) {
+		// Always check for the directory's init file first
+		string maybe_init_file = dir + "\\init.lua";
+		ifstream f(maybe_init_file.c_str());
+		if (f.good()) {
+			state.script_file(maybe_init_file);
+		}
+
+		for (auto it = directory_iterator(dir); it != directory_iterator(); it++) {
+			string path = it->path().string();
+			if (is_regular_file(it->status())) {
+				if (is_lua(path)) {
+					// Don't double run the init file 
+					if (!path.compare(maybe_init_file)) {
+						continue;
+					}
+					state.script_file(path);
+				}
+			}
+			else if (is_directory(it->status())) {
+				recursive_add_dir(path);
+			}
+		}
+	}
+
+	void init() {
+		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io, sol::lib::package, sol::lib::math, sol::lib::table);
+		bind_functions();
+
+		// Userdata
+		state.new_usertype<EntityHandle>(
+			"EntityHandle"
+			);
+
+		state.new_usertype<Entity>(
+			"Entity",
+			"get_component", &Entity::get_component,
+			"lua_id", &Entity::lua_id
+			);
+
+		state.new_usertype<Level>(
+			"Level",
+			"name", &Level::name,
+			"load", &Level::load,
+			"draw", &Level::draw,
+			"entities", &Level::entities
+			);
+
+
+		// Load scripts
+		state.script_file(absolute_path("src\\scripts\\meta.lua"));
+		state.script_file(absolute_path("src\\scripts\\init.lua"));
+		sol::table files = state["meta"]["scripts"];
+
+		// Load everything that needs to be in the global namespace from scripts
+		for (auto& kvp : files) {
+			sol::table file = kvp.second;
+			string script = file["name"];
+			if (script == "init.lua") continue;
+
+			if (file["is_dir"]) {
+				recursive_add_dir(absolute_path("src\\scripts\\") + script);
+				continue;
+			}
+
+			string path = absolute_path("src\\scripts\\") + script + ".lua";
+			state.script_file(path);
+		}
+	}
+
+	void init_after_load() {
+		sol::table after_load = state["meta"]["after_load"];
+		for (auto& kvp : after_load) {
+			sol::function func = kvp.second;
+			func();
+		}
+	}
+	void run_game_update(float dt) {
+		//@hack either a better way to find the function with middleclass or dont use middleclass
+		sol::function lua_update = state["Game"]["__declaredMethods"]["update"];
+		lua_update(state["game"], dt);
+	}
+	sol::table entity_table() {
+		return state["entity"];
+	}
+	Level* get_active_level() {
+		return state["game"]["level"];
+	}
+	void set_active_level(Level* level) {
+		state["game"]["level"] = level;
+	}
+	EntityHandle get_hero() {
+		return state["game"]["hero"];
+	}
+	sol::table get_task(string entity, string scene) {
+		return state["entity"][entity]["scripts"][scene];
+	}
+};
+LuaState Lua;
 
 void init_tdscript() {
-	TDScript.script_dir(absolute_path("\\src\\scripts\\tds_test"));
+	TDScript.script_file("src\\scripts\\meta.tds");
+	TableNode* files = tds_table("meta", "scripts");
+	for (uint i = 0; i < files->assignments.size(); i++) {
+		TableNode* script = tds_table("meta", "scripts", to_string(i));
+		string name = 
+	}
 }
 
 void test_tdscript() {
-	//TDScript.script_dir(absolute_path("src\\scripts\\tds_test"));
-	//bool my_init = tds_bool("my_init");
+	TDScript.script_file("src\\scripts\\tds_test\\test2.tds");
+	TDScript.script_file(absolute_path("src\\scripts\\meta.tds"));
+	string meta_scripts_name = tds_string("meta", "scripts", "0", "name");
 
-	TDScript.script_file("src\\scripts\\test.tds");
+	TDScript.script_dir(absolute_path("src\\scripts\\tds_test"));
+	bool my_init = tds_bool("my_init");
+
+	//TDScript.script_file("src\\scripts\\test.tds");
 	string strval = tds_string("strval");
 	int intval = tds_int("intval");
 	float fval = tds_float("fval");
