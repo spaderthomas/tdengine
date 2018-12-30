@@ -193,6 +193,7 @@
     <ClInclude Include="..\..\src\task.hpp" />
     <ClInclude Include="..\..\src\task_impl.hpp" />
     <ClInclude Include="..\..\src\tdns_lua.hpp" />
+    <ClInclude Include="..\..\src\tdscript.hpp" />
     <ClInclude Include="..\..\src\text.hpp" />
     <ClInclude Include="..\..\src\texture.hpp" />
     <ClInclude Include="..\..\src\text_impl.hpp" />

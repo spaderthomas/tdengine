@@ -63,11 +63,84 @@ Action* action_from_table(sol::table table, EntityHandle actor) {
 	tdns_log.write("Tried to create an action with an invalid kind: " + kind);
 	return nullptr;
 }
+Action* action_from_table(TableNode* table, EntityHandle actor) {
+	bool good_action = false;
+
+	string kind = tds_string(table, "kind"); 
+	if (kind == "Wait_For_Interaction_Action") {
+		Wait_For_Interaction_Action* action = new Wait_For_Interaction_Action;
+		action->actor = actor;
+		init_is_blocking_tds(action, table);
+
+		return action;
+	}
+	else if (kind == "Dialogue_Action") {
+		Dialogue_Tree* tree = new Dialogue_Tree;
+		TableNode* dialogue_table = tds_table(table, "dialogue");
+		tree->init_from_table(dialogue_table);
+
+		Dialogue_Action* action = new Dialogue_Action;
+		action->init();
+		action->tree = tree;
+		action->actor = actor;
+		init_is_blocking_tds(action, table);
+
+		return action;
+	}
+	else if (kind == "Movement_Action") {
+		Movement_Action* action = new Movement_Action;
+		action->dest.x = tds_float(table, "dest", "x"); 
+		action->dest.y = tds_float(table, "dest", "y");
+		action->actor = actor;
+		init_is_blocking_tds(action, table);
+
+		return action;
+	}
+	else if (kind == "And_Action") {
+		And_Action* action = new And_Action;
+		init_is_blocking_tds(action, table);
+		TableNode* actions = tds_table(table, "actions");
+		fox_for(action_idx, actions->assignments.size()) {
+			TableNode* action_table = tds_table(table, "actions", to_string(action_idx));
+			action->actions.push_back(action_from_table(action_table, actor));
+		}
+
+		return action;
+	}
+	else if (kind == "Set_State_Action") {
+		Set_State_Action* action = new Set_State_Action;
+		action->var = tds_string(table, "var");
+		action->value = tds_bool(table, "value");
+		init_is_blocking_tds(action, table);
+
+		return action;
+	}
+	else if (kind == "Teleport_Action") {
+		Teleport_Action* action = new Teleport_Action;
+		action->actor = actor;
+		action->x = tds_float(table, "dest", "x");
+		action->y = tds_float(table, "dest", "y");
+		init_is_blocking_tds(action, table);
+
+		return action;
+	}
+
+	tdns_log.write("Tried to create an action with an invalid kind: " + kind);
+	return nullptr;
+}
 
 void init_is_blocking(Action* action, sol::table& table) {
 	sol::optional<bool> maybe_is_blocking = table["is_blocking"];
 	if (maybe_is_blocking) {
 		action->is_blocking = maybe_is_blocking.value();
+	}
+}
+void init_is_blocking_tds(Action* action, TableNode* table) {
+	action->is_blocking = false;
+
+	KVPNode* maybe_is_blocking = (KVPNode*)table->maybe_key("is_blocking");
+	if (maybe_is_blocking) {
+		action->is_blocking = tds_bool(table, "is_blocking");
 	}
 }
 
@@ -212,6 +285,14 @@ void Task::init_from_table(sol::table table, EntityHandle actor) {
 
 	for (auto it : table) {
 		sol::table action_table = it.second.as<sol::table>();
+		Action* action = action_from_table(action_table, actor);
+		this->add_action(action);
+	}
+}
+void Task::init_from_tdstable(TableNode* table, EntityHandle actor) {
+	this->actor = actor;
+	fox_for(action_idx, table->assignments.size()) {
+		TableNode* action_table = tds_table(table, to_string(action_idx));
 		Action* action = action_from_table(action_table, actor);
 		this->add_action(action);
 	}

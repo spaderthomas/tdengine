@@ -39,6 +39,29 @@ void Dialogue_Node::init_from_table(sol::table& table) {
 		this->children.push_back(child_node);
 	}
 }
+void Dialogue_Node::init_from_table(TableNode* table) {
+	full_text.clear();
+	responses.clear();
+	response = -1;
+	children.clear();
+	already_drew_line = false;
+
+	terminal = tds_bool(table, "terminal");
+	full_text = tds_string(table, "text");
+	
+	TableNode* responses = tds_table(table, "responses");
+	fox_for(resp_idx, responses->assignments.size()) {
+		this->responses.push_back(tds_string(responses, to_string(resp_idx)));
+	}
+
+	TableNode* children = tds_table(table, "children");
+	fox_for(child_idx, children->assignments.size()) {
+		TableNode* child_table = tds_table(children, to_string(child_idx));
+		Dialogue_Node* child = new Dialogue_Node;
+		child->init_from_table(child_table);
+		this->children.push_back(child);
+	}
+}
 Dialogue_Node* Dialogue_Tree::traverse() {
 	Dialogue_Node* cur = root;
 	while (cur && cur->has_response()) {
@@ -108,6 +131,10 @@ void Dialogue_Tree::load() {
 }
 
 void Dialogue_Tree::init_from_table(sol::table table) {
+	root = new Dialogue_Node;
+	root->init_from_table(table);
+}
+void Dialogue_Tree::init_from_table(TableNode* table) {
 	root = new Dialogue_Node;
 	root->init_from_table(table);
 }

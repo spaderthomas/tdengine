@@ -58,6 +58,7 @@ using namespace std;
 #include "db.hpp"
 #include "script_to_def.hpp"
 #include "utils.hpp"
+#include "tdscript.hpp"
 #include "text.hpp"
 #include "asset_table.hpp"
 #include "sprite.hpp"

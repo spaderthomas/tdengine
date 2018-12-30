@@ -167,3 +167,7 @@ it. by that, i mean
 - new levels (put in database)
 - move level storage to SQL
 - design boon's house!
+* transition
+- on_collide
+- on_interact
+- update

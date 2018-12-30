@@ -1,5 +1,3 @@
-local Default_Components = require('default_components')
-
 entity.wilson.Graphic_Component = {
    Animations = {
 	  stand = {
@@ -23,20 +21,17 @@ entity.wilson.Position_Component = {}
 entity.wilson.Collision_Component = {
    kind = Collider_Kind.DYNAMIC,
    bounding_box = Default_Components.Human_Bounding_Box,
-   on_collide = function(this, other) end
 }
 
 entity.wilson.Movement_Component = Default_Components.Human_Movement_Component
 
 entity.wilson.Vision = {
    extents = {
-	  width = px_x_to_screen(8),
-	  depth = px_y_to_screen(32)
+	  width = ScreenTileSizeX.one,
+	  depth = ScreenTileSizeY.two
    } 
 }
 
-entity.wilson.Interaction_Component = {
-   on_interact = function(this, other) end
-}
+entity.wilson.Interaction_Component = {}
 
 entity.wilson.Task_Component = {}

@@ -2,6 +2,7 @@ struct Component {
 	virtual void save(json& j) const;
 	virtual void load(json& j) { cout << "base"; };
 	virtual void init_from_table(sol::table table);
+	virtual void init_from_tdstable(TableNode* table);
 	virtual string name() { return "Component"; };
 };
 struct Graphic_Component : Component {
@@ -13,6 +14,7 @@ struct Graphic_Component : Component {
 	void add_animation(Animation* anim);
 	Sprite* get_current_frame();
 	void init_from_table(sol::table gc) override;
+	void init_from_tdstable(TableNode* gc) override;
 	string name() override;
 };
 struct Position_Component : Component {
@@ -27,6 +29,7 @@ struct Movement_Component : Component {
 	glm::vec2 speed;
 	glm::vec2 wish;
 	void init_from_table(sol::table table) override;
+	void init_from_tdstable(TableNode* table) override;
 	string name() override;
 };
 struct Vision_Component : Component {
@@ -36,6 +39,7 @@ struct Vision_Component : Component {
 	float depth;
 
 	void init_from_table(sol::table table);
+	void init_from_tdstable(TableNode* table) override;
 	string name() override;
 };
 struct Interaction_Component : Component {
@@ -44,16 +48,6 @@ struct Interaction_Component : Component {
 	sol::function on_interact;
 
 	void init_from_table(sol::table table) override;
-	string name() override;
-};
-struct State_Component : Component {
-	vector<string> watched_variables;
-	vector<string> states;
-	string current_state;
-	sol::function update;
-
-	void init_from_table(sol::table table) override;
-	void set_state(string state);
 	string name() override;
 };
 struct Door_Component : Component {
@@ -75,6 +69,7 @@ struct Collision_Component : Component {
 	sol::function on_collide;
 	
 	void init_from_table(sol::table table) override;
+	void init_from_tdstable(TableNode* table) override;
 	string name() override;
 };
 struct Task_Component : Component {
@@ -82,6 +77,7 @@ struct Task_Component : Component {
 
 	string name() override;
 	void change_task(sol::table new_task);
+	void init_from_tdstable(TableNode* table) override;
 };
 struct Update_Component : Component {
 	sol::function update;
@@ -97,7 +93,6 @@ union any_component {
 	Movement_Component movement_component;
 	Vision_Component vision;
 	Interaction_Component interaction_component;
-	State_Component state_component;
 	Door_Component door_component;
 	Collision_Component collision_component;
 	Task_Component task_component;
@@ -116,7 +111,6 @@ unordered_map<string, const type_info*> component_map = {
 	{ "Movement_Component", &typeid(Movement_Component) },
 	{ "Vision", &typeid(Vision_Component) },
 	{ "Interaction_Component", &typeid(Interaction_Component) },
-	{ "State_Component", &typeid(State_Component) },
 	{ "Door_Component", &typeid(Door_Component) },
 	{ "Task_Component", &typeid(Task_Component) },
 	{ "Update_Component", &typeid(Update_Component) },

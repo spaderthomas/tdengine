@@ -1,0 +1,82 @@
+# We're only using these to calculate ratios, so it's fine to hardcode this. Once we have the ratios, this works for any resolution.
+screen_x = 640
+screen_y = 360
+tilesize_x = 16
+tilesize_y = 16
+
+ScreenTileSizeX = {
+    neg_one_and_half = -0.0375
+    neg_one_and_quarter = -0.03125
+    neg_one = -0.025
+    neg_half = -0.0125
+    half = 0.0125
+    one = 0.025
+    one_and_quarter = 0.03125
+    one_and_half = 0.0375
+    two = 0.05
+    three = 0.075
+    four = 0.1
+    five = 0.125
+    six = 0.15
+}
+
+ScreenTileSizeY = {
+    neg_one_and_half = -0.06666666666666667
+    neg_one_and_quarter = -0.05555555555555555
+    neg_one = -0.044444444444444446
+    neg_half = -0.022222222222222223
+    half = 0.022222222222222223
+    one = 0.044444444444444446
+    one_and_quarter = 0.05555555555555555
+    one_and_half = 0.06666666666666667
+    two = 0.08888888888888889
+    three = 0.13333333333333333
+    four = 0.17777777777777778
+    five = 0.2222222222222222
+    six = 0.26666666666666666
+}
+
+
+
+Collider_Kind = {
+   NO_COLLIDER = 0,
+   STATIC = 1,
+   DYNAMIC = 2,
+   HERO = 3,
+   DOOR = 4
+}
+
+Render_Flags = {
+   NO_FLAGS = 0,
+   HIGHLIGHTED = 1
+}
+
+Default_Components = {
+   Human_Bounding_Box = {
+	  center = {
+		 x = 0.0,
+		 y = ScreenTileSizeY.neg_half
+	  },
+	  extents = {
+		 x = ScreenTileSizeX.one_and_quarter
+		 y = ScreenTileSizeY.half
+	  }
+   },
+   Human_Movement_Component = {
+	  speed = {
+		 x = .0025,
+		 y = .0025
+	  }
+   }
+}
+
+Default_Actions = {
+   Teleport_Off_Screen = {
+	  kind = "Teleport_Action",
+	  dest = {
+		 x = 100.0,
+		 y = 100.0
+	  },
+	  is_blocking = true
+   }
+}

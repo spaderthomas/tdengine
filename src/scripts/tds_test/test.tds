@@ -17,8 +17,12 @@ table2 = {
 table2.nested_str = "i'm nested!"
 table2.nested_bval = true
 table2.nested_tbl = {
-	{
-        intval = 1,
-		boolval = true
-	}
+    intval = 1
+}
+
+# Tables as arrays
+array = {
+    "index 0",
+	"index 1",
+	2
 }

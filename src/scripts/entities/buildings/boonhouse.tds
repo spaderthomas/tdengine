@@ -1,4 +1,4 @@
--- Components
+# Components
 entity.boonhouse_door = {}
 entity.boonhouse_door.Graphic_Component = {
     Animations = {
@@ -18,23 +18,18 @@ entity.boonhouse_door.Collision_Component = {
 		 y = 0
 	  },
 	  extents = {
-		 x = tile_x_to_screen(1),
-		 y = tile_y_to_screen(1)
+		 x = ScreenTileSizeX.one,
+		 y = ScreenTileSizeY.one
 	  }
-   },
-   on_collide = function(this, other) end
+   }
 }
 
 entity.boonhouse_door.Position_Component = {}
-
-entity.boonhouse_door.Interaction_Component = {
-    on_interact = function(this, other) end
-}
-
+entity.boonhouse_door.Interaction_Component = {}
 entity.boonhouse_door.Task_Component = {}
 
 
--- Scripts
+# Scripts
 entity.boonhouse_door.scripts = {}
 
 entity.boonhouse_door.scripts.intro_unchecked = {

@@ -160,5 +160,8 @@
     <ClInclude Include="..\..\src\script_to_def.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\src\tdscript.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

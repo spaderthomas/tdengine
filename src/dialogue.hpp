@@ -12,6 +12,7 @@ struct Dialogue_Node {
 	Dialogue_Node* next();
 	void show_line();
 	void init_from_table(sol::table& table);
+	void init_from_table(TableNode* table);
 };
 struct Dialogue_Tree {
 	Dialogue_Node* root;
@@ -22,4 +23,5 @@ struct Dialogue_Tree {
 	void save();
 	void load();
 	void init_from_table(sol::table table);
+	void init_from_table(TableNode* table);
 };

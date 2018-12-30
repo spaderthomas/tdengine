@@ -2,6 +2,7 @@ void Component::save(json& j) const {
 	j["kind"] = "NULL";
 };
 void Component::init_from_table(sol::table table) {};
+void Component::init_from_tdstable(TableNode* table) {};
 
 void    Graphic_Component::add_animation(Animation* anim) {
 	animations.push_back(anim);
@@ -42,6 +43,25 @@ void    Graphic_Component::init_from_table(sol::table gc) {
 
 	this->z = gc["z"];
 }
+void Graphic_Component::init_from_tdstable(TableNode* gc) {
+	TableNode* animations = tds_table(gc, "Animations");
+	this->animations.clear();
+
+	for (auto& def : animations->assignments) {
+		KVPNode* kvp = (KVPNode*)def;
+		Animation* animation = new Animation;
+		animation->name = kvp->key;
+
+		TableNode* frames = (TableNode*)kvp->value;
+		for (uint frame_idx = 0; frame_idx < frames->assignments.size(); frame_idx++) {
+			string sprite_name = tds_string(frames, to_string(frame_idx));
+			Sprite* frame = asset_table.get_asset<Sprite>(sprite_name);
+			animation->frames.push_back(frame);
+		}
+
+		this->add_animation(animation);
+	}
+}
 string  Graphic_Component::name() { return "Graphic_Component"; }
 
 void   Position_Component::save(json& j) const {
@@ -63,11 +83,19 @@ void Movement_Component::init_from_table(sol::table table) {
 	speed.x = table["speed"]["x"];
 	speed.y = table["speed"]["y"];
 }
+void Movement_Component::init_from_tdstable(TableNode* table) {
+	speed.x = tds_float(table, "speed", "x");
+	speed.y = tds_float(table, "speed", "y");
+}
 string Movement_Component::name() { return "Movement_Component"; }
 
 void Vision_Component::init_from_table(sol::table table) {
 	width = table["extents"]["width"];
 	depth = table["extents"]["depth"];
+}
+void Vision_Component::init_from_tdstable(TableNode* table) {
+	width = tds_float(table, "extents", "width");
+	depth = tds_float(table, "extents", "depth");
 }
 string Vision_Component::name() { return "Vision"; }
 
@@ -77,24 +105,6 @@ void Interaction_Component::init_from_table(sol::table table) {
 }
 string Interaction_Component::name() { return "Interaction_Component"; }
 
-void State_Component::init_from_table(sol::table table) {
-	update = table["update"];
-	sol::table states_to_add = table["states"];
-	for (auto& state : states_to_add) {
-		states.push_back(state.second.as<string>());
-	}
-
-	fox_assert(tdns_find(states, table["default_state"]));
-	current_state = table["default_state"];
-
-	sol::table watched_variables = table["watched_variables"];
-	for (auto& watched : watched_variables) {
-		string variable = watched.second.as<string>();
-		this->watched_variables.push_back(variable);
-	}
-}
-void State_Component::set_state(string state) { current_state = state; }
-string State_Component::name() { return "State_Component"; }
 
 void Door_Component::save(json& j) const {
 	j["kind"] = "Door_Component";
@@ -115,8 +125,13 @@ void Collision_Component::init_from_table(sol::table table) {
 	bounding_box.screen_center.y = table["bounding_box"]["center"]["y"];
 	bounding_box.screen_extents.x = table["bounding_box"]["extents"]["x"];
 	bounding_box.screen_extents.y = table["bounding_box"]["extents"]["y"];
-
-	on_collide = table["on_collide"];
+}
+void Collision_Component::init_from_tdstable(TableNode* table) {
+	kind = (Collider_Kind)tds_int(table, "kind");
+	bounding_box.screen_center.x = tds_float(table, "bounding_box", "center", "x"); 
+	bounding_box.screen_center.y = tds_float(table, "bounding_box", "center", "y");
+	bounding_box.screen_extents.x = tds_float(table, "bounding_box", "extents", "x");
+	bounding_box.screen_extents.y = tds_float(table, "bounding_box", "extents", "y");
 }
 
 string Task_Component::name() { return "Task_Component"; }
@@ -124,6 +139,11 @@ void Task_Component::change_task(sol::table new_task) {
 	EntityHandle actor = this->task->actor;
 	this->task = new Task;
 	this->task->init_from_table(new_task, actor);
+}
+void Task_Component::init_from_tdstable(TableNode* table) {
+	EntityHandle actor = this->task->actor;
+	this->task = new Task;
+	this->task->init_from_tdstable(table, actor);
 }
 string Update_Component::name() { return "Update_Component"; }
 void Update_Component::init_from_table(sol::table table) {

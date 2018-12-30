@@ -38,8 +38,8 @@ typedef unsigned char tdbyte;
  	return tokens;
  }
 
- #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
-
+#define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
+#define are_strings_equal(a, b) (!(a).compare((b)))
  glm::vec2 tdns_normalize(glm::vec2 vec) {
  	if (vec.x == 0.f && vec.y == 0.f) {
  		return vec;
