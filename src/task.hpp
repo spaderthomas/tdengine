@@ -5,9 +5,7 @@ struct Action {
 	virtual void init() {};
 	virtual string kind() = 0;
 };
-Action* action_from_table(sol::table table, EntityHandle actor);
 Action* action_from_table(TableNode* table, EntityHandle actor);
-void init_is_blocking(Action* action, sol::table& table);
 void init_is_blocking_tds(Action* action, TableNode* table);
 
 // Conjunction of actions which blocks until all are complete
@@ -93,8 +91,7 @@ struct Task {
 
 	bool update(float dt);
 	void add_action(Action* a);
-	void init_from_table(sol::table table, EntityHandle actor);
-	void init_from_tdstable(TableNode* table, EntityHandle actor);
+	void init_from_table(TableNode* table, EntityHandle actor);
 };
 
 struct TaskEditorNode {

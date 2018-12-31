@@ -5,7 +5,7 @@ meta.scripts = {
 	  is_dir = false
    },
    {
-	  name = "tds_entities",
+	  name = "entities",
 	  is_dir = true
    },
 }

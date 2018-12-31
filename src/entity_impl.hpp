@@ -45,82 +45,77 @@ void Entity::clear_components() {
 	}
 }
 
-pool_handle<Entity> Entity::create(string lua_id) {
+pool_handle<Entity> Entity::create(string entity_name) {
 	// Creates a template entity from the given Lua ID
 	pool_handle<Entity> entity_handle = entity_pool.next_available();
 	Entity* entity = entity_handle();
 	entity->id = next_id++;
-	entity->lua_id = lua_id;
+	entity->lua_id = entity_name;
 
-	sol::table lua_components = Lua.state["entity"][lua_id];
-	for (auto it : lua_components) {
-		string component_type = it.first.as<string>();
-		if (it.second.get_type() == sol::type::table) {
-			sol::table table = it.second.as<sol::table>();
-			if (component_type == "Graphic_Component") {
-				pool_handle<any_component> handle = entity->add_component<Graphic_Component>();
-				Graphic_Component* component = &handle()->graphic_component;
-				component->init_from_table(table);
+	TableNode* components = tds_table(ScriptManager.global_scope, "entity", entity_name, "components");
+	for (auto& node : components->assignments) {
+		KVPNode* kvp = (KVPNode*)node;
+		string& type = kvp->key;
+		TableNode* component_table = (TableNode*)(kvp->value);
 
-				//@hack: I would feel better initializing this in the table?
-				//       But since I want all component modifying stuff to take in an entity, I can't 
-				//       directly modify the GC from within itself without duplicating the code for setting animation
-				//       or doing this. Not sure?
-				set_animation(entity_handle, table["default_animation"]);
-				// Set the scaling of this based on the first sprite we see. Right now, no objects resize (i.e. all sprites it could use are the same dimensions)
-				// Also, use 640x360 because the raw dimensions are based on this
-				Sprite* default_sprite = component->get_current_frame();
-				component->scale = glm::vec2((float)default_sprite->width / (float)640, 
-											 (float)default_sprite->height / (float)360);
+		if (type == "Graphic_Component") {
+			pool_handle<any_component> handle = entity->add_component<Graphic_Component>();
+			Graphic_Component* component = &handle()->graphic_component;
+			component->init_from_table(component_table);
 
-			}
-			else if (component_type == "Position_Component") {
-				pool_handle<any_component> handle = entity->add_component<Position_Component>();
-				Position_Component* component = &handle()->position_component;
-				component->init_from_table(table);
-			}
-			else if (component_type == "Movement_Component") {
-				pool_handle<any_component> handle = entity->add_component<Movement_Component>();
-				Movement_Component* component = &handle()->movement_component;
-				component->init_from_table(table);
-				component->wish = glm::vec2(0.f);
-			}
-			else if (component_type == "Vision") {
-				pool_handle<any_component> handle = entity->add_component<Vision_Component>();
-				Vision_Component* component = &handle()->vision;
-				component->init_from_table(table);
-			}
-			else if (component_type == "Interaction_Component") {
-				pool_handle<any_component> handle = entity->add_component<Interaction_Component>();
-				Interaction_Component* component = &handle()->interaction_component;
-				component->init_from_table(table);
-			}
-			else if (component_type == "Door_Component") {
-				pool_handle<any_component> handle = entity->add_component<Door_Component>();
-				Door_Component* component = &handle()->door_component;
-				component->init_from_table(table);
-			}
-			else if (component_type == "Collision_Component") {
-				pool_handle<any_component> handle = entity->add_component<Collision_Component>();
-				Collision_Component* component = &handle()->collision_component;
-				component->init_from_table(table);
-			}
-			else if (component_type == "Task_Component") {
-				pool_handle<any_component> handle = entity->add_component<Task_Component>();
-				Task_Component* component = &handle()->task_component;
-				component->init_from_table(table);
+			//@hack: I would feel better initializing this in the table?
+			//       But since I want all component modifying stuff to take in an entity, I can't 
+			//       directly modify the GC from within itself without duplicating the code for setting animation
+			//       or doing this. Not sure?
+			set_animation(entity_handle, tds_string(component_table, "default_animation"));
+			// Set the scaling of this based on the first sprite we see. Right now, no objects resize (i.e. all sprites it could use are the same dimensions)
+			// Also, use 640x360 because the raw dimensions are based on this
+			Sprite* default_sprite = component->get_current_frame();
+			component->scale = glm::vec2((float)default_sprite->width / (float)640,
+				(float)default_sprite->height / (float)360);
 
-				// Get the entity's state from the database and initialize the task it says
-				string entity_state = state_system.entity_state(lua_id);
-				Task* task = new Task;
-				task->init_from_table(Lua.entity_table()[lua_id]["scripts"][entity_state], entity_handle);
-				component->task = task;
-			}
-			else if (component_type == "Update_Component") {
-				pool_handle<any_component> handle = entity->add_component<Update_Component>();
-				Update_Component* component = &handle.deref()->update_component;
-				component->init_from_table(table);
-			}
+		}
+		else if (type == "Position_Component") {
+			pool_handle<any_component> handle = entity->add_component<Position_Component>();
+			Position_Component* component = &handle()->position_component;
+			component->init_from_table(component_table);
+		}
+		else if (type == "Movement_Component") {
+			pool_handle<any_component> handle = entity->add_component<Movement_Component>();
+			Movement_Component* component = &handle()->movement_component;
+			component->init_from_table(component_table);
+			component->wish = glm::vec2(0.f);
+		}
+		else if (type == "Vision") {
+			pool_handle<any_component> handle = entity->add_component<Vision_Component>();
+			Vision_Component* component = &handle()->vision;
+			component->init_from_table(component_table);
+		}
+		else if (type == "Interaction_Component") {
+			pool_handle<any_component> handle = entity->add_component<Interaction_Component>();
+			Interaction_Component* component = &handle()->interaction_component;
+			component->init_from_table(component_table);
+		}
+		else if (type == "Door_Component") {
+			pool_handle<any_component> handle = entity->add_component<Door_Component>();
+			Door_Component* component = &handle()->door_component;
+			component->init_from_table(component_table);
+		}
+		else if (type == "Collision_Component") {
+			pool_handle<any_component> handle = entity->add_component<Collision_Component>();
+			Collision_Component* component = &handle()->collision_component;
+			component->init_from_table(component_table);
+		}
+		else if (type == "Task_Component") {
+			pool_handle<any_component> handle = entity->add_component<Task_Component>();
+			Task_Component* component = &handle()->task_component;
+			component->init_from_table(component_table);
+
+			// Get the entity's state from the database and initialize the task it says
+			string entity_state = state_system.entity_state(entity_name);
+			Task* task = new Task;
+			task->init_from_table(tds_table(ScriptManager.global_scope, "entity", entity_name, "scripts", entity_state), entity_handle);
+			component->task = task;
 		}
 	}
 

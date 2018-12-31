@@ -1,8 +1,7 @@
-boon = {}
-
-# Boon
 entity.boon = {}
-entity.boon.Graphic_Component = {
+entity.boon.components. = {}
+
+entity.boon.components.Graphic_Component = {
    Animations = {
 	  stand = {
 		 "boon_stand.png",
@@ -28,20 +27,20 @@ entity.boon.Graphic_Component = {
    z = 1
 }
 
-entity.boon.Position_Component = {}
+entity.boon.components.Position_Component = {}
 
-entity.boon.Collision_Component = {
+entity.boon.components.Collision_Component = {
    kind = Collider_Kind.DYNAMIC,
    bounding_box = Default_Components.Human_Bounding_Box
 }
 
-entity.boon.Movement_Component = Default_Components.Human_Movement_Component
+entity.boon.components.Movement_Component = Default_Components.Human_Movement_Component
 
-entity.boon.Vision = {
+entity.boon.components.Vision = {
    extents = {
 	  width = ScreenTileSizeX.one,
 	  depth = ScreenTileSizeY.two
    } 
 }
 
-entity.boon.Update_Component = {}
+entity.boon.components.Update_Component = {}

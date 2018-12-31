@@ -56,6 +56,7 @@ struct Particle_System {
 
 struct Layer {
 	Input input;
+	Level* active_level; 
 
 	virtual void update(float dt) = 0;
 	virtual void exec_console_cmd(char* cmd) {}
@@ -116,9 +117,9 @@ enum Game_State {
 };
 struct Game : Layer {
 	Dialogue_Tree* active_dialogue;
-	string scene;
 	Particle_System particle_system;
 	Console console;
+	EntityHandle hero; 
 
 	bool in_dialogue = false;
 

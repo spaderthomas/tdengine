@@ -33,27 +33,6 @@ for line in lua_exports_source:
         function_names.append(name)
         
 
-lua_exports_header.write("\n")
-signature = "void bind_functions();\n"
-lua_exports_header.write(signature)
-
 lua_exports_header.close()
-
-
-# Generate the function to bind functions
-bind_file = open("src/bind_functions.hpp", "w")
-bind_file.write(warning)
-
-signature = "void bind_functions() {\n\tauto& state = Lua.state;\n"
-bind_file.write(signature)
-for fn in function_names:
-    bind_call = "\t"
-    bind_call += "state.set_function("
-    bind_call += "\"" + fn + "\""
-    bind_call += ", &" + fn
-    bind_call += ");\n"
-    bind_file.write(bind_call)
-
-bind_file.write("}")
 
 os.chdir(old_cwd)

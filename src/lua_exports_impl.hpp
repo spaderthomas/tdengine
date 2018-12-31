@@ -15,11 +15,6 @@ tdapi string entity_name(EntityHandle entity) {
 tdapi int entity_id(EntityHandle entity) {
 	return entity->id;
 }
-tdapi void on_collide(EntityHandle me, EntityHandle other) {
-	def_get_cmp(cc, me, Collision_Component);
-	if (cc)
-		cc->on_collide(me, other);
-}
 tdapi void update_animation(EntityHandle me, float dt) {
 	def_get_cmp(gc, me.deref(), Graphic_Component);
 	auto anim = gc->active_animation;
@@ -90,10 +85,6 @@ tdapi void set_interaction(EntityHandle hero, EntityHandle other) {
 		ic->was_interacted_with = true;
 		ic->other = hero;
 	}
-}
-tdapi void update_entity(EntityHandle me, float dt) {
-	def_get_cmp(uc, me.deref(), Update_Component);
-	if (uc) uc->update(me, dt);
 }
 tdapi bool are_interacting(EntityHandle initiator, EntityHandle receiver) {
 	// Check if the initiator's vision box collides with the receiver's bounding box
@@ -167,13 +158,6 @@ tdapi bool was_pressed(GLFW_KEY_TYPE key) {
 }
 
 // Game
-tdapi void go_through_door(EntityHandle door, EntityHandle other) {
-	EntityHandle hero = Lua.state["game"]["hero"];
-	if (other == hero) {
-		def_get_cmp(dc, door.deref(), Door_Component);
-		Lua.state["game"]["level"] = levels[dc->to];
-	}
-}
 tdapi void camera_follow(EntityHandle entity) {
 	camera.following = entity;
 }

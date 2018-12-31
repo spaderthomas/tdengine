@@ -15,30 +15,6 @@ void Dialogue_Node::show_line() {
 	already_drew_line = true;
 }
 
-void Dialogue_Node::init_from_table(sol::table& table) {
-	//@leak
-	full_text.clear();
-	responses.clear();
-	response = -1;
-	children.clear();
-	already_drew_line = false;
-
-	terminal = table["terminal"];
-	full_text = table["text"];
-	sol::table responses = table["responses"];
-	for (auto& pair : responses) {
-		this->responses.push_back(pair.second.as<string>());
-	}
-
-	sol::table children = table["children"];
-	for (auto& pair : children) {
-		int index = pair.first.as<int>();
-		sol::table child = pair.second;
-		Dialogue_Node* child_node = new Dialogue_Node;
-		child_node->init_from_table(child);
-		this->children.push_back(child_node);
-	}
-}
 void Dialogue_Node::init_from_table(TableNode* table) {
 	full_text.clear();
 	responses.clear();
@@ -130,10 +106,6 @@ void Dialogue_Tree::load() {
 
 }
 
-void Dialogue_Tree::init_from_table(sol::table table) {
-	root = new Dialogue_Node;
-	root->init_from_table(table);
-}
 void Dialogue_Tree::init_from_table(TableNode* table) {
 	root = new Dialogue_Node;
 	root->init_from_table(table);

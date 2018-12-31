@@ -61,9 +61,6 @@
     <ClInclude Include="..\..\src\renderer.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\tdns_lua.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\asset_table.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -139,9 +136,6 @@
     <ClInclude Include="..\..\src\lua_exports.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\bind_functions.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\task.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -161,6 +155,9 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\tdscript.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tdscript_impl.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

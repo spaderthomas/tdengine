@@ -14,9 +14,6 @@ struct Entity {
 	any_component* get_component(string kind);
 	void clear_components();
 
-	// Lifetime functions
-	static sol::table get_definition(string lua_id);
-	
 	static EntityHandle create(string lua_id);
 	static void destroy(EntityHandle handle);
 

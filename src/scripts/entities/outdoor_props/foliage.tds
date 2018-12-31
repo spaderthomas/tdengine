@@ -1,0 +1,55 @@
+entity.tree = {}
+entity.tree.components = {}
+entity.tree.components.Graphic_Component = {
+   Animations = {
+      tree = {
+         "tree.png"
+      }
+   }
+   default_animation = "tree"
+   z = 1
+}
+entity.tree.components.Collision_Component = {
+	  kind = Collider_Kind.STATIC
+	  bounding_box = {
+		 center = {
+			x = 0
+			y = ScreenTileSizeY.neg_one
+		 }
+		 extents = {
+			x = ScreenTileSizeX.three
+			y = ScreenTileSizeY.three
+		 }
+	  }
+ }
+entity.tree.components.Position_Component = {}
+entity.tree.components.Interaction_Component = {}
+
+
+entity.cactus = {}
+entity.cactus.components = {}
+entity.cactus.components.Graphic_Component = {
+    Animations = {
+        cactus = {
+            "cactus.png"
+        }
+    }
+    default_animation = "cactus"
+    z = 1
+}
+entity.cactus.components.Position_Component = {}
+
+
+entity.bush = {}
+entity.bush.components = {}
+entity.bush.components.Graphic_Component = {
+    Animations = {
+        bush = {
+            "bush.png"
+        }
+    }
+    default_animation = "bush"
+    z = 1
+}
+entity.bush.components.Position_Component = {}
+

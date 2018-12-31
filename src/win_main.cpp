@@ -25,10 +25,8 @@ extern "C" {
 #include FT_FREETYPE_H  
 }
 
-#include "lua/lua.hpp"
-#include "sol/sol.hpp"
-
 #include "imgui/imgui.h"
+#include "imgui_impl_glfw_gl3.hpp"
 
 #include "sqlite/sqlite3.h"
 
@@ -49,9 +47,6 @@ extern "C" {
 #include <iomanip>
 #include <limits>
 using namespace std;
-
-
-#include "imgui_impl_glfw_gl3.hpp"
 
 #include "machine_conf.hpp"
 #include "log.hpp"
@@ -77,9 +72,8 @@ using namespace std;
 #include "collision.hpp"
 #include "lua_exports.hpp"
 
-#include "tdns_lua.hpp"
+#include "tdscript_impl.hpp"
 #include "dialogue_impl.hpp"
-#include "bind_functions.hpp"
 #include "state.hpp"
 #include "shader.hpp"
 #include "transform.hpp"
@@ -98,12 +92,8 @@ using namespace std;
 #include "lua_exports_impl.hpp"
 
 
-
-
 int main() {
 	tdns_log.init();
-	init_tdscript();
-	test_tdscript();
 
 #pragma region GLFW_INIT
 	glfwInit();
@@ -147,15 +137,16 @@ int main() {
 	create_all_texture_atlas();
 	create_texture("textures\\misc\\text_box.png");
 
-	Lua.init();
+	init_tdscript();
+	test_tdscript();
 
 	init_levels();
 	init_fonts();
 	game.init();
 	editor.init();
 	init_collider_matrix();
+	camera.following = game.hero;
 
-	Lua.init_after_load();
 #pragma endregion
 
 #pragma region IMGUI_INIT

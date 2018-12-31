@@ -11,7 +11,6 @@ struct Dialogue_Node {
 	bool has_response();
 	Dialogue_Node* next();
 	void show_line();
-	void init_from_table(sol::table& table);
 	void init_from_table(TableNode* table);
 };
 struct Dialogue_Tree {
@@ -22,6 +21,5 @@ struct Dialogue_Tree {
 	Dialogue_Node* traverse();
 	void save();
 	void load();
-	void init_from_table(sol::table table);
 	void init_from_table(TableNode* table);
 };

@@ -1,5 +1,5 @@
 template<typename T>
-Primitive  TableNode::get(vector<string>& keys) {
+Primitive TableNode::get(vector<string>& keys) {
 		string value_key = keys.back();
 		keys.erase(keys.end() - 1);
 		TableNode* containing_table = get_table(keys);
@@ -45,22 +45,22 @@ Primitive  TableNode::get(vector<string>& keys) {
 		error.type = Primitive::Type::PRIM_ERROR;
 		return error;
 	}
-int        TableNode::get_int(vector<string> keys) {
+int TableNode::get_int(vector<string> keys) {
 		Primitive prim = get<int>(keys);
 		fox_assert(prim.type == Primitive::Type::INTEGER);
 		return prim.values.intval;
 	}
-string     TableNode::get_string(vector<string> keys) {
+string TableNode::get_string(vector<string> keys) {
 		Primitive prim = get<string>(keys);
 		fox_assert(prim.type == Primitive::Type::STRING);
 		return prim.values.strval;
 	}
-float      TableNode::get_float(vector<string> keys) {
+float TableNode::get_float(vector<string> keys) {
 		Primitive prim = get<float>(keys);
 		fox_assert(prim.type == Primitive::Type::FLOAT);
 		return prim.values.floatval;
 	}
-bool       TableNode::get_bool(vector<string> keys) {
+bool TableNode::get_bool(vector<string> keys) {
 		Primitive prim = get<bool>(keys);
 		fox_assert(prim.type == Primitive::Type::BOOL);
 		return prim.values.boolval;
@@ -104,7 +104,7 @@ TableNode* TableNode::get_table(vector<string> keys) {
 
 		return nullptr;
 	}
-ASTNode*   TableNode::get_raw(vector<string> keys) {
+ASTNode* TableNode::get_raw(vector<string> keys) {
 		if (!keys.size()) return this;
 
 		TableNode* current_scope = this;
@@ -144,7 +144,7 @@ ASTNode*   TableNode::get_raw(vector<string> keys) {
 
 		return nullptr;
 	}
-ASTNode*   TableNode::maybe_key(string key) {
+ASTNode* TableNode::maybe_key(string key) {
 		for (auto node : assignments) {
 			KVPNode* kvp = (KVPNode*)node;
 			if (kvp->key == key) return kvp;
@@ -153,16 +153,15 @@ ASTNode*   TableNode::maybe_key(string key) {
 		return nullptr;
 	}
 
-void  Lexer::init(string script_path) {
-	string full_path = absolute_path(script_path);
-	file = ifstream(full_path);
+void Lexer::init(string script_path) {
+	file = ifstream(script_path);
 	fox_assert(file.good());
 
 	tokens.clear();
 	line_number = 1;
 	token_idx = 0;
 }
-void  Lexer::lex() {
+void Lexer::lex() {
 	token_idx = 0;
 	while (true) {
 		Token current_token = next_token_internal();
@@ -332,26 +331,26 @@ Token Lexer::peek_token() {
 	fox_assert(token_idx < (int)tokens.size());
 	return tokens[token_idx];
 }
-bool  Lexer::is_alpha(char c) {
+bool Lexer::is_alpha(char c) {
 	return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z');
 }
-bool  Lexer::is_valid_number_start(char c) {
+bool Lexer::is_valid_number_start(char c) {
 	bool is_neg_sign = c == '-';
 	return is_neg_sign || is_numeral(c) || is_dot(c);
 }
-bool  Lexer::is_numeral(char c) {
+bool Lexer::is_numeral(char c) {
 	return c >= '0' && c <= '9';
 }
-bool  Lexer::is_dot(char c) {
+bool Lexer::is_dot(char c) {
 	return c == '.';
 }
-bool  Lexer::is_underscore(char c) {
+bool Lexer::is_underscore(char c) {
 	return c == '_';
 }
-bool  Lexer::is_valid_identifier_char(char c) {
+bool Lexer::is_valid_identifier_char(char c) {
 	return is_alpha(c) || is_valid_number_start(c) || is_underscore(c) || is_dot(c);
 }
-bool  Lexer::is_whitespace(char c) {
+bool Lexer::is_whitespace(char c) {
 	static bool is_in_comment;
 	if (c == '#') is_in_comment = true;
 	if (c == '\n') is_in_comment = false;
@@ -360,14 +359,14 @@ bool  Lexer::is_whitespace(char c) {
 	return c == ' ' || c == '\t' || c == '\n';
 }
 
-bool           TDScript::is_nested_identifier(string& key) {
+bool TDScript::is_nested_identifier(string& key) {
 		for (auto& c : key) {
 			if (c == '.') return true;
 		}
 
 		return false;
 	}
-ASTNode*       TDScript::parse(string script_path) {
+ASTNode* TDScript::parse(string script_path) {
 		lexer.init(script_path);
 		lexer.lex();
 
@@ -402,7 +401,7 @@ ASTNode*       TDScript::parse(string script_path) {
 
 		return global_scope;
 	}
-ASTNode*       TDScript::parse_table() {
+ASTNode* TDScript::parse_table() {
 		TableNode* table_node = new TableNode;
 		int arr_len = 0; // This is for tables which have unnamed keys (i.e. an array)
 
@@ -436,7 +435,7 @@ ASTNode*       TDScript::parse_table() {
 		fox_assert(0);
 		return nullptr; // Just for the compiler
 	}
-ASTNode*       TDScript::parse_assign() {
+ASTNode* TDScript::parse_assign() {
 		Token cur_token = lexer.next_token();
 		if (cur_token.type == Token::Type::_EOF) {
 			return nullptr;
@@ -573,10 +572,10 @@ vector<string> TDScript::keys_from_string(string key_str) {
 
 		return keys;
 	}
-void           TDScript::script_file(string script_path) {
+void TDScript::script_file(string script_path) {
 	ASTNode* ast = parse(script_path);
 }
-void           TDScript::script_dir(string dir_path) {
+void  TDScript::script_dir(string dir_path) {
 		// Always check for the directory's init file first
 		string maybe_init_file = dir_path + "\\init.tds";
 		ifstream f(maybe_init_file.c_str());
@@ -602,111 +601,8 @@ void           TDScript::script_dir(string dir_path) {
 	}
 
 
-struct LuaState {
-	sol::state state;
-
-	void recursive_add_dir(string dir) {
-		// Always check for the directory's init file first
-		string maybe_init_file = dir + "\\init.lua";
-		ifstream f(maybe_init_file.c_str());
-		if (f.good()) {
-			state.script_file(maybe_init_file);
-		}
-
-		for (auto it = directory_iterator(dir); it != directory_iterator(); it++) {
-			string path = it->path().string();
-			if (is_regular_file(it->status())) {
-				if (is_lua(path)) {
-					// Don't double run the init file 
-					if (!path.compare(maybe_init_file)) {
-						continue;
-					}
-					state.script_file(path);
-				}
-			}
-			else if (is_directory(it->status())) {
-				recursive_add_dir(path);
-			}
-		}
-	}
-
-	void init() {
-		state.open_libraries(sol::lib::base, sol::lib::coroutine, sol::lib::string, sol::lib::io, sol::lib::package, sol::lib::math, sol::lib::table);
-		bind_functions();
-
-		// Userdata
-		state.new_usertype<EntityHandle>(
-			"EntityHandle"
-			);
-
-		state.new_usertype<Entity>(
-			"Entity",
-			"get_component", &Entity::get_component,
-			"lua_id", &Entity::lua_id
-			);
-
-		state.new_usertype<Level>(
-			"Level",
-			"name", &Level::name,
-			"load", &Level::load,
-			"draw", &Level::draw,
-			"entities", &Level::entities
-			);
-
-
-		// Load scripts
-		state.script_file(absolute_path("src\\scripts\\meta.lua"));
-		state.script_file(absolute_path("src\\scripts\\init.lua"));
-		sol::table files = state["meta"]["scripts"];
-
-		// Load everything that needs to be in the global namespace from scripts
-		for (auto& kvp : files) {
-			sol::table file = kvp.second;
-			string script = file["name"];
-			if (script == "init.lua") continue;
-
-			if (file["is_dir"]) {
-				recursive_add_dir(absolute_path("src\\scripts\\") + script);
-				continue;
-			}
-
-			string path = absolute_path("src\\scripts\\") + script + ".lua";
-			state.script_file(path);
-		}
-	}
-
-	void init_after_load() {
-		sol::table after_load = state["meta"]["after_load"];
-		for (auto& kvp : after_load) {
-			sol::function func = kvp.second;
-			func();
-		}
-	}
-	void run_game_update(float dt) {
-		//@hack either a better way to find the function with middleclass or dont use middleclass
-		sol::function lua_update = state["Game"]["__declaredMethods"]["update"];
-		lua_update(state["game"], dt);
-	}
-	sol::table entity_table() {
-		return state["entity"];
-	}
-	Level* get_active_level() {
-		return state["game"]["level"];
-	}
-	void set_active_level(Level* level) {
-		state["game"]["level"] = level;
-	}
-	EntityHandle get_hero() {
-		return state["game"]["hero"];
-	}
-	sol::table get_task(string entity, string scene) {
-		return state["entity"][entity]["scripts"][scene];
-	}
-};
-LuaState Lua;
-
 void init_tdscript() {
-	ScriptManager.script_file("src\\scripts\\meta.tds");
+	ScriptManager.script_file(absolute_path("src\\scripts\\meta.tds"));
 	TableNode* files = tds_table(ScriptManager.global_scope, "meta", "scripts");
 	for (uint i = 0; i < files->assignments.size(); i++) {
 		TableNode* script = tds_table(ScriptManager.global_scope, "meta", "scripts", to_string(i));
@@ -721,28 +617,28 @@ void init_tdscript() {
 }
 
 void test_tdscript() {
-	//TDScript.script_dir(absolute_path("src\\scripts\\tds_test"));
-	string boonhouse_test = tds_string(ScriptManager.global_scope, "entity", "boonhouse_door", "Graphic_Component", "Animations", "boonhouse_door", "0");
-	string cantina_test = tds_string(ScriptManager.global_scope, "entity", "picture", "Graphic_Component", "Animations", "picture", "0");
+	string boonhouse_test = tds_string(ScriptManager.global_scope, "entity", "boonhouse_door", "components", "Graphic_Component", "Animations", "boonhouse_door", "0");
+	string cantina_test = tds_string(ScriptManager.global_scope, "entity", "picture", "components", "Graphic_Component", "Animations", "picture", "0");
 	string intro_police_test = tds_string(ScriptManager.global_scope, "entity", "intro_police", "scripts", "intro1", "4", "kind");
 	string wilson_test = tds_string(ScriptManager.global_scope, "entity", "wilson", "State_Machine", "main1", "task", "0", "kind");
 
-	TableNode* gc = tds_table(ScriptManager.global_scope, "entity", "wilson", "Graphic_Component");
+	TableNode* gc = tds_table(ScriptManager.global_scope, "entity", "wilson", "components", "Graphic_Component");
 	auto graphic = new Graphic_Component;
-	graphic->init_from_tdstable(gc);
+	graphic->init_from_table(gc);
 
-	TableNode* movement_table = tds_table(ScriptManager.global_scope, "entity", "wilson", "Movement_Component");
+	TableNode* movement_table = tds_table(ScriptManager.global_scope, "entity", "wilson", "components", "Movement_Component");
 	auto mc = new Movement_Component;
-	mc->init_from_tdstable(movement_table);
+	mc->init_from_table(movement_table);
 
-	TableNode* collision_table = tds_table(ScriptManager.global_scope, "entity", "wilson", "Collision_Component");
+	TableNode* collision_table = tds_table(ScriptManager.global_scope, "entity", "wilson", "components", "Collision_Component");
 	auto cc = new Collision_Component;
-	cc->init_from_tdstable(collision_table);
+	cc->init_from_table(collision_table);
 
 	TableNode* task_table = tds_table(ScriptManager.global_scope, "entity", "wilson", "scripts", "intro");
 	auto task = new Task;
-	task->init_from_tdstable(task_table, { -1, nullptr });
+	task->init_from_table(task_table, { -1, nullptr });
 
+	ScriptManager.script_dir(absolute_path("src\\scripts\\tds_test"));
 	string strval = tds_string(ScriptManager.global_scope, "strval");
 	int intval = tds_int(ScriptManager.global_scope, "intval");
 	float fval = tds_float(ScriptManager.global_scope, "fval");
@@ -757,8 +653,6 @@ void test_tdscript() {
 	string array_0 = tds_string(ScriptManager.global_scope, "array", "0");
 	string array_1 = tds_string(ScriptManager.global_scope, "array", "1");
 	int array_2 = tds_int(ScriptManager.global_scope, "array", "2");
-	ScriptManager.script_file("src\\scripts\\test2.tds");
-	int table_intval = tds_int(ScriptManager.global_scope, "table", "intval");
 
 	int x = 0;
 }

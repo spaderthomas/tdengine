@@ -1,8 +1,7 @@
 struct Component {
 	virtual void save(json& j) const;
 	virtual void load(json& j) { cout << "base"; };
-	virtual void init_from_table(sol::table table);
-	virtual void init_from_tdstable(TableNode* table);
+	virtual void init_from_table(TableNode* table);
 	virtual string name() { return "Component"; };
 };
 struct Graphic_Component : Component {
@@ -13,8 +12,7 @@ struct Graphic_Component : Component {
 
 	void add_animation(Animation* anim);
 	Sprite* get_current_frame();
-	void init_from_table(sol::table gc) override;
-	void init_from_tdstable(TableNode* gc) override;
+	void init_from_table(TableNode* table) override;
 	string name() override;
 };
 struct Position_Component : Component {
@@ -28,26 +26,20 @@ struct Position_Component : Component {
 struct Movement_Component : Component {
 	glm::vec2 speed;
 	glm::vec2 wish;
-	void init_from_table(sol::table table) override;
-	void init_from_tdstable(TableNode* table) override;
+	void init_from_table(TableNode* table) override;
 	string name() override;
 };
 struct Vision_Component : Component {
-	// Defines the dimensions for a box whose bottom/top center (depending on orientation) 
-	// is the position (i.e. center) of the entity
 	float width;
 	float depth;
 
-	void init_from_table(sol::table table);
-	void init_from_tdstable(TableNode* table) override;
+	void init_from_table(TableNode* table) override;
 	string name() override;
 };
 struct Interaction_Component : Component {
 	bool was_interacted_with = false;
 	EntityHandle other;
-	sol::function on_interact;
 
-	void init_from_table(sol::table table) override;
 	string name() override;
 };
 struct Door_Component : Component {
@@ -66,24 +58,15 @@ struct Collision_Component : Component {
 		glm::vec2 screen_extents;
 	} bounding_box;
 	Collider_Kind kind;
-	sol::function on_collide;
 	
-	void init_from_table(sol::table table) override;
-	void init_from_tdstable(TableNode* table) override;
+	void init_from_table(TableNode* table) override;
 	string name() override;
 };
 struct Task_Component : Component {
 	Task* task;
 
 	string name() override;
-	void change_task(sol::table new_task);
-	void init_from_tdstable(TableNode* table) override;
-};
-struct Update_Component : Component {
-	sol::function update;
-
-	void init_from_table(sol::table table) override;
-	string name() override;
+	void init_from_table(TableNode* table) override;
 };
 
 //@metaprogramming
@@ -96,7 +79,6 @@ union any_component {
 	Door_Component door_component;
 	Collision_Component collision_component;
 	Task_Component task_component;
-	Update_Component update_component;
 
 	any_component() {} // Necessary so we can in place new components in the pool.
 	static void fake_destructor_for_sol(any_component* me) {};
@@ -113,9 +95,8 @@ unordered_map<string, const type_info*> component_map = {
 	{ "Interaction_Component", &typeid(Interaction_Component) },
 	{ "Door_Component", &typeid(Door_Component) },
 	{ "Task_Component", &typeid(Task_Component) },
-	{ "Update_Component", &typeid(Update_Component) },
 };
 
 #define def_get_cmp(var, entity, type) type* var = (entity)->get_component<type>()
-#define get_cmp(entity, type) (entity)()->get_component<type>()
+#define get_cmp(entity, type) (entity)->get_component<type>()
 #define def_cast_cmp(varname, cmp, type) type* varname = dynamic_cast<type*>((cmp))

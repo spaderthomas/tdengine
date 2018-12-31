@@ -42,15 +42,18 @@ struct State_System {
 			string entity_name = (const char*)sqlite3_column_text(sql_statement, db_schema["entity_state"]["name"]);
 			string state = (const char*)sqlite3_column_text(sql_statement, db_schema["entity_state"]["state"]);
 
-			sol::table transitions = Lua.state["entity"][entity_name]["State_Machine"][state]["transitions"];
-			for (auto& kvp : transitions) {
-				sol::table transition = kvp.second;
-				sol::table vars = transition["vars"];
+			TableNode* transitions = tds_table(ScriptManager.global_scope, "entity", entity_name, "State_Machine", state, "transitions");
+
+			for (auto transition_node : transitions->assignments) {
+				TableNode* transition = (TableNode*)((KVPNode*)transition_node)->value;
+				TableNode* vars = tds_table(transition, "vars");
+			
 				bool do_transition = true;
 
-				for (auto& kvp2 : vars) {
-					string varname = kvp2.first.as<string>();
-					State_Ternary value_for_transition = kvp2.second.as<bool>() ? State_Ternary::ST_TRUE : State_Ternary::ST_FALSE;
+				for (auto& var_node : vars->assignments) {
+					KVPNode* var = (KVPNode*)var_node;
+					string varname = var->key;
+					State_Ternary value_for_transition = tds_bool(vars, varname) ? State_Ternary::ST_TRUE : State_Ternary::ST_FALSE;
 
 					query = "select * from state where name = '" + varname + "'";
 					sqlite3_stmt* sql_statement2 = nullptr;
@@ -63,17 +66,17 @@ struct State_System {
 				}
 
 				if (do_transition) {
-					string new_state = transition["next_state"];
+					string new_state = tds_string(transition, "next_state");
 					query = "update entity_state set state = '" + new_state + "' where name = '" + entity_name + "'";
 					sqlite3_stmt* sql_statement3;
 					sql_wrapper(query.c_str(), &sql_statement3, true);
 
-					auto level = Lua.get_active_level();
+					auto level = active_layer->active_level;
 					for (auto& entity : level->entities) {
 						if (entity->lua_id == entity_name) {
 							def_get_cmp(tc, entity.deref(), Task_Component);
-							sol::table new_task = Lua.entity_table()[entity_name]["scripts"][new_state];
-							tc->change_task(new_task);
+							TableNode* task_table = tds_table(ScriptManager.global_scope, "entity", entity_name, "scripts", new_state);
+							tc->init_from_table(task_table);
 						}
 					}
 					continue;

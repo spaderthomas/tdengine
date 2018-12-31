@@ -1,68 +1,3 @@
-Action* action_from_table(sol::table table, EntityHandle actor) {
-	bool good_action = false;
-
-	string kind = table["kind"];
-	if (kind == "Wait_For_Interaction_Action") {
-		Wait_For_Interaction_Action* action = new Wait_For_Interaction_Action;
-		action->actor = actor;
-		init_is_blocking(action, table);
-
-		return action;
-	}
-	else if (kind == "Dialogue_Action") {
-		Dialogue_Tree* tree = new Dialogue_Tree;
-		sol::table dialogue = table["dialogue"];
-		tree->init_from_table(dialogue);
-
-		Dialogue_Action* action = new Dialogue_Action;
-		action->init();
-		action->tree = tree;
-		action->actor = actor;
-		init_is_blocking(action, table);
-
-		return action;
-	}
-	else if (kind == "Movement_Action") {
-		Movement_Action* action = new Movement_Action;
-		action->dest.x = table["dest"]["x"];
-		action->dest.y = table["dest"]["y"];
-		action->actor = actor;
-		init_is_blocking(action, table);
-
-		return action;
-	}
-	else if (kind == "And_Action") {
-		And_Action* action = new And_Action;
-		init_is_blocking(action, table);
-		sol::table actions = table["actions"];
-		for (auto& kvp : actions) {
-			sol::table action_definition = kvp.second;
-			action->actions.push_back(action_from_table(action_definition, actor));
-		}
-
-		return action;
-	}
-	else if (kind == "Set_State_Action") {
-		Set_State_Action* action = new Set_State_Action;
-		action->var = table["var"];
-		action->value = table["value"];
-		init_is_blocking(action, table);
-
-		return action;
-	}
-	else if (kind == "Teleport_Action") {
-		Teleport_Action* action = new Teleport_Action;
-		action->actor = actor;
-		action->x = table["dest"]["x"];
-		action->y = table["dest"]["y"];
-		init_is_blocking(action, table);
-
-		return action;
-	}
-
-	tdns_log.write("Tried to create an action with an invalid kind: " + kind);
-	return nullptr;
-}
 Action* action_from_table(TableNode* table, EntityHandle actor) {
 	bool good_action = false;
 
@@ -129,12 +64,6 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 	return nullptr;
 }
 
-void init_is_blocking(Action* action, sol::table& table) {
-	sol::optional<bool> maybe_is_blocking = table["is_blocking"];
-	if (maybe_is_blocking) {
-		action->is_blocking = maybe_is_blocking.value();
-	}
-}
 void init_is_blocking_tds(Action* action, TableNode* table) {
 	action->is_blocking = false;
 
@@ -180,8 +109,6 @@ bool Movement_Action::update(float dt) {
 bool Wait_For_Interaction_Action::update(float dt) {
 	def_get_cmp(ic, actor.deref(), Interaction_Component);
 	if (ic->was_interacted_with) {
-		ic->on_interact(actor, ic->other);
-
 		// Clear the IC so we don't call this again next frame.
 		ic->was_interacted_with = false;
 		ic->other = { 0, nullptr };
@@ -280,16 +207,7 @@ void Task::add_action(Action* a) {
 	action_queue.push(a);
 }
 
-void Task::init_from_table(sol::table table, EntityHandle actor) {
-	this->actor = actor;
-
-	for (auto it : table) {
-		sol::table action_table = it.second.as<sol::table>();
-		Action* action = action_from_table(action_table, actor);
-		this->add_action(action);
-	}
-}
-void Task::init_from_tdstable(TableNode* table, EntityHandle actor) {
+void Task::init_from_table(TableNode* table, EntityHandle actor) {
 	this->actor = actor;
 	fox_for(action_idx, table->assignments.size()) {
 		TableNode* action_table = tds_table(table, to_string(action_idx));
@@ -314,7 +232,7 @@ vector<TaskEditorNode*> make_task_graph(Task* task, ImVec2 base) {
 	return graph;
 }
 vector<TaskEditorNode*> make_task_graph(string entity, string scene, ImVec2 base) {
-	sol::table task_table = Lua.get_task(entity, scene);
+	TableNode* task_table = tds_table(ScriptManager.global_scope, "entity", entity, "scripts", scene);
 	EntityHandle dummy = { -1, nullptr };
 	Task* task = new Task;
 	task->init_from_table(task_table, dummy);

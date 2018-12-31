@@ -25,9 +25,9 @@ def recursive_add(full_parent_path):
 
         # If it's a file, parse for definitions
         if os.path.isfile(full_child_path):
-            # Check it's actually a Lua file
-            should_be_lua = full_child_path[-4:]
-            if should_be_lua != ".lua":
+            # Check it's actually a TDS file
+            should_be_tds = full_child_path[-4:]
+            if should_be_tds != ".tds":
                 continue
             just_script_dir_path = full_parent_path.replace(script_root_dir + "/", "")
             just_script_file_path = just_script_dir_path + "/" + name

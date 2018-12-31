@@ -476,21 +476,12 @@ void Editor::exec_console_cmd(char* command_line) {
 			return;
 		}
 
-		Level* new_level = levels[level_name];
-		Lua.set_active_level(new_level);
-		this->active_level = new_level;
-
-		auto hero = Lua.get_hero();
-		def_get_cmp(pc, hero.deref(), Position_Component);
-		pc->world_pos = { 0.f, 0.f };
+		this->active_level = levels[level_name];
+		active_layer->active_level = levels[level_name];
 	}
 	else {
 		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);
 	}
-}
-void Editor::reload_lua() {
-	Lua.init();
-	active_level->load();
 }
 void Editor::reload_assets() {
 	// @leak
@@ -499,7 +490,6 @@ void Editor::reload_assets() {
 	active_level->load();
 }
 void Editor::reload_everything() {
-	reload_lua();
 	reload_assets();
 }
 void Editor::undo() {
@@ -548,9 +538,6 @@ void Editor::update(float dt) {
 				active_level->load(); 
 			}
 			if (ImGui::BeginMenu("Reload", "reload")) {
-				if (ImGui::MenuItem("lua")) {
-					reload_lua();
-				}
 				if (ImGui::MenuItem("assets")) {
 					reload_assets();
 				}
@@ -607,8 +594,8 @@ void Editor::update(float dt) {
 		// Pull in a random task 
 		if (!init) {
 			Task* test = new Task;
-			sol::table tbl = Lua.state["entity"]["wilson"]["scripts"]["intro"];
-			test->init_from_table(tbl, Lua.get_hero());
+			TableNode* table = tds_table(ScriptManager.global_scope, "entity", "wilson", "scripts", "intro");
+			test->init_from_table(table, { -1, nullptr });
 			task_editor.task_graph = make_task_graph(test, ImVec2(200, 200));
 			init = true;
 		}
@@ -704,6 +691,7 @@ void Editor::update(float dt) {
 			#endif
 		}
 
+#if 0
 		// Since we want the camera to be centered around the hero, when we want to 
 		// move around in the editor, we just teleport the entity
 		EntityHandle hero = Lua.get_hero();
@@ -716,7 +704,7 @@ void Editor::update(float dt) {
 		if (input.is_down[GLFW_KEY_D]) position += glm::vec2(.025, 0);
 
 		teleport_entity(hero, position.x, position.y);
-
+#endif
 		break;
 	}
 	case INSERT: {
@@ -887,8 +875,8 @@ void Editor::render() {
 
 void Game::init() {
 	particle_system.init();
-	scene = "intro";
 	active_dialogue = new Dialogue_Tree;
+	hero = Entity::create("boon");
 }
 void Game::update(float dt) {
 	static int frame = 0;
@@ -907,7 +895,6 @@ void Game::update(float dt) {
 	camera.offset += glm::vec2{-.5, -.5};
 	input.world_pos = input.screen_pos + camera.offset;
 
-	Lua.run_game_update(dt);
 	physics_system.process(1.f / 60.f);
 	
 	if (false) {

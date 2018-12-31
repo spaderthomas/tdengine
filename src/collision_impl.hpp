@@ -77,7 +77,6 @@ void Physics_System::process(float dt) {
 				def_get_cmp(mypos, element.me.deref(), Position_Component);
 				def_get_cmp(otherpos, element.other.deref(), Position_Component);
 				mypos->world_pos -= penetration;
-				cc->on_collide(element.me, element.other);
 			}
 		}
 	}

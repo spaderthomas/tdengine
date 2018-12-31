@@ -89,7 +89,7 @@
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalDependencies>opengl32.lib;glfw3.lib;lua53.lib;freetyped.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>opengl32.lib;glfw3.lib;freetyped.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <FullProgramDatabaseFile>true</FullProgramDatabaseFile>
       <ShowProgress>NotSet</ShowProgress>
@@ -160,7 +160,6 @@
     <ClInclude Include="..\..\src\animation.hpp" />
     <ClInclude Include="..\..\src\animation_impl.hpp" />
     <ClInclude Include="..\..\src\asset_table.hpp" />
-    <ClInclude Include="..\..\src\bind_functions.hpp" />
     <ClInclude Include="..\..\src\box.hpp" />
     <ClInclude Include="..\..\src\camera.hpp" />
     <ClInclude Include="..\..\src\collision.hpp" />
@@ -192,7 +191,7 @@
     <ClInclude Include="..\..\src\sprite_impl.hpp" />
     <ClInclude Include="..\..\src\task.hpp" />
     <ClInclude Include="..\..\src\task_impl.hpp" />
-    <ClInclude Include="..\..\src\tdns_lua.hpp" />
+    <ClInclude Include="..\..\src\tdscript_impl.hpp" />
     <ClInclude Include="..\..\src\tdscript.hpp" />
     <ClInclude Include="..\..\src\text.hpp" />
     <ClInclude Include="..\..\src\texture.hpp" />

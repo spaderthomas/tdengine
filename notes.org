@@ -144,7 +144,7 @@ to add scripting to an entity:
 ok! so i can actually script stuff now. i can add all kinds of different actions
 and they get dispatched and updated. now, editing them. 
 
--- 12/122 12:17 AM
+-- 12/22 12:17 AM
 
 so nested assignments. first, the easy case. when you have something in the
 global scope such as
