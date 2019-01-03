@@ -22,10 +22,6 @@ unordered_map<string, vector<string>> script_to_entity = {
 		{"wilson"}
 	},
 	{
-		"entities/misc/door.tds",
-		{"door"}
-	},
-	{
 		"entities/outdoor_props/fences.tds",
 		{"fence_left", "fence_middle", "fence_right", "fence_post", "fence_top"}
 	},

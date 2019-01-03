@@ -1,11 +1,13 @@
 import sqlite3
-import os
+import os, sys
+sys.path.append("../../")
+from machine_conf import GLOBAL_PROJ_ROOT_DIR
 
 print("/sqlite/generate_db_header.py: Generating SQL column definitions")
 
 # Make sure to run this script in the root project directory
 old_cwd = os.getcwd()
-os.chdir('C:/Users/dboon/programming/tdengine')
+os.chdir(GLOBAL_PROJ_ROOT_DIR)
 
 c = sqlite3.connect('sqlite/tdengine.db')
 

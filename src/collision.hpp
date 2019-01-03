@@ -1,3 +1,25 @@
+struct Points_Box;
+struct Center_Box {
+	glm::vec2 origin;
+	glm::vec2 extents;
+
+	static optional<Center_Box> from_entity(EntityHandle handle);
+	static Center_Box from_points(Points_Box& points);
+	Points_Box as_points();
+};
+
+struct Points_Box {
+	float top;
+	float bottom;
+	float left;
+	float right;
+
+	void convert_screen_to_gl();
+	Center_Box as_center_box();
+};
+bool point_inside_box(glm::vec2& screen_pos, Center_Box& box);
+
+
 struct Collision_Element {
 	EntityHandle me;
 	EntityHandle other;

@@ -14,6 +14,8 @@ GRTAGS
 graphics_demo/graphics_demo/Release/
 graphics_demo/graphics_demo/Debug/
 graphics_demo/graphics_demo/x64/
+graphics_demo/graphics_demo/graphics_demo.vcxproj
+graphics_demo/graphics_demo.sln
 graphics_demo/Release/
 graphics_demo/Debug/
 graphics_demo/x64/

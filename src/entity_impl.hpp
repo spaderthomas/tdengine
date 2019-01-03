@@ -7,42 +7,36 @@ pool_handle<any_component> Entity::add_component() {
 	components[&typeid(Component_Type)] = handle;
 	return handle;
 }
-
 template <typename Component_Type>
 bool Entity::remove_component() {
 	pool_handle handle = components[&typeid(Component_Type)];
 	component_pool.mark_available(handle);
 }
-
-// Use this in C++ where templated functions are available
-template <typename Component_Type>
-Component_Type* Entity::get_component() {
-	pool_handle<any_component> handle = components[&typeid(Component_Type)];
-
-	// If it returns a zeroed out entry, then the component doesn't exist
-	if (handle.pool == nullptr) {
-		return nullptr;
-	}
-
-	// Otherwise, try to grab the component associated with the handle (performing all the safety checks of the handle)
-	// We can cast because it's just a union.
-	any_component* any = handle();
-	return (Component_Type*)any;
-}
-
-// Use this in Lua where they are not
-any_component* Entity::get_component(string kind) {
-	const type_info* info = component_map[kind];
-	pool_handle<any_component> handle = components[info];
-	any_component* thing = handle();
-	return thing;
-}
-
 void Entity::clear_components() {
 	for (auto kvp : components) {
 		pool_handle handle = kvp.second;
 		component_pool.mark_available(handle);
 	}
+}
+
+template <typename Component_Type>
+Component_Type* Entity::get_component() {
+	pool_handle<any_component> handle = components[&typeid(Component_Type)];
+
+	// If it returns a zeroed out entry, then the component doesn't exist
+	if (!handle.pool) {
+		return nullptr;
+	}
+
+	// Otherwise, try to grab the component associated with the handle (performing all the safety checks of the handle)
+	any_component* any = handle();
+	return (Component_Type*)any;
+}
+any_component* Entity::get_component(string kind) {
+	const type_info* info = component_map[kind];
+	pool_handle<any_component> handle = components[info];
+	any_component* thing = handle();
+	return thing;
 }
 
 pool_handle<Entity> Entity::create(string entity_name) {
@@ -150,30 +144,3 @@ void Entity::destroy(pool_handle<Entity> handle) {
 	entity_pool.mark_available(handle);
 }
 
-// Internal API 
-Points_Box get_vision_box(EntityHandle me) {
-	def_get_cmp(pc, me.deref(), Position_Component);
-	def_get_cmp(vision, me.deref(), Vision_Component);
-
-	Points_Box vision_box;
-	vision_box.top = pc->world_pos.y + vision->depth;
-	vision_box.bottom = pc->world_pos.y;
-	vision_box.left = pc->world_pos.x - vision->width / 2.f;
-	vision_box.right = pc->world_pos.x + vision->width / 2.f;
-
-	return vision_box;
-}
-Points_Box get_bounding_box_world(EntityHandle me) {
-	def_get_cmp(pc, me.deref(), Position_Component);
-	def_get_cmp(cc, me.deref(), Collision_Component);
-	fox_assert(cc);
-	fox_assert(pc);
-
-	Points_Box bounding_box;
-	bounding_box.top = pc->world_pos.y + cc->bounding_box.screen_center.y + cc->bounding_box.screen_extents.y / 2;
-	bounding_box.bottom = pc->world_pos.y + cc->bounding_box.screen_center.y - cc->bounding_box.screen_extents.y / 2;
-	bounding_box.right = pc->world_pos.x + cc->bounding_box.screen_center.x + cc->bounding_box.screen_extents.x / 2;
-	bounding_box.left = pc->world_pos.x + cc->bounding_box.screen_center.x - cc->bounding_box.screen_extents.x / 2;
-
-	return bounding_box;
-}

@@ -1,14 +1,15 @@
-import os
+import os, sys
 import re
 import pprint
 
 pp = pprint.PrettyPrinter(indent=2)
-
+sys.path.append("../../")
+from machine_conf import GLOBAL_PROJ_ROOT_DIR
 
 print("/src/scripts/generate_entity_tree.py: Generating entity tree")
 
-script_root_dir = "C:/Users/dboon/programming/tdengine/src/scripts"
-project_root_dir = "C:/Users/dboon/programming/tdengine/src/"
+script_root_dir = GLOBAL_PROJ_ROOT_DIR + "src/scripts"
+project_root_dir = GLOBAL_PROJ_ROOT_DIR + "src/"
 entity_table = "entity."
 defs = {}
 already_defined = []

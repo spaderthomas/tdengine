@@ -1,27 +1,29 @@
-// @todo: perhaps organize these differently? e.g. ones which modify entity state vs those that don't?
-
-// Level 
-tdapi Level* get_level(string name) {
-	return levels[name];
-}
-tdapi void add_entity(Level* level, EntityHandle entity) {
-	level->entities.push_back(entity);
-}
-
 // Entity
-tdapi string entity_name(EntityHandle entity) {
-	return entity->lua_id;
+tdapi Points_Box get_vision_box(EntityHandle me) {
+	def_get_cmp(pc, me.deref(), Position_Component);
+	def_get_cmp(vision, me.deref(), Vision_Component);
+
+	Points_Box vision_box;
+	vision_box.top = pc->world_pos.y + vision->depth;
+	vision_box.bottom = pc->world_pos.y;
+	vision_box.left = pc->world_pos.x - vision->width / 2.f;
+	vision_box.right = pc->world_pos.x + vision->width / 2.f;
+
+	return vision_box;
 }
-tdapi int entity_id(EntityHandle entity) {
-	return entity->id;
-}
-tdapi void update_animation(EntityHandle me, float dt) {
-	def_get_cmp(gc, me.deref(), Graphic_Component);
-	auto anim = gc->active_animation;
-	anim->time_to_next_frame -= dt;
-	if (anim->time_to_next_frame <= 0.f) {
-		anim->next_frame();
-	}
+tdapi Points_Box get_bounding_box_world(EntityHandle me) {
+	def_get_cmp(pc, me.deref(), Position_Component);
+	def_get_cmp(cc, me.deref(), Collision_Component);
+	fox_assert(cc);
+	fox_assert(pc);
+
+	Points_Box bounding_box;
+	bounding_box.top = pc->world_pos.y + cc->bounding_box.screen_center.y + cc->bounding_box.screen_extents.y / 2;
+	bounding_box.bottom = pc->world_pos.y + cc->bounding_box.screen_center.y - cc->bounding_box.screen_extents.y / 2;
+	bounding_box.right = pc->world_pos.x + cc->bounding_box.screen_center.x + cc->bounding_box.screen_extents.x / 2;
+	bounding_box.left = pc->world_pos.x + cc->bounding_box.screen_center.x - cc->bounding_box.screen_extents.x / 2;
+
+	return bounding_box;
 }
 tdapi int collider_kind(EntityHandle me) {
 	def_get_cmp(cc, me.deref(), Collision_Component);
@@ -52,9 +54,6 @@ tdapi void move_entity(EntityHandle me, bool up, bool down, bool left, bool righ
 
 	// Tell the Physics system to check + resolve if this movement causes collisions
 	physics_system.movers.push_back(me);
-}
-tdapi EntityHandle create_entity(string lua_id) {
-	return Entity::create(lua_id);
 }
 tdapi void set_animation(EntityHandle me, string wish_name) {
 	def_get_cmp(gc, me.deref(), Graphic_Component);
@@ -116,6 +115,14 @@ tdapi void draw_aabb(EntityHandle me) {
 	Points_Box box = get_bounding_box_world(me);
 	draw_rect_world(box, green);
 }
+tdapi void update_animation(EntityHandle me, float dt) {
+	def_get_cmp(gc, me.deref(), Graphic_Component);
+	auto anim = gc->active_animation;
+	anim->time_to_next_frame -= dt;
+	if (anim->time_to_next_frame <= 0.f) {
+		anim->next_frame();
+	}
+}
 tdapi void update_task(EntityHandle me, float dt) {
 	def_get_cmp(tc, me.deref(), Task_Component);
 	if (tc) {
@@ -146,21 +153,6 @@ tdapi void register_potential_collision(EntityHandle me, EntityHandle other) {
 	}
 }
 
-// Input
-tdapi bool is_down(GLFW_KEY_TYPE key) {
-	return game.input.is_down[key];
-}
-tdapi bool was_down(GLFW_KEY_TYPE key) {
-	return game.input.was_down[key];
-}
-tdapi bool was_pressed(GLFW_KEY_TYPE key) {
-	return game.input.was_pressed(key);
-}
-
-// Game
-tdapi void camera_follow(EntityHandle entity) {
-	camera.following = entity;
-}
 tdapi void set_state(string var, bool val) {
 	state_system.update_state(var, val);
 }

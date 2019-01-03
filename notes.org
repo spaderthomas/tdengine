@@ -171,3 +171,8 @@ it. by that, i mean
 - on_collide
 - on_interact
 - update
+* cleanup
+- instead of Dialogue_Node and Dialogue_Tree, make them one struct
+- re-evaluate the collider matrix as a good way of culling collisions
+- Interaction only ever happens when the player interacts with some game
+  object, so make that more explicit

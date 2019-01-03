@@ -61,13 +61,7 @@
     <ClInclude Include="..\..\src\renderer.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\asset_table.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\mesh.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\animation.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\component.hpp">
@@ -91,9 +85,6 @@
     <ClInclude Include="..\..\src\collision.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\box.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\text_impl.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -104,9 +95,6 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\component_impl.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\animation_impl.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\sprite_impl.hpp">

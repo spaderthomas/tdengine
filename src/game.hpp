@@ -1,3 +1,5 @@
+
+
 struct Entity_Tree {
 	string dir;
 	vector<pool_handle<Entity>> entities;

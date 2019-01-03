@@ -50,7 +50,6 @@ struct Door_Component : Component {
 	void load(json& j);
 	string name() override;
 };
-
 enum Collider_Kind;
 struct Collision_Component : Component {
 	struct {
@@ -81,7 +80,6 @@ union any_component {
 	Task_Component task_component;
 
 	any_component() {} // Necessary so we can in place new components in the pool.
-	static void fake_destructor_for_sol(any_component* me) {};
 };
 
 Pool<any_component, DEFAULT_POOL_SIZE> component_pool;

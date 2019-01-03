@@ -8,7 +8,7 @@ void Level::set_tile(pool_handle<Entity> tile, int x, int y) {
 }
 EntityHandle Level::get_first_matching_entity(string lua_id) {
 	for (auto& entity : entities) {
-		if (entity_name(entity) == lua_id) return entity;
+		if (entity->lua_id == lua_id) return entity;
 	}
 
 	return { -1, nullptr };
@@ -16,7 +16,7 @@ EntityHandle Level::get_first_matching_entity(string lua_id) {
 EntityHandle Level::erase_first_matching_entity(string lua_id) {
 	for (auto it = entities.begin(); it != entities.end(); it++) {
 		auto entity = *it;
-		if (entity_name(entity) == lua_id) {
+		if (entity->lua_id == lua_id) {
 			entities.erase(it);
 			return entity;
 		}

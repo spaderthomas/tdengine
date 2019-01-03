@@ -8,8 +8,12 @@
 #define is_space(c) ((c) == ' ')
 #define dont_care false
 #define tdapi 
+typedef unsigned int uint;
+typedef int32_t int32;
+typedef unsigned char tdbyte;
 
- //Assert
+
+//Assert
  #ifdef _MSC_VER
  #	ifdef assert
  #		undef assert
@@ -18,9 +22,7 @@
  #else
  #	define fox_assert(expr) assert(expr)
  #endif
- typedef unsigned int uint;
- typedef int32_t int32;
-typedef unsigned char tdbyte;
+
 
  // STL extensions 
  template<typename vec_type>
@@ -62,6 +64,7 @@ typedef unsigned char tdbyte;
  bool vec_almost_equals(glm::vec2 vec, glm::vec2 target) {
 	 return glm::length(vec - target) < DEFAULT_FLOAT_TOLERANCE;
  }
+
 
  // Colors
  glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's favorite three floating point numbers.
@@ -251,7 +254,7 @@ typedef unsigned char tdbyte;
  	x += (screen_unit)(.5 * SCR_TILESIZE_X);
  	y += (screen_unit)(.5 * SCR_TILESIZE_Y);
  	return glm::vec2(x, y);
- }
+ } 
 
  // Converting to pixel units
  glm::ivec2 px_coords_from_gl_coords(glm::vec2 gl_coords) {
@@ -350,6 +353,8 @@ bool is_tds(string& path) {
 	if (should_be_lua_extension.compare(".tds")) return false;
 	return true;
 }
+
+
 /* ImGui options */
 bool show_grid = false;
 bool snap_to_grid = false;
@@ -365,6 +370,9 @@ bool show_tile_selector = true;
 bool show_script_selector = true;
 bool show_level_selector = true;
 bool show_task_editor = true;
+
+
+
 
 
 /* Random shit */
@@ -463,21 +471,10 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 	tdns_log.write(debug_msg);
 }
 
-// This defines which tile is on the upper left of the screen
 float seconds_per_update = 1.f / 60.f;
 double pi = 3.14159;
 
-void fixup_type_name(string& type_name) {
-	vector<string> extraneous = { " *", " const", "struct " };
-	for (auto& str : extraneous) {
-		int erase_pos = type_name.find(str);
-		if (erase_pos >= 0) {
-			type_name.erase(erase_pos, str.length());
-		}
-	}
-}
-
-glm::vec2 vec2_pairwise_max(glm::vec2 a, glm::vec2 b) {
+glm::vec2 pairwise_max(glm::vec2 a, glm::vec2 b) {
 	return {
 		fox_max(a.x, b.x),
 		fox_max(a.y, b.y)
@@ -497,6 +494,46 @@ float Sine_Func::eval_at(float point) {
 	return amp * glm::sin(period * point - phase_shift);
 }
 
+
+struct Asset {
+	string name;
+
+	virtual void stub() {};
+};
+
+struct {
+	vector<Asset*> assets;
+
+	template <typename Asset_Type>
+	Asset_Type* get_asset(string name) {
+		for (auto asset : assets) {
+			Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
+			if (asset_as_type) {
+				if (asset_as_type->name == name) {
+					return asset_as_type;
+				}
+			}
+		}
+
+		Asset_Type* new_asset = new Asset_Type;
+		new_asset->name = name;
+		assets.push_back(new_asset);
+		return new_asset;
+	}
+
+	template <typename Asset_Type>
+	vector<Asset_Type*> get_all() {
+		vector<Asset_Type*> all;
+		for (auto asset : assets) {
+			Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
+			if (asset_as_type) {
+				all.push_back(asset_as_type);
+			}
+		}
+
+		return all;
+	}
+} asset_table;
 
 // POOL DECLS
 struct pool_entry_info {
@@ -624,13 +661,6 @@ struct Circle_Buffer {
 	void clear();
 };
 
-struct Key_Type {
-	int x;
-	int y;
-};
-
-
-
 void Circle_Buffer::push_back(int elem) {
 	fox_assert(len <= capacity);
 	fox_assert(head >= 0 && head < capacity);
@@ -654,7 +684,6 @@ void Circle_Buffer::clear() {
 	head = 0;
 	len = 0;
 }
-
 
 // two ways you can use a vector:
 // 1 (more common): always push to the back of the vector. linearly assing. this means there are no holes
@@ -735,6 +764,17 @@ struct tdvec {
 
 };
 
+
+struct Hasher {
+	static int hash(const int key) {
+		return key;
+	}
+
+	static int hash(const type_info* key) {
+		return (int)key & 0x00000001;
+	}
+} hasher;
+
 #define MAP_INITIAL_CAPACITY 8
 template<typename Key, typename Value>
 struct tdmap {
@@ -765,39 +805,11 @@ struct tdmap {
 	}
 };
 
-struct Hasher {
-	static int hash(const Key_Type& key) {
-		return key.x + key.y;
-	}
 
-	static int hash(const int key) {
-		return key;
-	}
-
-	static int hash(const type_info* key) {
-		return (int)key & 0x00000001;
-	}
-} hasher;
-
-
-
-
-// Creating a node graph editor for ImGui
-// Quick demo, not production code! This is more of a demo of how to use ImGui to create custom stuff.
-// Better version by @daniel_collin here https://gist.github.com/emoon/b8ff4b4ce4f1b43e79f2
-// See https://github.com/ocornut/imgui/issues/306
-// v0.03: fixed grid offset issue, inverted sign of 'scrolling'
-// Animated gif: https://cloud.githubusercontent.com/assets/8225057/9472357/c0263c04-4b4c-11e5-9fdf-2cd4f33f6582.gif
 
 #include <math.h> // fmodf
-
-// NB: You can use math functions/operators on ImVec2 if you #define IMGUI_DEFINE_MATH_OPERATORS and #include "imgui_internal.h"
-// Here we only declare simple +/- operators so others don't leak into the demo code.
 static inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y); }
 static inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y); }
-
-// Really dumb data structure provided for the example.
-// Note that we storing links are INDICES (not ID) to make example code shorter, obviously a bad idea for any general purpose code.
 static void ShowExampleAppCustomNodeGraph(bool* opened)
 {
 	ImGui::SetNextWindowSize(ImVec2(700, 600), ImGuiSetCond_FirstUseEver);
