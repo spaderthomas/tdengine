@@ -588,7 +588,7 @@ void  TDScript::script_dir(string dir_path) {
 			if (is_regular_file(it->status())) {
 				if (is_tds(path)) {
 					// Don't double run the init file 
-					if (are_strings_equal(path, maybe_init_file)) {
+					if (string_comp(path, maybe_init_file)) {
 						continue;
 					}
 					script_file(path);

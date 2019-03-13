@@ -1,4 +1,3 @@
-
 void Renderer::draw(Graphic_Component* gc, Position_Component* pc, EntityHandle e, Render_Flags flags) {
 	Render_Element info = { gc, pc, e, flags };
 	render_list.push_back(info);

@@ -176,3 +176,35 @@ it. by that, i mean
 - re-evaluate the collider matrix as a good way of culling collisions
 - Interaction only ever happens when the player interacts with some game
   object, so make that more explicit
+
+* a clean break
+alright, thomas, you're a programmer now. put the art behind you because this is
+where it happens! 
+
+** intro
+- composition of actions for game objects e.g.
+walk up
+wait for the player to interact with you 
+say some stuff
+walk away
+- 'follow me' mode: walk to a defined path, but if the player gets too far away,
+  then you stop and wait
+- battle mode
+- smooth transitions between levels
+- cutscenes
+- hand off which characters are active
+
+the crux of all of this is that you need a way for things to know what they need
+to do and when do to it. in simple terms, that's all you need. 
+
+of course, writing that is kind of complicated (?). first idea:
+- every stateful entity (e.g. not props, tiles, buildings) has a state. each
+  state has a script tied to it. 
+- stateful entities never exist without a corresponding state. it wouldn't make
+  sense for them to. otherwise, the only thing that would happen to them is that
+  they get rendered. 
+- ss
+
+note: in some cases, it may make sense for an entity to have an 'empty'
+script. consider a one-time use switch. once you press it, all it should do is
+get rendered. for these cases, it makes sense to have a noop script. 

@@ -897,10 +897,6 @@ void Game::update(float dt) {
 
 	physics_system.process(1.f / 60.f);
 	
-	if (false) {
-		
-	}
-
 	text_box.update(frame);
 	frame++;
 }

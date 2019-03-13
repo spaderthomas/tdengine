@@ -1,5 +1,15 @@
+// This is just a factory function that reads table definitions of Actions and sets them up
 Action* action_from_table(TableNode* table, EntityHandle actor) {
-	bool good_action = false;
+	// is_blocking is an optional key that any Action could have
+	// so we check if it exists and, if it does, we set it
+	auto init_is_blocking = [](Action* action, TableNode* table) {
+		action->is_blocking = false;
+
+		KVPNode* maybe_is_blocking = (KVPNode*)table->maybe_key("is_blocking");
+		if (maybe_is_blocking) {
+			action->is_blocking = tds_bool(table, "is_blocking");
+		}
+	};
 
 	string kind = tds_string(table, "kind"); 
 	if (kind == "Wait_For_Interaction_Action") {
@@ -18,7 +28,7 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 		action->init();
 		action->tree = tree;
 		action->actor = actor;
-		init_is_blocking_tds(action, table);
+		init_is_blocking(action, table);
 
 		return action;
 	}
@@ -27,13 +37,13 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 		action->dest.x = tds_float(table, "dest", "x"); 
 		action->dest.y = tds_float(table, "dest", "y");
 		action->actor = actor;
-		init_is_blocking_tds(action, table);
+		init_is_blocking(action, table);
 
 		return action;
 	}
 	else if (kind == "And_Action") {
 		And_Action* action = new And_Action;
-		init_is_blocking_tds(action, table);
+		init_is_blocking(action, table);
 		TableNode* actions = tds_table(table, "actions");
 		fox_for(action_idx, actions->assignments.size()) {
 			TableNode* action_table = tds_table(table, "actions", to_string(action_idx));
@@ -46,7 +56,7 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 		Set_State_Action* action = new Set_State_Action;
 		action->var = tds_string(table, "var");
 		action->value = tds_bool(table, "value");
-		init_is_blocking_tds(action, table);
+		init_is_blocking(action, table);
 
 		return action;
 	}
@@ -55,7 +65,7 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 		action->actor = actor;
 		action->x = tds_float(table, "dest", "x");
 		action->y = tds_float(table, "dest", "y");
-		init_is_blocking_tds(action, table);
+		init_is_blocking(action, table);
 
 		return action;
 	}
@@ -64,15 +74,7 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 	return nullptr;
 }
 
-void init_is_blocking_tds(Action* action, TableNode* table) {
-	action->is_blocking = false;
-
-	KVPNode* maybe_is_blocking = (KVPNode*)table->maybe_key("is_blocking");
-	if (maybe_is_blocking) {
-		action->is_blocking = tds_bool(table, "is_blocking");
-	}
-}
-
+// Update functions for each action
 bool And_Action::update(float dt) {
 	bool done = true;
 	for (auto it = actions.begin(); it != actions.end();) {
@@ -181,6 +183,8 @@ bool Teleport_Action::update(float dt) {
 	return true;
 }
 
+
+
 bool Task::update(float dt) {
 	// Run through actions until we reach one which blocks or the queue is empty
 	Action* next_action;
@@ -216,6 +220,7 @@ void Task::init_from_table(TableNode* table, EntityHandle actor) {
 	}
 }
 
+// Pushes out a list of connected nodes that ImGui uses to render tasks
 vector<TaskEditorNode*> make_task_graph(Task* task, ImVec2 base) {
 	static int id = 0;
 	vector<TaskEditorNode*> graph;
@@ -281,6 +286,8 @@ void TaskEditor::show() {
 		ImGui::BeginGroup(); // Lock horizontal position
 		string kind = node->action->kind();
 		ImGui::Text(kind.c_str());
+
+		// Switch based on what kind of action we're dealing with -- each has custom GUI
 		if (kind == "Movement_Action") {
 			Movement_Action* move_action = dynamic_cast<Movement_Action*>(node->action);
 			ImGui::SliderFloat2("Destination", glm::value_ptr(move_action->dest), 0, 1);
