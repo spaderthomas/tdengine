@@ -6,17 +6,17 @@ void Level::set_tile(pool_handle<Entity> tile, int x, int y) {
 	Chunk& chunk = chunks[Chunk_Index(chunk_of(x), chunk_of(y))];
 	chunk.tiles[index_into_chunk(x)][index_into_chunk(y)] = tile;
 }
-EntityHandle Level::get_first_matching_entity(string lua_id) {
+EntityHandle Level::get_first_matching_entity(string name) {
 	for (auto& entity : entities) {
-		if (entity->lua_id == lua_id) return entity;
+		if (entity->name == name) return entity;
 	}
 
 	return { -1, nullptr };
 }
-EntityHandle Level::erase_first_matching_entity(string lua_id) {
+EntityHandle Level::erase_first_matching_entity(string name) {
 	for (auto it = entities.begin(); it != entities.end(); it++) {
 		auto entity = *it;
-		if (entity->lua_id == lua_id) {
+		if (entity->name == name) {
 			entities.erase(it);
 			return entity;
 		}
@@ -42,7 +42,26 @@ void Level::draw() {
 }
 
 // The chunk index is used as an index into the JSON save object
+// @leak: We make a table to save the level but never free any of it
 void Level::save() {
+	TableNode* table = new TableNode;
+	tds_set2(table, new TableNode, "entities");
+	TableNode* saved_entities = tds_table2(table, "entities");\
+	
+	for (auto& entity : entities) {
+		TableNode* saved_entity = entity->save();
+		saved_entities->push_back(saved_entity);
+	}
+
+	// @hack: Would be better to just give the writer the name of the table.
+	TableWriter writer;
+	writer.write_line("levels." + name + " = "); 
+	writer.same_line();
+	table->dump(writer);
+
+	string out_path = absolute_path(path_join({"src", "scripts", "levels", name + ".tds"}));
+	writer.dump(out_path);
+#if 0
 	json j;
 	for (auto it : chunks) {
 		Chunk_Index index = it.first;
@@ -65,10 +84,21 @@ void Level::save() {
 	string path = absolute_path("save\\" + name + ".json");
 	ofstream save_file(path);
 	save_file << std::setw(4) << j << std::endl;
+#endif
 }
 
 //@leak We never free up any tiles that were previously allocated.
 void Level::load() {
+	TableNode* entities_table = tds_table(LEVELS_KEY, name, ENTITIES_KEY);
+
+	fox_for(idx, entities_table->assignments.size()) {
+		TableNode* entity_table = tds_table2(entities_table, to_string(idx));
+		string name = tds_string2(entity_table, NAME_KEY);
+		EntityHandle handle = Entity::create(name);
+		handle->load(entity_table);
+		entities.push_back(handle);
+	}
+	#if 0
 	json j;
 	ifstream level_file(absolute_path("save\\" + name + ".json"));
 	if (!level_file.good()) return;
@@ -91,8 +121,8 @@ void Level::load() {
 			fox_for(itiley, CHUNK_SIZE) {
 				auto tile_json = chunk_as_json[itilex][itiley];
 				if (tile_json != "NULL") {
-					string lua_id = tile_json["lua_id"];
-					pool_handle<Entity> new_ent = Entity::create(lua_id);
+					string name = tile_json["lua_id"];
+					pool_handle<Entity> new_ent = Entity::create(name);
 					new_ent->load(tile_json);
 					chunk.tiles[itilex][itiley] = new_ent;
 				}
@@ -107,40 +137,26 @@ void Level::load() {
 	entities.clear();
 	for (unsigned int i = 0; i < j["entities"].size(); i++) {
 		json entity_json = j["entities"][i];
-		string lua_id = entity_json["lua_id"];
+		string name = entity_json["lua_id"];
 
-		pool_handle<Entity> handle = Entity::create(lua_id);
+		pool_handle<Entity> handle = Entity::create(name);
 		handle->load(entity_json);
 		entities.push_back(handle);
 	}
+	#endif
 }
 
-void add_level(string name) {
-	Level* level = new Level;
-	level->name = name;
-	level->load();
-	levels[name] = level;
-
-	// Add the level to the database if it does not already exist 
-	string sql_query = "";
-	ostringstream query_stream;
-	query_stream << "insert into levels(name) ";
-	query_stream << "select '" << name << "' ";
-	query_stream << "where not exists";
-	query_stream << "(select name from levels ";
-	query_stream << "where name = '" << name << "')";
-	string query = query_stream.str();	
-	sqlite3_stmt* statement;
-	state_system.sql_wrapper(query.c_str(), &statement, true);
-}
-
+// Just a little wrapper that checks the table that has the names of all the levels
+// and loads them up. Simple, dumb, but works good. 
 void init_levels() {
-	const char* sql_query = "select * from levels";
-	sqlite3_stmt* statement;
-	state_system.sql_wrapper(sql_query, &statement, false);
+	TableNode* level_names = tds_table(LEVELS_KEY, NAMES_KEY);
+	fox_for(idx, level_names->assignments.size()) {
+		string level_name = tds_string2(level_names, to_string(idx));
 
-	do {
-		string name = (const char*)sqlite3_column_text(statement, db_schema["levels"]["name"]);
-		add_level(name);
-	} while (sqlite3_step(statement) != SQLITE_DONE);
+		// Load the level into memory
+		Level* level = new Level;
+		level->name = level_name;
+		level->load();
+		levels[level_name] = level;
+	}
 }

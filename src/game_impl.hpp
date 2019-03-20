@@ -5,8 +5,8 @@ Entity_Tree* Entity_Tree::create(string dir) {
 		string path = it->path().string();
 		if (is_regular_file(it->status())) {
 			if (is_png(path)) {
-				string lua_id = strip_extension(name_from_full_path(path));
-				tree->entities.push_back(Entity::create(lua_id));
+				string name = strip_extension(name_from_full_path(path));
+				tree->entities.push_back(Entity::create(name));
 				tree->size++;
 			}
 		}
@@ -17,14 +17,14 @@ Entity_Tree* Entity_Tree::create(string dir) {
 
 	return tree;
 }
-pool_handle<Entity> Entity_Tree::find(string lua_id) {
+pool_handle<Entity> Entity_Tree::find(string name) {
 	for (auto& handle : entities) {
-		if (handle()->lua_id == lua_id) {
+		if (handle()->name == name) {
 			return handle;
 		}
 	}
 	for (auto& child : children) {
-		pool_handle<Entity> found_in_child = child->find(lua_id);
+		pool_handle<Entity> found_in_child = child->find(name);
 		if (found_in_child != -1) {
 			return found_in_child;
 		}
@@ -331,6 +331,20 @@ void Editor::translate() {
 		screen_from_grid(grid_from_world(input.world_pos)) :
 		input.world_pos + smooth_drag_offset;
 }
+void Editor::delete_selected() {
+	// Kill the thing from the level 
+	for (auto it = active_level->entities.begin(); it != active_level->entities.end(); it++) {
+		if (selected == *it) {
+			selected->clear_components();
+			active_level->entities.erase(it);
+			break;
+		}
+	}
+
+	// Kill the thing from the editor
+	selected = { -1, nullptr };
+}
+	
 void Editor::draw_component_editor() {
 	ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
 
@@ -419,7 +433,7 @@ int  Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 					button_size,
 					bottom_left_tex_coords, top_right_tex_coords))
 				{
-					selected = Entity::create(tile->lua_id);
+					selected = Entity::create(tile->name);
 					this->kind = TILE;
 					this->state = INSERT;
 				}
@@ -441,25 +455,51 @@ int  Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 	return unique_btn_index;
 }
 void Editor::exec_console_cmd(char* command_line) {
-	char* command = strtok((char*)command_line, " ");
+	char* command = strtok(command_line, " ");
 	if (!command) return;
 
 
 	if (console.Stricmp(command, "save") == 0) {
 		active_level->save();
 	}
+	else if (console.Stricmp(command, "screen") == 0) {
+		char* res = strtok(NULL, " ");
+		if (!res) {
+			console.AddLog("format: screen {640, 720, 1080, 1440}");
+			return;
+		}
+
+		if (!strcmp(res, "640")) use_640_360();
+		else if (!strcmp(res, "720")) use_720p();
+		else if (!strcmp(res, "1080")) use_1080p();
+		else if (!strcmp(res, "1440")) use_1440p();
+		else console.AddLog("format: screen {640, 720, 1080, 1440}");
+	}
+	else if (console.Stricmp(command, "go") == 0) {
+		char* x = strtok(NULL, " ");
+		if (!x) {
+			console.AddLog("format: go [x: float] [y: float]");
+			return;
+		}
+
+		char* y = strtok(NULL, " ");
+		if (!y) {
+			console.AddLog("format: go [x: float] [y: float]");
+			return;
+		}
+
+		if (!is_float(x) || !is_float(y)) {
+			console.AddLog("format: go [x: float] [y: float]");
+			return;
+		}
+		
+		camera.offset = glm::vec2{stof(x), stof(y)};
+	}
 	else if (console.Stricmp(command, "load") == 0) {
 		active_level->load();
 	}
 	else if (console.Stricmp(command, "reload") == 0) {
 		reload_everything();
-	}
-	else if (console.Stricmp(command, "new") == 0) {
-		string next = strtok(NULL, " ");
-		if (next == "level") {
-			string name = strtok(NULL, " ");
-			add_level(name);
-		}
 	}
 	else if (console.Stricmp(command, "level") == 0) {
 		string level_name = strtok(NULL, " ");
@@ -492,33 +532,54 @@ void Editor::reload_assets() {
 void Editor::reload_everything() {
 	reload_assets();
 }
-void Editor::undo() {
-	if (stack.size()) {
-		function<void()> undo = stack.back();
-		stack.pop_back();
-		undo();
+void Editor::undo_action() {
+	if (action_stack.size()) {
+		function<void()> fn = action_stack.back();
+		action_stack.pop_back();
+		fn();
+	}
+}
+void Editor::undo_mark() {
+	if (mark_stack.size()) {
+		function<void()> fn = mark_stack.back();
+		mark_stack.pop_back();
+		fn();
 	}
 }
 void Editor::update(float dt) {	
 	static bool open = true;
 	ShowExampleAppCustomNodeGraph(&open);
 
+	#if 0
 	// Set up the camera so that the entity it's following is centered
 	def_get_cmp(follow_pc, camera.following.deref(), Position_Component);
 	camera.offset = follow_pc->world_pos;
 	camera.offset += glm::vec2{ -.5, -.5 };
 	input.world_pos = input.screen_pos + camera.offset;
+	#endif
 
+	if (input.is_down[GLFW_KEY_W]) {
+		camera.offset += glm::vec2{0, .025};
+	}
+	if (input.is_down[GLFW_KEY_S]) {
+		camera.offset += glm::vec2{0, -.025};
+	}
+	if (input.is_down[GLFW_KEY_A]) {
+		camera.offset += glm::vec2{-.025, 0};
+	}
+	if (input.is_down[GLFW_KEY_D]) {
+		camera.offset += glm::vec2{.025, 0};
+	}
+	
 	if (input.was_pressed(GLFW_KEY_ESCAPE)) {
 		selected = { -1, nullptr };
 		state = IDLE;
 	}
 	if (input.is_down[GLFW_KEY_LEFT_ALT] &&
 		input.was_pressed(GLFW_KEY_Z)) {
-		undo();
+		undo_action();
 	}
 
-	#pragma region gui
 	// Toggle the console on control
 	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 		show_console = !show_console;
@@ -527,6 +588,8 @@ void Editor::update(float dt) {
 		console.Draw("tdconsole");
 	}
 
+	
+	// GUI
 	if (ImGui::BeginMainMenuBar())
 	{
 		if (ImGui::BeginMenu("File"))
@@ -565,13 +628,14 @@ void Editor::update(float dt) {
 				ImGui::MenuItem("Tile Selector", "", &show_tile_selector);
 				ImGui::MenuItem("Script Selector", "", &show_script_selector);
 				ImGui::MenuItem("Level Selector", "", &show_level_selector);
+				ImGui::MenuItem("State Tweaker", "", &show_state_tweaker);
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenu();
 		}
 		if (ImGui::BeginMenu("Edit"))
 		{
-			if (ImGui::MenuItem("Undo", "M-z")) { undo(); }
+			if (ImGui::MenuItem("Undo", "M-z")) { undo_action(); }
 			ImGui::EndMenu();
 		}
 		ImGui::EndMainMenuBar();
@@ -594,7 +658,7 @@ void Editor::update(float dt) {
 		// Pull in a random task 
 		if (!init) {
 			Task* test = new Task;
-			TableNode* table = tds_table(ScriptManager.global_scope, "entity", "wilson", "scripts", "intro");
+			TableNode* table = tds_table2(ScriptManager.global_scope, "entity", "wilson", "scripts", "intro");
 			test->init_from_table(table, { -1, nullptr });
 			task_editor.task_graph = make_task_graph(test, ImVec2(200, 200));
 			init = true;
@@ -642,8 +706,6 @@ void Editor::update(float dt) {
 		ImGui::End();
 	}
 
-
-	// Level selector
 	if (show_level_selector) {
 		ImGui::Begin("Levels", 0, flags);
 		static string level_current = active_level->name;
@@ -663,11 +725,34 @@ void Editor::update(float dt) {
 		}
 		ImGui::End();
 	}
-#pragma endregion
 
+	if (show_state_tweaker) {
+		ImGui::Begin("State", 0, flags);
+		for (auto& kvp : game_state) {
+			// Red if it's false, green if it's true
+			bool value = kvp.second;
+			if (value) {
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.f, 255.f, 0.f, 255.f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 255.f, 255.f));
+			} else {
+				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(255.f, 0.f, 0.f, 255.f));
+				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 255.f, 255.f));
+			}
+
+			// If we press it, toggle the state
+			if (ImGui::Button(kvp.first.c_str())) {
+				update_state(kvp.first, !value);
+				cout << "vbdafa";
+			}
+
+			ImGui::PopStyleColor(2);
+		}
+		ImGui::End();
+	}
+
+	
 	// Editing logic
-	switch (state) {
-	case IDLE: {
+	if (state == IDLE) {
 		if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			bool clicked_inside_something = false;
 			for (auto& handle : active_level->entities) {
@@ -691,29 +776,13 @@ void Editor::update(float dt) {
 			#endif
 		}
 
-#if 0
-		// Since we want the camera to be centered around the hero, when we want to 
-		// move around in the editor, we just teleport the entity
-		EntityHandle hero = Lua.get_hero();
-		def_get_cmp(pc, hero.deref(), Position_Component);
-		glm::vec2& position = pc->world_pos;
-
-		if (input.is_down[GLFW_KEY_W]) position += glm::vec2(0, .025);
-		if (input.is_down[GLFW_KEY_S]) position -= glm::vec2(0, .025);
-		if (input.is_down[GLFW_KEY_A]) position -= glm::vec2(.025, 0);
-		if (input.is_down[GLFW_KEY_D]) position += glm::vec2(.025, 0);
-
-		teleport_entity(hero, position.x, position.y);
-#endif
-		break;
 	}
-	case INSERT: {
+	else if (state == INSERT) {
 		translate();
 
 		// And if we click, add it to the level
 		if (input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
-			switch (kind) {
-			case TILE: {
+			if (kind == TILE) {
 				auto grid_pos = grid_from_world(input.world_pos);
 				pool_handle<Entity> handle = active_level->get_tile(grid_pos.x, grid_pos.y);
 				Entity* current_entity = handle();
@@ -723,7 +792,7 @@ void Editor::update(float dt) {
 
 				// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
 				if (current_entity) {
-					if (current_entity->lua_id == selected()->lua_id) {
+					if (current_entity->name == selected()->name) {
 						okay_to_create = false;
 					}
 				}
@@ -732,45 +801,40 @@ void Editor::update(float dt) {
 					// Create a lambda which will undo the tile placement we're about to do
 					auto my_lambda =
 						[&active_level = active_level,
-						x = grid_pos.x, y = grid_pos.y,
-						ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
+						 x = grid_pos.x, y = grid_pos.y,
+						 ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
 								{
 									active_level->set_tile(ent, x, y);
 								};
-								stack.push_back(my_lambda);
+					action_stack.push_back(my_lambda);
 
-								active_level->set_tile(selected, grid_pos.x, grid_pos.y);
-								selected = Entity::create(selected()->lua_id);
-
-								// Update so we only paint one entity per tile
-								last_grid_drawn = grid_pos;
-								break;
+					active_level->set_tile(selected, grid_pos.x, grid_pos.y);
+					selected = Entity::create(selected()->name);
+					
+					// Update so we only paint one entity per tile
+					last_grid_drawn = grid_pos;
 				}
-				break;
 			}
-			case ENTITY: {
+			else if (kind == ENTITY) {
 				if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 					auto my_lambda = [&active_level = active_level]() -> void {
 						active_level->entities.pop_back();
 					};
-					stack.push_back(my_lambda);
+					action_stack.push_back(my_lambda);
 
 					// Add the selection to the level
 					active_level->entities.push_back(selected);
 
 					// Create a new one of the same kind as the old one
 					Entity* selection = selected();
-					selected = Entity::create(selection->lua_id);
+					selected = Entity::create(selection->name);
 					smooth_drag_offset = glm::vec2(0.f);
 					translate();
 				}
-				break;
-			}
 			}
 		}
-		break;
 	}
-	case EDIT: {
+	else if (state == EDIT) {
 		draw_component_editor();
 		if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			auto bounding_box = Center_Box::from_entity(selected);
@@ -802,31 +866,27 @@ void Editor::update(float dt) {
 				}
 			}
 		}
-
-		// Delete whatever is selected
-		if (input.was_pressed(GLFW_KEY_DELETE)) {
-			for (auto it = active_level->entities.begin(); it != active_level->entities.end(); it++) {
-				if (selected == *it) {
-					selected->clear_components();
-					active_level->entities.erase(it);
-					break;
-				}
-			}
-			selected = { -1, nullptr };
+		// Way 1 to delete: Select, then right click
+		else if (input.was_pressed(GLFW_MOUSE_BUTTON_RIGHT)) {
+			delete_selected();
 			state = IDLE;
 		}
-		break;
+
+		// Way 2 to delete: Select, then 'delete'
+		if (input.was_pressed(GLFW_KEY_DELETE)) {
+			delete_selected();
+			state = IDLE;
+		}
 	}
-	case DRAG: {
+	else if (state == DRAG) {
 		draw_component_editor();
 		translate();
 
 		if (!input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 			state = EDIT;
 		}
-		break;
 	}
-	case RECTANGLE_SELECT: {
+	else if (state == RECTANGLE_SELECT) {
 		screen_unit top = top_left_drag.y > input.world_pos.y ? top_left_drag.y : input.world_pos.y;
 		screen_unit bottom = top_left_drag.y > input.world_pos.y ? input.world_pos.y : top_left_drag.y;
 		screen_unit right = top_left_drag.x > input.world_pos.x ? top_left_drag.x : input.world_pos.x;
@@ -844,9 +904,6 @@ void Editor::update(float dt) {
 				}
 			}
 		}
-
-		break;
-	}
 	}
 }
 void Editor::render() {
@@ -876,7 +933,7 @@ void Editor::render() {
 void Game::init() {
 	particle_system.init();
 	active_dialogue = new Dialogue_Tree;
-	hero = Entity::create("boon");
+	active_level = levels["overworld"]; //@hack Probably a better way to do this
 }
 void Game::update(float dt) {
 	static int frame = 0;
@@ -895,12 +952,19 @@ void Game::update(float dt) {
 	camera.offset += glm::vec2{-.5, -.5};
 	input.world_pos = input.screen_pos + camera.offset;
 
+
+	// Deal with the player
+	move_entity(g_hero, input.is_down[GLFW_KEY_W], input.is_down[GLFW_KEY_S], input.is_down[GLFW_KEY_A], input.is_down[GLFW_KEY_D]);
+	draw_entity(g_hero, Render_Flags::None);
+	
+	
 	physics_system.process(1.f / 60.f);
 	
 	text_box.update(frame);
 	frame++;
 }
 void Game::render() {
+	active_level->draw();
 	renderer.render_for_frame();
 	text_box.render();
 }

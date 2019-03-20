@@ -72,7 +72,7 @@ void Physics_System::process(float dt) {
 		if (me_box && other_box) {
 			glm::vec2 penetration;
 			if (are_boxes_colliding(*me_box, *other_box, penetration)) {
-				cout << "Collision found between " << element.me->lua_id << ", " << element.other->lua_id <<  endl;
+				cout << "Collision found between " << element.me->name << ", " << element.other->name <<  endl;
 				def_get_cmp(cc, element.me.deref(), Collision_Component);
 				def_get_cmp(mypos, element.me.deref(), Position_Component);
 				def_get_cmp(otherpos, element.other.deref(), Position_Component);

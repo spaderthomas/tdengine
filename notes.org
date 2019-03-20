@@ -154,57 +154,133 @@ when you parse the identifier, you want to check if it is a nested
 assignment. if it is, go get the innermost table referred to and add a field to
 it. by that, i mean 
 
-* goals
-- EITHER:
-  - smart movement algorithms (navmesh + bezier curves or something)
-  - point and line interpolation
-- task editor
-  - specify a scene and entity
-  - graphically create tasks
-  - write the lua code back for the tasks
-- click to drag position
-- zooming
-- new levels (put in database)
-- move level storage to SQL
-- design boon's house!
-* transition
-- on_collide
-- on_interact
-- update
-* cleanup
-- instead of Dialogue_Node and Dialogue_Tree, make them one struct
-- re-evaluate the collider matrix as a good way of culling collisions
-- Interaction only ever happens when the player interacts with some game
-  object, so make that more explicit
+-- 3/12
+1. tds.dump(obj)
+2. 
+#+BEGIN_SRC 
+character_state = {
+    intro_police = default,
+    wilson = default,
+    # ...
+}
 
-* a clean break
-alright, thomas, you're a programmer now. put the art behind you because this is
-where it happens! 
+game_state = {
+    intro_door_answered = false,
+    # ...
+}
+#+END_SRC
+3. 
+#+BEGIN_SRC cpp
+tds_set()
+#+END_SRC
+4. 
+#+BEGIN_SRC cpp
+map<string, vector<string>> need_update;
 
-** intro
-- composition of actions for game objects e.g.
-walk up
-wait for the player to interact with you 
-say some stuff
-walk away
-- 'follow me' mode: walk to a defined path, but if the player gets too far away,
-  then you stop and wait
-- battle mode
-- smooth transitions between levels
-- cutscenes
-- hand off which characters are active
+void update_state(string name, bool value) {
+	tds_set(...); // actually set the state (i.e. game_state table)
 
-the crux of all of this is that you need a way for things to know what they need
-to do and when do to it. in simple terms, that's all you need. 
+	vector<string>& entities_to_check = need_update[name];
+    for (auto& kvp : entities_to_check) {
+		string entity_state = tds_str(...);
 
-of course, writing that is kind of complicated (?). first idea:
-- every stateful entity (e.g. not props, tiles, buildings) has a state. each
-  state has a script tied to it. 
-- stateful entities never exist without a corresponding state. it wouldn't make
-  sense for them to. otherwise, the only thing that would happen to them is that
-  they get rendered. 
-- ss
+		TableNode* transitions = tds_table(...);
+		for (auto& transition : transitions) {
+			// check if entity can update state
+			// if so, do it
 
-note: in some cases, it may make sense for an entity to have an 'empty'
-script. consider a one-time use switch. once you press it, all it should do is
-get rendered. for these cases, it makes sense to have a noop script. 
+			if (did_update) {
+				for (auto& entity : entities) {
+					// make their state component update
+					// make them load in their new tasku
+				}
+			}
+		}
+	}
+
+}
+#+END_SRC
+5. 
+#+BEGIN_SRC cpp
+State_Component::next_state() {
+	// grab the table for current state
+	// check which transition is satisfied
+	// go there
+}
+#+END_SRC
+note: use smart names + abc order so it's easy to find stuff
+
+-- 3/14 2:24 pm
+
+I need a good way to update an instantiated entity's state when a variable gets
+changed. The dumbest way to do this would be this: 
+
+When you figure that an entity has to go to a new state, you go to the big list
+of instantiated entities (right now, stored in the Level). You loop through it
+until you find the one that matches. You tell it to move to a new state and load
+a new task. 
+* The Small List
+- Get the game to compile on someone else's computer
+- A list of locales for Tom
+** joey
+- Collision detection + handling
+* The Big List
+- Finish the story
+  - Flesh out all of the characters
+  - Write sidequests
+  - Fine-tune pacing
+- Balance the in-game
+  - What creatures are in the game?
+  - What moves are in the game?
+  - What items are in the game?
+  - What abilities are in the game?
+  - How and at what rate do creatures become more powerful?
+  - When do you have access to certain creatures?
+- Balance the out of game
+  - What does the metagame look like?
+  - What macro strategies are available? 
+- Design dungeons
+  - Puzzles
+  - Difficulty
+- Art
+  - Characters
+	- Sprites
+	- Heads
+  - Battle Stuff
+	- Creatures
+	- Attacks
+	- Items
+  - Flashes
+	- Pastoral Society
+	- Smoldering Ruins
+	- Mountain Pass
+	- Frightened Deer
+  - Levels
+	- Boon's House
+	- The City
+	  - Boon's Neighborhood
+	  - The Poor Area
+	  - Ike's Hardware
+	  - The Basement
+	  - The Bar
+	  - Announcement Podium
+	  - The Restaurant
+	- The Forest
+	  - Camp
+	  - Cream Palace
+	- The Desert
+	  - Barr's Outpost
+	  - Landscape
+	- Theseus' Lair
+  - Dungeons
+	- The Warehouse
+	- The Slave Factory
+	- The Police Station
+	- The Capturehouse
+	- The Forest (Boon)
+	- The Forest (Sewell + Evans)
+	- The Tunnel
+	- The Mirage + The House
+	- The Encampment
+	- The Shed
+- Music

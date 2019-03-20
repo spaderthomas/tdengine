@@ -7,21 +7,21 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 
 		KVPNode* maybe_is_blocking = (KVPNode*)table->maybe_key("is_blocking");
 		if (maybe_is_blocking) {
-			action->is_blocking = tds_bool(table, "is_blocking");
+			action->is_blocking = tds_bool2(table, "is_blocking");
 		}
 	};
 
-	string kind = tds_string(table, "kind"); 
+	string kind = tds_string2(table, "kind"); 
 	if (kind == "Wait_For_Interaction_Action") {
 		Wait_For_Interaction_Action* action = new Wait_For_Interaction_Action;
 		action->actor = actor;
-		init_is_blocking_tds(action, table);
+		init_is_blocking(action, table);
 
 		return action;
 	}
 	else if (kind == "Dialogue_Action") {
 		Dialogue_Tree* tree = new Dialogue_Tree;
-		TableNode* dialogue_table = tds_table(table, "dialogue");
+		TableNode* dialogue_table = tds_table2(table, "dialogue");
 		tree->init_from_table(dialogue_table);
 
 		Dialogue_Action* action = new Dialogue_Action;
@@ -34,8 +34,8 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 	}
 	else if (kind == "Movement_Action") {
 		Movement_Action* action = new Movement_Action;
-		action->dest.x = tds_float(table, "dest", "x"); 
-		action->dest.y = tds_float(table, "dest", "y");
+		action->dest.x = tds_float2(table, "dest", "x"); 
+		action->dest.y = tds_float2(table, "dest", "y");
 		action->actor = actor;
 		init_is_blocking(action, table);
 
@@ -44,9 +44,9 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 	else if (kind == "And_Action") {
 		And_Action* action = new And_Action;
 		init_is_blocking(action, table);
-		TableNode* actions = tds_table(table, "actions");
+		TableNode* actions = tds_table2(table, "actions");
 		fox_for(action_idx, actions->assignments.size()) {
-			TableNode* action_table = tds_table(table, "actions", to_string(action_idx));
+			TableNode* action_table = tds_table2(table, "actions", to_string(action_idx));
 			action->actions.push_back(action_from_table(action_table, actor));
 		}
 
@@ -54,8 +54,8 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 	}
 	else if (kind == "Set_State_Action") {
 		Set_State_Action* action = new Set_State_Action;
-		action->var = tds_string(table, "var");
-		action->value = tds_bool(table, "value");
+		action->var = tds_string2(table, "var");
+		action->value = tds_bool2(table, "value");
 		init_is_blocking(action, table);
 
 		return action;
@@ -63,8 +63,8 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 	else if (kind == "Teleport_Action") {
 		Teleport_Action* action = new Teleport_Action;
 		action->actor = actor;
-		action->x = tds_float(table, "dest", "x");
-		action->y = tds_float(table, "dest", "y");
+		action->x = tds_float2(table, "dest", "x");
+		action->y = tds_float2(table, "dest", "y");
 		init_is_blocking(action, table);
 
 		return action;
@@ -174,7 +174,7 @@ bool Dialogue_Action::update(float dt) {
 }
 
 bool Set_State_Action::update(float dt) {
-	state_system.update_state(this->var, this->value);
+	update_state(this->var, this->value);
 	return true;
 }
 
@@ -214,7 +214,7 @@ void Task::add_action(Action* a) {
 void Task::init_from_table(TableNode* table, EntityHandle actor) {
 	this->actor = actor;
 	fox_for(action_idx, table->assignments.size()) {
-		TableNode* action_table = tds_table(table, to_string(action_idx));
+		TableNode* action_table = tds_table2(table, to_string(action_idx));
 		Action* action = action_from_table(action_table, actor);
 		this->add_action(action);
 	}
@@ -237,7 +237,7 @@ vector<TaskEditorNode*> make_task_graph(Task* task, ImVec2 base) {
 	return graph;
 }
 vector<TaskEditorNode*> make_task_graph(string entity, string scene, ImVec2 base) {
-	TableNode* task_table = tds_table(ScriptManager.global_scope, "entity", entity, "scripts", scene);
+	TableNode* task_table = tds_table2(ScriptManager.global_scope, "entity", entity, "scripts", scene);
 	EntityHandle dummy = { -1, nullptr };
 	Task* task = new Task;
 	task->init_from_table(task_table, dummy);

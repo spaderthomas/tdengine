@@ -118,12 +118,6 @@
     <ClInclude Include="..\..\src\collision_impl.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\src\lua_exports_impl.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\src\lua_exports.hpp">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\src\task.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
@@ -146,6 +140,12 @@
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\src\tdscript_impl.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tdapi.hpp">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\src\tdapi_impl.hpp">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>

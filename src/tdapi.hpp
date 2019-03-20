@@ -1,3 +1,8 @@
+// @spader, 3/18/19
+// All of this was used for easy bindings to Lua when I was using that.
+// That's not a thing anymore, but I still like the idea of having easy bindings
+// that you can use to control stuff. Leaving this here until I figure out what
+// to do with it 
 tdapi void update_animation(EntityHandle me, float dt);
 tdapi int collider_kind(EntityHandle me);
 tdapi void draw_entity(EntityHandle me, Render_Flags flags);

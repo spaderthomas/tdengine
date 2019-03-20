@@ -14,315 +14,339 @@ typedef unsigned char tdbyte;
 
 
 //Assert
- #ifdef _MSC_VER
- #	ifdef assert
- #		undef assert
- #	endif
- #	define fox_assert(expr) if (!(expr)) _CrtDbgBreak()
- #else
- #	define fox_assert(expr) assert(expr)
- #endif
+#ifdef _MSC_VER
+#	ifdef assert
+#		undef assert
+#	endif
+#	define fox_assert(expr) if (!(expr)) _CrtDbgBreak()
+#else
+#	define fox_assert(expr) assert(expr)
+#endif
 
 
- // STL extensions 
- template<typename vec_type>
- void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {
- 	append_to.insert(append_to.end(), append_from.begin(), append_from.end());
- }
+// STL extensions 
+template<typename vec_type>
+void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {
+	append_to.insert(append_to.end(), append_from.begin(), append_from.end());
+}
 
- vector<string> split(const string &str, char delim) {
- 	stringstream stream(str);
- 	string item;
- 	vector<string> tokens;
- 	while (getline(stream, item, delim)) {
- 		tokens.push_back(item);
- 	}
- 	return tokens;
- }
+vector<string> split(const string &str, char delim) {
+	stringstream stream(str);
+	string item;
+	vector<string> tokens;
+	while (getline(stream, item, delim)) {
+		tokens.push_back(item);
+	}
+	return tokens;
+}
 
 #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
 #define string_comp(a, b) (!(a).compare((b)))
- glm::vec2 tdns_normalize(glm::vec2 vec) {
- 	if (vec.x == 0.f && vec.y == 0.f) {
- 		return vec;
- 	}
 
- 	return glm::normalize(vec);
- }
- glm::vec3 tdns_normalize(glm::vec3 vec) {
- 	if (vec.x == 0.f && vec.y == 0.f && vec.z == 0.f) {
- 		return vec;
- 	}
+// shamelessly copped from
+// https://stackoverflow.com/questions/447206/c-isfloat-function
+bool is_float( string myString ) {
+    std::istringstream iss(myString);
+    float f;
+    iss >> noskipws >> f; // noskipws considers leading whitespace invalid
+	
+    // Check the entire string was consumed and if either failbit or badbit is set
+    return iss.eof() && !iss.fail(); 
+}
 
- 	return glm::normalize(vec);
- }
+glm::vec2 tdns_normalize(glm::vec2 vec) {
+	if (vec.x == 0.f && vec.y == 0.f) {
+		return vec;
+	}
+
+	return glm::normalize(vec);
+}
+glm::vec3 tdns_normalize(glm::vec3 vec) {
+	if (vec.x == 0.f && vec.y == 0.f && vec.z == 0.f) {
+		return vec;
+	}
+
+	return glm::normalize(vec);
+}
 
 #define DEFAULT_FLOAT_TOLERANCE .005
- bool float_almost_equals(float a, float b) {
+bool float_almost_equals(float a, float b) {
 	 return glm::abs(a - b) < DEFAULT_FLOAT_TOLERANCE;
- }
- bool vec_almost_equals(glm::vec2 vec, glm::vec2 target) {
+}
+bool vec_almost_equals(glm::vec2 vec, glm::vec2 target) {
 	 return glm::length(vec - target) < DEFAULT_FLOAT_TOLERANCE;
- }
+}
 
 
- // Colors
- glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's favorite three floating point numbers.
- glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
- glm::vec4 green = glm::vec4(0.f, 1.f, 0.f, 1.f);
- glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
- glm::vec4 brown = glm::vec4(173.f / 255.f, 133.f / 255.f, 74.f / 255.f, 1.f);
- glm::vec4 black = glm::vec4(0.f, 0.f, 0.f, 1.f);
- glm::vec4 white4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
- glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
+// Colors
+glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's favorite three floating point numbers.
+glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
+glm::vec4 green = glm::vec4(0.f, 1.f, 0.f, 1.f);
+glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
+glm::vec4 brown = glm::vec4(173.f / 255.f, 133.f / 255.f, 74.f / 255.f, 1.f);
+glm::vec4 black = glm::vec4(0.f, 0.f, 0.f, 1.f);
+glm::vec4 white4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
+glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
 
 
- // Shape primitives
- vector<float> triangle_verts = {
+// Shape primitives
+vector<float> triangle_verts = {
 	 -0.5f, -0.5f, 0.0f,
 	 0.5f, -0.5f, 0.0f,
 	 0.0f,  0.5f, 0.0f
- };
- vector<uint> triangle_indices = {
+};
+vector<uint> triangle_indices = {
 	 0, 1, 2,
- };
- vector<float> triangle_tex_coords = {
+};
+vector<float> triangle_tex_coords = {
 	 0.0f, 0.0f,
 	 1.f, 0.0f,
 	 0.5f, 1.0f,
- };
+};
 
- vector<float> square_verts = {
+vector<float> square_verts = {
 	 1.f,  1.f,
 	 1.f, -1.f,
 	 -1.f, -1.f,
 	 -1.f,  1.f
- };
- glm::vec3 screen_bottom_right = glm::vec3(1.f, 1.f, 1.f);
- glm::vec3 screen_top_right = glm::vec3(1.f, -1.f, 1.f);
- glm::vec3 screen_top_left = glm::vec3(-1.f, -1.f, 1.f);
- glm::vec3 screen_bottom_left = glm::vec3(-1.f, 1.f, 1.f);
+};
+glm::vec3 screen_bottom_right = glm::vec3(1.f, 1.f, 1.f);
+glm::vec3 screen_top_right = glm::vec3(1.f, -1.f, 1.f);
+glm::vec3 screen_top_left = glm::vec3(-1.f, -1.f, 1.f);
+glm::vec3 screen_bottom_left = glm::vec3(-1.f, 1.f, 1.f);
 
- vector<uint> square_indices = {
+vector<uint> square_indices = {
 	 0, 1, 2,
 	 2, 0, 3
- };
- vector<float> square_tex_coords = {
+};
+vector<float> square_tex_coords = {
 	 1.f, 1.f,
 	 1.f, 0.0f,
 	 0.f, 0.f,
 	 0.f, 1.f,
- };
- GLvoid* square_tex_coords_offset;
- vector<float> line_verts = {
+};
+GLvoid* square_tex_coords_offset;
+vector<float> line_verts = {
 	 0.f, 0.f, 1.f,
 	 1.f, 1.f, 1.f,
- };
- vector<uint> line_indices = {
+};
+vector<uint> line_indices = {
 	 0, 1,
- };
+};
 
 
- void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
- 	glViewport(0, 0, width, height);
- }
- /*
- Some unit definitions:
- GL coordinates have 
- 	the leftmost coordinate at -1, 
- 	the rightmost at +1,
- 	the bottommost at -1,
- 	the topmost at +1
+GLFWwindow* g_window;
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+	glViewport(0, 0, width, height);
+}
+/*
+Some unit definitions:
+GL coordinates have 
+	the leftmost coordinate at -1, 
+	the rightmost at +1,
+	the bottommost at -1,
+	the topmost at +1
 
- Screen coordinates have
- 	the leftmost coordinate at 0,
- 	the rightmost at +1,
- 	the bottommost at 0,
- 	the topmost at +1
+Screen coordinates have
+	the leftmost coordinate at 0,
+	the rightmost at +1,
+	the bottommost at 0,
+	the topmost at +1
 
- Grid coordinates have
- 	the leftmost coordinate at 0,
- 	the rightmost at +1,
- 	the bottommost at 0,
- 	the topmost at +1
+Grid coordinates have
+	the leftmost coordinate at 0,
+	the rightmost at +1,
+	the bottommost at 0,
+	the topmost at +1
 
- Pixel coordinates have
- 	the leftmost coordinate at 0,
- 	the rightmost at SCREEN_X,
- 	the bottommost at 0,
- 	the topmost at SCREEN_Y
-
-
-
- Below are all the conversion functions. Using them and proper units is a bit verbose, 
- but is worth it to save the confusion of exchanging units (which is unavoidable). Also
- of note is that since we're using GLM vectors, it's not really convenient to have 
- conversions which use our typedefs, so conversions that take GLM vectors and single
- points are defined
- */
- typedef int pixel_unit;
- typedef float subpixel_unit;
- typedef float screen_unit;
- typedef float gl_unit;
-
- // Screen size definitions
- subpixel_unit SCREEN_X = (subpixel_unit)640.f;
- subpixel_unit SCREEN_Y = (subpixel_unit)360.f;
- subpixel_unit CELL_SIZE = (subpixel_unit)16.f;
- screen_unit SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
- screen_unit SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
- gl_unit GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
- gl_unit GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
-
- void use_640_360(GLFWwindow* window) {
- 	SCREEN_X = (subpixel_unit)640.f;
- 	SCREEN_Y = (subpixel_unit)360.f;
- 	CELL_SIZE = (subpixel_unit)16.f;
- 	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
- 	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
- 	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
- 	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
- 	glfwSetWindowSize(window, 640, 360);
- 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
- }
- void use_720p(GLFWwindow* window) {
- 	SCREEN_X = (subpixel_unit)1280.f;
- 	SCREEN_Y = (subpixel_unit)720.f;
- 	CELL_SIZE = (subpixel_unit)32.f;
- 	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
- 	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
- 	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
- 	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
- 	glfwSetWindowSize(window, 1280, 720);
- 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
- }
- void use_1080p(GLFWwindow* window) {
- 	SCREEN_X = (subpixel_unit)1920.f;
- 	SCREEN_Y = (subpixel_unit)1080.f;
- 	CELL_SIZE = (subpixel_unit)48.f;
- 	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
- 	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
- 	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
- 	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
- 	glfwSetWindowSize(window, 1920, 1080);
- 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
- }
- // Converting to grid units
- glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
- 	int closest_x = (int)floor(px_pos.x / CELL_SIZE);
- 	int closest_y = (int)floor(px_pos.y / CELL_SIZE);
- 	return glm::ivec2(closest_x, closest_y);
- }
- glm::ivec2 grid_from_world(glm::vec2 world_pos) {
- 	int closest_x = (int)floor(world_pos.x / SCR_TILESIZE_X);
- 	int closest_y = (int)floor(world_pos.y / SCR_TILESIZE_Y);
- 	return glm::ivec2(closest_x, closest_y);
- }
-
- // Converting to GL units
- glm::vec2 gl_from_screen(glm::vec2 screen_coords) {
- 	return glm::vec2(screen_coords.x * 2 - 1, screen_coords.y * 2 - 1);
- }
- gl_unit gl_from_screen(screen_unit s) {
- 	return s * 2 - 1;
- }
- glm::vec2 magnitude_gl_from_screen(glm::vec2 screen_coords) {
- 	// Moving .5 units in screen space is moving 1 unit in GL space
- 	// i.e. magnitudes are doubled
- 	return glm::vec2(screen_coords.x * 2, screen_coords.y * 2);
- }
- gl_unit magnitude_gl_from_screen(screen_unit s) {
- 	return s * 2;
- }
- // Converting to screen units
- screen_unit magnitude_screen_from_gl(gl_unit u) {
- 	return (screen_unit)(u / 2);
- }
- screen_unit screen_x_from_px(pixel_unit px) {
- 	return px / SCREEN_X;
- }
- screen_unit screen_y_from_px(pixel_unit px) {
- 	return px / SCREEN_Y;
- }
- glm::vec2 screen_from_px(glm::ivec2 px) {
- 	return glm::vec2(px.x / SCREEN_X, px.y / SCREEN_Y);
- }
- // Puts it in the center of the grid tile
- glm::vec2 screen_from_grid(glm::ivec2 grid_pos) { 
- 	screen_unit x = (screen_unit)(grid_pos.x * SCR_TILESIZE_X);
- 	screen_unit y = (screen_unit)(grid_pos.y * SCR_TILESIZE_Y);
- 	x += (screen_unit)(.5 * SCR_TILESIZE_X);
- 	y += (screen_unit)(.5 * SCR_TILESIZE_Y);
- 	return glm::vec2(x, y);
- } 
-
- // Converting to pixel units
- glm::ivec2 px_coords_from_gl_coords(glm::vec2 gl_coords) {
- 	float y = (gl_coords.y + 1) / 2;
- 	float x = (gl_coords.x + 1) / 2;
- 	return glm::ivec2(floor(x * SCREEN_X), floor(y * SCREEN_Y));
- }
+Pixel coordinates have
+	the leftmost coordinate at 0,
+	the rightmost at SCREEN_X,
+	the bottommost at 0,
+	the topmost at SCREEN_Y
 
 
- /* Some utilities for dealing with files, directories, and paths */
- // Takes in a directory or file -- returns everything after the first double backslash
- string name_from_full_path(string path) {
- 	string asset_name;
- 	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
- 		if (path.at(ichar) == '\\') { break; }
- 		if (path.at(ichar) == '/') {
- 			string msg = "Don't use forward slashes in your directory names. Failing path was: " + path;
- 			tdns_log.write(msg);
- 			exit(0);
- 		}
- 		asset_name.insert(asset_name.begin(), path.at(ichar));
- 	}
 
- 	return asset_name;
- }
+Below are all the conversion functions. Using them and proper units is a bit verbose, 
+but is worth it to save the confusion of exchanging units (which is unavoidable). Also
+of note is that since we're using GLM vectors, it's not really convenient to have 
+conversions which use our typedefs, so conversions that take GLM vectors and single
+points are defined
+*/
+typedef int pixel_unit;
+typedef float subpixel_unit;
+typedef float screen_unit;
+typedef float gl_unit;
 
- // Accepts a filename, not a path. Returns all the characters before the first period.
- string strip_extension(string filename) {
- 	string stripped;
- 	for (unsigned int ichar = 0; ichar < filename.size(); ichar++) {
- 		if (filename.at(ichar) == '.') {
- 			return stripped;
- 		}
- 		stripped.push_back(filename.at(ichar));
- 	}
+// Screen size definitions
+subpixel_unit SCREEN_X = (subpixel_unit)640.f;
+subpixel_unit SCREEN_Y = (subpixel_unit)360.f;
+subpixel_unit CELL_SIZE = (subpixel_unit)16.f;
+screen_unit SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+screen_unit SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+gl_unit GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+gl_unit GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
 
- 	return stripped;
- }
+void use_640_360() {
+	SCREEN_X = (subpixel_unit)640.f;
+	SCREEN_Y = (subpixel_unit)360.f;
+	CELL_SIZE = (subpixel_unit)16.f;
+	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
+	glfwSetWindowSize(g_window, 640, 360);
+	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+}
+void use_720p() {
+	SCREEN_X = (subpixel_unit)1280.f;
+	SCREEN_Y = (subpixel_unit)720.f;
+	CELL_SIZE = (subpixel_unit)32.f;
+	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
+	glfwSetWindowSize(g_window, 1280, 720);
+	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+}
+void use_1080p() {
+	SCREEN_X = (subpixel_unit)1920.f;
+	SCREEN_Y = (subpixel_unit)1080.f;
+	CELL_SIZE = (subpixel_unit)48.f;
+	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
+	glfwSetWindowSize(g_window, 1920, 1080);
+	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+}
+void use_1440p() {
+	SCREEN_X = (subpixel_unit)2560.f;
+	SCREEN_Y = (subpixel_unit)1440.f;
+	CELL_SIZE = (subpixel_unit)64.f;
+	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
+	glfwSetWindowSize(g_window, 2560, 1440);
+	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+}
+// Converting to grid units
+glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
+	int closest_x = (int)floor(px_pos.x / CELL_SIZE);
+	int closest_y = (int)floor(px_pos.y / CELL_SIZE);
+	return glm::ivec2(closest_x, closest_y);
+}
+glm::ivec2 grid_from_world(glm::vec2 world_pos) {
+	int closest_x = (int)floor(world_pos.x / SCR_TILESIZE_X);
+	int closest_y = (int)floor(world_pos.y / SCR_TILESIZE_Y);
+	return glm::ivec2(closest_x, closest_y);
+}
 
- bool is_alphanumeric(string& str) {
- 	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
- 	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
+// Converting to GL units
+glm::vec2 gl_from_screen(glm::vec2 screen_coords) {
+	return glm::vec2(screen_coords.x * 2 - 1, screen_coords.y * 2 - 1);
+}
+gl_unit gl_from_screen(screen_unit s) {
+	return s * 2 - 1;
+}
+glm::vec2 magnitude_gl_from_screen(glm::vec2 screen_coords) {
+	// Moving .5 units in screen space is moving 1 unit in GL space
+	// i.e. magnitudes are doubled
+	return glm::vec2(screen_coords.x * 2, screen_coords.y * 2);
+}
+gl_unit magnitude_gl_from_screen(screen_unit s) {
+	return s * 2;
+}
+// Converting to screen units
+screen_unit magnitude_screen_from_gl(gl_unit u) {
+	return (screen_unit)(u / 2);
+}
+screen_unit screen_x_from_px(pixel_unit px) {
+	return px / SCREEN_X;
+}
+screen_unit screen_y_from_px(pixel_unit px) {
+	return px / SCREEN_Y;
+}
+glm::vec2 screen_from_px(glm::ivec2 px) {
+	return glm::vec2(px.x / SCREEN_X, px.y / SCREEN_Y);
+}
+// Puts it in the center of the grid tile
+glm::vec2 screen_from_grid(glm::ivec2 grid_pos) { 
+	screen_unit x = (screen_unit)(grid_pos.x * SCR_TILESIZE_X);
+	screen_unit y = (screen_unit)(grid_pos.y * SCR_TILESIZE_Y);
+	x += (screen_unit)(.5 * SCR_TILESIZE_X);
+	y += (screen_unit)(.5 * SCR_TILESIZE_Y);
+	return glm::vec2(x, y);
+} 
 
- 	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
- 		char c = str.at(ichar);
- 		if (!(is_numeric(c) || is_alpha(c))) {
- 			return false;
- 		}
- 	}
+// Converting to pixel units
+glm::ivec2 px_coords_from_gl_coords(glm::vec2 gl_coords) {
+	float y = (gl_coords.y + 1) / 2;
+	float x = (gl_coords.x + 1) / 2;
+	return glm::ivec2(floor(x * SCREEN_X), floor(y * SCREEN_Y));
+}
 
- 	return true;
- }
 
- // Allowing alphanumerics, underscores, and periods
- bool is_valid_filename(string& str) {
- 	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
- 	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
- 	auto is_misc_valid = [](char c) -> bool { return (c == '_') || c == '.'; };
+/* Some utilities for dealing with files, directories, and paths */
+// Takes in a directory or file -- returns everything after the first double backslash
+string name_from_full_path(string path) {
+	string asset_name;
+	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
+		if (path.at(ichar) == '\\') { break; }
+		if (path.at(ichar) == '/') {
+			string msg = "Don't use forward slashes in your directory names. Failing path was: " + path;
+			tdns_log.write(msg);
+			exit(0);
+		}
+		asset_name.insert(asset_name.begin(), path.at(ichar));
+	}
 
- 	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
- 		char c = str.at(ichar);
- 		if (!(is_numeric(c) || is_alpha(c) || is_misc_valid(c))) {
- 			return false;
- 		}
- 	}
+	return asset_name;
+}
 
- 	return true;
- }
+// Accepts a filename, not a path. Returns all the characters before the first period.
+string strip_extension(string filename) {
+	string stripped;
+	for (unsigned int ichar = 0; ichar < filename.size(); ichar++) {
+		if (filename.at(ichar) == '.') {
+			return stripped;
+		}
+		stripped.push_back(filename.at(ichar));
+	}
+
+	return stripped;
+}
+
+bool is_alphanumeric(string& str) {
+	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
+	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
+
+	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
+		char c = str.at(ichar);
+		if (!(is_numeric(c) || is_alpha(c))) {
+			return false;
+		}
+	}
+
+	return true;
+}
+
+// Allowing alphanumerics, underscores, and periods
+bool is_valid_filename(string& str) {
+	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
+	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
+	auto is_misc_valid = [](char c) -> bool { return (c == '_') || c == '.'; };
+
+	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
+		char c = str.at(ichar);
+		if (!(is_numeric(c) || is_alpha(c) || is_misc_valid(c))) {
+			return false;
+		}
+	}
+
+	return true;
+}
 
 // Don't use a leading slash
 string absolute_path(string dir_from_project_root) {
@@ -331,6 +355,16 @@ string absolute_path(string dir_from_project_root) {
 		return dir_from_project_root;
 	}
 	return root_dir + dir_from_project_root;
+}
+
+string path_join(vector<string> items) {
+	string path = "";
+	for (auto& item : items) {
+		path += item + "\\";
+	}
+
+	// Trim trailing slash
+	return path.substr(0, path.size() - 1);
 }
 
 // @hack I'm sure there are PNG headers I could try parsing, but this works!
@@ -369,10 +403,27 @@ bool dialogue_mode = false;
 bool show_tile_selector = true;
 bool show_script_selector = true;
 bool show_level_selector = true;
+bool show_state_tweaker = true;
 bool show_task_editor = true;
 
 
-
+// @spader 3/19/19: Not 100% convinced these are a good idea.
+const string CH_STATE_KEY    = "character_state";
+const string COMPONENTS_KEY  = "components";
+const string ENTITY_KEY      = "entity";
+const string ENTITIES_KEY    = "entities";
+const string GAME_STATE_KEY  = "game_state";
+const string LEVELS_KEY      = "levels";
+const string NAME_KEY        = "name";
+const string NAMES_KEY       = "names";
+const string NEXT_STATE_KEY  = "next_state";
+const string POS_KEY         = "pos";
+const string SCALE_KEY       = "scale";
+const string SCRIPTS_KEY     = "scripts";
+const string STATE_KEY       = "State_Machine";
+const string TO_KEY          = "to";
+const string TRANSITIONS_KEY = "transitions";
+const string VARS_KEY        = "vars";
 
 
 /* Random shit */

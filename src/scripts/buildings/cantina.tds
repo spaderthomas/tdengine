@@ -51,7 +51,7 @@ entity.table.components.Collision_Component = {
 	  }
    }
 }
-entity.table.components.Position_Component = {},
+entity.table.components.Position_Component = {}
 entity.table.components.Interaction_Component = {}
 
 

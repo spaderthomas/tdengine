@@ -1,9 +1,7 @@
-void Component::save(json& j) const {
-	j["kind"] = "NULL";
-};
-void Component::init_from_table(TableNode* table) {};
+TableNode* Component::save() const { return nullptr; }
+void Component::init_from_table(TableNode* table) {} 
 
-void    Graphic_Component::add_animation(Animation* anim) {
+void Graphic_Component::add_animation(Animation* anim) {
 	animations.push_back(anim);
 }
 Sprite* Graphic_Component::get_current_frame() {
@@ -20,7 +18,7 @@ Sprite* Graphic_Component::get_current_frame() {
 	return active_animation->frames[active_animation->icur_frame];
 }
 void Graphic_Component::init_from_table(TableNode* gc) {
-	TableNode* animations = tds_table(gc, "Animations");
+	TableNode* animations = tds_table2(gc, "Animations");
 	this->animations.clear();
 
 	for (auto& def : animations->assignments) {
@@ -30,7 +28,7 @@ void Graphic_Component::init_from_table(TableNode* gc) {
 
 		TableNode* frames = (TableNode*)kvp->value;
 		for (uint frame_idx = 0; frame_idx < frames->assignments.size(); frame_idx++) {
-			string sprite_name = tds_string(frames, to_string(frame_idx));
+			string sprite_name = tds_string2(frames, to_string(frame_idx));
 			Sprite* frame = asset_table.get_asset<Sprite>(sprite_name);
 			animation->frames.push_back(frame);
 		}
@@ -38,56 +36,66 @@ void Graphic_Component::init_from_table(TableNode* gc) {
 		this->add_animation(animation);
 	}
 }
-string  Graphic_Component::name() { return "Graphic_Component"; }
+string Graphic_Component::name() { return "Graphic_Component"; }
 
-void   Position_Component::save(json& j) const {
-	j["kind"] = "Position_Component";
-	j["scale"]["x"] = scale.x;
-	j["scale"]["y"] = scale.y;
-	j["pos"]["x"] = world_pos.x;
-	j["pos"]["y"] = world_pos.y;
+TableNode* Position_Component::save() const {
+	TableNode* self = new TableNode;
+
+	// Could make something to let you create nested tables if they don't exist,
+	// but typo errors + explicit > implicit means I'll leave it for now
+	TableNode* scale_table = new TableNode;
+	tds_set2(self, scale_table, SCALE_KEY);
+	TableNode* pos_table = new TableNode;
+	tds_set2(self, pos_table, POS_KEY);
+	
+	tds_set2(self, scale.x, SCALE_KEY, "x");
+	tds_set2(self, scale.y, SCALE_KEY, "y");
+	tds_set2(self, world_pos.x, POS_KEY, "x");
+	tds_set2(self, world_pos.y, POS_KEY, "y");
+
+	return self;
 }
-void Position_Component::load(json& self) {
-	scale.x = self["scale"]["x"];
-	scale.y = self["scale"]["y"];
-	world_pos.x = self["pos"]["x"];
-	world_pos.y = self["pos"]["y"];
+void Position_Component::load(TableNode* self) {
+	scale.x = tds_float2(self, SCALE_KEY, "x");
+	scale.y = tds_float2(self, SCALE_KEY, "y");
+	world_pos.x = tds_float2(self, POS_KEY, "x");
+	world_pos.y = tds_float2(self, POS_KEY, "y");
 }
 string Position_Component::name() { return "Position_Component"; }
 
 void Movement_Component::init_from_table(TableNode* table) {
-	speed.x = tds_float(table, "speed", "x");
-	speed.y = tds_float(table, "speed", "y");
+	speed.x = tds_float2(table, "speed", "x");
+	speed.y = tds_float2(table, "speed", "y");
 }
 string Movement_Component::name() { return "Movement_Component"; }
 
 void Vision_Component::init_from_table(TableNode* table) {
-	width = tds_float(table, "extents", "width");
-	depth = tds_float(table, "extents", "depth");
+	width = tds_float2(table, "extents", "width");
+	depth = tds_float2(table, "extents", "depth");
 }
 string Vision_Component::name() { return "Vision"; }
 
 string Interaction_Component::name() { return "Interaction_Component"; }
 
 
-void Door_Component::save(json& j) const {
-	j["kind"] = "Door_Component";
-	j["to"] = to;
-	j["position.x"] = position.x;
-	j["position.y"] = position.y;
+TableNode* Door_Component::save() const {
+	TableNode* self = new TableNode;
+	tds_set2(self, to, TO_KEY);
+
+	return self;
 }
-void Door_Component::load(json& j) {
-	to = j["to"];
+void Door_Component::load(TableNode* self) {
+	to = tds_string2(self, TO_KEY);
 }
 string Door_Component::name() { return "Door_Component"; }
 
 string Collision_Component::name() { return "Collision_Component"; }
 void Collision_Component::init_from_table(TableNode* table) {
-	kind = (Collider_Kind)tds_int(table, "kind");
-	bounding_box.screen_center.x = tds_float(table, "bounding_box", "center", "x"); 
-	bounding_box.screen_center.y = tds_float(table, "bounding_box", "center", "y");
-	bounding_box.screen_extents.x = tds_float(table, "bounding_box", "extents", "x");
-	bounding_box.screen_extents.y = tds_float(table, "bounding_box", "extents", "y");
+	kind = (Collider_Kind)tds_int2(table, "kind");
+	bounding_box.screen_center.x = tds_float2(table, "bounding_box", "center", "x"); 
+	bounding_box.screen_center.y = tds_float2(table, "bounding_box", "center", "y");
+	bounding_box.screen_extents.x = tds_float2(table, "bounding_box", "extents", "x");
+	bounding_box.screen_extents.y = tds_float2(table, "bounding_box", "extents", "y");
 }
 
 string Task_Component::name() { return "Task_Component"; }

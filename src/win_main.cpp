@@ -67,11 +67,11 @@ using namespace std;
 #include "level.hpp"
 #include "game.hpp"
 #include "collision.hpp"
-#include "lua_exports.hpp"
+#include "tdapi.hpp"
 
+#include "state.hpp"
 #include "tdscript_impl.hpp"
 #include "dialogue_impl.hpp"
-#include "state.hpp"
 #include "shader.hpp"
 #include "transform.hpp"
 #include "task_impl.hpp"
@@ -85,7 +85,7 @@ using namespace std;
 #include "renderer_impl.hpp"
 #include "text_impl.hpp"
 #include "game_impl.hpp"
-#include "lua_exports_impl.hpp"
+#include "tdapi_impl.hpp"
 
 
 int main() {
@@ -98,33 +98,31 @@ int main() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 
-	GLFWwindow* window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "tdengine", NULL, NULL);
-	if (window == NULL) {
+	g_window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "tdengine", NULL, NULL);
+	if (g_window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
 		glfwTerminate();
 		return -1;
 	}
-	glfwMakeContextCurrent(window);
+	glfwMakeContextCurrent(g_window);
 
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
 
-	glfwSetCursorPosCallback(window, GLFW_Cursor_Pos_Callback);
-	glfwSetMouseButtonCallback(window, GLFW_Mouse_Button_Callback);
-	glfwSetKeyCallback(window, GLFW_Key_Callback);
-	glfwSetScrollCallback(window, GLFW_Scroll_Callback);
+	glfwSetCursorPosCallback(g_window, GLFW_Cursor_Pos_Callback);
+	glfwSetMouseButtonCallback(g_window, GLFW_Mouse_Button_Callback);
+	glfwSetKeyCallback(g_window, GLFW_Key_Callback);
+	glfwSetScrollCallback(g_window, GLFW_Scroll_Callback);
 	glfwSetErrorCallback(GLFW_Error_Callback);
 
 	glfwSwapInterval(0);
 
-	use_720p(window);
+	use_720p();
 #pragma endregion 
 
 #pragma region DATA_INIT
-	state_system.init();
-
 	component_pool.init();
 	entity_pool.init();
 
@@ -134,21 +132,26 @@ int main() {
 	create_texture("textures\\misc\\text_box.png");
 
 	init_tdscript();
-	test_tdscript();
 
+	init_state();
 	init_levels();
 	init_fonts();
 	game.init();
 	editor.init();
 	init_collider_matrix();
-	camera.following = game.hero;
+
+	init_hero();
+
+	camera.following = g_hero;
+
+	test_tdscript();
 
 #pragma endregion
 
 #pragma region IMGUI_INIT
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
-	ImGui_ImplGlfwGL3_Init(window, false);
+	ImGui_ImplGlfwGL3_Init(g_window, false);
 	auto& imio = ImGui::GetIO();
 	imio.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::StyleColorsDark();
@@ -234,7 +237,7 @@ int main() {
 
 
 	// MAIN LOOP
-	while(!glfwWindowShouldClose(window)) {
+	while(!glfwWindowShouldClose(g_window)) {
 		double frame_start_time = glfwGetTime();
 
 		// SETUP
@@ -248,14 +251,6 @@ int main() {
 			fill_imgui_input();
 		else
 			active_layer->input = global_input;
-
-		// Window resizing requests
-		if (global_input.was_pressed(GLFW_KEY_F1)) { use_640_360(window); }
-		if (global_input.was_pressed(GLFW_KEY_F2)) { use_720p(window); }
-		if (global_input.was_pressed(GLFW_KEY_F3)) { use_1080p(window); }
-
-		if (global_input.was_pressed(GLFW_KEY_J)) 
-			state_system.update_state("a", 1);
 
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -273,7 +268,7 @@ int main() {
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 
-		glfwSwapBuffers(window);
+		glfwSwapBuffers(g_window);
 		global_input.reset_for_next_frame();
 
 

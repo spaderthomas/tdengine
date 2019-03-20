@@ -1,7 +1,7 @@
 struct Component {
-	virtual void save(json& j) const;
-	virtual void load(json& j) { cout << "base"; };
-	virtual void init_from_table(TableNode* table);
+	virtual TableNode* save() const;
+	virtual void load(TableNode* table) { cout << "Tried to call virtual load() on base Component"; };
+	virtual void init_from_table(TableNode* table); // pure virtual?
 	virtual string name() { return "Component"; };
 };
 struct Graphic_Component : Component {
@@ -19,8 +19,8 @@ struct Position_Component : Component {
 	glm::vec2 world_pos = glm::vec2(0.f);
 	glm::vec2 scale = glm::vec2(1.f);
 
-	void save(json& j) const override;
-	void load(json& j) override;
+	TableNode* save() const override;
+	void load(TableNode* self) override;
 	string name() override;
 };
 struct Movement_Component : Component {
@@ -46,8 +46,8 @@ struct Door_Component : Component {
 	string to;
 	glm::vec2 position;
 	
-	void save(json& j) const override;
-	void load(json& j);
+	TableNode* save() const override;
+	void load(TableNode* self);
 	string name() override;
 };
 enum Collider_Kind;

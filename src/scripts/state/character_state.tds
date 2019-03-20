@@ -1,0 +1,4 @@
+character_state = {
+    intro_police = "intro",
+	wilson = "intro"
+}

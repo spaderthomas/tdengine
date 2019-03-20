@@ -1,0 +1,4 @@
+levels = {}
+levels.names = {
+    "overworld"
+}

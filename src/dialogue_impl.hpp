@@ -22,17 +22,17 @@ void Dialogue_Node::init_from_table(TableNode* table) {
 	children.clear();
 	already_drew_line = false;
 
-	terminal = tds_bool(table, "terminal");
-	full_text = tds_string(table, "text");
+	terminal = tds_table2(table, "terminal");
+	full_text = tds_string2(table, "text");
 	
-	TableNode* responses = tds_table(table, "responses");
+	TableNode* responses = tds_table2(table, "responses");
 	fox_for(resp_idx, responses->assignments.size()) {
-		this->responses.push_back(tds_string(responses, to_string(resp_idx)));
+		this->responses.push_back(tds_string2(responses, to_string(resp_idx)));
 	}
 
-	TableNode* children = tds_table(table, "children");
+	TableNode* children = tds_table2(table, "children");
 	fox_for(child_idx, children->assignments.size()) {
-		TableNode* child_table = tds_table(children, to_string(child_idx));
+		TableNode* child_table = tds_table2(children, to_string(child_idx));
 		Dialogue_Node* child = new Dialogue_Node;
 		child->init_from_table(child_table);
 		this->children.push_back(child);

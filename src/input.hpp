@@ -1,4 +1,6 @@
 typedef int GLFW_KEY_TYPE;
+#define GLFW_KEY_CONTROL 349
+#define GLFW_KEY_SUPER 350
 struct Input {
 	bool should_update;
 	glm::vec2 px_pos;
@@ -11,6 +13,20 @@ struct Input {
 
 	bool was_pressed(GLFW_KEY_TYPE id) {
 		return is_down[id] && !was_down[id];
+	}
+
+	bool chord(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key) {
+		bool mod_is_down = false;
+		if (mod_key == GLFW_KEY_CONTROL) {
+			mod_is_down |= is_down[GLFW_KEY_RIGHT_CONTROL];
+			mod_is_down |= is_down[GLFW_KEY_LEFT_CONTROL];
+		}
+		if (mod_key == GLFW_KEY_SUPER) {
+			mod_is_down |= is_down[GLFW_KEY_LEFT_SUPER];
+			mod_is_down |= is_down[GLFW_KEY_RIGHT_SUPER];
+		}
+
+		return mod_is_down && was_pressed(cmd_key);
 	}
 
 	void reset_for_next_frame() {

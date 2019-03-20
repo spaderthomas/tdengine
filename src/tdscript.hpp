@@ -15,12 +15,81 @@ struct Primitive {
 	} values;
 };
 
-#define tds_int(root, ...) root->get_int({__VA_ARGS__})
-#define tds_string(root, ...) root->get_string({__VA_ARGS__})
-#define tds_float(root, ...) root->get_float({__VA_ARGS__})
-#define tds_bool(root, ...) root->get_bool({__VA_ARGS__})
-#define tds_table(root, ...) root->get_table({__VA_ARGS__})
-#define tds_raw(root, ...) root->get_raw({__VA_ARGS__})
+struct TableWriter {
+	int indent = 0;
+	bool _same_line = false;
+	vector<string> lines;
+	
+	string& indent_line(string& line) {
+		fox_for(idx, indent) {
+			line = "\t" + line;
+		}
+
+		return line;
+	}
+	void write_line(string& line) {
+		if (!_same_line) {
+			lines.push_back(indent_line(line));
+		} else {
+			string& last_line = lines.back();
+			last_line += line;
+			_same_line = false;
+		}
+	}
+	void write_line(string&& line) {
+		if (!_same_line) {
+			lines.push_back(std::move(indent_line(line)));
+		} else {
+			string& last_line = lines.back();
+			last_line += line;
+			_same_line = false;
+		}
+	}
+	void same_line() {
+		_same_line = true;
+	}
+
+	void begin_table() {
+		string line = "{";
+		write_line(line);
+		indent++;
+	}
+	void end_table() {
+		indent--;
+		string line = "}";
+		write_line(line);
+	}
+
+	void write_int(int i) {
+		string line = to_string(i);
+		write_line(line);
+	}
+
+	void dump(string path) {
+		ofstream stream(path, ofstream::out | ofstream::trunc);
+		for (auto& line : lines) {
+			stream << line << endl;
+		}
+	}
+};
+
+// @spader 3/19/19: these should totally be reversed. The one that you want to do
+// 80% of the time is the one where you use the global table. 
+#define tds_int2(root, ...) root->get_int({__VA_ARGS__})
+#define tds_string2(root, ...) root->get_string({__VA_ARGS__})
+#define tds_float2(root, ...) root->get_float({__VA_ARGS__})
+#define tds_bool2(root, ...) root->get_bool({__VA_ARGS__})
+#define tds_table2(root, ...) root->get_table({__VA_ARGS__})
+#define tds_raw2(root, ...) root->get_raw({__VA_ARGS__})
+#define tds_set2(root, val, ...) root->set({__VA_ARGS__}, val)
+
+#define tds_int(...) ScriptManager.global_scope->get_int({__VA_ARGS__})
+#define tds_string(...) ScriptManager.global_scope->get_string({__VA_ARGS__})
+#define tds_float(...) ScriptManager.global_scope->get_float({__VA_ARGS__})
+#define tds_bool(...) ScriptManager.global_scope->get_bool({__VA_ARGS__})
+#define tds_table(...) ScriptManager.global_scope->get_table({__VA_ARGS__})
+#define tds_raw(...) ScriptManager.global_scope->get_raw({__VA_ARGS__})
+#define tds_set(val, ...) ScriptManager.global_scope->set({__VA_ARGS__}, val)
 
 // AST nodes
 enum ASTNodeType {
@@ -33,38 +102,38 @@ enum ASTNodeType {
 };
 struct ASTNode {
 	ASTNodeType type;
-	virtual void im_a_real_boy() = 0;
+	virtual void dump(TableWriter& output) = 0;
 };
 struct IntegerNode : ASTNode {
 	int value;
 	IntegerNode() { type = ANK_IntegerNode; }
-	void im_a_real_boy() override {};
+	void dump(TableWriter& output) override;
 };
 struct FloatNode : ASTNode {
 	float value;
 	FloatNode() { type = ANK_FloatNode; }
-	void im_a_real_boy() override {};
+	void dump(TableWriter& output) override;
 };
 struct BoolNode : ASTNode {
 	bool value;
 	BoolNode() { type = ANK_BoolNode; }
-	void im_a_real_boy() override {};
+	void dump(TableWriter& output) override;
 };
 struct StringLiteralNode : ASTNode {
 	string value;
 	StringLiteralNode() { type = ANK_StringLiteralNode; }
-	void im_a_real_boy() override {};
+	void dump(TableWriter& output) override;
 };
 struct KVPNode : ASTNode {
 	string key;
 	ASTNode* value;
 	KVPNode() { type = ANK_AssignNode; key = ""; }
-	void im_a_real_boy() override {};
+	void dump(TableWriter& output) override;
 };
 struct TableNode : ASTNode {
-	vector<ASTNode*> assignments;
+	vector<KVPNode*> assignments;
 	TableNode() { type = ANK_TableNode; }
-	void im_a_real_boy() override {}
+	void dump(TableWriter& output) override;
 
 	template<typename T>
 	Primitive  get(vector<string>& keys);
@@ -75,7 +144,19 @@ struct TableNode : ASTNode {
 	TableNode* get_table(vector<string> keys);
 	ASTNode*   get_raw(vector<string> keys);
 	ASTNode*   maybe_key(string key);
+
+	void       set(vector<string> keys, int value);
+	void       set(vector<string> keys, string value);
+	void       set(vector<string> keys, float value);
+	void       set(vector<string> keys, bool value);
+	void       set(vector<string> keys, TableNode* value);
+		
+	template<typename T>                                // Note: Only use this if you know you're actually pushing
+	void       push_back(T value);                      // to an array. 
+	
+	void       dump(string path);
 };
+
 
 
 // Lexing
@@ -131,7 +212,7 @@ struct TDScript {
 	bool is_nested_identifier(string& key);
 	ASTNode* parse(string script_path);
 	ASTNode* parse_table();
-	ASTNode* parse_assign();
+	KVPNode* parse_assign();
 	vector<string> keys_from_string(string key_str);
 	void script_file(string script_path);
 	void script_dir(string dir_path);

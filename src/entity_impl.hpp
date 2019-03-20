@@ -44,9 +44,9 @@ pool_handle<Entity> Entity::create(string entity_name) {
 	pool_handle<Entity> entity_handle = entity_pool.next_available();
 	Entity* entity = entity_handle();
 	entity->id = next_id++;
-	entity->lua_id = entity_name;
+	entity->name = entity_name;
 
-	TableNode* components = tds_table(ScriptManager.global_scope, "entity", entity_name, "components");
+	TableNode* components = tds_table2(ScriptManager.global_scope, "entity", entity_name, "components");
 	for (auto& node : components->assignments) {
 		KVPNode* kvp = (KVPNode*)node;
 		string& type = kvp->key;
@@ -61,7 +61,7 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			//       But since I want all component modifying stuff to take in an entity, I can't 
 			//       directly modify the GC from within itself without duplicating the code for setting animation
 			//       or doing this. Not sure?
-			set_animation(entity_handle, tds_string(component_table, "default_animation"));
+			set_animation(entity_handle, tds_string2(component_table, "default_animation"));
 			// Set the scaling of this based on the first sprite we see. Right now, no objects resize (i.e. all sprites it could use are the same dimensions)
 			// Also, use 640x360 because the raw dimensions are based on this
 			Sprite* default_sprite = component->get_current_frame();
@@ -105,10 +105,12 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			Task_Component* component = &handle()->task_component;
 			component->init_from_table(component_table);
 
-			// Get the entity's state from the database and initialize the task it says
-			string entity_state = state_system.entity_state(entity_name);
+			// Get the entity's current state and initialize the corresponding task
+			string entity_state = tds_string(CH_STATE_KEY, entity_name);
+			TableNode* task_table = tds_table(ENTITY_KEY, entity_name, SCRIPTS_KEY, entity_state);
+			
 			Task* task = new Task;
-			task->init_from_table(tds_table(ScriptManager.global_scope, "entity", entity_name, "scripts", entity_state), entity_handle);
+			task->init_from_table(task_table, entity_handle);
 			component->task = task;
 		}
 	}
@@ -116,27 +118,29 @@ pool_handle<Entity> Entity::create(string entity_name) {
 	return entity_handle;
 }
 
-void Entity::save(json& j) {
-	j["lua_id"] = lua_id;
-	int icomponent = 0;
-	for (auto& kvp : components) {
-		auto handle = kvp.second;
-		Component* component = (Component*)handle();
+TableNode* Entity::save() {
+	TableNode* self = new TableNode;
+	tds_set2(self, name, "name");
 
-		if (component) {
-			component->save(j["Components"][icomponent++]);
-		}
+	TableNode* components_table = new TableNode;
+	tds_set2(self, components_table, "components");
+	for (auto& kvp : components) {
+		auto& handle = kvp.second;
+		Component* component = (Component*)handle();
+		TableNode* saved = component->save();
+		// Components that have no state to save just return nullptr
+		// So if we get that, just ignore saving this component.
+		if (saved) tds_set2(components_table, saved, component->name());
 	}
+
+	return self;
 }
-void Entity::load(json& entity) {
-	auto components_json = entity["Components"];
-	for (auto& component_json : components_json) {
-		string kind = component_json["kind"];
-		if (kind == "NULL") {
-			continue; // NULL just means a component which doesn't require loading
-		}
-		Component* component = (Component*)get_component(kind);
-		component->load(component_json);
+void Entity::load(TableNode* table) {
+	TableNode* components_table = tds_table2(table, COMPONENTS_KEY);
+	for (KVPNode* kvp : components_table->assignments) {
+		Component* component = (Component*)get_component(kvp->key);
+		TableNode* component_table = tds_table2(components_table, kvp->key);
+		component->load(component_table);
 	}
 }
 void Entity::destroy(pool_handle<Entity> handle) {
@@ -144,3 +148,6 @@ void Entity::destroy(pool_handle<Entity> handle) {
 	entity_pool.mark_available(handle);
 }
 
+void init_hero() {
+	g_hero = Entity::create("boon");
+}

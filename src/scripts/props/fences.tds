@@ -36,7 +36,7 @@ entity.fence_middle.components.Graphic_Component = {
    },
    default_animation = "fence_middle",
    z = 1,
-},
+}
 entity.fence_middle.components.Collision_Component = {
    kind = Collider_Kind.STATIC,
    bounding_box = {
@@ -49,8 +49,8 @@ entity.fence_middle.components.Collision_Component = {
 		 y = ScreenTileSizeY.one
 	  }
    },
-},
-entity.fence_middle.components.Position_Component = {},
+}
+entity.fence_middle.components.Position_Component = {}
 entity.fence_middle.components.Interaction_Component = {}
 
 

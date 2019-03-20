@@ -1,3 +1,4 @@
+
 // Entity
 tdapi Points_Box get_vision_box(EntityHandle me) {
 	def_get_cmp(pc, me.deref(), Position_Component);
@@ -130,6 +131,7 @@ tdapi void update_task(EntityHandle me, float dt) {
 	}
 }
 
+
 // Collision
 tdapi bool are_entities_colliding(EntityHandle a, EntityHandle b) {
 	optional<Center_Box> a_box = Center_Box::from_entity(a);
@@ -153,7 +155,9 @@ tdapi void register_potential_collision(EntityHandle me, EntityHandle other) {
 	}
 }
 
+
+// State
 tdapi void set_state(string var, bool val) {
-	state_system.update_state(var, val);
+	update_state(var, val);
 }
 

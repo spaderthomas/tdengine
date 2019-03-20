@@ -1,5 +1,3 @@
-
-
 struct Entity_Tree {
 	string dir;
 	vector<pool_handle<Entity>> entities;
@@ -7,7 +5,7 @@ struct Entity_Tree {
 	int size = 0;
 
 	static Entity_Tree* create(string dir);
-	pool_handle<Entity> find(string lua_id);
+	pool_handle<Entity> find(string name);
 }; 
 
 struct Console {
@@ -93,12 +91,16 @@ struct Editor : Layer {
 	glm::vec2 smooth_drag_offset = { 0.f, 0.f };
 
 	// State about selected thing
-	pool_handle<Entity> selected;
+	EntityHandle selected;
 	void translate();
+	void delete_selected();
 	void draw_component_editor();
 
-	vector<function<void()>> stack;
-	void undo();
+	vector<function<void()>> action_stack;
+	void undo_action();
+	vector<function<void()>> mark_stack;
+	void undo_mark();
+
 
 	// Big stuff
 	void reload_lua();
@@ -109,10 +111,10 @@ struct Editor : Layer {
 	void render() override;
 	void init() override;
 	Console console;
-	Level* active_level;
 };
 Editor editor;
 
+// @spader 3/19/19: This struct is bad
 enum Game_State {
 	GAME = 0,
 	DIALOGUE = 1
@@ -121,7 +123,6 @@ struct Game : Layer {
 	Dialogue_Tree* active_dialogue;
 	Particle_System particle_system;
 	Console console;
-	EntityHandle hero; 
 
 	bool in_dialogue = false;
 
@@ -134,4 +135,5 @@ Game game;
 int iactive_layer = 0;
 vector<Layer*> all_layers = { &editor, &game };
 Layer* active_layer = &editor;
+
 

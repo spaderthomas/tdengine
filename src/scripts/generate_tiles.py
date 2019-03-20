@@ -46,7 +46,7 @@ tiles = [
     ]
 
 
-with open("src/scripts/entities/outdoor_props/tiles.tds", "w") as f:
+with open("src/scripts/utils/tiles.tds", "w") as f:
     f.write(WARNING);
     for i, tile in enumerate(tiles):
         path = tile + '.png'
