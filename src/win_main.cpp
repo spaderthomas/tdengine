@@ -1,6 +1,3 @@
-#define _CRT_SECURE_NO_WARNINGS
-#pragma warning(disable:4624) // implicitly deleted constructor in component union
-
 // Library includes
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
@@ -27,8 +24,6 @@ extern "C" {
 
 #include "imgui/imgui.h"
 #include "imgui_impl_glfw_gl3.hpp"
-
-#include "sqlite/sqlite3.h"
 
 // STL
 #include <stdlib.h>
@@ -90,14 +85,14 @@ using namespace std;
 
 int main() {
 	tdns_log.init();
-
+	
 #pragma region GLFW_INIT
 	glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-
+	
 	g_window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "tdengine", NULL, NULL);
 	if (g_window == NULL) {
 		std::cout << "Failed to create GLFW window" << std::endl;
@@ -105,49 +100,49 @@ int main() {
 		return -1;
 	}
 	glfwMakeContextCurrent(g_window);
-
+	
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
 	}
-
+	
 	glfwSetCursorPosCallback(g_window, GLFW_Cursor_Pos_Callback);
 	glfwSetMouseButtonCallback(g_window, GLFW_Mouse_Button_Callback);
 	glfwSetKeyCallback(g_window, GLFW_Key_Callback);
 	glfwSetScrollCallback(g_window, GLFW_Scroll_Callback);
 	glfwSetErrorCallback(GLFW_Error_Callback);
-
+	
 	glfwSwapInterval(0);
-
+	
 	use_720p();
 #pragma endregion 
-
+	
 #pragma region DATA_INIT
 	component_pool.init();
 	entity_pool.init();
-
+	
 	init_shaders();
 	init_mesh();
 	create_all_texture_atlas();
 	create_texture("textures\\misc\\text_box.png");
-
+	
 	init_tdscript();
-
+	
 	init_state();
 	init_levels();
 	init_fonts();
 	game.init();
 	editor.init();
 	init_collider_matrix();
-
+	
 	init_hero();
-
+	
 	camera.following = g_hero;
-
+	
 	test_tdscript();
-
+	
 #pragma endregion
-
+	
 #pragma region IMGUI_INIT
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -156,7 +151,7 @@ int main() {
 	imio.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::StyleColorsDark();
 #pragma endregion
-
+	
 #pragma region OPENGL_INIT
 	// Set up some debug output
 	GLint flags;
@@ -167,25 +162,25 @@ int main() {
 		glDebugMessageCallbackKHR(gl_debug_callback, nullptr);
 		glDebugMessageControl(GL_DONT_CARE, GL_DONT_CARE, GL_DONT_CARE, 0, nullptr, GL_TRUE);
 	}
-
+	
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
-
+	
 	glGenVertexArrays(1, &Sprite::vao);
 	glGenBuffers(1, &Sprite::vert_buffer);
 	glGenBuffers(1, &Sprite::elem_buffer);
 	glGenVertexArrays(1, &Mesh::vao);
 	glGenBuffers(1, &Mesh::vert_buffer);
 	glGenBuffers(1, &Mesh::elem_buffer);
-
-
+	
+	
 	// Fill GPU sprite buffers
 	glBindVertexArray(Sprite::vao);
 	vector<float> vert_data;
 	vector<float> tex_coords;
-
+	
 	concat(vert_data, square_verts);
-
+	
 	// Fill tex coordinate buffer
 	for (auto asset : asset_table.assets) {
 		Sprite* sprite = dynamic_cast<Sprite*>(asset);
@@ -194,24 +189,24 @@ int main() {
 			concat(vert_data, sprite->tex_coords);
 		}
 	}
-
+	
 	square_tex_coords_offset = (GLvoid*)(sizeof(float) * vert_data.size());
 	concat(vert_data, square_tex_coords);
-
+	
 	// Send all the data to OpenGL buffers
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Sprite::elem_buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, square_indices.size() * sizeof(uint), square_indices.data(), GL_STATIC_DRAW);
-
+	
 	glBindBuffer(GL_ARRAY_BUFFER, Sprite::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_data.size() * sizeof(float), vert_data.data(), GL_STATIC_DRAW);
-
-
+	
+	
 	// Fill GPU mesh buffers
 	glBindVertexArray(Mesh::vao);
 	vector<Mesh*> all_meshes = asset_table.get_all<Mesh>();
 	vector<float> vert_buffer;
 	vector<uint> indx_buffer;
-
+	
 	// Collect all vertices and indices
 	fox_for(imesh, all_meshes.size()) {
 		Mesh* mesh = all_meshes[imesh];
@@ -226,24 +221,24 @@ int main() {
 		mesh->tex_coord_offset = (GLvoid*)(sizeof(float) * vert_buffer.size());
 		vert_buffer.insert(vert_buffer.end(), mesh->tex_coords.begin(), mesh->tex_coords.end());
 	}
-
+	
 	// Give them to the OpenGL buffer
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh::elem_buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, indx_buffer.size() * sizeof(uint), indx_buffer.data(), GL_STATIC_DRAW);
-
+	
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
 #pragma endregion
-
-
+	
+	
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {
 		double frame_start_time = glfwGetTime();
-
+		
 		// SETUP
 		// Call all GLFW callbacks
 		glfwPollEvents();
-
+		
 		// Pass all inputs to ImGui BEFORE ImGui::NewFrame
 		auto io = ImGui::GetIO();
 		give_imgui_mouse_input();
@@ -251,27 +246,27 @@ int main() {
 			fill_imgui_input();
 		else
 			active_layer->input = global_input;
-
+		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		
 		if (global_input.was_pressed(GLFW_KEY_F4)) {
 			iactive_layer = (iactive_layer + 1) % all_layers.size();
 			active_layer = all_layers[iactive_layer];
 		}
-
+		
 		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();
 		active_layer->update(seconds_per_update);
 		active_layer->render();
-	
+		
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-
+		
 		glfwSwapBuffers(g_window);
 		global_input.reset_for_next_frame();
-
-
+		
+		
 		// Wait until we hit the next frame time
 		if (print_framerate) {
 			cout << (1 / (glfwGetTime() - frame_start_time)) << " fps\n";
