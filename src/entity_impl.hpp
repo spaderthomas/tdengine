@@ -60,7 +60,7 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			//       But since I want all component modifying stuff to take in an entity, I can't 
 			//       directly modify the GC from within itself without duplicating the code for setting animation
 			//       or doing this. Not sure?
-			set_animation(entity_handle, tds_string2(component_table, "default_animation"));
+			set_animation(entity, tds_string2(component_table, "default_animation"));
 			// Set the scaling of this based on the first sprite we see. Right now, no objects resize (i.e. all sprites it could use are the same dimensions)
 			// Also, use 640x360 because the raw dimensions are based on this
 			Sprite* default_sprite = component->get_current_frame();
@@ -106,12 +106,12 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			TableNode* task_table = tds_table(ENTITY_KEY, entity_name, SCRIPTS_KEY, entity_state);
 			
 			Task* task = new Task;
-			task->init_from_table(task_table, entity_handle);
+			task->init_from_table(task_table, entity);
 			component->task = task;
 		}
 	}
 	
-	return entity_handle;
+	return entity;
 }
 
 TableNode* Entity::save() {

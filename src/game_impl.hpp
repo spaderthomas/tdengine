@@ -14,7 +14,7 @@ Entity_Tree* Entity_Tree::create(string dir) {
 			tree->children.push_back(create(path));
 		}
 	}
-
+	
 	return tree;
 }
 pool_handle<Entity> Entity_Tree::find(string name) {
@@ -29,7 +29,7 @@ pool_handle<Entity> Entity_Tree::find(string name) {
 			return found_in_child;
 		}
 	}
-
+	
 	return { -1, nullptr };
 }
 
@@ -82,21 +82,21 @@ void  Console::Draw(const char* title)
 		ImGui::End();
 		return;
 	}
-
+	
 	ImGui::TextWrapped("Enter 'HELP' for help, press TAB to use text completion.");
-
+	
 	if (ImGui::SmallButton("Clear")) { ClearLog(); } ImGui::SameLine();
 	bool copy_to_clipboard = ImGui::SmallButton("Copy"); ImGui::SameLine();
 	if (ImGui::SmallButton("Scroll to bottom")) ScrollToBottom = true;
-
+	
 	ImGui::Separator();
-
+	
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(0, 0));
 	static ImGuiTextFilter filter;
 	filter.Draw("Filter", 180);
 	ImGui::PopStyleVar();
 	ImGui::Separator();
-
+	
 	const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing(); // 1 separator, 1 input text
 	ImGui::BeginChild("ScrollingRegion", ImVec2(0, -footer_height_to_reserve), false, ImGuiWindowFlags_HorizontalScrollbar); // Leave room for 1 separator + 1 InputText
 	if (ImGui::BeginPopupContextWindow())
@@ -104,11 +104,11 @@ void  Console::Draw(const char* title)
 		if (ImGui::Selectable("Clear")) ClearLog();
 		ImGui::EndPopup();
 	}
-
+	
 	ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(4, 1)); // Tighten spacing
 	if (copy_to_clipboard)
 		ImGui::LogToClipboard();
-
+	
 	// Apply special colors
 	ImVec4 col_default_text = ImGui::GetStyleColorVec4(ImGuiCol_Text);
 	for (int i = 0; i < Items.Size; i++)
@@ -131,7 +131,7 @@ void  Console::Draw(const char* title)
 	ImGui::PopStyleVar();
 	ImGui::EndChild();
 	ImGui::Separator();
-
+	
 	// Command-line
 	bool reclaim_focus = false;
 	ImGui::SetKeyboardFocusHere(0);
@@ -143,12 +143,12 @@ void  Console::Draw(const char* title)
 		strcpy(InputBuf, "");
 		reclaim_focus = true;
 	}
-
+	
 	// Demonstrate keeping focus on the input box
 	ImGui::SetItemDefaultFocus();
 	if (reclaim_focus)
 		ImGui::SetKeyboardFocusHere(-1); // Auto focus previous widget
-
+	
 	ImGui::End();
 }
 int   Console::TextEditCallbackStub(ImGuiTextEditCallbackData* data) // In C++11 you are better off using lambdas for this sort of forwarding callbacks
@@ -161,114 +161,114 @@ int   Console::TextEditCallback(ImGuiTextEditCallbackData* data)
 	//AddLog("cursor: %d, selection: %d-%d", data->CursorPos, data->SelectionStart, data->SelectionEnd);
 	switch (data->EventFlag)
 	{
-	case ImGuiInputTextFlags_CallbackCompletion:
-	{
-		// Example of TEXT COMPLETION
-
-		// Locate beginning of current word
-		const char* word_end = data->Buf + data->CursorPos;
-		const char* word_start = word_end;
-		while (word_start > data->Buf)
+		case ImGuiInputTextFlags_CallbackCompletion:
 		{
-			const char c = word_start[-1];
-			if (c == ' ' || c == '\t' || c == ',' || c == ';')
-				break;
-			word_start--;
-		}
-
-		// Build a list of candidates
-		ImVector<const char*> candidates;
-		for (int i = 0; i < Commands.Size; i++)
-			if (Strnicmp(Commands[i], word_start, (int)(word_end - word_start)) == 0)
-				candidates.push_back(Commands[i]);
-
-		if (candidates.Size == 0)
-		{
-			// No match
-			AddLog("No match for \"%.*s\"!\n", (int)(word_end - word_start), word_start);
-		}
-		else if (candidates.Size == 1)
-		{
-			// Single match. Delete the beginning of the word and replace it entirely so we've got nice casing
-			data->DeleteChars((int)(word_start - data->Buf), (int)(word_end - word_start));
-			data->InsertChars(data->CursorPos, candidates[0]);
-			data->InsertChars(data->CursorPos, " ");
-		}
-		else
-		{
-			// Multiple matches. Complete as much as we can, so inputing "C" will complete to "CL" and display "CLEAR" and "CLASSIFY"
-			int match_len = (int)(word_end - word_start);
-			for (;;)
+			// Example of TEXT COMPLETION
+			
+			// Locate beginning of current word
+			const char* word_end = data->Buf + data->CursorPos;
+			const char* word_start = word_end;
+			while (word_start > data->Buf)
 			{
-				int c = 0;
-				bool all_candidates_matches = true;
-				for (int i = 0; i < candidates.Size && all_candidates_matches; i++)
-					if (i == 0)
+				const char c = word_start[-1];
+				if (c == ' ' || c == '\t' || c == ',' || c == ';')
+					break;
+				word_start--;
+			}
+			
+			// Build a list of candidates
+			ImVector<const char*> candidates;
+			for (int i = 0; i < Commands.Size; i++)
+				if (Strnicmp(Commands[i], word_start, (int)(word_end - word_start)) == 0)
+				candidates.push_back(Commands[i]);
+			
+			if (candidates.Size == 0)
+			{
+				// No match
+				AddLog("No match for \"%.*s\"!\n", (int)(word_end - word_start), word_start);
+			}
+			else if (candidates.Size == 1)
+			{
+				// Single match. Delete the beginning of the word and replace it entirely so we've got nice casing
+				data->DeleteChars((int)(word_start - data->Buf), (int)(word_end - word_start));
+				data->InsertChars(data->CursorPos, candidates[0]);
+				data->InsertChars(data->CursorPos, " ");
+			}
+			else
+			{
+				// Multiple matches. Complete as much as we can, so inputing "C" will complete to "CL" and display "CLEAR" and "CLASSIFY"
+				int match_len = (int)(word_end - word_start);
+				for (;;)
+				{
+					int c = 0;
+					bool all_candidates_matches = true;
+					for (int i = 0; i < candidates.Size && all_candidates_matches; i++)
+						if (i == 0)
 						c = toupper(candidates[i][match_len]);
 					else if (c == 0 || c != toupper(candidates[i][match_len]))
 						all_candidates_matches = false;
-				if (!all_candidates_matches)
-					break;
-				match_len++;
+					if (!all_candidates_matches)
+						break;
+					match_len++;
+				}
+				
+				if (match_len > 0)
+				{
+					data->DeleteChars((int)(word_start - data->Buf), (int)(word_end - word_start));
+					data->InsertChars(data->CursorPos, candidates[0], candidates[0] + match_len);
+				}
+				
+				// List matches
+				AddLog("Possible matches:\n");
+				for (int i = 0; i < candidates.Size; i++)
+					AddLog("- %s\n", candidates[i]);
 			}
-
-			if (match_len > 0)
+			
+			break;
+		}
+		case ImGuiInputTextFlags_CallbackHistory:
+		{
+			// Example of HISTORY
+			const int prev_history_pos = HistoryPos;
+			if (data->EventKey == ImGuiKey_UpArrow)
 			{
-				data->DeleteChars((int)(word_start - data->Buf), (int)(word_end - word_start));
-				data->InsertChars(data->CursorPos, candidates[0], candidates[0] + match_len);
+				if (HistoryPos == -1)
+					HistoryPos = History.Size - 1;
+				else if (HistoryPos > 0)
+					HistoryPos--;
 			}
-
-			// List matches
-			AddLog("Possible matches:\n");
-			for (int i = 0; i < candidates.Size; i++)
-				AddLog("- %s\n", candidates[i]);
-		}
-
-		break;
-	}
-	case ImGuiInputTextFlags_CallbackHistory:
-	{
-		// Example of HISTORY
-		const int prev_history_pos = HistoryPos;
-		if (data->EventKey == ImGuiKey_UpArrow)
-		{
-			if (HistoryPos == -1)
-				HistoryPos = History.Size - 1;
-			else if (HistoryPos > 0)
-				HistoryPos--;
-		}
-		else if (data->EventKey == ImGuiKey_DownArrow)
-		{
-			if (HistoryPos != -1)
-				if (++HistoryPos >= History.Size)
+			else if (data->EventKey == ImGuiKey_DownArrow)
+			{
+				if (HistoryPos != -1)
+					if (++HistoryPos >= History.Size)
 					HistoryPos = -1;
+			}
+			
+			// A better implementation would preserve the data on the current input line along with cursor position.
+			if (prev_history_pos != HistoryPos)
+			{
+				data->CursorPos = data->SelectionStart = data->SelectionEnd = data->BufTextLen = (int)snprintf(data->Buf, (size_t)data->BufSize, "%s", (HistoryPos >= 0) ? History[HistoryPos] : "");
+				data->BufDirty = true;
+			}
 		}
-
-		// A better implementation would preserve the data on the current input line along with cursor position.
-		if (prev_history_pos != HistoryPos)
-		{
-			data->CursorPos = data->SelectionStart = data->SelectionEnd = data->BufTextLen = (int)snprintf(data->Buf, (size_t)data->BufSize, "%s", (HistoryPos >= 0) ? History[HistoryPos] : "");
-			data->BufDirty = true;
-		}
-	}
 	}
 	return 0;
 }
 void  Console::ExecCommand(char* command_line)
 {
 	AddLog("# %s\n", command_line);
-
+	
 	// Insert into history. First find match and delete it so it can be pushed to the back. This isn't trying to be smart or optimal.
 	HistoryPos = -1;
 	for (int i = History.Size - 1; i >= 0; i--)
 		if (Stricmp(History[i], command_line) == 0)
-		{
-			free(History[i]);
-			History.erase(History.begin() + i);
-			break;
-		}
+	{
+		free(History[i]);
+		History.erase(History.begin() + i);
+		break;
+	}
 	History.push_back(Strdup(command_line));
-
+	
 	active_layer->exec_console_cmd(command_line);
 }
 
@@ -300,18 +300,18 @@ void Particle_System::update(float dt) {
 			particles[*index].make_alive();
 		}
 	}
-
+	
 	fox_iter(it, particles) {
 		auto& particle = *it;
 		if (particle.alive) {
 			Center_Box box = { particle.position, particle.scale };
 			glm::vec4 energycolor = glm::vec4(particle.color.x, particle.color.y, particle.color.z, particle.life);
 			draw_square(box, energycolor);
-
+			
 			particle.life -= dt;
 			particle.position.x += dt;
 			particle.position.y = particle.y_baseline + particle.y_offset.eval_at(particle.life);
-
+			
 			if (particle.life <= 0) {
 				particle.alive = false;
 				int index = it - particles.begin();
@@ -329,7 +329,7 @@ void Editor::translate() {
 	get_cmp(selected, Position_Component)->world_pos =
 		snap_to_grid ?
 		screen_from_grid(grid_from_world(input.world_pos)) :
-		input.world_pos + smooth_drag_offset;
+	input.world_pos + smooth_drag_offset;
 }
 void Editor::delete_selected() {
 	// Kill the thing from the level 
@@ -340,24 +340,24 @@ void Editor::delete_selected() {
 			break;
 		}
 	}
-
+	
 	// Kill the thing from the editor
 	selected = { -1, nullptr };
 }
-	
+
 void Editor::draw_component_editor() {
 	ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
-
+	
 	// Iterate through components, displaying whatever you need
 	for (auto& kvp : selected()->components) {
 		pool_handle<any_component> handle = kvp.second;
 		Component* component = (Component*)handle();
-
+		
 		//@metaprogramming
 		if (dynamic_cast<Graphic_Component*>(component)) {
 			if (ImGui::TreeNode("Graphic Component")) {
 				def_cast_cmp(gc, component, Graphic_Component);
-
+				
 				// Display animation info
 				Animation* current_animation = gc->active_animation;
 				if (ImGui::BeginCombo("Animations", current_animation->name.c_str(), 0)) {
@@ -372,7 +372,7 @@ void Editor::draw_component_editor() {
 					}
 					ImGui::EndCombo();
 				}
-
+				
 				// Display scale info
 				ImGui::SliderFloat2("Scale", glm::value_ptr(gc->scale), 0.f, 1.f);
 				ImGui::TreePop();
@@ -406,7 +406,7 @@ void Editor::draw_component_editor() {
 			}
 		}
 	}
-
+	
 	ImGui::End();
 }
 void Editor::draw_tile_tree(Entity_Tree* root) {
@@ -424,14 +424,14 @@ int  Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 			Graphic_Component* gc = tile->get_component<Graphic_Component>();
 			if (gc) {
 				Sprite* ent_sprite = gc->get_current_frame();
-
+				
 				ImVec2 top_right_tex_coords = ImVec2(ent_sprite->tex_coords[2], ent_sprite->tex_coords[3]);
 				ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
 				ImVec2 button_size = ImVec2(32, 32);
 				ImGui::PushID(unique_btn_index++);
 				if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle,
-					button_size,
-					bottom_left_tex_coords, top_right_tex_coords))
+									   button_size,
+									   bottom_left_tex_coords, top_right_tex_coords))
 				{
 					selected = Entity::create(tile->name);
 					this->kind = TILE;
@@ -443,22 +443,22 @@ int  Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 				if (!is_end_of_row && !is_last_element) { ImGui::SameLine(); }
 			}
 		}
-
+		
 		// And draw dropdowns for any children
 		for (auto child : root->children) {
 			unique_btn_index = draw_tile_tree_recursive(child, unique_btn_index);
 		}
-
+		
 		ImGui::TreePop();
 	}
-
+	
 	return unique_btn_index;
 }
 void Editor::exec_console_cmd(char* command_line) {
 	char* command = strtok(command_line, " ");
 	if (!command) return;
-
-
+	
+	
 	if (console.Stricmp(command, "save") == 0) {
 		active_level->save();
 	}
@@ -468,7 +468,7 @@ void Editor::exec_console_cmd(char* command_line) {
 			console.AddLog("format: screen {640, 720, 1080, 1440}");
 			return;
 		}
-
+		
 		if (!strcmp(res, "640")) use_640_360();
 		else if (!strcmp(res, "720")) use_720p();
 		else if (!strcmp(res, "1080")) use_1080p();
@@ -481,13 +481,13 @@ void Editor::exec_console_cmd(char* command_line) {
 			console.AddLog("format: go [x: float] [y: float]");
 			return;
 		}
-
+		
 		char* y = strtok(NULL, " ");
 		if (!y) {
 			console.AddLog("format: go [x: float] [y: float]");
 			return;
 		}
-
+		
 		if (!is_float(x) || !is_float(y)) {
 			console.AddLog("format: go [x: float] [y: float]");
 			return;
@@ -503,7 +503,7 @@ void Editor::exec_console_cmd(char* command_line) {
 	}
 	else if (console.Stricmp(command, "level") == 0) {
 		string level_name = strtok(NULL, " ");
-
+		
 		bool is_valid_level_name = false;
 		for (auto& kvp : levels) {
 			if (kvp.first == level_name) {
@@ -515,7 +515,7 @@ void Editor::exec_console_cmd(char* command_line) {
 			console.AddLog("Invalid level name");
 			return;
 		}
-
+		
 		this->active_level = levels[level_name];
 		active_layer->active_level = levels[level_name];
 	}
@@ -549,15 +549,15 @@ void Editor::undo_mark() {
 void Editor::update(float dt) {	
 	static bool open = true;
 	ShowExampleAppCustomNodeGraph(&open);
-
-	#if 0
+	
+#if 0
 	// Set up the camera so that the entity it's following is centered
 	def_get_cmp(follow_pc, camera.following.deref(), Position_Component);
 	camera.offset = follow_pc->world_pos;
 	camera.offset += glm::vec2{ -.5, -.5 };
 	input.world_pos = input.screen_pos + camera.offset;
-	#endif
-
+#endif
+	
 	if (input.is_down[GLFW_KEY_W]) {
 		camera.offset += glm::vec2{0, .025};
 	}
@@ -579,7 +579,7 @@ void Editor::update(float dt) {
 		input.was_pressed(GLFW_KEY_Z)) {
 		undo_action();
 	}
-
+	
 	// Toggle the console on control
 	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 		show_console = !show_console;
@@ -587,7 +587,7 @@ void Editor::update(float dt) {
 	if (show_console) {
 		console.Draw("tdconsole");
 	}
-
+	
 	
 	// GUI
 	if (ImGui::BeginMainMenuBar())
@@ -643,18 +643,18 @@ void Editor::update(float dt) {
 	
 	// Global for debug display
 	ImGuiWindowFlags flags = ImGuiWindowFlags_AlwaysAutoResize;
-
+	
 	if (show_tile_selector) {
 		ImGui::Begin("Tiles", 0, flags);
 		draw_tile_tree(tile_tree);
 		ImGui::End();
 	}
-
+	
 	if (show_task_editor) {
 		static bool init = false;
 		static TaskEditorNode* task_graph = nullptr;
 		static int id = 0;
-
+		
 		// Pull in a random task 
 		if (!init) {
 			Task* test = new Task;
@@ -663,7 +663,7 @@ void Editor::update(float dt) {
 			task_editor.task_graph = make_task_graph(test, ImVec2(200, 200));
 			init = true;
 		}
-
+		
 		task_editor.show();
 	}
 	
@@ -671,9 +671,9 @@ void Editor::update(float dt) {
 		ImGui::Begin("Scripts", 0, flags);
 		static ImGuiTextFilter filter;
 		filter.Draw("Filter");
-
+		
 		static string script_current = script_to_entity.begin()->first;
-
+		
 		// Note: I'm not entirely sure why this name has to include ##
 		// It certainly has something to do with the ImGui stack, but I thought
 		// that only mattered in the case of duplicate names in the same window
@@ -691,7 +691,7 @@ void Editor::update(float dt) {
 			ImGui::EndCombo();
 		}
 		
-
+		
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 		ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
 		for (auto& entity : script_to_entity[script_current]) {
@@ -705,7 +705,7 @@ void Editor::update(float dt) {
 		ImGui::EndChild();
 		ImGui::End();
 	}
-
+	
 	if (show_level_selector) {
 		ImGui::Begin("Levels", 0, flags);
 		static string level_current = active_level->name;
@@ -725,7 +725,7 @@ void Editor::update(float dt) {
 		}
 		ImGui::End();
 	}
-
+	
 	if (show_state_tweaker) {
 		ImGui::Begin("State", 0, flags);
 		for (auto& kvp : game_state) {
@@ -738,18 +738,18 @@ void Editor::update(float dt) {
 				ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(255.f, 0.f, 0.f, 255.f));
 				ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.f, 0.f, 255.f, 255.f));
 			}
-
+			
 			// If we press it, toggle the state
 			if (ImGui::Button(kvp.first.c_str())) {
 				update_state(kvp.first, !value);
 				cout << "vbdafa";
 			}
-
+			
 			ImGui::PopStyleColor(2);
 		}
 		ImGui::End();
 	}
-
+	
 	
 	// Editing logic
 	if (state == IDLE) {
@@ -768,46 +768,46 @@ void Editor::update(float dt) {
 					}
 				}
 			}
-			#if 0
+#if 0
 			if (!clicked_inside_something) {
 				top_left_drag = input.screen_pos;
 				editor_state = RECTANGLE_SELECT;
 			}
-			#endif
+#endif
 		}
-
+		
 	}
 	else if (state == INSERT) {
 		translate();
-
+		
 		// And if we click, add it to the level
 		if (input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 			if (kind == TILE) {
 				auto grid_pos = grid_from_world(input.world_pos);
 				pool_handle<Entity> handle = active_level->get_tile(grid_pos.x, grid_pos.y);
 				Entity* current_entity = handle();
-
+				
 				// We don't want to double paint, so check to make sure we're not doing that
 				bool okay_to_create = true;
-
+				
 				// If the tile we're painting over exists and is the same kind we're trying to paint, don't do it
 				if (current_entity) {
 					if (current_entity->name == selected()->name) {
 						okay_to_create = false;
 					}
 				}
-
+				
 				if (okay_to_create) {
 					// Create a lambda which will undo the tile placement we're about to do
 					auto my_lambda =
 						[&active_level = active_level,
-						 x = grid_pos.x, y = grid_pos.y,
-						 ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
-								{
-									active_level->set_tile(ent, x, y);
-								};
+						x = grid_pos.x, y = grid_pos.y,
+						ent = active_level->get_tile(grid_pos.x, grid_pos.y)]
+					{
+						active_level->set_tile(ent, x, y);
+					};
 					action_stack.push_back(my_lambda);
-
+					
 					active_level->set_tile(selected, grid_pos.x, grid_pos.y);
 					selected = Entity::create(selected()->name);
 					
@@ -821,10 +821,10 @@ void Editor::update(float dt) {
 						active_level->entities.pop_back();
 					};
 					action_stack.push_back(my_lambda);
-
+					
 					// Add the selection to the level
 					active_level->entities.push_back(selected);
-
+					
 					// Create a new one of the same kind as the old one
 					Entity* selection = selected();
 					selected = Entity::create(selection->name);
@@ -871,7 +871,7 @@ void Editor::update(float dt) {
 			delete_selected();
 			state = IDLE;
 		}
-
+		
 		// Way 2 to delete: Select, then 'delete'
 		if (input.was_pressed(GLFW_KEY_DELETE)) {
 			delete_selected();
@@ -881,7 +881,7 @@ void Editor::update(float dt) {
 	else if (state == DRAG) {
 		draw_component_editor();
 		translate();
-
+		
 		if (!input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {
 			state = EDIT;
 		}
@@ -893,7 +893,7 @@ void Editor::update(float dt) {
 		screen_unit left = top_left_drag.x > input.world_pos.x ? input.world_pos.x : top_left_drag.x;
 		Points_Box points = { top, bottom, left, right };
 		//@draw draw_square_outline(points, red);
-
+		
 		glm::vec2 dummy_penetration;
 		Center_Box selection_area = Center_Box::from_points(points);
 		for (auto& entity : active_level->entities) {
@@ -913,19 +913,19 @@ void Editor::render() {
 	}
 	// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
 	renderer.render_for_frame();
-
+	
 	// Render the grid
 	if (show_grid) {
 		screen_unit x_begin = fmodf(camera.offset.x, SCR_TILESIZE_X);
 		screen_unit y_begin = fmodf(camera.offset.y, SCR_TILESIZE_Y) + (SCR_TILESIZE_Y / 2.f);
-
+		
 		for (float col_offset = 1 - x_begin; col_offset >= 0; col_offset -= SCR_TILESIZE_X) {
 			draw_line_from_points(glm::vec2(col_offset, 0), glm::vec2(col_offset, 1), glm::vec4(.2f, .1f, .9f, 0.5f));
 		}
 		for (float row_offset = 1 - y_begin; row_offset >= 0; row_offset -= SCR_TILESIZE_Y) {
 			draw_line_from_points(glm::vec2(0, row_offset), glm::vec2(1, row_offset), glm::vec4(.2f, .1f, .9f, 0.5f));
 		}
-
+		
 	}
 }
 
@@ -937,7 +937,7 @@ void Game::init() {
 }
 void Game::update(float dt) {
 	static int frame = 0;
-
+	
 	// Toggle the console
 	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 		show_console = !show_console;
@@ -951,12 +951,21 @@ void Game::update(float dt) {
 	camera.offset = follow_pc->world_pos;
 	camera.offset += glm::vec2{-.5, -.5};
 	input.world_pos = input.screen_pos + camera.offset;
-
-
+	
+	
 	// Deal with the player
 	move_entity(g_hero, input.is_down[GLFW_KEY_W], input.is_down[GLFW_KEY_S], input.is_down[GLFW_KEY_A], input.is_down[GLFW_KEY_D]);
 	draw_entity(g_hero, Render_Flags::None);
 	
+	// Handle collisions
+	for (auto& entity : active_level->entities) {
+		if (entity->get_component<Collision_Component>()) {
+			Collision_Element new_collision_element;
+			new_collision_element.me = g_hero;
+			new_collision_element.other = entity;
+			physics_system.collisions.push_back(new_collision_element);
+		}
+	}
 	
 	physics_system.process(1.f / 60.f);
 	

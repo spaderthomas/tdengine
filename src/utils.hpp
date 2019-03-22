@@ -58,23 +58,23 @@ glm::vec2 tdns_normalize(glm::vec2 vec) {
 	if (vec.x == 0.f && vec.y == 0.f) {
 		return vec;
 	}
-
+	
 	return glm::normalize(vec);
 }
 glm::vec3 tdns_normalize(glm::vec3 vec) {
 	if (vec.x == 0.f && vec.y == 0.f && vec.z == 0.f) {
 		return vec;
 	}
-
+	
 	return glm::normalize(vec);
 }
 
 #define DEFAULT_FLOAT_TOLERANCE .005
 bool float_almost_equals(float a, float b) {
-	 return glm::abs(a - b) < DEFAULT_FLOAT_TOLERANCE;
+	return glm::abs(a - b) < DEFAULT_FLOAT_TOLERANCE;
 }
 bool vec_almost_equals(glm::vec2 vec, glm::vec2 target) {
-	 return glm::length(vec - target) < DEFAULT_FLOAT_TOLERANCE;
+	return glm::length(vec - target) < DEFAULT_FLOAT_TOLERANCE;
 }
 
 
@@ -91,24 +91,24 @@ glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
 
 // Shape primitives
 vector<float> triangle_verts = {
-	 -0.5f, -0.5f, 0.0f,
-	 0.5f, -0.5f, 0.0f,
-	 0.0f,  0.5f, 0.0f
+	-0.5f, -0.5f, 0.0f,
+	0.5f, -0.5f, 0.0f,
+	0.0f,  0.5f, 0.0f
 };
 vector<uint> triangle_indices = {
-	 0, 1, 2,
+	0, 1, 2,
 };
 vector<float> triangle_tex_coords = {
-	 0.0f, 0.0f,
-	 1.f, 0.0f,
-	 0.5f, 1.0f,
+	0.0f, 0.0f,
+	1.f, 0.0f,
+	0.5f, 1.0f,
 };
 
 vector<float> square_verts = {
-	 1.f,  1.f,
-	 1.f, -1.f,
-	 -1.f, -1.f,
-	 -1.f,  1.f
+	1.f,  1.f,
+	1.f, -1.f,
+	-1.f, -1.f,
+	-1.f,  1.f
 };
 glm::vec3 screen_bottom_right = glm::vec3(1.f, 1.f, 1.f);
 glm::vec3 screen_top_right = glm::vec3(1.f, -1.f, 1.f);
@@ -116,22 +116,22 @@ glm::vec3 screen_top_left = glm::vec3(-1.f, -1.f, 1.f);
 glm::vec3 screen_bottom_left = glm::vec3(-1.f, 1.f, 1.f);
 
 vector<uint> square_indices = {
-	 0, 1, 2,
-	 2, 0, 3
+	0, 1, 2,
+	2, 0, 3
 };
 vector<float> square_tex_coords = {
-	 1.f, 1.f,
-	 1.f, 0.0f,
-	 0.f, 0.f,
-	 0.f, 1.f,
+	1.f, 1.f,
+	1.f, 0.0f,
+	0.f, 0.f,
+	0.f, 1.f,
 };
 GLvoid* square_tex_coords_offset;
 vector<float> line_verts = {
-	 0.f, 0.f, 1.f,
-	 1.f, 1.f, 1.f,
+	0.f, 0.f, 1.f,
+	1.f, 1.f, 1.f,
 };
 vector<uint> line_indices = {
-	 0, 1,
+	0, 1,
 };
 
 
@@ -142,31 +142,31 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 /*
 Some unit definitions:
 GL coordinates have 
-	the leftmost coordinate at -1, 
-	the rightmost at +1,
-	the bottommost at -1,
-	the topmost at +1
-
+ the leftmost coordinate at -1, 
+ the rightmost at +1,
+ the bottommost at -1,
+ the topmost at +1
+ 
 Screen coordinates have
-	the leftmost coordinate at 0,
-	the rightmost at +1,
-	the bottommost at 0,
-	the topmost at +1
-
+ the leftmost coordinate at 0,
+ the rightmost at +1,
+ the bottommost at 0,
+ the topmost at +1
+ 
 Grid coordinates have
-	the leftmost coordinate at 0,
-	the rightmost at +1,
-	the bottommost at 0,
-	the topmost at +1
-
+ the leftmost coordinate at 0,
+ the rightmost at +1,
+ the bottommost at 0,
+ the topmost at +1
+ 
 Pixel coordinates have
-	the leftmost coordinate at 0,
-	the rightmost at SCREEN_X,
-	the bottommost at 0,
-	the topmost at SCREEN_Y
-
-
-
+ the leftmost coordinate at 0,
+ the rightmost at SCREEN_X,
+ the bottommost at 0,
+ the topmost at SCREEN_Y
+ 
+ 
+ 
 Below are all the conversion functions. Using them and proper units is a bit verbose, 
 but is worth it to save the confusion of exchanging units (which is unavoidable). Also
 of note is that since we're using GLM vectors, it's not really convenient to have 
@@ -301,7 +301,7 @@ string name_from_full_path(string path) {
 		}
 		asset_name.insert(asset_name.begin(), path.at(ichar));
 	}
-
+	
 	return asset_name;
 }
 
@@ -314,21 +314,21 @@ string strip_extension(string filename) {
 		}
 		stripped.push_back(filename.at(ichar));
 	}
-
+	
 	return stripped;
 }
 
 bool is_alphanumeric(string& str) {
 	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
 	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
-
+	
 	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
 		char c = str.at(ichar);
 		if (!(is_numeric(c) || is_alpha(c))) {
 			return false;
 		}
 	}
-
+	
 	return true;
 }
 
@@ -337,14 +337,14 @@ bool is_valid_filename(string& str) {
 	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
 	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
 	auto is_misc_valid = [](char c) -> bool { return (c == '_') || c == '.'; };
-
+	
 	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
 		char c = str.at(ichar);
 		if (!(is_numeric(c) || is_alpha(c) || is_misc_valid(c))) {
 			return false;
 		}
 	}
-
+	
 	return true;
 }
 
@@ -362,7 +362,7 @@ string path_join(vector<string> items) {
 	for (auto& item : items) {
 		path += item + "\\";
 	}
-
+	
 	// Trim trailing slash
 	return path.substr(0, path.size() - 1);
 }
@@ -429,94 +429,94 @@ const string VARS_KEY        = "vars";
 /* Random shit */
 void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void *userParam) {
 	(void)userParam;
-
+	
 	switch (id) {
-	case 131169: // The driver allocated storage for renderbuffer
+		case 131169: // The driver allocated storage for renderbuffer
 		return;
-	case 131185: // glBufferData
+		case 131185: // glBufferData
 		return;
-	case 481131: // buffer info
+		case 481131: // buffer info
 		return;
-	case 131184: // buffer info
+		case 131184: // buffer info
 		return;
-	case 131204: // Weird base level inconsistent bug. It may be a driver bug.
+		case 131204: // Weird base level inconsistent bug. It may be a driver bug.
 		return;
 	}
-
+	
 	string debug_msg;
 	debug_msg += "OpenGL Debug Message: ";
 	debug_msg += "\nSource: ";
 	switch (source) {
-	case GL_DEBUG_SOURCE_API:
+		case GL_DEBUG_SOURCE_API:
 		debug_msg += "API";
 		break;
-	case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
+		case GL_DEBUG_SOURCE_WINDOW_SYSTEM:
 		debug_msg += "Window System";
 		break;
-	case GL_DEBUG_SOURCE_SHADER_COMPILER:
+		case GL_DEBUG_SOURCE_SHADER_COMPILER:
 		debug_msg += "Shader Compiler";
 		break;
-	case GL_DEBUG_SOURCE_THIRD_PARTY:
+		case GL_DEBUG_SOURCE_THIRD_PARTY:
 		debug_msg += "Third Party";
 		break;
-	case GL_DEBUG_SOURCE_APPLICATION:
+		case GL_DEBUG_SOURCE_APPLICATION:
 		debug_msg += "Application";
 		break;
-	case GL_DEBUG_SOURCE_OTHER:
+		case GL_DEBUG_SOURCE_OTHER:
 		debug_msg += "Other";
 		break;
 	}
-
+	
 	debug_msg += "\nType: ";
 	switch (type) {
-	case GL_DEBUG_TYPE_ERROR:
+		case GL_DEBUG_TYPE_ERROR:
 		debug_msg += "Error";
 		break;
-	case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
+		case GL_DEBUG_TYPE_DEPRECATED_BEHAVIOR:
 		debug_msg += "Deprecated Behaviour";
 		break;
-	case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
+		case GL_DEBUG_TYPE_UNDEFINED_BEHAVIOR:
 		debug_msg += "Undefined Behaviour";
 		break;
-	case GL_DEBUG_TYPE_PORTABILITY:
+		case GL_DEBUG_TYPE_PORTABILITY:
 		debug_msg += "Portability";
 		break;
-	case GL_DEBUG_TYPE_PERFORMANCE:
+		case GL_DEBUG_TYPE_PERFORMANCE:
 		debug_msg += "Performance";
 		break;
-	case GL_DEBUG_TYPE_MARKER:
+		case GL_DEBUG_TYPE_MARKER:
 		debug_msg += "Marker";
 		break;
-	case GL_DEBUG_TYPE_PUSH_GROUP:
+		case GL_DEBUG_TYPE_PUSH_GROUP:
 		debug_msg += "Push Group";
 		break;
-	case GL_DEBUG_TYPE_POP_GROUP:
+		case GL_DEBUG_TYPE_POP_GROUP:
 		debug_msg += "Pop Group";
 		break;
-	case GL_DEBUG_TYPE_OTHER:
+		case GL_DEBUG_TYPE_OTHER:
 		debug_msg += "Other";
 		break;
 	}
-
+	
 	debug_msg += "\nID: ";
 	debug_msg += to_string(id);
-
+	
 	debug_msg += "\nSeverity: ";
 	switch (severity) {
-	case GL_DEBUG_SEVERITY_HIGH:
+		case GL_DEBUG_SEVERITY_HIGH:
 		debug_msg += "High";
 		break;
-	case GL_DEBUG_SEVERITY_MEDIUM:
+		case GL_DEBUG_SEVERITY_MEDIUM:
 		debug_msg += "Medium";
 		break;
-	case GL_DEBUG_SEVERITY_LOW:
+		case GL_DEBUG_SEVERITY_LOW:
 		debug_msg += "Low";
 		break;
-	case GL_DEBUG_SEVERITY_NOTIFICATION:
+		case GL_DEBUG_SEVERITY_NOTIFICATION:
 		debug_msg += "Notification";
 		break;
 	}
-
+	
 	debug_msg += "\nGL message: " + string(message);
 	debug_msg += "\n\n";
 	tdns_log.write(debug_msg);
@@ -537,7 +537,7 @@ struct Sine_Func {
 	float amp = 1.f;
 	float period = 1.f;
 	float phase_shift = 1.f;
-
+	
 	float eval_at(float point);
 };
 
@@ -548,15 +548,15 @@ float Sine_Func::eval_at(float point) {
 
 struct Asset {
 	string name;
-
+	
 	virtual void stub() {};
 };
 
 struct {
 	vector<Asset*> assets;
-
+	
 	template <typename Asset_Type>
-	Asset_Type* get_asset(string name) {
+		Asset_Type* get_asset(string name) {
 		for (auto asset : assets) {
 			Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
 			if (asset_as_type) {
@@ -565,15 +565,15 @@ struct {
 				}
 			}
 		}
-
+		
 		Asset_Type* new_asset = new Asset_Type;
 		new_asset->name = name;
 		assets.push_back(new_asset);
 		return new_asset;
 	}
-
+	
 	template <typename Asset_Type>
-	vector<Asset_Type*> get_all() {
+		vector<Asset_Type*> get_all() {
 		vector<Asset_Type*> all;
 		for (auto asset : assets) {
 			Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
@@ -581,7 +581,7 @@ struct {
 				all.push_back(asset_as_type);
 			}
 		}
-
+		
 		return all;
 	}
 } asset_table;
@@ -600,7 +600,7 @@ template<typename Data_Type, int num_elements>
 struct Pool {
 	Data_Type* entries;
 	pool_entry_info* info;
-
+	
 	void init();
 	pool_handle<Data_Type> next_available();
 	inline Data_Type* get(pool_handle<Data_Type> handle);
@@ -623,9 +623,9 @@ void Pool<Data_Type, num_elements>::init() {
 // A handle to an element in a pool. Wrapper around an int with convenient operators.
 template<typename Data_Type>
 struct pool_handle {
-	int handlecito;
-	Pool<Data_Type, DEFAULT_POOL_SIZE>* pool;
-
+	int handlecito = -1;
+	Pool<Data_Type, DEFAULT_POOL_SIZE>* pool = nullptr;
+	
 	// These get the actual entity
 	Data_Type* deref() {
 		return pool->get(*this);
@@ -656,8 +656,6 @@ struct pool_handle {
 	operator bool() {
 		return (handlecito != -1) && (pool != nullptr);
 	}
-
-	
 };
 
 struct Entity;
@@ -674,7 +672,7 @@ pool_handle<Data_Type> Pool<Data_Type, num_elements>::next_available() {
 			return handle;
 		}
 	}
-
+	
 	tdns_log.write("Ran out of handles!");
 	fox_assert(false);
 	return { -1, nullptr }; // for the compiler
@@ -706,7 +704,7 @@ struct Circle_Buffer {
 	int head = 0;
 	int capacity = 0;
 	int len = 0;
-
+	
 	void push_back(int elem);
 	optional<int> pop_front();
 	void clear();
@@ -752,7 +750,7 @@ struct tdvec {
 	bool* present;
 	int count;
 	int capacity;
-
+	
 	tdvec() {
 		data = (T*)calloc(ARR_INITIAL_CAPACITY, sizeof(T));
 		present = (bool*)calloc(ARR_INITIAL_CAPACITY, sizeof(bool));
@@ -763,7 +761,7 @@ struct tdvec {
 		free(data);
 		free(present);
 	}
-
+	
 	void maybe_grow(int new_size) {
 		if (new_size > capacity) {
 			data = (T*)realloc(data, sizeof(T) * new_size);
@@ -780,9 +778,9 @@ struct tdvec {
 		if (count == capacity) maybe_grow(capacity * 2);
 		data[count] = item;
 		present[count] = true;
-
+		
 		count++;
-
+		
 		return back();
 	}
 	T* push_at(int i, T item) {
@@ -790,29 +788,29 @@ struct tdvec {
 		data[i] = item;
 		return &data[i];
 	}
-
+	
 	T* elem_at(int i) {
 		return &data[i];
 	}
 	T* back() {
 		return elem_at(count - 1);
 	}
-
+	
 	void erase(int i) {
 		if (i > capacity - 1) return;
-
+		
 		// Only have to memcpy if we're not erasing from the back
 		else if (i != (capacity - 1)) {
 			memcpy(data + i, data + i + 1, capacity - i - 1);
 			memcpy(present + i, present + i + 1, capacity - i - 1);
 		} 
-
+		
 		// Always zero out the last element
 		data[capacity - 1] = 0;
 		present[capacity - 1] = 0;
 		count--;
 	}
-
+	
 };
 
 
@@ -820,7 +818,7 @@ struct Hasher {
 	static int hash(const int key) {
 		return key;
 	}
-
+	
 	static int hash(const type_info* key) {
 		return (int)key & 0x00000001;
 	}
@@ -832,7 +830,7 @@ struct tdmap {
 	tdvec<tdbyte> present;
 	tdvec<Key> keys;
 	tdvec<Value> values;
-
+	
 	tdmap() {
 		keys.maybe_grow(MAP_INITIAL_CAPACITY);
 		values.maybe_grow(MAP_INITIAL_CAPACITY);
@@ -847,7 +845,7 @@ struct tdmap {
 		keys.push_at(index, key);
 		values.push_at(index, val);
 		present.push_at(index, 1);
-
+		
 		if (((float)keys.count / (float)keys.capacity) > .6) {
 			keys.maybe_grow(2 * keys.capacity);
 			values.maybe_grow(2 * values.capacity);
@@ -869,7 +867,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		ImGui::End();
 		return;
 	}
-
+	
 	// Dummy
 	struct Node
 	{
@@ -879,7 +877,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		float   Value;
 		ImVec4  Color;
 		int     InputsCount, OutputsCount;
-
+		
 		Node(int id, const char* name, const ImVec2& pos, float value, const ImVec4& color, int inputs_count, int outputs_count) { 
 			ID = id; 
 			strncpy(Name, name, 31); 
@@ -889,7 +887,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 			Color = color; 
 			InputsCount = inputs_count; 
 			OutputsCount = outputs_count; }
-
+		
 		ImVec2 GetInputSlotPos(int slot_no) const { 
 			float x = Pos.x + Size.x * ((float)slot_no + 1) / ((float)InputsCount + 1);
 			float y = Pos.y + Size.y;
@@ -903,10 +901,10 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 	struct NodeLink
 	{
 		int     InputIdx, InputSlot, OutputIdx, OutputSlot;
-
+		
 		NodeLink(int input_idx, int input_slot, int output_idx, int output_slot) { InputIdx = input_idx; InputSlot = input_slot; OutputIdx = output_idx; OutputSlot = output_slot; }
 	};
-
+	
 	static ImVector<Node> nodes;
 	static ImVector<NodeLink> links;
 	static bool inited = false;
@@ -922,7 +920,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		links.push_back(NodeLink(1, 0, 2, 1));
 		inited = true;
 	}
-
+	
 	// Draw a list of nodes on the left side
 	bool open_context_menu = false;
 	int node_hovered_in_list = -1;
@@ -944,13 +942,13 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		ImGui::PopID();
 	}
 	ImGui::EndChild();
-
+	
 	ImGui::SameLine();
 	ImGui::BeginGroup();
-
+	
 	const float NODE_SLOT_RADIUS = 4.0f;
 	const ImVec2 NODE_WINDOW_PADDING(8.0f, 8.0f);
-
+	
 	// Create our child canvas
 	ImGui::Text("%f, %f", ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y);
 	ImGui::Text("Hold middle mouse button to scroll (%.2f,%.2f)", scrolling.x, scrolling.y);
@@ -961,7 +959,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 	ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, IM_COL32(60, 60, 70, 200));
 	ImGui::BeginChild("scrolling_region", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 	ImGui::PushItemWidth(120.0f);
-
+	
 	ImVec2 offset = ImGui::GetCursorScreenPos() + scrolling;
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 	// Display grid
@@ -976,7 +974,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		for (float y = fmodf(scrolling.y, GRID_SZ); y < canvas_sz.y; y += GRID_SZ)
 			draw_list->AddLine(ImVec2(0.0f, y) + win_pos, ImVec2(canvas_sz.x, y) + win_pos, GRID_COLOR);
 	}
-
+	
 	// Display links
 	draw_list->ChannelsSplit(2);
 	draw_list->ChannelsSetCurrent(0); // Background
@@ -989,14 +987,14 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		ImVec2 p2 = offset + node_out->GetInputSlotPos(link->OutputSlot);
 		draw_list->AddBezierCurve(p1, p1 + ImVec2(+50, 0), p2 + ImVec2(-50, 0), p2, IM_COL32(200, 200, 100, 255), 3.0f);
 	}
-
+	
 	// Display nodes
 	for (int node_idx = 0; node_idx < nodes.Size; node_idx++)
 	{
 		Node* node = &nodes[node_idx];
 		ImGui::PushID(node->ID);
 		ImVec2 node_rect_min = offset + node->Pos;
-
+		
 		// Display node contents first
 		draw_list->ChannelsSetCurrent(1); // Foreground
 		bool old_any_active = ImGui::IsAnyItemActive();
@@ -1006,12 +1004,12 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		ImGui::SliderFloat("##value", &node->Value, 0.0f, 1.0f, "Alpha %.2f");
 		ImGui::ColorEdit3("##color", &node->Color.x);
 		ImGui::EndGroup();
-
+		
 		// Save the size of what we have emitted and whether any of the widgets are being used
 		bool node_widgets_active = (!old_any_active && ImGui::IsAnyItemActive());
 		node->Size = ImGui::GetItemRectSize() + NODE_WINDOW_PADDING + NODE_WINDOW_PADDING;
 		ImVec2 node_rect_max = node_rect_min + node->Size;
-
+		
 		// Display node box
 		draw_list->ChannelsSetCurrent(0); // Background
 		ImGui::SetCursorScreenPos(node_rect_min);
@@ -1026,7 +1024,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 			node_selected = node->ID;
 		if (node_moving_active && ImGui::IsMouseDragging(0))
 			node->Pos = node->Pos + ImGui::GetIO().MouseDelta;
-
+		
 		ImU32 node_bg_color = (node_hovered_in_list == node->ID || node_hovered_in_scene == node->ID || (node_hovered_in_list == -1 && node_selected == node->ID)) ? IM_COL32(75, 75, 75, 255) : IM_COL32(60, 60, 60, 255);
 		draw_list->AddRectFilled(node_rect_min, node_rect_max, node_bg_color, 4.0f);
 		//draw_list->AddRect(node_rect_min, node_rect_max, IM_COL32(100, 100, 100, 255), 4.0f);
@@ -1034,11 +1032,11 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 			draw_list->AddCircleFilled(offset + node->GetInputSlotPos(slot_idx), NODE_SLOT_RADIUS, IM_COL32(150, 150, 150, 150));
 		for (int slot_idx = 0; slot_idx < node->OutputsCount; slot_idx++)
 			draw_list->AddCircleFilled(offset + node->GetOutputSlotPos(slot_idx), NODE_SLOT_RADIUS, IM_COL32(150, 150, 150, 150));
-
+		
 		ImGui::PopID();
 	}
 	draw_list->ChannelsMerge();
-
+	
 	// Open context menu
 	if (!ImGui::IsAnyItemHovered() && ImGui::IsMouseHoveringWindow() && ImGui::IsMouseClicked(1))
 	{
@@ -1053,7 +1051,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		if (node_hovered_in_scene != -1)
 			node_selected = node_hovered_in_scene;
 	}
-
+	
 	// Draw context menu
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
 	if (ImGui::BeginPopup("context_menu"))
@@ -1076,16 +1074,16 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 		ImGui::EndPopup();
 	}
 	ImGui::PopStyleVar();
-
+	
 	// Scrolling
 	if (ImGui::IsWindowHovered() && !ImGui::IsAnyItemActive() && ImGui::IsMouseDragging(2, 0.0f))
 		scrolling = scrolling + ImGui::GetIO().MouseDelta;
-
+	
 	ImGui::PopItemWidth();
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar(2);
 	ImGui::EndGroup();
-
+	
 	ImGui::End();
 }

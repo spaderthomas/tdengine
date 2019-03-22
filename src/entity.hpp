@@ -1,22 +1,22 @@
 struct Entity {
 	int id;
 	static int next_id;
-	string name; 
+	string name;
 	unordered_map<const type_info*, pool_handle<any_component>> components;
-
+	
 	// Component functions
 	template <typename Component_Type>
-	pool_handle<any_component> add_component();
+		pool_handle<any_component> add_component();
 	template <typename Component_Type>
-	bool remove_component();
+		bool remove_component();
 	template <typename Component_Type>
-	Component_Type* get_component();
+		Component_Type* get_component();
 	any_component* get_component(string kind);
 	void clear_components();
-
+	
 	static EntityHandle create(string name);
 	static void destroy(EntityHandle handle);
-
+	
 	TableNode* save();
 	void load(TableNode* self);
 };
