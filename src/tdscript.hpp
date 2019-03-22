@@ -6,7 +6,7 @@ struct Primitive {
 		BOOL,
 		FLOAT
 	} type;
-
+	
 	union PrimitiveUnion {
 		const char* strval;
 		int intval;
@@ -24,7 +24,7 @@ struct TableWriter {
 		fox_for(idx, indent) {
 			line = "\t" + line;
 		}
-
+		
 		return line;
 	}
 	void write_line(string& line) {
@@ -48,7 +48,7 @@ struct TableWriter {
 	void same_line() {
 		_same_line = true;
 	}
-
+	
 	void begin_table() {
 		string line = "{";
 		write_line(line);
@@ -59,12 +59,12 @@ struct TableWriter {
 		string line = "}";
 		write_line(line);
 	}
-
+	
 	void write_int(int i) {
 		string line = to_string(i);
 		write_line(line);
 	}
-
+	
 	void dump(string path) {
 		ofstream stream(path, ofstream::out | ofstream::trunc);
 		for (auto& line : lines) {
@@ -134,9 +134,9 @@ struct TableNode : ASTNode {
 	vector<KVPNode*> assignments;
 	TableNode() { type = ANK_TableNode; }
 	void dump(TableWriter& output) override;
-
+	
 	template<typename T>
-	Primitive  get(vector<string>& keys);
+		Primitive  get(vector<string>& keys);
 	int        get_int(vector<string> keys);
 	string     get_string(vector<string> keys);
 	float      get_float(vector<string> keys);
@@ -144,15 +144,15 @@ struct TableNode : ASTNode {
 	TableNode* get_table(vector<string> keys);
 	ASTNode*   get_raw(vector<string> keys);
 	ASTNode*   maybe_key(string key);
-
+	
 	void       set(vector<string> keys, int value);
 	void       set(vector<string> keys, string value);
 	void       set(vector<string> keys, float value);
 	void       set(vector<string> keys, bool value);
 	void       set(vector<string> keys, TableNode* value);
-		
+	
 	template<typename T>                                // Note: Only use this if you know you're actually pushing
-	void       push_back(T value);                      // to an array. 
+		void       push_back(T value);                      // to an array. 
 	
 	void       dump(string path);
 };
@@ -176,7 +176,7 @@ struct Token {
 		BOOL,
 		_EOF
 	} type;
-
+	
 	string str_val;
 	int int_val;
 	float float_val;
@@ -188,14 +188,14 @@ struct Lexer {
 	int line_number = 1;
 	vector<Token> tokens;
 	int token_idx;
-
-	void init(string script_path);
+	
+	bool init(string script_path);
 	void lex();
 	Token next_token_internal();
-
+	
 	Token next_token();
 	Token peek_token();
-
+	
 	bool is_alpha(char c);
 	bool is_valid_number_start(char c);
 	bool is_numeral(char c);
@@ -208,7 +208,7 @@ struct Lexer {
 struct TDScript {
 	Lexer lexer;
 	TableNode* global_scope = nullptr;
-
+	
 	bool is_nested_identifier(string& key);
 	ASTNode* parse(string script_path);
 	ASTNode* parse_table();
