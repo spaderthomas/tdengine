@@ -1,5 +1,4 @@
 TableNode* Component::save() const { return nullptr; }
-void Component::init_from_table(TableNode* table) {} 
 
 void Graphic_Component::add_animation(Animation* anim) {
 	animations.push_back(anim);
@@ -14,25 +13,25 @@ Sprite* Graphic_Component::get_current_frame() {
 		tdns_log.write(msg);
 		return (Sprite*)nullptr;
 	}
-
+	
 	return active_animation->frames[active_animation->icur_frame];
 }
 void Graphic_Component::init_from_table(TableNode* gc) {
 	TableNode* animations = tds_table2(gc, "Animations");
 	this->animations.clear();
-
+	
 	for (auto& def : animations->assignments) {
 		KVPNode* kvp = (KVPNode*)def;
 		Animation* animation = new Animation;
 		animation->name = kvp->key;
-
+		
 		TableNode* frames = (TableNode*)kvp->value;
 		for (uint frame_idx = 0; frame_idx < frames->assignments.size(); frame_idx++) {
 			string sprite_name = tds_string2(frames, to_string(frame_idx));
 			Sprite* frame = asset_table.get_asset<Sprite>(sprite_name);
 			animation->frames.push_back(frame);
 		}
-
+		
 		this->add_animation(animation);
 	}
 }
@@ -40,7 +39,7 @@ string Graphic_Component::name() { return "Graphic_Component"; }
 
 TableNode* Position_Component::save() const {
 	TableNode* self = new TableNode;
-
+	
 	// Could make something to let you create nested tables if they don't exist,
 	// but typo errors + explicit > implicit means I'll leave it for now
 	TableNode* scale_table = new TableNode;
@@ -52,7 +51,7 @@ TableNode* Position_Component::save() const {
 	tds_set2(self, scale.y, SCALE_KEY, "y");
 	tds_set2(self, world_pos.x, POS_KEY, "x");
 	tds_set2(self, world_pos.y, POS_KEY, "y");
-
+	
 	return self;
 }
 void Position_Component::load(TableNode* self) {
@@ -81,7 +80,7 @@ string Interaction_Component::name() { return "Interaction_Component"; }
 TableNode* Door_Component::save() const {
 	TableNode* self = new TableNode;
 	tds_set2(self, to, TO_KEY);
-
+	
 	return self;
 }
 void Door_Component::load(TableNode* self) {

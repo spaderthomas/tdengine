@@ -1,7 +1,6 @@
 struct Component {
 	virtual TableNode* save() const;
 	virtual void load(TableNode* table) { cout << "Tried to call virtual load() on base Component"; };
-	virtual void init_from_table(TableNode* table); // pure virtual?
 	virtual string name() { return "Component"; };
 };
 struct Graphic_Component : Component {
@@ -9,16 +8,16 @@ struct Graphic_Component : Component {
 	Animation* active_animation = nullptr;
 	glm::vec2 scale;
 	int z;
-
+	
 	void add_animation(Animation* anim);
 	Sprite* get_current_frame();
-	void init_from_table(TableNode* table) override;
+	void init_from_table(TableNode* table);
 	string name() override;
 };
 struct Position_Component : Component {
 	glm::vec2 world_pos = glm::vec2(0.f);
 	glm::vec2 scale = glm::vec2(1.f);
-
+	
 	TableNode* save() const override;
 	void load(TableNode* self) override;
 	string name() override;
@@ -26,20 +25,20 @@ struct Position_Component : Component {
 struct Movement_Component : Component {
 	glm::vec2 speed;
 	glm::vec2 wish;
-	void init_from_table(TableNode* table) override;
+	void init_from_table(TableNode* table);
 	string name() override;
 };
 struct Vision_Component : Component {
 	float width;
 	float depth;
-
-	void init_from_table(TableNode* table) override;
+	
+	void init_from_table(TableNode* table);
 	string name() override;
 };
 struct Interaction_Component : Component {
 	bool was_interacted_with = false;
 	EntityHandle other;
-
+	
 	string name() override;
 };
 struct Door_Component : Component {
@@ -58,14 +57,14 @@ struct Collision_Component : Component {
 	} bounding_box;
 	Collider_Kind kind;
 	
-	void init_from_table(TableNode* table) override;
+	void init_from_table(TableNode* table);
 	string name() override;
 };
 struct Task_Component : Component {
 	Task* task;
-
+	
 	string name() override;
-	void init_from_table(TableNode* table) override;
+	void init_from_table(TableNode* table);
 };
 
 //@metaprogramming
@@ -78,7 +77,7 @@ union any_component {
 	Door_Component door_component;
 	Collision_Component collision_component;
 	Task_Component task_component;
-
+	
 	any_component() {} // Necessary so we can in place new components in the pool.
 };
 
