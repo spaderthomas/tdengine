@@ -20,5 +20,6 @@ graphics_demo/Release/
 graphics_demo/Debug/
 graphics_demo/x64/
 __pycache__
-machine_conf.py
 build/
+src/scripts/machine_conf.py
+src/machine_conf.hpp
