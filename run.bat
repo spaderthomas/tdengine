@@ -1,2 +1,2 @@
 @echo off
-build/tdengine.exe
+"build/tdengine.exe"
