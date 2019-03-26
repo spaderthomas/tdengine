@@ -10,6 +10,10 @@ unordered_map<string, vector<string>> script_to_entity = {
 		{"building", "table", "chair_left", "chair_right", "bar", "liquor_cabinet", "bookcase", "picture"}
 	},
 	{
+		"characters/boi.tds",
+		{"boi"}
+	},
+	{
 		"characters/hero.tds",
 		{"boon"}
 	},

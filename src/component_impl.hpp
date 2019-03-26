@@ -106,3 +106,7 @@ void Task_Component::init_from_table(TableNode* table) {
 	this->task = new Task;
 }
 
+string BattleComponent::name() { return "BattleComponent"; }
+void BattleComponent::init_from_table(TableNode* table) {
+	this->health = tds_int2(table, "health");
+}

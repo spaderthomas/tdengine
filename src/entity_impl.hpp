@@ -109,6 +109,11 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			task->init_from_table(task_table, entity);
 			component->task = task;
 		}
+		else if (type == "BattleComponent") {
+			pool_handle<any_component> handle = entity->add_component<BattleComponent>();
+			BattleComponent* component = &handle()->battle_component;
+			component->init_from_table(component_table);
+		}
 	}
 	
 	return entity;

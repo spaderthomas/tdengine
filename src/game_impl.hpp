@@ -44,8 +44,8 @@ Console::Console()
 	AddLog("Welcome to Dear ImGui!");
 }
 Console::~Console() {}
-int   Console::Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }
-int   Console::Strnicmp(const char* str1, const char* str2, int n) {
+int Console::Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }
+int  Console::Strnicmp(const char* str1, const char* str2, int n) {
 	int d = 0;
 	while (n > 0 && (d = toupper(*str2) - toupper(*str1)) == 0 && *str1) {
 		str1++;
@@ -55,15 +55,15 @@ int   Console::Strnicmp(const char* str1, const char* str2, int n) {
 	return d;
 }
 char* Console::Strdup(const char *str) { size_t len = strlen(str) + 1; void* buff = malloc(len); return (char*)memcpy(buff, (const void*)str, len); }
-void  Console::Strtrim(char* str) { char* str_end = str + strlen(str); while (str_end > str && str_end[-1] == ' ') str_end--; *str_end = 0; }
-void  Console::ClearLog()
+void Console::Strtrim(char* str) { char* str_end = str + strlen(str); while (str_end > str && str_end[-1] == ' ') str_end--; *str_end = 0; }
+void Console::ClearLog()
 {
 	for (int i = 0; i < Items.Size; i++)
 		free(Items[i]);
 	Items.clear();
 	ScrollToBottom = true;
 }
-void  Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
+void Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 {
 	char buf[1024];
 	va_list args;
@@ -74,7 +74,7 @@ void  Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 	Items.push_back(Strdup(buf));
 	ScrollToBottom = true;
 }
-void  Console::Draw(const char* title)
+void Console::Draw(const char* title)
 {
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 	if (!ImGui::Begin(title, NULL))
@@ -151,12 +151,12 @@ void  Console::Draw(const char* title)
 	
 	ImGui::End();
 }
-int   Console::TextEditCallbackStub(ImGuiTextEditCallbackData* data) // In C++11 you are better off using lambdas for this sort of forwarding callbacks
+int  Console::TextEditCallbackStub(ImGuiTextEditCallbackData* data) // In C++11 you are better off using lambdas for this sort of forwarding callbacks
 {
 	Console* console = (Console*)data->UserData;
 	return console->TextEditCallback(data);
 }
-int   Console::TextEditCallback(ImGuiTextEditCallbackData* data)
+int  Console::TextEditCallback(ImGuiTextEditCallbackData* data)
 {
 	//AddLog("cursor: %d, selection: %d-%d", data->CursorPos, data->SelectionStart, data->SelectionEnd);
 	switch (data->EventFlag)
@@ -254,7 +254,7 @@ int   Console::TextEditCallback(ImGuiTextEditCallbackData* data)
 	}
 	return 0;
 }
-void  Console::ExecCommand(char* command_line)
+void Console::ExecCommand(char* command_line)
 {
 	AddLog("# %s\n", command_line);
 	
@@ -318,6 +318,38 @@ void Particle_System::update(float dt) {
 				free_list.push_back(index);
 			}
 		}
+	}
+}
+
+void Battle::init() {
+	battlers[0] = Entity::create("boi");
+	battlers[1] = Entity::create("boi");
+	
+	fox_for (ibattler, 2) {
+		auto pc = battlers[0]->get_component<Position_Component>();
+		pc->world_pos = glm::vec2((ibattler ? 1.0f : -1.0f) * 0.25f, 0.0f);
+	}
+}
+
+void Battle::render() {
+	fox_for (ibattler, 2) {
+		draw_entity(battlers[ibattler], Render_Flags::None);
+	}
+}
+
+void Battle::update(float dt) {
+	camera.following = battlers[0];
+	if (input.is_down[GLFW_KEY_W]) {
+		camera.offset += glm::vec2{0, .025};
+	}
+	if (input.is_down[GLFW_KEY_S]) {
+		camera.offset += glm::vec2{0, -.025};
+	}
+	if (input.is_down[GLFW_KEY_A]) {
+		camera.offset += glm::vec2{-.025, 0};
+	}
+	if (input.is_down[GLFW_KEY_D]) {
+		camera.offset += glm::vec2{.025, 0};
 	}
 }
 
@@ -405,6 +437,13 @@ void Editor::draw_component_editor() {
 				ImGui::TreePop();
 			}
 		}
+		else if (dynamic_cast<BattleComponent*>(component)) {
+			if (ImGui::TreeNode("Battle Component")) {
+				def_cast_cmp(bc, component, BattleComponent);
+				ImGui::SliderInt("Health", (int*)&bc->health, 0, 10);
+				ImGui::TreePop();
+			}
+		}
 	}
 	
 	ImGui::End();
@@ -416,7 +455,7 @@ void Editor::draw_tile_tree(Entity_Tree* root) {
 		}
 	}
 }
-int  Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) { 
+int Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) { 
 	// If expanded, draw this folder's tiles
 	if (ImGui::TreeNode(root->dir.c_str())) {
 		fox_for(i, root->entities.size()) {
@@ -530,6 +569,7 @@ void Editor::reload_assets() {
 	active_level->load();
 }
 void Editor::reload_everything() {
+	//@todo reload everything...
 	reload_assets();
 }
 void Editor::undo_action() {

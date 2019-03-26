@@ -133,6 +133,7 @@ int main() {
 	init_fonts();
 	game.init();
 	editor.init();
+	battle.init();
 	init_collider_matrix();
 	
 	init_hero();
