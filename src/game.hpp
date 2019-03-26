@@ -56,7 +56,8 @@ struct Particle_System {
 
 struct Layer {
 	Input input;
-	Level* active_level; 
+	Level* active_level;
+	Camera camera;
 	
 	virtual void update(float dt) = 0;
 	virtual void exec_console_cmd(char* cmd) {}
@@ -144,5 +145,3 @@ Game game;
 int iactive_layer = 0;
 vector<Layer*> all_layers = { &editor, &game, &battle};
 Layer* active_layer = &editor;
-
-

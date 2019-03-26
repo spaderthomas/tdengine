@@ -216,5 +216,6 @@ struct TDScript {
 	vector<string> keys_from_string(string key_str);
 	void script_file(string script_path);
 	void script_dir(string dir_path);
+	void script_init_if_exists(string dir_path);
 };
 TDScript ScriptManager;

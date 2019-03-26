@@ -598,8 +598,6 @@ ASTNode* TDScript::parse(string script_path) {
 	}
 	lexer.lex();
 	
-	if (!global_scope) global_scope = new TableNode;
-	
 	KVPNode* kvp;
 	while ((kvp = parse_assign())) {
 		string& key = kvp->key;
@@ -802,20 +800,21 @@ vector<string> TDScript::keys_from_string(string key_str) {
 }
 void TDScript::script_dir(string dir_path) {
 	// Always check for the directory's init file first
-	string maybe_init_file = dir_path + "\\__init__.tds";
-	ifstream f(maybe_init_file.c_str());
-	if (f.good()) {
-		parse(maybe_init_file);
-	}
+	script_init_if_exists(dir_path);
 	
 	for (auto it = directory_iterator(dir_path); it != directory_iterator(); it++) {
 		string path = it->path().string();
+
+		// Make sure the path is a TDS file that has not been run
 		if (is_regular_file(it->status())) {
 			if (is_tds(path)) {
 				// Don't double run the init file 
+				string maybe_init_file = dir_path + "\\__init__.tds";
 				if (string_comp(path, maybe_init_file)) {
 					continue;
 				}
+				
+				// If so, script it
 				parse(path);
 			}
 		}
@@ -825,28 +824,23 @@ void TDScript::script_dir(string dir_path) {
 	}
 }
 
-void init_tdscript() {
-	string maybe_init_file = absolute_path("src\\scripts\\__init__.tds");
+void TDScript::script_init_if_exists(string dir_path) {
+	string maybe_init_file = dir_path + "\\__init__.tds";
 	ifstream f(maybe_init_file.c_str());
 	if (f.good()) {
-		ScriptManager.parse(maybe_init_file);
-	}
+		parse(maybe_init_file);
+	}	
+}
+
+void init_tdscript() {
+	ScriptManager.global_scope = new TableNode;
+	ScriptManager.script_init_if_exists(absolute_path("src\\scripts\\"));
 	
-	ScriptManager.parse(absolute_path("src\\scripts\\meta.tds"));
-	TableNode* files = tds_table2(ScriptManager.global_scope, "meta", "scripts");
+	TableNode* files = tds_table("meta", "script_dirs");
 	for (uint i = 0; i < files->assignments.size(); i++) {
-		TableNode* script = tds_table2(ScriptManager.global_scope, "meta", "scripts", to_string(i));
-		string name = tds_string2(script, "name");
-		if (tds_bool2(script, "is_dir")) {
-			ScriptManager.script_dir(absolute_path("src\\scripts\\") + name);
-		}
-		else {
-			ScriptManager.parse(absolute_path("src\\scripts\\") + name + ".tds");
-		}
+		string script_dir = tds_string("meta", "script_dirs", to_string(i));
+		ScriptManager.script_dir(absolute_path("src\\scripts\\") + script_dir);
 	}
-	
-	int x = 0;
-	
 }
 
 void test_tdscript() {

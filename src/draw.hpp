@@ -73,17 +73,21 @@ void draw_rect_screen(Points_Box& points, glm::vec4 color) {
 	draw_rect_screen(top_left, top_right, bottom_right, bottom_left, color);
 }
 void draw_rect_world(Points_Box points, glm::vec4 color) {
-	def_get_cmp(following, camera.following.deref(), Position_Component);
-	// Put the box into camera space, which has the bottom left at an entity's position
-	points.left -= following->world_pos.x;
-	points.right -= following->world_pos.x;
-	points.top -= following->world_pos.y;
-	points.bottom -= following->world_pos.y;
+	// @hack I feel like there is a better way to do this than right here.
+	// Perhaps in the renderer? I want to apply this transformation to everything at once. 
+	if (active_layer->camera.following) {
+		def_get_cmp(following, active_layer->camera.following.deref(), Position_Component);
 
-	points.left += .5f;
-	points.right += .5f;
-	points.top += .5f;
-	points.bottom += .5f;
+		// Put the box into camera space, which has the bottom left at an entity's position
+		points.left -= following->world_pos.x;
+		points.right -= following->world_pos.x;
+		points.top -= following->world_pos.y;
+		points.bottom -= following->world_pos.y;
 
+		points.left += .5f;
+		points.right += .5f;
+		points.top += .5f;
+		points.bottom += .5f;
+	}
 	draw_rect_screen(points, color);
 }

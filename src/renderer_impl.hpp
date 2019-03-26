@@ -28,7 +28,7 @@ void Renderer::render_for_frame() {
 	}
 
 	// Main render loop
-	glm::vec2 camera_translation = magnitude_gl_from_screen(camera.offset);
+	glm::vec2 camera_translation = magnitude_gl_from_screen(active_layer->camera.offset);
 	for (auto& depth_level_render_elements : depth_sorted_render_elements) {
 		stable_sort(depth_level_render_elements.begin(), depth_level_render_elements.end(), 
 			[](const Render_Element& a, const Render_Element& b) {

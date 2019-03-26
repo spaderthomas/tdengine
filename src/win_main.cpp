@@ -63,6 +63,7 @@ using namespace std;
 #include "game.hpp"
 #include "collision.hpp"
 #include "tdapi.hpp"
+#include "glfw_callbacks.hpp"
 
 #include "state.hpp"
 #include "tdscript_impl.hpp"
@@ -131,14 +132,13 @@ int main() {
 	init_state();
 	init_levels();
 	init_fonts();
+	
+	init_hero();
 	game.init();
 	editor.init();
 	battle.init();
+	
 	init_collider_matrix();
-	
-	init_hero();
-	
-	camera.following = g_hero;
 	
 	test_tdscript();
 	

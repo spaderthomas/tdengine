@@ -6,7 +6,11 @@ map<string, vector<string>> state_map;
 map<string, bool> game_state;
 
 void init_state() {
-	// setup state (just read in the table and put it into a std::map)
+	// Make sure to do this so that we can re-call this function to reset stuff
+	state_map.clear();
+	game_state.clear();
+	
+	// Load the game state table from TDS and put it into a C++ map
 	TableNode* game_state_table = tds_table(GAME_STATE_KEY);
 	for (KVPNode* kvp : game_state_table->assignments) {
 		string key = kvp->key;
@@ -14,7 +18,7 @@ void init_state() {
 		game_state[key] = value;
 	}
 	
-	// setup state_map
+	// Setup the mapping from pieces of state to entities that must be notified when that state changes
 	TableNode* stateful_entities = tds_table(CH_STATE_KEY);
 
 	for (auto& kvp : stateful_entities->assignments) {

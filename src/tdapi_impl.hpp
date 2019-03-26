@@ -90,7 +90,6 @@ tdapi bool are_interacting(EntityHandle initiator, EntityHandle receiver) {
 	// Check if the initiator's vision box collides with the receiver's bounding box
 	def_get_cmp(cc, receiver.deref(), Collision_Component);
 	def_get_cmp(receiver_pc, receiver.deref(), Position_Component);
-	def_get_cmp(following, camera.following.deref(), Position_Component);
 	glm::vec2 penetration;
 
 	if (debug_show_aabb) {

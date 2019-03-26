@@ -335,6 +335,8 @@ void Battle::render() {
 	fox_for (ibattler, 2) {
 		draw_entity(battlers[ibattler], Render_Flags::None);
 	}
+
+	renderer.render_for_frame();
 }
 
 void Battle::update(float dt) {
@@ -569,7 +571,17 @@ void Editor::reload_assets() {
 	active_level->load();
 }
 void Editor::reload_everything() {
-	//@todo reload everything...
+	// Reset the script state; anything unsaved will be lost
+	init_tdscript(); // @leak
+	init_state();
+	init_levels();     // @leak
+	
+	init_hero();
+	game.init();
+	editor.init();
+	battle.init();
+	
+	camera.following = NULL_ENTITY;
 	reload_assets();
 }
 void Editor::undo_action() {
@@ -974,6 +986,7 @@ void Game::init() {
 	particle_system.init();
 	active_dialogue = new Dialogue_Tree;
 	active_level = levels["overworld"]; //@hack Probably a better way to do this
+	camera.following = g_hero;
 }
 void Game::update(float dt) {
 	static int frame = 0;

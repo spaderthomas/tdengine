@@ -11,7 +11,7 @@
 typedef unsigned int uint;
 typedef int32_t int32;
 typedef unsigned char tdbyte;
-
+#define NULL_ENTITY { -1, nullptr }
 
 //Assert
 #ifdef _MSC_VER
@@ -424,7 +424,6 @@ const string STATE_KEY       = "State_Machine";
 const string TO_KEY          = "to";
 const string TRANSITIONS_KEY = "transitions";
 const string VARS_KEY        = "vars";
-
 
 /* Random shit */
 void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void *userParam) {
