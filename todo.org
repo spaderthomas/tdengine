@@ -1,0 +1,7 @@
+* Editor
+@spader 3/26/19: Auto grid snapping isn't complete. It requires you to press ESC
+to un-select a tile, because that's its cue to restore the old grid snapping
+state. Need to be able to do that if you just select something in the script
+selector. 
+@spader 3/26/19: Load tiles into levels. Everything's there, this should be real
+easy.
