@@ -110,3 +110,11 @@ string BattleComponent::name() { return "BattleComponent"; }
 void BattleComponent::init_from_table(TableNode* table) {
 	this->health = tds_int2(table, "health");
 }
+
+string TileComponent::name() { return "TileComponent"; }
+TableNode* TileComponent::save() {
+	TableNode* self = new TableNode;
+
+	tds_set2(self, x, "x");
+	tds_set2(self, y, "y");
+}

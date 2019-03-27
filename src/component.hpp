@@ -69,7 +69,13 @@ struct Task_Component : Component {
 struct BattleComponent : Component {
 	unsigned health;
 	
-	void init_from_table(TableNode* table);
+	TableNode* save() const override;
+	string name() override;
+};
+struct TileComponent : Component {
+	int x;
+	int y;
+	
 	string name() override;
 };
 
@@ -84,6 +90,7 @@ union any_component {
 	Collision_Component collision_component;
 	Task_Component task_component;
 	BattleComponent battle_component;
+	TileComponent battle_component;
 	
 	any_component() {} // Necessary so we can in place new components in the pool.
 };
@@ -100,6 +107,7 @@ unordered_map<string, const type_info*> component_map = {
 	{ "Door_Component", &typeid(Door_Component) },
 	{ "Task_Component", &typeid(Task_Component) },
 	{ "BattleComponent", &typeid(BattleComponent) },
+	{ "TileComponent", &typeid(TileComponent) },
 };
 
 #define def_get_cmp(var, entity, type) type* var = (entity)->get_component<type>()

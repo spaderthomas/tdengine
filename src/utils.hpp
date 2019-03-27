@@ -615,6 +615,8 @@ void Pool<Data_Type, num_elements>::init() {
 		Data_Type* entry = entries + indx;
 		new (entry) Data_Type;
 	}
+
+	// Allocate some memory for the infos and set 
 	info = (pool_entry_info*)calloc(sizeof(pool_entry_info), num_elements);
 	memset(info, 1, sizeof(pool_entry_info) * num_elements);
 }

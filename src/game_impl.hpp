@@ -446,6 +446,15 @@ void Editor::draw_component_editor() {
 				ImGui::TreePop();
 			}
 		}
+		else if (dynamic_cast<TileComponent*>(component)) {
+			if (ImGui::TreeNode("Tile Component")) {
+				def_cast_cmp(tc, component, TileComponent);
+				int min = tc->x - 20;
+				int max = tc->x + 20;
+				ImGui::SliderInt("Position", &tc->x, min, max);
+				ImGui::TreePop();
+			}
+		}
 	}
 	
 	ImGui::End();

@@ -30,7 +30,7 @@ struct Chunk {
 
 struct Level {
 	string name;
-	unordered_map<Chunk_Index, Chunk> chunks;
+	vector<EntityHandle> tiles;
 	vector<EntityHandle> entities;
 
 	EntityHandle get_tile(int x, int y);

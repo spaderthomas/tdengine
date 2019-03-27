@@ -12,6 +12,7 @@ entity.grass.components.Graphic_Component = {
     z = 0
 }
 entity.grass.components.Position_Component = {}
+entity.grass.components.TileComponent = {}
 
 
 entity.grass_flower1 = {}
@@ -26,6 +27,7 @@ entity.grass_flower1.components.Graphic_Component = {
     z = 0
 }
 entity.grass_flower1.components.Position_Component = {}
+entity.grass_flower1.components.TileComponent = {}
 
 
 entity.grass_flower2 = {}
@@ -40,6 +42,7 @@ entity.grass_flower2.components.Graphic_Component = {
     z = 0
 }
 entity.grass_flower2.components.Position_Component = {}
+entity.grass_flower2.components.TileComponent = {}
 
 
 entity.grass_flower3 = {}
@@ -54,6 +57,7 @@ entity.grass_flower3.components.Graphic_Component = {
     z = 0
 }
 entity.grass_flower3.components.Position_Component = {}
+entity.grass_flower3.components.TileComponent = {}
 
 
 entity.sand = {}
@@ -68,6 +72,7 @@ entity.sand.components.Graphic_Component = {
     z = 0
 }
 entity.sand.components.Position_Component = {}
+entity.sand.components.TileComponent = {}
 
 
 entity.sand_cracked = {}
@@ -82,6 +87,7 @@ entity.sand_cracked.components.Graphic_Component = {
     z = 0
 }
 entity.sand_cracked.components.Position_Component = {}
+entity.sand_cracked.components.TileComponent = {}
 
 
 entity.sand_path_top = {}
@@ -96,6 +102,7 @@ entity.sand_path_top.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_top.components.Position_Component = {}
+entity.sand_path_top.components.TileComponent = {}
 
 
 entity.sand_path_bottom = {}
@@ -110,6 +117,7 @@ entity.sand_path_bottom.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_bottom.components.Position_Component = {}
+entity.sand_path_bottom.components.TileComponent = {}
 
 
 entity.sand_path_left = {}
@@ -124,6 +132,7 @@ entity.sand_path_left.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_left.components.Position_Component = {}
+entity.sand_path_left.components.TileComponent = {}
 
 
 entity.sand_path_right = {}
@@ -138,6 +147,7 @@ entity.sand_path_right.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_right.components.Position_Component = {}
+entity.sand_path_right.components.TileComponent = {}
 
 
 entity.sand_path_topleft_inner = {}
@@ -152,6 +162,7 @@ entity.sand_path_topleft_inner.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_topleft_inner.components.Position_Component = {}
+entity.sand_path_topleft_inner.components.TileComponent = {}
 
 
 entity.sand_path_topright_inner = {}
@@ -166,6 +177,7 @@ entity.sand_path_topright_inner.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_topright_inner.components.Position_Component = {}
+entity.sand_path_topright_inner.components.TileComponent = {}
 
 
 entity.sand_path_bottomleft_inner = {}
@@ -180,6 +192,7 @@ entity.sand_path_bottomleft_inner.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_bottomleft_inner.components.Position_Component = {}
+entity.sand_path_bottomleft_inner.components.TileComponent = {}
 
 
 entity.sand_path_bottomright_inner = {}
@@ -194,6 +207,7 @@ entity.sand_path_bottomright_inner.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_bottomright_inner.components.Position_Component = {}
+entity.sand_path_bottomright_inner.components.TileComponent = {}
 
 
 entity.sand_path_topleft_outer = {}
@@ -208,6 +222,7 @@ entity.sand_path_topleft_outer.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_topleft_outer.components.Position_Component = {}
+entity.sand_path_topleft_outer.components.TileComponent = {}
 
 
 entity.sand_path_topright_outer = {}
@@ -222,6 +237,7 @@ entity.sand_path_topright_outer.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_topright_outer.components.Position_Component = {}
+entity.sand_path_topright_outer.components.TileComponent = {}
 
 
 entity.sand_path_bottomleft_outer = {}
@@ -236,6 +252,7 @@ entity.sand_path_bottomleft_outer.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_bottomleft_outer.components.Position_Component = {}
+entity.sand_path_bottomleft_outer.components.TileComponent = {}
 
 
 entity.border_left_sand_grass = {}
@@ -250,6 +267,7 @@ entity.border_left_sand_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_left_sand_grass.components.Position_Component = {}
+entity.border_left_sand_grass.components.TileComponent = {}
 
 
 entity.sand_path_bottomright_outer = {}
@@ -264,6 +282,7 @@ entity.sand_path_bottomright_outer.components.Graphic_Component = {
     z = 0
 }
 entity.sand_path_bottomright_outer.components.Position_Component = {}
+entity.sand_path_bottomright_outer.components.TileComponent = {}
 
 
 entity.border_bottom_sand_grass = {}
@@ -278,6 +297,7 @@ entity.border_bottom_sand_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_bottom_sand_grass.components.Position_Component = {}
+entity.border_bottom_sand_grass.components.TileComponent = {}
 
 
 entity.border_left_sand_grass = {}
@@ -292,6 +312,7 @@ entity.border_left_sand_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_left_sand_grass.components.Position_Component = {}
+entity.border_left_sand_grass.components.TileComponent = {}
 
 
 entity.border_top_sand_grass = {}
@@ -306,6 +327,7 @@ entity.border_top_sand_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_top_sand_grass.components.Position_Component = {}
+entity.border_top_sand_grass.components.TileComponent = {}
 
 
 entity.border_right_sand_grass = {}
@@ -320,6 +342,7 @@ entity.border_right_sand_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_right_sand_grass.components.Position_Component = {}
+entity.border_right_sand_grass.components.TileComponent = {}
 
 
 entity.border_bottom_right_sand_grass = {}
@@ -334,6 +357,7 @@ entity.border_bottom_right_sand_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_bottom_right_sand_grass.components.Position_Component = {}
+entity.border_bottom_right_sand_grass.components.TileComponent = {}
 
 
 entity.border_bottom_left_sand_grass = {}
@@ -348,6 +372,7 @@ entity.border_bottom_left_sand_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_bottom_left_sand_grass.components.Position_Component = {}
+entity.border_bottom_left_sand_grass.components.TileComponent = {}
 
 
 entity.border_top_left_sand_grass = {}
@@ -362,6 +387,7 @@ entity.border_top_left_sand_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_top_left_sand_grass.components.Position_Component = {}
+entity.border_top_left_sand_grass.components.TileComponent = {}
 
 
 entity.border_top_right_sand_grass = {}
@@ -376,6 +402,7 @@ entity.border_top_right_sand_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_top_right_sand_grass.components.Position_Component = {}
+entity.border_top_right_sand_grass.components.TileComponent = {}
 
 
 entity.border_bottom_right_grass = {}
@@ -390,6 +417,7 @@ entity.border_bottom_right_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_bottom_right_grass.components.Position_Component = {}
+entity.border_bottom_right_grass.components.TileComponent = {}
 
 
 entity.border_bottom_left_grass = {}
@@ -404,6 +432,7 @@ entity.border_bottom_left_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_bottom_left_grass.components.Position_Component = {}
+entity.border_bottom_left_grass.components.TileComponent = {}
 
 
 entity.border_top_left_grass = {}
@@ -418,6 +447,7 @@ entity.border_top_left_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_top_left_grass.components.Position_Component = {}
+entity.border_top_left_grass.components.TileComponent = {}
 
 
 entity.border_top_right_grass = {}
@@ -432,6 +462,7 @@ entity.border_top_right_grass.components.Graphic_Component = {
     z = 0
 }
 entity.border_top_right_grass.components.Position_Component = {}
+entity.border_top_right_grass.components.TileComponent = {}
 
 
 entity.wood_floor = {}
@@ -446,4 +477,5 @@ entity.wood_floor.components.Graphic_Component = {
     z = 0
 }
 entity.wood_floor.components.Position_Component = {}
+entity.wood_floor.components.TileComponent = {}
 

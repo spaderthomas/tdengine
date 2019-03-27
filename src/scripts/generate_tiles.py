@@ -51,20 +51,21 @@ with open("src/scripts/utils/tiles.tds", "w") as f:
     for i, tile in enumerate(tiles):
         path = tile + '.png'
         lua_def = '''
-entity.%s = {}
-entity.%s.components = {}
-entity.%s.components.Graphic_Component = {
+entity.%(tile_name)s = {}
+entity.%(tile_name)s.components = {}
+entity.%(tile_name)s.components.Graphic_Component = {
     Animations = {
-        %s = {
-            "%s.png"
+        %(tile_name)s = {
+            "%(tile_name)s.png"
         }
     }
-    default_animation = "%s"
+    default_animation = "%(tile_name)s"
     z = 0
 }
-entity.%s.components.Position_Component = {}
+entity.%(tile_name)s.components.Position_Component = {}
+entity.%(tile_name)s.components.TileComponent = {}
 
-''' % (tile, tile, tile, tile, tile, tile, tile)
+''' % {'tile_name' : tile}
         
         f.write(lua_def)
         
