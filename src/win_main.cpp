@@ -115,7 +115,7 @@ int main() {
 	
 	glfwSwapInterval(0);
 	
-	use_720p();
+	use_1440p();
 #pragma endregion 
 	
 #pragma region DATA_INIT

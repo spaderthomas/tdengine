@@ -112,9 +112,11 @@ void BattleComponent::init_from_table(TableNode* table) {
 }
 
 string TileComponent::name() { return "TileComponent"; }
-TableNode* TileComponent::save() {
+TableNode* TileComponent::save() const {
 	TableNode* self = new TableNode;
 
 	tds_set2(self, x, "x");
 	tds_set2(self, y, "y");
+
+	return self;
 }

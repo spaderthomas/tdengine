@@ -93,6 +93,8 @@ struct Editor : Layer {
 	int draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index);
 	Editor_State state = IDLE;
 	Selection_Kind kind = NONE;
+	bool last_show_grid = show_grid; 
+	bool last_snap_to_grid = snap_to_grid; 
 	TaskEditor task_editor;
 	
 	// State for moving things around cleanly

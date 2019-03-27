@@ -69,7 +69,7 @@ struct Task_Component : Component {
 struct BattleComponent : Component {
 	unsigned health;
 	
-	TableNode* save() const override;
+	void init_from_table(TableNode* table);
 	string name() override;
 };
 struct TileComponent : Component {
@@ -77,6 +77,7 @@ struct TileComponent : Component {
 	int y;
 	
 	string name() override;
+	TableNode* save() const override;
 };
 
 //@metaprogramming
@@ -90,7 +91,7 @@ union any_component {
 	Collision_Component collision_component;
 	Task_Component task_component;
 	BattleComponent battle_component;
-	TileComponent battle_component;
+	TileComponent tile_component;
 	
 	any_component() {} // Necessary so we can in place new components in the pool.
 };

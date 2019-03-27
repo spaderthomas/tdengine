@@ -16,4 +16,44 @@ levels.overworld = {
 			}
 		}
 	}
+	tiles = {
+		{
+			name = "wood_floor"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.362500
+						y = 0.377778
+					}
+				}
+				TileComponent = {
+					x = 14
+					y = 8
+				}
+			}
+		}
+		{
+			name = "wood_floor"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.012500
+						y = 0.022222
+					}
+				}
+				TileComponent = {
+					x = 0
+					y = 0
+				}
+			}
+		}
+	}
 }

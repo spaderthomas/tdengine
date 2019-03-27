@@ -486,6 +486,10 @@ int Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 					selected = Entity::create(tile->name);
 					this->kind = TILE;
 					this->state = INSERT;
+					last_show_grid = show_grid;
+					last_snap_to_grid = snap_to_grid;
+					show_grid = true;
+					snap_to_grid = true;
 				}
 				ImGui::PopID();
 				bool is_end_of_row = !((i + 1) % 6);
@@ -550,6 +554,12 @@ void Editor::exec_console_cmd(char* command_line) {
 	}
 	else if (console.Stricmp(command, "reload") == 0) {
 		reload_everything();
+	}
+	else if (console.Stricmp(command, "grid") == 0) {
+		show_grid = true;
+	}
+	else if (console.Stricmp(command, "snap") == 0) {
+		snap_to_grid = true;
 	}
 	else if (console.Stricmp(command, "level") == 0) {
 		string level_name = strtok(NULL, " ");
@@ -631,10 +641,16 @@ void Editor::update(float dt) {
 	if (input.is_down[GLFW_KEY_D]) {
 		camera.offset += glm::vec2{.025, 0};
 	}
-	
+
+	// Global ESC -- puts you back in idle, resets the grid + snapping if you
+	// were holding a tile
 	if (input.was_pressed(GLFW_KEY_ESCAPE)) {
 		selected = { -1, nullptr };
 		state = IDLE;
+		if (kind == TILE) {
+			snap_to_grid = last_snap_to_grid;
+			show_grid = last_show_grid;
+		}
 	}
 	if (input.is_down[GLFW_KEY_LEFT_ALT] &&
 		input.was_pressed(GLFW_KEY_Z)) {
@@ -871,6 +887,7 @@ void Editor::update(float dt) {
 					
 					active_level->set_tile(selected, grid_pos.x, grid_pos.y);
 					selected = Entity::create(selected()->name);
+					translate();
 					
 					// Update so we only paint one entity per tile
 					last_grid_drawn = grid_pos;
@@ -890,6 +907,8 @@ void Editor::update(float dt) {
 					Entity* selection = selected();
 					selected = Entity::create(selection->name);
 					smooth_drag_offset = glm::vec2(0.f);
+
+					// Translate it so it doesn't pop in at (0,0) for a frame
 					translate();
 				}
 			}

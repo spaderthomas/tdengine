@@ -50,7 +50,19 @@ pool_handle<Entity> Entity::create(string entity_name) {
 		KVPNode* kvp = (KVPNode*)node;
 		string& type = kvp->key;
 		TableNode* component_table = (TableNode*)(kvp->value);
-		
+
+		// @spader 3/26/19 This switch loops over all components defined for this entity.
+		//
+		// If you're adding a new component, there are generally three things you want to do:
+		// 1. Add the component to the entity with
+		//      pool_handle<any_component> handle = entity->add_component<Movement_Component>();
+		// 2. Some special, component-specific initialization (see: Graphic_Component)
+		// 3. Initialize the table with some default values with 
+		//      component->init_from_table(component_table);
+		// 
+		//    For some components (such as Position_Component), this doesn't make sense,
+		//    since that information is dependent on the level the entity is in -- so this
+		//    step is optional. 
 		if (type == "Graphic_Component") {
 			pool_handle<any_component> handle = entity->add_component<Graphic_Component>();
 			Graphic_Component* component = &handle()->graphic_component;
@@ -113,6 +125,10 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			pool_handle<any_component> handle = entity->add_component<BattleComponent>();
 			BattleComponent* component = &handle()->battle_component;
 			component->init_from_table(component_table);
+		}
+		else if (type == "TileComponent") {
+			pool_handle<any_component> handle = entity->add_component<TileComponent>();
+			TileComponent* component = &handle()->tile_component;
 		}
 	}
 	

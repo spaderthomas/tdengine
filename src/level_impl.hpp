@@ -1,16 +1,31 @@
 EntityHandle Level::get_tile(int x, int y) {
 	for (auto& tile : tiles) {
-		if (tile.x == x && tile.y == y) {
+		auto tc = tile->get_component<TileComponent>();
+		if (tc->x == x && tc->y == y) {
 			return tile;
 		}
 	}
+
+	return NULL_ENTITY;
 }
 void Level::set_tile(EntityHandle tile, int x, int y) {
-	auto tc = tile->get_component<Tile_Component>();
-	tc->x = x;
-	tc->y = y;
-	tiles.push_back(tile);
+	// If there was another tile in this spot, erase it
+	for (auto it = tiles.begin(); it != tiles.end(); ++it) {
+		auto tc = (*it)->get_component<TileComponent>();
+		if (tc->x == x && tc->y == y) {
+			tiles.erase(it);
+			break;
+		}
+	}
+
+	if (tile) {
+		auto tc = tile->get_component<TileComponent>();
+		tc->x = x;
+		tc->y = y;
+		tiles.push_back(tile);
+	}
 }
+
 EntityHandle Level::get_first_matching_entity(string name) {
 	for (auto& entity : entities) {
 		if (entity->name == name) return entity;
@@ -31,7 +46,7 @@ EntityHandle Level::erase_first_matching_entity(string name) {
 }
 
 void Level::draw() {
-	vector<EntityHandle>* containers[2] = {tiles, entities};
+	vector<EntityHandle>* containers[2] = {&tiles, &entities};
 	for (auto container : containers) {
 		for (auto entity : *container) {
 			draw_entity(entity, Render_Flags::None);
@@ -57,9 +72,9 @@ void Level::save() {
 	
 	// Save the tiles to this table
 	tds_set2(table, new TableNode, "tiles");
-	TableNode* saved_tiles = tds;
+	TableNode* saved_tiles = tds_table2(table, "tiles");
 	for (auto tile : tiles) {
-		TableNode* saved_tile = entity->save();
+		TableNode* saved_tile = tile->save();
 		saved_tiles->push_back(saved_tile);
 	}
 
