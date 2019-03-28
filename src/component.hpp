@@ -78,6 +78,7 @@ struct TileComponent : Component {
 	
 	string name() override;
 	TableNode* save() const override;
+	void load(TableNode* self);
 };
 
 //@metaprogramming

@@ -1,7 +1,25 @@
 * Editor
+@spader 3/27/19: A way to parse in TDS files without adding them to the global
+scope. One problem with this is that often nodes refer to keys that exist in the
+global scope, so you would have to check there to know where they are e.g.
+#+BEGIN_SRC 
+# foo.tds
+default_foo = "bums"
+
+# bar.tds
+whatevz = {
+    sup = "spum"
+    foo = default_foo
+}
+#+END_SRC
+
+@spader 3/27/19: A way to write out a TDS table without overwriting the whole
+file. As in, find where the KVP for the table is, kill exactly that part of the
+file and overwrite it. Doesn't sound too hard. 
+* Done!
 @spader 3/26/19: Auto grid snapping isn't complete. It requires you to press ESC
 to un-select a tile, because that's its cue to restore the old grid snapping
 state. Need to be able to do that if you just select something in the script
-selector. 
+selector. @done 3/27/19
 @spader 3/26/19: Load tiles into levels. Everything's there, this should be real
-easy.
+easy. @done 3/27/19

@@ -166,6 +166,38 @@ void TableNode::set(vector<string> keys, TableNode* value) {
 	}
 }
 
+void TableNode::del(vector<string> keys) {
+	string final_key = keys.back();
+	keys.erase(keys.end() - 1);
+	auto not_found_error = [final_key, keys]() mutable -> void {
+		string error_msg = "Tried to delete ";
+		error_msg += keys.front();
+		keys.erase(keys.begin());
+		for (auto& key : keys) {
+			error_msg += "[" + key + "]";
+		}
+		error_msg += "[" + final_key + "]";
+		error_msg += ", but it did not exist!";
+		tdns_log.write(error_msg);
+		fox_assert(0);
+	};
+	
+	TableNode* containing_table = get_table(keys);
+	if (!containing_table) not_found_error();
+
+	bool found = false;
+	for (auto it = containing_table->assignments.begin(); it != containing_table->assignments.end(); ++it) {
+		KVPNode* kvp = *it;
+		if (kvp->key == final_key) {
+			containing_table->assignments.erase(it);
+			found = true;
+			break;
+		}
+	}
+
+	if (!found) not_found_error();
+}
+
 template<typename T>      
 void TableNode::push_back(T value) {
 	vector<string> keys = { to_string(assignments.size()) };

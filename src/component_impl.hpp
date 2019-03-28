@@ -120,3 +120,7 @@ TableNode* TileComponent::save() const {
 
 	return self;
 }
+void TileComponent::load(TableNode* self) {
+	this->x = tds_int2(self, "x");
+	this->y = tds_int2(self, "y");
+}

@@ -486,6 +486,8 @@ int Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 					selected = Entity::create(tile->name);
 					this->kind = TILE;
 					this->state = INSERT;
+
+					// We've selected a tile, so enable the grid and save the old preferences
 					last_show_grid = show_grid;
 					last_snap_to_grid = snap_to_grid;
 					show_grid = true;
@@ -556,10 +558,22 @@ void Editor::exec_console_cmd(char* command_line) {
 		reload_everything();
 	}
 	else if (console.Stricmp(command, "grid") == 0) {
-		show_grid = true;
+		if (kind == TILE && state != IDLE) {
+			last_show_grid = !show_grid;
+		} else {
+			last_show_grid = show_grid;
+		}
+		show_grid = !show_grid;
 	}
 	else if (console.Stricmp(command, "snap") == 0) {
-		snap_to_grid = true;
+		// If we're actually in tile mode, assume we want this new change to persist when we go back
+		if (kind == TILE && state != IDLE) {
+			last_snap_to_grid = !snap_to_grid;
+		} else {
+			last_snap_to_grid = snap_to_grid;
+		}
+		snap_to_grid = !snap_to_grid;
+
 	}
 	else if (console.Stricmp(command, "level") == 0) {
 		string level_name = strtok(NULL, " ");
@@ -642,11 +656,12 @@ void Editor::update(float dt) {
 		camera.offset += glm::vec2{.025, 0};
 	}
 
-	// Global ESC -- puts you back in idle, resets the grid + snapping if you
-	// were holding a tile
+	// Global ESC -- puts you back in idle
 	if (input.was_pressed(GLFW_KEY_ESCAPE)) {
 		selected = { -1, nullptr };
 		state = IDLE;
+
+		// If you had a tile selected, put the grid settings back to how they were
 		if (kind == TILE) {
 			snap_to_grid = last_snap_to_grid;
 			show_grid = last_show_grid;
@@ -687,18 +702,10 @@ void Editor::update(float dt) {
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Options", "options")) {
-				if (ImGui::BeginMenu("Editor", "editor_options")) {
-					ImGui::MenuItem("Show Grid", "", &show_grid);
-					ImGui::MenuItem("Snap To Grid", "", &snap_to_grid);
-					ImGui::EndMenu();
-				}
-				if (ImGui::BeginMenu("Debug", "debug_options")) {
-					ImGui::MenuItem("Show Bounding Boxes", "", &debug_show_aabb);
-					ImGui::MenuItem("Show Minkowski Differences", "", &debug_show_minkowski);
-					ImGui::MenuItem("Show ImGui Demo", "", &show_imgui_demo);
-					ImGui::MenuItem("Show Framerate", "", &print_framerate);
-					ImGui::EndMenu();
-				}
+				ImGui::MenuItem("Show Bounding Boxes", "", &debug_show_aabb);
+				ImGui::MenuItem("Show Minkowski Differences", "", &debug_show_minkowski);
+				ImGui::MenuItem("Show ImGui Demo", "", &show_imgui_demo);
+				ImGui::MenuItem("Show Framerate", "", &print_framerate);
 				ImGui::EndMenu();
 			}
 			if (ImGui::BeginMenu("Windows", "windows")) {
@@ -768,14 +775,23 @@ void Editor::update(float dt) {
 			ImGui::EndCombo();
 		}
 		
-		
+		// Populate a list of selectables that, when clicked, create the corresponding entity
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 		ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
 		for (auto& entity : script_to_entity[script_current]) {
 			if (ImGui::Selectable(entity.c_str())) {
+				// If we were selecting a tile, reset our grid settings
+				if (this->kind == TILE) {
+					snap_to_grid = last_snap_to_grid;
+					show_grid = last_show_grid;
+				}
+				
+				// Create the entity and go to the new editor state
 				selected = Entity::create(entity);
 				this->kind = ENTITY;
 				this->state = INSERT;
+
+				
 			}
 		}
 		ImGui::PopStyleVar();

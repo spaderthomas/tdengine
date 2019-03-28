@@ -22,6 +22,7 @@ struct Primitive {
 #define tds_table2(root, ...) root->get_table({__VA_ARGS__})
 #define tds_raw2(root, ...) root->get_raw({__VA_ARGS__})
 #define tds_set2(root, val, ...) root->set({__VA_ARGS__}, val)
+#define tds_del2(root, keys) root->del(keys);
 
 #define tds_int(...) ScriptManager.global_scope->get_int({__VA_ARGS__})
 #define tds_string(...) ScriptManager.global_scope->get_string({__VA_ARGS__})
@@ -30,6 +31,7 @@ struct Primitive {
 #define tds_table(...) ScriptManager.global_scope->get_table({__VA_ARGS__})
 #define tds_raw(...) ScriptManager.global_scope->get_raw({__VA_ARGS__})
 #define tds_set(val, ...) ScriptManager.global_scope->set({__VA_ARGS__}, val)
+#define tds_del(...) ScriptManager.global_scope->del({__VA_ARGS__});
 
 struct TableWriter;
 
@@ -92,11 +94,15 @@ struct TableNode : ASTNode {
 	void       set(vector<string> keys, float value);
 	void       set(vector<string> keys, bool value);
 	void       set(vector<string> keys, TableNode* value);
+	void       del(vector<string> keys);
 	
 	template<typename T>                                // Note: Only use this if you know you're actually pushing
 	void       push_back(T value);                      // to an array. 
 	
 	void       dump(string path);
+
+	KVPNode** begin() { return &assignments.front(); };
+	KVPNode** end() { return &assignments.back(); };
 };
 
 
@@ -220,15 +226,20 @@ struct Lexer {
 struct TDScript {
 	Lexer lexer;
 	TableNode* global_scope = nullptr;
-	
-	bool is_nested_identifier(string& key);
+
+	// Parsing functions
 	ASTNode* parse(string script_path);
 	ASTNode* parse_table();
 	KVPNode* parse_assign();
-	vector<string> keys_from_string(string key_str);
+
+	// Scripting functions
 	void script_file(string script_path);
 	void script_dir(string dir_path);
 	void script_init_if_exists(string dir_path);
+
+	// Utility functions
+	bool is_nested_identifier(string& key);
+	vector<string> keys_from_string(string key_str);
 };
 TDScript ScriptManager;
 

@@ -68,8 +68,6 @@ void Level::save() {
 		TableNode* saved_entity = entity->save();
 		saved_entities->push_back(saved_entity);
 	}
-
-	
 	// Save the tiles to this table
 	tds_set2(table, new TableNode, "tiles");
 	TableNode* saved_tiles = tds_table2(table, "tiles");
@@ -77,11 +75,17 @@ void Level::save() {
 		TableNode* saved_tile = tile->save();
 		saved_tiles->push_back(saved_tile);
 	}
-
+	
+	// Write it out to a file
 	TableWriter writer;
 	writer.table = table;
 	writer.table_name = "levels." + name + " = ";
-	writer.dump(absolute_path(path_join({"src", "scripts", "levels", name + ".tds"})));
+	auto level_file = absolute_path(path_join({"src", "scripts", "levels", name + ".tds"}));
+	writer.dump(level_file);
+
+	// Write the updated level to the in-memory TDS tree
+	tds_del(LEVELS_KEY, this->name);
+	ScriptManager.parse(level_file);
 }
 
 //@leak We never free up any tiles that were previously allocated.
@@ -95,6 +99,17 @@ void Level::load() {
 		EntityHandle handle = Entity::create(name);
 		handle->load(entity_table);
 		entities.push_back(handle);
+	}
+
+	tiles.clear();
+	TableNode* tiles_table = tds_table(LEVELS_KEY, name, TILES_KEY);
+
+	fox_for(idx, tiles_table->assignments.size()) {
+		TableNode* tile_table = tds_table2(tiles_table, to_string(idx));
+		string name = tds_string2(tile_table, NAME_KEY);
+		EntityHandle tile = Entity::create(name);
+		tile->load(tile_table);
+		tiles.push_back(tile);
 	}
 }
 

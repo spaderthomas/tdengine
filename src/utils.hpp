@@ -390,8 +390,7 @@ bool is_tds(string& path) {
 
 
 /* ImGui options */
-bool show_grid = false;
-bool snap_to_grid = false;
+
 bool debug_show_aabb = false;
 bool debug_show_minkowski = false;
 bool show_imgui_demo = false;
@@ -421,6 +420,7 @@ const string POS_KEY         = "pos";
 const string SCALE_KEY       = "scale";
 const string SCRIPTS_KEY     = "scripts";
 const string STATE_KEY       = "State_Machine";
+const string TILES_KEY       = "tiles";
 const string TO_KEY          = "to";
 const string TRANSITIONS_KEY = "transitions";
 const string VARS_KEY        = "vars";

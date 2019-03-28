@@ -55,5 +55,157 @@ levels.overworld = {
 				}
 			}
 		}
+		{
+			name = "border_bottom_left_grass"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.162500
+						y = 0.466667
+					}
+				}
+				TileComponent = {
+					x = 6
+					y = 10
+				}
+			}
+		}
+		{
+			name = "border_bottom_left_grass"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.162500
+						y = 0.422222
+					}
+				}
+				TileComponent = {
+					x = 6
+					y = 9
+				}
+			}
+		}
+		{
+			name = "border_bottom_left_grass"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.187500
+						y = 0.422222
+					}
+				}
+				TileComponent = {
+					x = 7
+					y = 9
+				}
+			}
+		}
+		{
+			name = "border_bottom_left_grass"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.187500
+						y = 0.466667
+					}
+				}
+				TileComponent = {
+					x = 7
+					y = 10
+				}
+			}
+		}
+		{
+			name = "wood_floor"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.637500
+						y = 0.644444
+					}
+				}
+				TileComponent = {
+					x = 25
+					y = 14
+				}
+			}
+		}
+		{
+			name = "wood_floor"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.687500
+						y = 0.733333
+					}
+				}
+				TileComponent = {
+					x = 27
+					y = 16
+				}
+			}
+		}
+		{
+			name = "wood_floor"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.712500
+						y = 0.600000
+					}
+				}
+				TileComponent = {
+					x = 28
+					y = 13
+				}
+			}
+		}
+		{
+			name = "wood_floor"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.687500
+						y = 0.466667
+					}
+				}
+				TileComponent = {
+					x = 27
+					y = 10
+				}
+			}
+		}
 	}
 }

@@ -93,21 +93,26 @@ struct Editor : Layer {
 	int draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index);
 	Editor_State state = IDLE;
 	Selection_Kind kind = NONE;
-	bool last_show_grid = show_grid; 
-	bool last_snap_to_grid = snap_to_grid; 
 	TaskEditor task_editor;
 	
 	// State for moving things around cleanly
 	glm::ivec2 last_grid_drawn = { 0, 0 };
 	glm::vec2 top_left_drag = { 0.f, 0.f };
 	glm::vec2 smooth_drag_offset = { 0.f, 0.f };
+
+	// Grid state
+	bool show_grid = false;
+	bool last_show_grid = false;
+	bool snap_to_grid = false;
+	bool last_snap_to_grid = false;
 	
 	// State about selected thing
 	EntityHandle selected;
 	void translate();
 	void delete_selected();
 	void draw_component_editor();
-	
+
+	// Undo 
 	vector<function<void()>> action_stack;
 	void undo_action();
 	vector<function<void()>> mark_stack;
