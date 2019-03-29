@@ -99,7 +99,7 @@ struct Editor : Layer {
 	glm::ivec2 last_grid_drawn = { 0, 0 };
 	glm::vec2 top_left_drag = { 0.f, 0.f };
 	glm::vec2 smooth_drag_offset = { 0.f, 0.f };
-
+	
 	// Grid state
 	bool show_grid = false;
 	bool last_show_grid = false;
@@ -111,7 +111,7 @@ struct Editor : Layer {
 	void translate();
 	void delete_selected();
 	void draw_component_editor();
-
+	
 	// Undo 
 	vector<function<void()>> action_stack;
 	void undo_action();
@@ -131,11 +131,6 @@ struct Editor : Layer {
 };
 Editor editor;
 
-// @spader 3/19/19: This enum is bad
-enum Game_State {
-	GAME = 0,
-	DIALOGUE = 1
-};
 struct Game : Layer {
 	Dialogue_Tree* active_dialogue;
 	Particle_System particle_system;

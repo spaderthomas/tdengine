@@ -1,4 +1,4 @@
 character_state = {
-    intro_police = "intro",
+    intro_police = "intro1",
 	wilson = "intro"
 }

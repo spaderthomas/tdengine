@@ -6,7 +6,7 @@ struct Character {
 	glm::ivec2 px_size;
 	glm::ivec2 px_bearing;
 	uint advance;
-
+	
 	static glm::ivec2 px_largest; // Useful to guarantee characters stay inside an area. 
 };
 glm::ivec2 Character::px_largest;
@@ -26,7 +26,7 @@ void init_fonts() {
 		tdns_log.write("Failed to load font (yes, even Papyrus failed :(");
 		exit(0);
 	}
-
+	
 	FT_Set_Pixel_Sizes(face, 0, PX_FONT_SIZE);
 	Character::px_largest = glm::ivec2(0);
 	glPixelStorei(GL_UNPACK_ALIGNMENT, 1); // Textures are grayscale i.e. 1 byte per pixel, so turn off 4 byte alignment
@@ -36,19 +36,19 @@ void init_fonts() {
 			tdns_log.write(string("Character was: %c", c));
 			exit(0);
 		}
-
+		
 		// Generate texture. Note: We're going to load it in as red, then convert to grayscale in the shader.
 		GLuint texture;
 		glGenTextures(1, &texture);
 		glBindTexture(GL_TEXTURE_2D, texture);
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RED, face->glyph->bitmap.width, face->glyph->bitmap.rows, 0, GL_RED, GL_UNSIGNED_BYTE, face->glyph->bitmap.buffer);
-
+		
 		// Some sane defaults
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
+		
 		// Save this data and put it in a map
 		Character character = {
 			texture,
@@ -57,7 +57,7 @@ void init_fonts() {
 			(uint)face->glyph->advance.x
 		};
 		characters.insert(std::pair<GLchar, Character>(c, character));
-
+		
 		if (character.px_size.x > Character::px_largest.x) {
 			Character::px_largest.x = character.px_size.x;
 		}
@@ -65,28 +65,28 @@ void init_fonts() {
 			Character::px_largest.y = character.px_size.y;
 		}
 	}
-
+	
 	FT_Done_Face(face);
 	FT_Done_FreeType(freetype);
-
+	
 	// GL buffers for text
 	glGenVertexArrays(1, &font_vao);
 	glGenBuffers(1, &font_vert_buffer);
 	glBindVertexArray(font_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
-
+	
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(GLfloat) * 12));
-
+	
 	// GL buffers for the text box
 	glGenVertexArrays(1, &text_box_vao);
 	glGenBuffers(1, &text_box_vert_buffer);
 	glBindVertexArray(text_box_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
-
+	
 	// VAO
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
@@ -99,14 +99,14 @@ struct Line_Set {
 	vector<string> lines;
 	int point = 0;
 	int max_point = 0;
-
+	
 	void set_max_point() {
 		max_point = 0;
 		for (auto& line : lines) {
 			max_point += line.size();
 		}
 	}
-
+	
 	int count() {
 		return (int)lines.size();
 	}
@@ -126,12 +126,13 @@ struct Text_Box {
 	bool waiting = false;
 	bool active = false;
 	float scale = 1.f;
-
+	float time_since_last_update = 0.0f;
+	
 	vector<Line_Set> sets;
 	int index_current_line_set;
-
+	
 	void begin(string text);
-	void update(int frame);
+	void update(float dt);
 	void resume();
 	void render();
 	void reset_and_hide();

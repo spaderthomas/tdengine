@@ -15,6 +15,21 @@ levels.overworld = {
 				}
 			}
 		}
+		{
+			name = "intro_police"
+			components = {
+				Position_Component = {
+					scale = {
+						x = 1.000000
+						y = 1.000000
+					}
+					pos = {
+						x = 0.115234
+						y = 0.511806
+					}
+				}
+			}
+		}
 	}
 	tiles = {
 		{

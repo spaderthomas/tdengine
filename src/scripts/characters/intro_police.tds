@@ -65,6 +65,7 @@ entity.intro_police.scripts.intro1 = {
 			}
 		 }
 	  }
+	  is_blocking = true
    },
    {
 	  kind = "Movement_Action",

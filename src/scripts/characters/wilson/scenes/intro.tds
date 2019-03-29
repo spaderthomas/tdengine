@@ -28,6 +28,7 @@ entity.wilson.scripts.intro = {
 		 },
 		 children = {}
 	  }
+      is_blocking = true,
    },
    {
 	  kind = "Movement_Action",

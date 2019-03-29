@@ -335,7 +335,7 @@ void Battle::render() {
 	fox_for (ibattler, 2) {
 		draw_entity(battlers[ibattler], Render_Flags::None);
 	}
-
+	
 	renderer.render_for_frame();
 }
 
@@ -486,7 +486,7 @@ int Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 					selected = Entity::create(tile->name);
 					this->kind = TILE;
 					this->state = INSERT;
-
+					
 					// We've selected a tile, so enable the grid and save the old preferences
 					last_show_grid = show_grid;
 					last_snap_to_grid = snap_to_grid;
@@ -573,7 +573,7 @@ void Editor::exec_console_cmd(char* command_line) {
 			last_snap_to_grid = snap_to_grid;
 		}
 		snap_to_grid = !snap_to_grid;
-
+		
 	}
 	else if (console.Stricmp(command, "level") == 0) {
 		string level_name = strtok(NULL, " ");
@@ -655,12 +655,12 @@ void Editor::update(float dt) {
 	if (input.is_down[GLFW_KEY_D]) {
 		camera.offset += glm::vec2{.025, 0};
 	}
-
+	
 	// Global ESC -- puts you back in idle
 	if (input.was_pressed(GLFW_KEY_ESCAPE)) {
 		selected = { -1, nullptr };
 		state = IDLE;
-
+		
 		// If you had a tile selected, put the grid settings back to how they were
 		if (kind == TILE) {
 			snap_to_grid = last_snap_to_grid;
@@ -790,7 +790,7 @@ void Editor::update(float dt) {
 				selected = Entity::create(entity);
 				this->kind = ENTITY;
 				this->state = INSERT;
-
+				
 				
 			}
 		}
@@ -923,7 +923,7 @@ void Editor::update(float dt) {
 					Entity* selection = selected();
 					selected = Entity::create(selection->name);
 					smooth_drag_offset = glm::vec2(0.f);
-
+					
 					// Translate it so it doesn't pop in at (0,0) for a frame
 					translate();
 				}
@@ -1049,24 +1049,29 @@ void Game::update(float dt) {
 	camera.offset += glm::vec2{-.5, -.5};
 	input.world_pos = input.screen_pos + camera.offset;
 	
-	
-	// Deal with the player
-	move_entity(g_hero, input.is_down[GLFW_KEY_W], input.is_down[GLFW_KEY_S], input.is_down[GLFW_KEY_A], input.is_down[GLFW_KEY_D]);
-	draw_entity(g_hero, Render_Flags::None);
-	
-	// Handle collisions
-	for (auto& entity : active_level->entities) {
-		if (entity->get_component<Collision_Component>()) {
-			Collision_Element new_collision_element;
-			new_collision_element.me = g_hero;
-			new_collision_element.other = entity;
-			physics_system.collisions.push_back(new_collision_element);
-		}
+	for (auto entity : active_level->entities) {
+		update_task(entity, dt);
 	}
 	
-	physics_system.process(1.f / 60.f);
+	if (in_dialogue) {
+	} else {
+		// Deal with the player
+		move_entity(g_hero, input.is_down[GLFW_KEY_W], input.is_down[GLFW_KEY_S], input.is_down[GLFW_KEY_A], input.is_down[GLFW_KEY_D]);
+		draw_entity(g_hero, Render_Flags::None);
+		
+		// Handle collisions
+		for (auto& entity : active_level->entities) {
+			if (entity->get_component<Collision_Component>()) {
+				Collision_Element new_collision_element;
+				new_collision_element.me = g_hero;
+				new_collision_element.other = entity;
+				physics_system.collisions.push_back(new_collision_element);
+			}
+		}
+		
+		physics_system.process(1.f / 60.f);
+	}
 	
-	text_box.update(frame);
 	frame++;
 }
 void Game::render() {

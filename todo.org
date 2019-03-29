@@ -16,6 +16,9 @@ whatevz = {
 @spader 3/27/19: A way to write out a TDS table without overwriting the whole
 file. As in, find where the KVP for the table is, kill exactly that part of the
 file and overwrite it. Doesn't sound too hard. 
+@joey 3/28/19: Fix the grid snapping at resolutions other than 720p.
+@joey 3/28/19: Make screen less lorge based on config file.
+@joey 3/28/19: Paint tiles in a different channel.
 * Done!
 @spader 3/26/19: Auto grid snapping isn't complete. It requires you to press ESC
 to un-select a tile, because that's its cue to restore the old grid snapping
