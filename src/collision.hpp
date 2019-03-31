@@ -37,7 +37,7 @@ Physics_System physics_system;
 bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration);
 bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration);
 
-enum Collider_Kind {
+enum Collider_Kind : int {
 	NO_COLLIDER,
 	STATIC,
 	//@simplify(joey :3) combine dynamic and hero

@@ -3,16 +3,25 @@
 #define fox_min(a, b) (a) > (b) ? (b) : (a)
 #define fox_for(iterName, iterCount) for (unsigned int iterName = 0; iterName < (iterCount); ++iterName)
 #define fox_iter(iter_name, container) for (auto iter_name = (container).begin(); (iter_name) != (container).end(); (iter_name)++)
+
 #define rand_float(max) (static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (max)))
+
 #define is_newline(c) ((c) == '\n' || (c) == '\r')
 #define is_space(c) ((c) == ' ')
+
 #define dont_care false
-#define tdapi 
+
+#define tdapi
+	
 typedef unsigned int uint;
 typedef int32_t int32;
 typedef unsigned char tdbyte;
+
 #define NULL_ENTITY { -1, nullptr }
 
+#if  defined(__APPLE__) || defined(__linux__)
+#define __stdcall
+#endif
 //Assert
 #ifdef _MSC_VER
 #	ifdef assert

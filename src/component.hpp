@@ -49,7 +49,7 @@ struct Door_Component : Component {
 	void load(TableNode* self);
 	string name() override;
 };
-enum Collider_Kind;
+enum Collider_Kind : int;
 struct Collision_Component : Component {
 	struct {
 		glm::vec2 screen_center;

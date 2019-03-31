@@ -744,9 +744,6 @@ KVPNode* TDScript::parse_assign() {
 				fox_assert(0);
 			}
 		}
-		else {
-			int x = 0;
-		}
 	}
 	
 	// A regular assignment (i.e. my_var = {bool, int, table, ...})

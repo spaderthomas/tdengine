@@ -66,10 +66,13 @@ Index of this file:
 #include <assert.h>
 #define IM_ASSERT(_EXPR)            assert(_EXPR)                               // You can override the default assert handler by editing imconfig.h
 #endif
+/*
 #if defined(__clang__) || defined(__GNUC__)
 #define IM_FMTARGS(FMT)             __attribute__((format(printf, FMT, FMT+1))) // Apply printf-style warnings to user functions.
 #define IM_FMTLIST(FMT)             __attribute__((format(printf, FMT, 0)))
 #else
+*/
+#if 1
 #define IM_FMTARGS(FMT)
 #define IM_FMTLIST(FMT)
 #endif

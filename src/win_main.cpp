@@ -87,11 +87,11 @@ using namespace std;
 int main() {
 	tdns_log.init();
 	
-#pragma region GLFW_INIT
-	glfwInit();
+	auto result = glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 	
 	g_window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "tdengine", NULL, NULL);
@@ -116,9 +116,7 @@ int main() {
 	glfwSwapInterval(0);
 	
 	use_1440p();
-#pragma endregion 
 	
-#pragma region DATA_INIT
 	component_pool.init();
 	entity_pool.init();
 	
@@ -142,18 +140,14 @@ int main() {
 	
 	test_tdscript();
 	
-#pragma endregion
 	
-#pragma region IMGUI_INIT
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGui_ImplGlfwGL3_Init(g_window, false);
 	auto& imio = ImGui::GetIO();
 	imio.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::StyleColorsDark();
-#pragma endregion
 	
-#pragma region OPENGL_INIT
 	// Set up some debug output
 	GLint flags;
 	glGetIntegerv(GL_CONTEXT_FLAGS, &flags);
@@ -229,7 +223,6 @@ int main() {
 	
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
-#pragma endregion
 	
 	
 	// MAIN LOOP
