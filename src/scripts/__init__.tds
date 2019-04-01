@@ -10,3 +10,12 @@ meta.script_dirs = {
 }
 
 entity = {}
+
+config = {}
+config.fonts = {
+    font_dir = "/Users/thspader/Library/Fonts/",
+	default = {
+	    apple = "Inconsolata-Regular"
+		windows = "Arial"
+	},
+}

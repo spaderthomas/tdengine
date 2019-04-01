@@ -53,7 +53,7 @@ void Dialogue_Tree::save() {
 	fox_assert(npc != "");
 	fox_assert(scene != "");
 	// Load in all of the saved dialogue
-	string path = absolute_path("save\\dialogue.json");
+	string path = absolute_path("save/dialogue.json");
 	ifstream save_file(path);
 	json dialogue;
 	save_file >> dialogue;
@@ -90,7 +90,7 @@ void Dialogue_Tree::load() {
 	fox_assert(scene != "");
 
 	// Load in the JSON from dialogue.json
-	string path = absolute_path("save\\dialogue.json");
+	string path = absolute_path("save/dialogue.json");
 	ifstream save_file(path);
 	json dialogue;
 	save_file >> dialogue;

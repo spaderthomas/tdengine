@@ -15,7 +15,15 @@
 	
 typedef unsigned int uint;
 typedef int32_t int32;
+typedef int64_t int64;
 typedef unsigned char tdbyte;
+
+#ifdef __APPLE__
+string os_id = "apple";
+#elif defined _WIN32 || defined _WIN64
+string os_id = "windows";
+#endif
+	
 
 #define NULL_ENTITY { -1, nullptr }
 
@@ -302,9 +310,9 @@ glm::ivec2 px_coords_from_gl_coords(glm::vec2 gl_coords) {
 string name_from_full_path(string path) {
 	string asset_name;
 	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
-		if (path.at(ichar) == '\\') { break; }
-		if (path.at(ichar) == '/') {
-			string msg = "Don't use forward slashes in your directory names. Failing path was: " + path;
+		if (path.at(ichar) == '/') { break; }
+		if (path.at(ichar) == '\\') {
+			string msg = "Don't use backslashes in your directory names. Failing path was: " + path;
 			tdns_log.write(msg);
 			exit(0);
 		}
@@ -369,7 +377,7 @@ string absolute_path(string dir_from_project_root) {
 string path_join(vector<string> items) {
 	string path = "";
 	for (auto& item : items) {
-		path += item + "\\";
+		path += item + "/";
 	}
 	
 	// Trim trailing slash
@@ -739,7 +747,7 @@ optional<int> Circle_Buffer::pop_front() {
 	return {};
 }
 void Circle_Buffer::clear() {
-	memset(data, 0, sizeof(data));
+	memset(data, 0, capacity * sizeof(data));
 	head = 0;
 	len = 0;
 }
@@ -827,10 +835,6 @@ struct tdvec {
 struct Hasher {
 	static int hash(const int key) {
 		return key;
-	}
-	
-	static int hash(const type_info* key) {
-		return (int)key & 0x00000001;
 	}
 } hasher;
 

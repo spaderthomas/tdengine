@@ -83,7 +83,6 @@ bool And_Action::update(float dt) {
 }
 
 bool Movement_Action::update(float dt) {
-	def_get_cmp(mc, actor.deref(), Movement_Component);
 	def_get_cmp(pc, actor.deref(), Position_Component);
 	
 	if (vec_almost_equals(pc->world_pos, dest)) {
@@ -264,7 +263,6 @@ void TaskEditor::show() {
 		ImGui::PushID(node->id);
 		ImVec2 node_rect_min = offset + node->pos;
 		
-		const float NODE_SLOT_RADIUS = 4.0f;
 		const ImVec2 NODE_WINDOW_PADDING(8.0f, 8.0f);
 		
 		

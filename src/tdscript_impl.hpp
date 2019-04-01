@@ -276,7 +276,7 @@ TableNode* TableNode::get_table(vector<string> keys) {
 	
 	TableNode* current_scope = this;
 	string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
-	for (int key_idx = 0; key_idx < (int)keys.size(); key_idx++) {
+	for (uint key_idx = 0; key_idx < keys.size(); key_idx++) {
 		auto& key = keys[key_idx];
 		
 		bool found = false;
@@ -315,7 +315,7 @@ ASTNode* TableNode::get_raw(vector<string> keys) {
 	
 	TableNode* current_scope = this;
 	string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
-	for (int key_idx = 0; key_idx < (int)keys.size(); key_idx++) {
+	for (uint key_idx = 0; key_idx < keys.size(); key_idx++) {
 		auto& key = keys[key_idx];
 		
 		bool found = false;
@@ -493,7 +493,7 @@ Token Lexer::next_token_internal() {
 				// If we reach an invalid character for an int/float, collect what we have and return it
 				char peek = file.peek();
 				if ((is_float && !is_numeral(peek)) ||
-					!is_float && !is_dot(peek) && !is_numeral(peek)) {
+					(!is_float && !is_dot(peek) && !is_numeral(peek))) {
 					if (is_float) {
 						token.type = Token::Type::_FLOAT;
 						
@@ -580,13 +580,13 @@ Token Lexer::next_token_internal() {
 }
 Token Lexer::next_token() {
 	fox_assert(tokens.size());
-	fox_assert(token_idx < (int)tokens.size());
+	fox_assert(token_idx < tokens.size());
 	if (token_idx == tokens.size()) return tokens[token_idx];
 	return tokens[token_idx++];
 }
 Token Lexer::peek_token() {
 	fox_assert(tokens.size());
-	fox_assert(token_idx < (int)tokens.size());
+	fox_assert(token_idx < tokens.size());
 	return tokens[token_idx];
 }
 bool Lexer::is_alpha(char c) {
@@ -676,11 +676,11 @@ ASTNode* TDScript::parse_table() {
 		cur_token = lexer.peek_token();
 		
 		// No trailing comma
-		if (cur_token.symbol == Symbol::RIGHT_BRACKET) {
+		if (cur_token.type == Token::Type::SYMBOL && cur_token.symbol == Symbol::RIGHT_BRACKET) {
 			return table_node;
 		}
 		// Yes trailing comma
-		if (cur_token.symbol == Symbol::COMMA) {
+		if (cur_token.type == Token::Type::SYMBOL && cur_token.symbol == Symbol::COMMA) {
 			lexer.next_token();
 			cur_token = lexer.peek_token();
 			if (cur_token.symbol == Symbol::RIGHT_BRACKET) {
@@ -781,7 +781,6 @@ KVPNode* TDScript::parse_assign() {
 					key = strtok(NULL, ".");
 				}
 				val_node = global_scope->get_raw(keys);
-				int x = 0;
 			}
 			else if (cur_token.type == Token::Type::SYMBOL) {
 				if (cur_token.symbol == Symbol::LEFT_BRACKET) {
@@ -838,7 +837,7 @@ void TDScript::script_dir(string dir_path) {
 		if (is_regular_file(it->status())) {
 			if (is_tds(path)) {
 				// Don't double run the init file 
-				string maybe_init_file = dir_path + "\\__init__.tds";
+				string maybe_init_file = dir_path + "/__init__.tds";
 				if (string_comp(path, maybe_init_file)) {
 					continue;
 				}
@@ -854,7 +853,7 @@ void TDScript::script_dir(string dir_path) {
 }
 
 void TDScript::script_init_if_exists(string dir_path) {
-	string maybe_init_file = dir_path + "\\__init__.tds";
+	string maybe_init_file = dir_path + "/__init__.tds";
 	ifstream f(maybe_init_file.c_str());
 	if (f.good()) {
 		parse(maybe_init_file);
@@ -863,16 +862,17 @@ void TDScript::script_init_if_exists(string dir_path) {
 
 void init_tdscript() {
 	ScriptManager.global_scope = new TableNode;
-	ScriptManager.script_init_if_exists(absolute_path("src\\scripts\\"));
+	ScriptManager.script_init_if_exists(absolute_path("src/scripts"));
 	
 	TableNode* files = tds_table("meta", "script_dirs");
 	for (uint i = 0; i < files->assignments.size(); i++) {
 		string script_dir = tds_string("meta", "script_dirs", to_string(i));
-		ScriptManager.script_dir(absolute_path("src\\scripts\\") + script_dir);
+		ScriptManager.script_dir(absolute_path("src/scripts/") + script_dir);
 	}
 }
 
 void test_tdscript() {
+    #pragma GCC diagnostic ignored "-Wunused-variable"
 	string boonhouse_test = tds_string2(ScriptManager.global_scope, "entity", "boonhouse_door", "components", "Graphic_Component", "Animations", "boonhouse_door", "0");
 	string cantina_test = tds_string2(ScriptManager.global_scope, "entity", "picture", "components", "Graphic_Component", "Animations", "picture", "0");
 	string intro_police_test = tds_string2(ScriptManager.global_scope, "entity", "intro_police", "scripts", "intro1", "4", "kind");
@@ -894,7 +894,7 @@ void test_tdscript() {
 	auto task = new Task;
 	task->init_from_table(task_table, { -1, nullptr });
 	
-	ScriptManager.script_dir(absolute_path("src\\scripts\\tds_test"));
+	ScriptManager.script_dir(absolute_path("src/scripts/tds_test"));
 	string strval = tds_string2(ScriptManager.global_scope, "strval");
 	int intval = tds_int2(ScriptManager.global_scope, "intval");
 	float fval = tds_float2(ScriptManager.global_scope, "fval");
@@ -913,6 +913,6 @@ void test_tdscript() {
 	TableNode* some_table = new TableNode;
 	some_table->push_back(true);
 	tds_set(some_table, "settin_it");
-	//update_state("intro_door_answered", true);
+    #pragma GCC diagnostic pop
 }
 

@@ -149,7 +149,7 @@ void create_texture_atlas(string assets_dir) {
 
 		// Write the atlas itself, with the same name as the folder it was created from	
 
-		string atlas_path = absolute_path("textures\\atlases\\") + atlas->name;
+		string atlas_path = absolute_path("textures/atlases/") + atlas->name;
 		stbi_write_png(atlas_path.c_str(), REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 4, atlas_data, 0);
 
 
@@ -180,9 +180,9 @@ void create_texture_atlas(string assets_dir) {
 
 void create_all_texture_atlas() {
 	string atlas_dirs[] = {
-		absolute_path("textures\\characters"),
-		absolute_path("textures\\entities"),
-		absolute_path("textures\\tiles"),
+		absolute_path("textures/characters"),
+		absolute_path("textures/entities"),
+		absolute_path("textures/tiles"),
 	};
 
 	for (auto& dir : atlas_dirs) {

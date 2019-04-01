@@ -1,13 +1,12 @@
 struct Shader {
 	string name;
-	unsigned int id;
-	int num_uniforms;
+	uint id;
+	uint num_uniforms;
 	vector<string> uniforms_set_this_call;
 	
 	static int active;
 
 	void init(string vs_path, string fs_path, string name) {
-		auto error = glGetError();
 
 		string paths[] = {
 			vs_path,
@@ -16,7 +15,6 @@ struct Shader {
 
 		unsigned int shader_program;
 		shader_program = glCreateProgram();
-		error = glGetError();
 
 		fox_for(ishader, 2) {
 			// Read in shader data
@@ -34,7 +32,6 @@ struct Shader {
 			// Compile the shader
 			unsigned int shader_kind = (ishader == 0) ? GL_VERTEX_SHADER : GL_FRAGMENT_SHADER;
 			unsigned int shader = glCreateShader(shader_kind);
-			error = glGetError();
 
 			glShaderSource(shader, 1, &source, NULL);
 
@@ -51,7 +48,7 @@ struct Shader {
 			tdns_log.write("Error linking shader: " + string(vs_path));
 		}
 		id = shader_program;
-		glGetProgramiv(shader_program, GL_ACTIVE_UNIFORMS, &num_uniforms);
+		glGetProgramiv(shader_program, GL_ACTIVE_UNIFORMS, (int*)&num_uniforms);
 		this->name = name;
 	}
 
@@ -123,7 +120,7 @@ struct Shader {
 			tdns_log.write(msg);
 			exit(1);
 		}
-		if (Shader::active != id) {
+		if (Shader::active != (int)id) {
 			string msg = "Checked shader before draw, but it was not set. Did you forget to call begin()? Shader: " + name;
 			tdns_log.write(msg);
 			exit(1);
@@ -141,8 +138,8 @@ Shader highlighted_shader;
 Shader solid_shader;
 Shader text_shader;
 void init_shaders() {
-	textured_shader.init(absolute_path("shaders\\textured.vs"), absolute_path("shaders\\textured.fs"), "textured");
-	highlighted_shader.init(absolute_path("shaders\\textured.vs"), absolute_path("shaders\\highlighted.fs"), "highlighted");
-	solid_shader.init(absolute_path("shaders\\solid.vs"), absolute_path("shaders\\solid.fs"), "solid");
-	text_shader.init(absolute_path("shaders\\textured.vs"), absolute_path("shaders\\text.fs"), "text");
+	textured_shader.init(absolute_path("shaders/textured.vs"), absolute_path("shaders/textured.fs"), "textured");
+	highlighted_shader.init(absolute_path("shaders/textured.vs"), absolute_path("shaders/highlighted.fs"), "highlighted");
+	solid_shader.init(absolute_path("shaders/solid.vs"), absolute_path("shaders/solid.fs"), "solid");
+	text_shader.init(absolute_path("shaders/textured.vs"), absolute_path("shaders/text.fs"), "text");
 }

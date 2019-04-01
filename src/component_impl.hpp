@@ -99,10 +99,6 @@ void Collision_Component::init_from_table(TableNode* table) {
 
 string Task_Component::name() { return "Task_Component"; }
 void Task_Component::init_from_table(TableNode* table) {
-	//@hack: This is so that we don't have to specify the owning entity every time,
-	//       but surely there is a better way to do this
-	if (this->task) 
-		EntityHandle actor = this->task->actor;
 	this->task = new Task;
 }
 

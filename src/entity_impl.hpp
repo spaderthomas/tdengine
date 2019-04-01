@@ -8,7 +8,7 @@ pool_handle<any_component> Entity::add_component() {
 	return handle;
 }
 template <typename Component_Type>
-bool Entity::remove_component() {
+void Entity::remove_component() {
 	pool_handle handle = components[&typeid(Component_Type)];
 	component_pool.mark_available(handle);
 }
@@ -81,8 +81,7 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			
 		}
 		else if (type == "Position_Component") {
-			pool_handle<any_component> handle = entity->add_component<Position_Component>();
-			Position_Component* component = &handle()->position_component;
+			entity->add_component<Position_Component>();
 		}
 		else if (type == "Movement_Component") {
 			pool_handle<any_component> handle = entity->add_component<Movement_Component>();
@@ -96,12 +95,10 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			component->init_from_table(component_table);
 		}
 		else if (type == "Interaction_Component") {
-			pool_handle<any_component> handle = entity->add_component<Interaction_Component>();
-			Interaction_Component* component = &handle()->interaction_component;
+			entity->add_component<Interaction_Component>();
 		}
 		else if (type == "Door_Component") {
-			pool_handle<any_component> handle = entity->add_component<Door_Component>();
-			Door_Component* component = &handle()->door_component;
+			entity->add_component<Door_Component>();
 		}
 		else if (type == "Collision_Component") {
 			pool_handle<any_component> handle = entity->add_component<Collision_Component>();
@@ -127,8 +124,7 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			component->init_from_table(component_table);
 		}
 		else if (type == "TileComponent") {
-			pool_handle<any_component> handle = entity->add_component<TileComponent>();
-			TileComponent* component = &handle()->tile_component;
+			entity->add_component<TileComponent>();
 		}
 	}
 	

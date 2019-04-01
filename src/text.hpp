@@ -22,7 +22,13 @@ void init_fonts() {
 		tdns_log.write("Failed to initialize FreeType");
 		exit(0);
 	}
-	if (FT_New_Face(freetype, "C:/Windows/Fonts/Arial.ttf", 0, &face)) {
+
+	TableNode* font_config = tds_table("config", "fonts");
+	string font_dir = tds_string2(font_config, "font_dir");
+	string default_font = tds_string2(font_config, "default", os_id);
+	// @hack use pathjoin
+	string default_font_path = font_dir + default_font + ".ttf";
+	if (FT_New_Face(freetype, default_font_path.c_str(), 0, &face)) {
 		tdns_log.write("Failed to load font (yes, even Papyrus failed :(");
 		exit(0);
 	}
@@ -129,7 +135,7 @@ struct Text_Box {
 	float time_since_last_update = 0.0f;
 	
 	vector<Line_Set> sets;
-	int index_current_line_set;
+	uint index_current_line_set;
 	
 	void begin(string text);
 	void update(float dt);

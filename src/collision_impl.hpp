@@ -9,18 +9,6 @@ bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
 	float b_bottom = b.origin.y - .5f * b.extents.y;
 	minkowski.origin.y = a_top - b_bottom - .5f * minkowski.extents.y;
 
-	Points_Box a_points = a.as_points();
-	Points_Box b_points = b.as_points();
-	glm::vec2 top_right = glm::vec2(a_points.right, a_points.top) - glm::vec2(b_points.left, b_points.bottom);
-	glm::vec2 top_left = glm::vec2(a_points.left, a_points.top) - glm::vec2(b_points.right, b_points.bottom);
-	glm::vec2 bottom_right = glm::vec2(a_points.right, a_points.bottom) - glm::vec2(b_points.left, b_points.top);
-	glm::vec2 bottom_left = glm::vec2(a_points.left, a_points.bottom) - glm::vec2(b_points.right, b_points.top);
-	Points_Box minkowski_;
-	minkowski_.bottom = bottom_right.y;
-	minkowski_.top = top_right.y;
-	minkowski_.left = top_left.x;
-	minkowski_.right = top_right.x;
-
 	// If the Minkowski difference intersects the origin, there's a collision
 	auto verts = minkowski.as_points();
 	if (verts.right >= 0 && verts.left <= 0 && verts.top >= 0 && verts.bottom <= 0) {
@@ -73,9 +61,7 @@ void Physics_System::process(float dt) {
 			glm::vec2 penetration;
 			if (are_boxes_colliding(*me_box, *other_box, penetration)) {
 				cout << "Collision found between " << element.me->name << ", " << element.other->name <<  endl;
-				def_get_cmp(cc, element.me.deref(), Collision_Component);
 				def_get_cmp(mypos, element.me.deref(), Position_Component);
-				def_get_cmp(otherpos, element.other.deref(), Position_Component);
 				mypos->world_pos -= penetration;
 			}
 		}

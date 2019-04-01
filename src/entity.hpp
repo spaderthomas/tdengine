@@ -6,11 +6,13 @@ struct Entity {
 	
 	// Component functions
 	template <typename Component_Type>
-		pool_handle<any_component> add_component();
+	pool_handle<any_component> add_component();
+	
 	template <typename Component_Type>
-		bool remove_component();
+	void remove_component();
+	
 	template <typename Component_Type>
-		Component_Type* get_component();
+	Component_Type* get_component();
 	any_component* get_component(string kind);
 	void clear_components();
 	

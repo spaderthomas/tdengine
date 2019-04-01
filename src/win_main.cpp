@@ -101,7 +101,7 @@ int main() {
 		return -1;
 	}
 	glfwMakeContextCurrent(g_window);
-	
+
 	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 		std::cout << "Failed to initialize GLAD" << std::endl;
 		return -1;
@@ -123,7 +123,7 @@ int main() {
 	init_shaders();
 	init_mesh();
 	create_all_texture_atlas();
-	create_texture("textures\\misc\\text_box.png");
+	create_texture("textures/misc/text_box.png");
 	
 	init_tdscript();
 	

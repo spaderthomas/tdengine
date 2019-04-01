@@ -357,7 +357,7 @@ void Battle::update(float dt) {
 
 void Editor::init() {
 	active_level = levels["overworld"];
-	tile_tree = Entity_Tree::create(absolute_path("textures\\tiles"));
+	tile_tree = Entity_Tree::create(absolute_path("textures/tiles"));
 }
 void Editor::translate() {
 	get_cmp(selected, Position_Component)->world_pos =
@@ -418,7 +418,6 @@ void Editor::draw_component_editor() {
 				if (ImGui::BeginCombo("##setdoor", door->to.c_str(), 0)) {
 					for (auto& kvp : levels) {
 						const string& name = kvp.first;
-						Level* level = kvp.second;
 						bool is_selected = door->to.c_str() == name;
 						if (ImGui::Selectable(name.c_str(), &is_selected)) {
 							door->to = name;
@@ -600,7 +599,7 @@ void Editor::exec_console_cmd(char* command_line) {
 void Editor::reload_assets() {
 	// @leak
 	create_all_texture_atlas();
-	tile_tree = Entity_Tree::create(absolute_path("textures\\tiles"));
+	tile_tree = Entity_Tree::create(absolute_path("textures/tiles"));
 	active_level->load();
 }
 void Editor::reload_everything() {
@@ -737,7 +736,6 @@ void Editor::update(float dt) {
 	if (show_task_editor) {
 		static bool init = false;
 		static TaskEditorNode* task_graph = nullptr;
-		static int id = 0;
 		
 		// Pull in a random task 
 		if (!init) {

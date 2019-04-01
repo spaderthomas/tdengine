@@ -8,10 +8,7 @@ void Text_Box::begin(string text) {
 	active = true;
 	sets.clear();
 	
-	gl_unit size_x = 1.8f, size_y = .5f;
-	gl_unit bottom = -.9f, left = -.9f;
-	gl_unit top = bottom + size_y;
-	gl_unit right = left + size_x;
+	gl_unit size_x = 1.8f;
 	
 	// Start the text at the top left of the text box, padded
 	gl_unit padding_x = .075f;
@@ -35,7 +32,7 @@ void Text_Box::begin(string text) {
 				set.set_max_point();
 				sets.push_back(set);
 				set.lines.clear();
-			}
+			}259
 			
 			// Reset everything for the next line
 			cur_line = word = "";

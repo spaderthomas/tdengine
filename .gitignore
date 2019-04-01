@@ -1,5 +1,8 @@
 .vs/
+.vscode/
+
 __pycache__/
+
 build/
 src/scripts/machine_conf.py
 src/machine_conf.hpp

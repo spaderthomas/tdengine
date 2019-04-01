@@ -107,7 +107,7 @@ struct TableNode : ASTNode {
 
 
 struct TableWriter {
-	int indent = 0;
+	uint indent = 0;
 	bool same_line_internal = false; // Users just call same_line() to manipulate this
 	vector<string> lines;
 
@@ -179,6 +179,7 @@ struct TableWriter {
 
 // Lexing
 enum Symbol {
+	SYM_NONE,
 	LEFT_BRACKET,
 	RIGHT_BRACKET,
 	EQUALS,
@@ -199,13 +200,13 @@ struct Token {
 	int int_val;
 	float float_val;
 	bool bool_val;
-	Symbol symbol;
+	Symbol symbol = Symbol::SYM_NONE;
 };
 struct Lexer {
 	ifstream file;
 	int line_number = 1;
 	vector<Token> tokens;
-	int token_idx;
+	uint token_idx;
 	
 	bool init(string script_path);
 	void lex();
