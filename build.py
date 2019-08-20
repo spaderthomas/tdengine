@@ -10,11 +10,11 @@ build_options = {
     'lib_dir': os.path.join('..', 'lib'),
     'build_dir': 'build',
     'source_files': [
-        "..\include\imgui\imgui.cpp",
-        "..\include\imgui\imgui_demo.cpp",
-        "..\include\imgui\imgui_draw.cpp",
-        "..\include\imgui\imgui_widgets.cpp",
-        "..\include\glad\glad.c",
+        os.path.join("..", "include", "imgui", "imgui.cpp"),
+        os.path.join("..", "include", "imgui", "imgui_demo.cpp"),
+        os.path.join("..", "include", "imgui", "imgui_draw.cpp"),
+        os.path.join("..", "include", "imgui", "imgui_widgets.cpp"),
+        os.path.join("..", "include", "glad", "glad.c"),
         "win_main.cpp"
     ],
     'debug': True,
@@ -51,7 +51,7 @@ build_options = {
         ]
     },
     'Darwin': {
-        'compiler': 'gcc',
+        'compiler': 'g++-9',
         'user_libs': [
             'libfreetype.a',
             'libglfw3.a'
