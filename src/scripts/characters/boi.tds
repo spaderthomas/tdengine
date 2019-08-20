@@ -20,4 +20,9 @@ entity.boi.components.Collision_Component = {
 
 entity.boi.components.BattleComponent = {
 	health = 10,
+	moves = {
+	    "mega_kick",
+		"pound",
+		"waveshine"
+	}
 }

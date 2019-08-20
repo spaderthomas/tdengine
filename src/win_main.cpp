@@ -54,6 +54,7 @@ using namespace std;
 #include "texture.hpp"
 #include "dialogue.hpp"
 #include "task.hpp"
+#include "battle.hpp"
 #include "component.hpp"
 #include "renderer.hpp"
 #include "entity.hpp"
@@ -65,6 +66,7 @@ using namespace std;
 #include "tdapi.hpp"
 #include "glfw_callbacks.hpp"
 
+#include "battle_impl.hpp"
 #include "state.hpp"
 #include "tdscript_impl.hpp"
 #include "dialogue_impl.hpp"
@@ -114,9 +116,7 @@ int main() {
 	glfwSetErrorCallback(GLFW_Error_Callback);
 	
 	glfwSwapInterval(0);
-	
-	use_1440p();
-	
+
 	component_pool.init();
 	entity_pool.init();
 	
@@ -126,13 +126,18 @@ int main() {
 	create_texture("textures/misc/text_box.png");
 	
 	init_tdscript();
-	
+	change_window_size(tds_string("config", "screen", "default"));
+
+	load_move_data();
+					   
+					   
 	init_state();
 	init_levels();
 	init_fonts();
 	
 	init_hero();
 	game.init();
+	cutscene_thing.init();
 	editor.init();
 	battle.init();
 	

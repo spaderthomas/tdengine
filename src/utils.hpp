@@ -248,6 +248,12 @@ void use_1440p() {
 	glfwSetWindowSize(g_window, 2560, 1440);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
 }
+void change_window_size(string size) {
+	if (size == "640") { use_640_360(); }
+	else if (size == "720") { use_720p(); }
+	else if (size == "1080") { use_1080p(); }
+	else if (size == "1440") { use_1440p(); }
+}
 // Converting to grid units
 glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
 	int closest_x = (int)floor(px_pos.x / CELL_SIZE);
@@ -306,16 +312,11 @@ glm::ivec2 px_coords_from_gl_coords(glm::vec2 gl_coords) {
 
 
 /* Some utilities for dealing with files, directories, and paths */
-// Takes in a directory or file -- returns everything after the first double backslash
+// Takes in a directory or file -- returns everything after the first slash
 string name_from_full_path(string path) {
 	string asset_name;
 	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
-		if (path.at(ichar) == '/') { break; }
-		if (path.at(ichar) == '\\') {
-			string msg = "Don't use backslashes in your directory names. Failing path was: " + path;
-			tdns_log.write(msg);
-			exit(0);
-		}
+		if (path.at(ichar) == '/' || path.at(ichar) == '\\') { break; }
 		asset_name.insert(asset_name.begin(), path.at(ichar));
 	}
 	

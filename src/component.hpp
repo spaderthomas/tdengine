@@ -68,6 +68,7 @@ struct Task_Component : Component {
 };
 struct BattleComponent : Component {
 	unsigned health;
+	vector<Move*> moves;
 	
 	void init_from_table(TableNode* table);
 	string name() override;

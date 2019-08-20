@@ -1,0 +1,261 @@
+* types
+The types are, flavor wise, supposed to represent the reflections of different
+pure forms onto the physical realms. All things exist purely through dogma. The
+precise qualities that make anything itself come from this. When they're
+filtered down to the physical plane, some of these characteristics get lost. 
+
+Battles involve creatures that are powerful manifestations of these traits. They
+are also filtered when they enter our world, but their concentration is much
+higher and they are therefore a more distilled representation of them. Because
+they are so distilled, they can tap into other aspects of that trait that
+regular things could not -- namely, pulling that essential force for battle. 
+
+** [LG] logic
+The intelligence of man. 
+
+This type is good at indirect attacking. The first thing that means is that its
+attack-oriented creatures are good at special attacking. No grapplers here. The
+second thing is that its creatures get good support moves. 
+- Stat boosting moves
+- Substitute
+- Baton Pass
+- Trick Room
+- Roar
+
+Their typing defensively is a pretty clean 50. Their typing offensively is
+probably closer to a 60, preferring to use power over type coverage to get the
+job done
+** [DS] dark spirit 
+The evil nature of man. Corruption, greed, sloth, sadism, power, intimidation.
+
+This type has a lot of offensive support moves and a lot of mix ups. Solid
+STAB moves with fair coverage, but mostly based around the idea that you can
+morph them into a lot of things. This would be a good place to have a utility
+creature that can sweep or take on a number of specialized defensive roles. 
+
+Inspirations:
+Taunt Wisp Mew
+BW Gliscor
+BW Sableye
+ADV Gengar
+DPP UU Crobat
+DPP UU Froslass
+
+- Taunt
+- Will-o-Wisp
+- Explosion
+- Destiny Bond
+- Knock Off
+- Pain Split
+- Trick
+- Drag Down (Ability): On turns where this creature uses a support move before
+  an opponent can attack, creature takes half damage. 
+- Spite (Ability): Any creatures active at the end of the turn lose 1/16th of
+  their health, including this one. 
+** [LS] light spirit
+The good nature of man. Soft kindness, mothering, empathy, joy.
+
+This type is where your pink blobs live. It has a lot of defensive support
+moves. They don't carry momentum well in and of themselves, because they lack
+the tools to directly pressure the opponent. Instead, they try to slow the game
+down and remove key threats from the game. 
+
+Defensive Dragonite
+
+- Wish
+- 50% recovery
+- Seismic Toss
+- Aromatherapy
+- Encore
+- Screens
+- Calm Mind
+- Good coverage but poor offensive stats
+- Natural Cure
+- Regenerator
+- STABs that have useful secondary effects (e.g. Scald)
+- Resilience (Ability): All passive damage done to this creature is halved. 
+- Gift of Health (Move): Instantly heal 1/4 of any teammate's health
+- In Tune (Ability): When this creature heals, it receives 1/10 more health than
+  normal. 
+** [RS] red spirit 
+The passionate nature of man. 
+** [EA] earth
+The essence of physical material. (might make this a 'materia' type, give
+different flavors like air and water)
+
+This type is all about the physical attacks. Low special stats, both offensively
+and defensive. Flavor-wise, focuses on moves that manipulate the non-living
+material of the Earth. Earth will be a really good typing defensively and
+offensively. Offensively, the problem will be that they don't get good coverage
+moves -- maybe something like Rock Slide + Earthquake in ADV, but even that
+might be a little too good. One or two key weaknesses that you can exploit (one
+physical, one special?).
+
+Inspirations:
+BW Landorus-T
+BW Excadrill
+ADV Flygon
+
+- Earthquake
+- Swords Dance
+- Lead Smoke (Move): The next creature to enter the field will lose 1/8 of its
+  health
+- Rock Slide
+** [MC] machinery
+You ain't machine and you ain't land. Machines are more organized than the chaos
+of material, yet their organization holds a cold acid edge that is not truly
+alive. Creatures of machine are extreme. They do few things, but they do them
+well. Their stat spreads are heavily skewed to one of the few things that they
+do, and so are their movepools. Their defensive typing is poor, but their
+offensive typing is very good. They are bound by almost all things -- water,
+material, human nature and ingenuity -- but at the same time they bind these
+things as well. 
+
+Visually, they'll all look like machines, but mechanically they'll focus on one
+or two aspects of the game and be really good at that and pretty bad at
+everything else. It will be hard to make these usable.
+
+Inspirations
+DPP Azelf
+ADV Magneton
+BW Bronzong
+DPP Lucario
+BW Gothitelle
+ADV Forretress
+BW Sableye
+
+One that focuses on entry hazards
+One that fucks up a fairly common defensive type
+Glass cannon sweepers 
+Suicide leads (hazards/screens/boom)
+
+** [FR] fire
+** [WA] water
+necrotic? 
+the mountains
+god 
+psychedelics
+philosophy
+science
+art
+fire
+cells
+ice
+electricity
+time
+void -- things that completely lack type 
+psychosis
+animals
+sages
+** [FA] fauna
+The spirit of the animal. Brutish, petty, yet surprisingly clever at
+times. These are things that can hit you pretty good. Usually not a ton of
+tricks up their sleeve -- they might have mixups, but it'll be clearer what
+their options are from the things around them (e.g. pretty easy to spot a mix
+lax). 
+
+Inspirations:
+ADV Tyranitar
+ADV Metagross
+ADV Snorlax
+ADV Heracross
+DPP Gyarados
+
+
+** [FL] flora
+The spirit of floral nature.
+
+Inspirations:
+Ferrothorn
+Celesteela
+Tornadus-Therian
+
+This type is all about momentum (think about the beautiful flowing momentum with
+which plants live). Floral types get lots of annoying support moves and
+abilities
+- Leech Seed
+- Protect
+- Toxic
+- Stun Spore
+- Toxic Spikes
+- Spikes
+- Iron Barbs (physical / special)
+- Sap (Ability): Transfer 6% health from opponent to user at the end of each
+  turn.
+- Return to Nature (Ability): Every turn, regardless of whether this creature is
+  active, it gains 1% of its health back
+- Knock Off
+- 50% Recovery
+
+Their operating principle is to, at worst, make a trade. Every time a Floral is
+on the field, SOMETHING should be happening to your advantage (even if the turn
+itself is a net negative). 
+
+** [DG] dogmatic
+The pure essence of dogma. 
+
+This type is the most well rounded type in the game. It provides a few well
+rounded STAB moves, but more importantly offers key resistances and few
+weaknesses which makes it highly sought after defensively. Dogmatic creatures
+generally rely on their potent movepools to output lots of damage, and they use
+their good typing to be excellent checks to other offensive threats. 
+
+Inspirations:
+BW Latios
+BW Hydreigon 
+BW Garchomp
+ADV MixMence (closer to this in terms of power)
+DPP Tyranitar
+
+- Fire Blast
+- Draco Meteor
+- Brick Break
+- A few weak but really useful coverage moves for mix-ups
+- 100/90/90 defenses
+
+* type chart
+|    | LG | DS | LS | RS | EA | MC | FR | WA | FL | DG |
+| LG |  0 |    |    |    |    |    |    |    |    |    |
+| DS |    |  0 |    |    |    |    |    |    |    |    |
+| LS |    |    |  0 |    |    |    |    |    |    |    |
+| RS |    |    |    |  0 |    |    |    |    |    |    |
+| EA |    |    |    |    |  0 |    |    |    |    |    |
+| MC |    |    |    |    |    |  0 |    |    |    |    |
+| FR |    |    |    |    |    |    |  0 |    |    |    |
+| WA |    |    |    |    |    |    |    |  0 |    |    |
+| FL |    |    |    |    |    |    |    |    |  0 |    |
+| DG |    |    |    |    |    |    |    |    |    |  0 |
+
+* moves
+- Screens
+- Wisp
+- Toxic
+- Thunder Wave
+- Sleep Powder
+- Refresh / Heal Bell
+- Substitute
+- 50% recovery
+- Rest
+- Haze
+- Protect
+- Perish Song
+- Taunt
+- Destiny Bond
+- Focus Punch
+- Baton Pass
+- Doom Desire
+- Encore
+- Explosion
+- Fake Out
+- Hidden Power
+- Magic Coat
+- Memento
+- Healing Wish
+- Trick
+- Pain Split
+- Skill Swap
+- Super Fang
+- Thief
+- Giga Drain
+- Sedate (Light Spirit): User cannot use any attacking moves for two
+  turns. Always goes last. 

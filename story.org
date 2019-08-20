@@ -26,6 +26,7 @@
 - every day you use people, you use your uber driver, you use the cashier at the
   restaurant, they put on a face for you.
 - musical themes when you do something good or bad
+- helping people cope as the world's seams become undone
 * sidequest ideas
 *** the crier
 you stumble into a pedestrian. he seems almost raving mad. he is onto the
@@ -223,98 +224,535 @@ battles in the forest. the off-feeling gets worse as they go in. this all
 culminates in battling a bad ass forest demon thing. this'll be the first part
 where the second act is introduced (killing the ancient magic) -- the forest
 demon, upon dying, will croak out something about his master.
-* backstory
-** the savior
-also, an ancient backstory of the few who were left and how they rebuilt
-the human race in secret. reading it would be cool, like reading how the
-founding fathers thought of philosophy and democracy. now, parts of it seem
-primitive, but other parts at the same time seem prescient. like they were
-obviously very smart people, but there were things they just could not
-forsee. maybe reading discovered papers, maybe even flashbacks where they
-encounter the forsaken to understand how the original rift divided. one figure
-who sacrifices himself to hold off the forsaken long enough for society to
-rebuild if everything goes perfectly. slowly piecing together this plot from
-clues left in reality by the savior.
+** what just happened?
+the three meet up once again. sewell and evans are shocked at how powerful boon
+has gotten. they talk about what happened to then. 
+@detail
+sewell feels:
 
-flesh out above. so i'm thinking that this happened near the times of the
-greeks. before the golden era of greek culture, magic was discovered. since it
-was so new, its users were extremely weak. they could not summon creatures for
-battle. most of the interesting technology, which works by manipulating the
-currents of magic that flow through the physical world, were undiscovered, since
-there requires a certain amount of power to be able to even sense these
-currents. but what they did gain was insight. having the ability to use magic
-lets you see into the universal magical nature which imbues all
-things. everything has a bit of magic in it. the magic is its true perfect
-form. what we see in the real world is the reflection or shadow of that. when
-you get access to the magical source, you can sense that perfect form, which
-gives you insight to how the shadow behaves. that's why the greeks had a lot of
-cool insights about logic, math, and inventions that /could/ be. they didn't
-invent computers or machines really, but they saw how those things could be
-constructed (or basic forms of them) through magical insight.
+evans feels:
 
-here's where a bit of alternate history has to come in. since there was no near
-extinction event after the peak of greek culture, have to invent one. the greeks
-became strong enough to raise the notice of beings that live entirely on the
-magical plane. these beings had never encountered any other creature that could
-use magic, so they just let them be. they sent down people under the guise of
-humans to spy on them. it would be cool to have those humans be some famous
-historical figures. the greeks eventually gain enough power to become a
-technological society, still living in peace with the magical beings (peace
-being not the right word, since they don't know they exist). they start to
-invent things like computers, they invent strange means of locomotion, and they
-begin to conquer the world. i would like this to be the era of alexander the
-great. compared to the rest of the world, they are gods among savages. it's
-basically a modern society.
+boon feels: 
+in over his head
+important
+like a puppet in a play
+can't understand the changes to himself
+weak for being afraid
+good about the revolution (?)
 
-the dam breaks, though, when one man comes of age. he is the most powerful
-dogmatic humankind has ever known. he has the ability to see the flow of magic, to
-manipulate those flows. when he does so, he taints the magical source. it's like
-getting a shock of electricity for the magical beings. and moreover, his power
-is exponentially increasing. he quickly approaches the level of magical power of
-the magical beings, and then surpasses it. he's like a magnifying glass and
-magic is the sun. the magical beings realize that the source is permanently
-tainted, and to prevent further damage they have to eradicate mankind. most
-people across the globe are slain before it comes down to the ancient
-greeks. the dogmatic understands what is happening, and begins to formulate a plan
-to save humanity.
+(basic points)
+sewell: they're abusing everyday people. they're playing with them like animals
+to further their goals. i didn't realize what was going on when i joined, i
+thought we were just messing around with some government servers.
+$group1leader: nothing worse than what the government does every day. and besides, what
+do you think those servers power? you think no one ever skipped a meal because
+of your actions?
+sewell: ...
 
-he realizes that he is not strong enough to take all of them head on. but he
-also realizes that his power surpasses that of any single one of them. he has
-access to things which they do not. they poke and jab at one another, until
-finally the last battle comes. he's realized that there is only one way that he
-can save humanity: link with every existing human dogmatic to fully taint the
-source and change the flow of time. they all completely burn out their souls in
-the process. the magical plane becomes infected with many beast, feral,
-powerful, unthinking. the earthly plane also becomes broken. the history of time
-is rewritten. it exists in a shadowed image to the true history (the greeks
-still make mathematical and logical discoveries, alexander still attempts to
-conquer the world), but the means of how they do it change. people (including
-all dogmatics) are rewritten out of time from the very first moment of time, all
-of the butterfly effects that lead to humans gaining the power are changed in
-perfect unison to manipulate the universe itself. when it's over, the split
-timeline comes to exist just as the timeline in our real out-of-game
-world. history progresses exactly the same as it did in real life. until a
-magical child is born one day...
-** the prophecies
-some of this was set up by the savior, who set events into place ages ago. he
-left clues hidden in reality -- hidden enough that the forsaken could never find
-them, but hopefully decipherable to a dedicated human.
+evans: they're sending kids out to try to kill guards. they're indoctrinating
+them. most people can't protect themselves, but kids least of all.
+$group1leader: do you have proof?
+evans: not that they're sending them out, but i saw two indoctrinated lads with
+my own eyes
+$group1leader: kids younger than them made bigger decisions throughout history. the cause
+is just. i don't like to see them die any more than you, but that's their
+prerogative.
 
-ideas
-- he befriended a forsaken. the forsaken told the savior of its plan to aid the
-  humans upon its death. "you will be saved by one imbued with the spirit of an
-  outsider"
-- betrayal
-- hints about the true nature and motives of characters.
-- oblique references to decisions you will have to make
-- descriptions of boon
-- misleading things? e.g. describing what would appear to be the main villain as
-  the bringer of evil, only to have it subtly refer to another character who is
-  secretly evil.
+the conversation ends with considerable tension between the three. $group1leader ends it
+by telling them that there is a government unveiling of a massive construction
+project. boon walked within a mile of the site a few days ago and felt a ripple
+in the power. there is something fishy. plus, he heard that LRB will be there to
+speak personally.
+
+$group1leader tells them to go talk to the bedkeeper to get somewhere to sleep, then come
+back to him the next day.
+
+as boon walks away, he gets a flash. it is brief -- kind of an idyllic pastoral
+society. he can walk around, talk to people. they greet him as a good
+friend. they offer him tea and stew. he walks up to a dark man who appears out
+of place. the man begins to sputter nonsense, angry, surprised, until boon runs
+away. he falls, and he flashes back into reality. 
+
+@sidequests
+** the announcement
+once they come back and talk to boon, they black out and back in near the
+construction place. it's right out side of the city limits, on the north
+side. they've billed this as an announcement that is going to change the way
+that people live their lives, it's been plastered over the news. there are a lot
+of people here. everyone is a bit excited, a bit nervous.
+
+LRB walks on to the stage as his theme plays. the crowd silences as he walks
+onto the stage. he announces that government researchers have been slavishly
+researching a new kind of technology. recently, they've made a
+breakthrough. they've discovered a class of weapons that will make america
+unilaterally the most powerful nation on earth. he brings out a poor lad. he
+takes out a spray bottle and sprays in the man's vicinity. the man immediately
+begins screaming, writhing around, tearing at his face, tearing at his throat,
+begging to die.
+
+LRB calmly steps up to the podium and speaks. weapons that cause this level of
+pain have existed before, but not at /scale/. we can employ this weapon so that
+every person in a one hundred mile radius will behave exactly as this man until
+they die in appx. 72 hours from dehydration. this weapon could be easily
+deployed to every major city in the nation. production units already exist.
+
+he says that the city will be converted into a massive factory. they will expand
+the city to five times its current size, with all of the space being used for
+weapons manufacturing and all of the citizens as loyal employees. effective next
+week.
+
+everyone is in shock. LRB excuses himself. sewell, boon, and evans quickly talk
+amongst themselves. they all feel the ripple in the power. they know that the
+weapon he is talking about is magical in nature. they feel urgency, and they
+decide to explore the area more while everyone is in a commotion.
+
+they see LRB walking in a direction, then down a set of stairs carved into the
+ground. there's a guard there. they talk past him or kill him and walk down into
+a tunnel. the tunnel is LRB's personal escape bunker -- partially a bug out box
+and partially a place to relax.
+
+** the tunnel
+@dungeon
+the tunnel has guards, but it's not swarming with them. in the tunnel are
+several places to explore: a library of books on ancient history, political
+theory. a room of strange magical fixtures. a private office containing LRB's
+some of these rooms have wards. you must find an air vent to spy on his
+room. @detail should make this into a heavier dungeon
+magical experimentation room
+LRB's diary + library with books of interest
+a warded room which spawns "ghost" trainers
+
+once you get to the end, you see LRB with a few guards and a few important
+looking people. the air is somber. LRB is sitting in a fine chair and others are
+standing. one man who is standing angrily tells LRB how he promised there
+wouldn't be any more violence like this. not against their own. LRB is silent,
+and the other man keeps talking.
+
+after a moment, LRB stands up. the man stops talking. guards begin to shuffle
+away. LRB has a short monologue about unflinching authority. he kills the man,
+and all is silent. he bades everyone leave, and as they are leaving he calls his
+son to stay. his son is his one confidant. bred specifically to be magical, and
+only exists so that LRB has someone to pass on this mantle of extreme importance
+to. they are silent for a moment.
+
+- strange moment of clarity regarding his ruthlessness
+- time is growing short
+- in some capacity, he is aware of boon's existence
+- the search for the sa'angreal is going well, and LRB is sure that this is the
+  one that is propesized
+- the forsaken grow closer -- he felt two of them wink out of existence, but
+  four more exist. one, like a god king, has retreated to the magical plane
+  after the death of two of its subordinates. the other three are here figuring
+  out what happened and moving their plan forward. he senses one of them in this
+  very city -- sometimes, it feels intensely close (this is boon).
+  - the four:
+	- desert
+	- the crazy one
+	- god-king
+	- boon
+- one of the forsaken is out in a mirage palace in the desert. LRB has felt the
+  other ones, sometimes in partial existence, sometimes only for a few days or
+  moments.
+
+** consolidate
+after this conversation, they leave, and everyone returns to the base. they have
+a conversation that consolidates some knowledge and viewpoints.
+- there are forsaken coming to destroy humanity
+- LRB knows about them and has kept it from everybody, including seemingly the
+  government itself
+- there is a massive channeling tool that is LRB's hope to defeat them
+- boon needs a cheering up @detail from who? need to flesh out sewell/evans more
+  before I plan this conversation. 
+- $group1leader thinks that LRB probably wants to become an omnipotent ruler by
+  means of harnessing some dark dark magic
+- sewell + evans aren't entirely convinced, but believe it's plausible. they
+  also float the idea that maybe they have to /help/ LRB or face the extinction
+  of man
+- further disgust at the government for the murder
+- chosen one? they mostly realize that this must be boon
+- we shouldn't tell everyone else about the sa'angreal
+
+they decide that they have to go investigate the desert, no matter the
+danger. they don't know exactly where it is or how to activate the mirage, so
+they go looking for clues on how to get there. evans knows a man who runs a
+hustle in the desert. he looks for sand patches that get blown around to uncover
+sand that is perfect for glassmaking. if anyone would know anything, it'd be
+him. his name is barr.
+
+@sidequests
+** the desert
+(THIS CHAPTER IS AWESOME)
+
+the group travels out to the edge of the desert, where barr has a few tents and
+dune buggies set up. he's dressed kind of like hunter s thompson, he's smoking a
+cigarette. he claps evans on the shoulder like they're old buddies, says how
+evans helped him out of a serious jam years back. they ask him how business has
+been -- he says bad, real bad. people keep disappearing. it started with his
+friend Cyg, a kind of feisty raider girl who always rode into the desert with a
+shoufa, a gun, and plenty of supplies. not like her to get lost like this. he
+can't hire out anyone to go because it's practically a death wish, and he won't
+do it himself.
+
+they tell barr that they'll pay him a large sum of money to escort them out. he
+looks at them like they're crazy and tries to convince them not to, but in the
+end finally relents. they tell him that they are looking for a castle in the
+middle of the desert. he's taken a bit aback, because he's seen flashes of a
+castle out of the corner of his eyes that match their description. he says it
+started happening right before people started disappearing, and that it's always
+in this one quarter mile radius of the desert.
+
+they drive out there, talking on the way @detail. the dune buggy shudders, the
+screen glitches a bit, and all of a sudden they're standing in a dimly lit
+basement. boon somehow understands that they are in another world. they explore
+for a bit and solve a few puzzles, and boon comes to a shining place on the
+ground. he says that he knows that this will transport them back to their
+world. he uses it, and the four of them are brought to a portal stone right
+outside of the castle.
+
+@dungeon
+they work through the castle and the house, solving puzzles. in a room
+in the house, they find the people who were lost. he sees cyg and calls out to
+her, but she doesn't respond. no one else says a word. without warning, you
+begin battling her. once defeated, everyone else runs over to you. they tell you
+that when they fell into this building, cyg was already here. she had food but
+it looked untouched. all she would do was ramble about the sins of man and the
+return of the righteous. she didn't eat or drink for days.
 
 @detail
-once these get fleshed out, i need to inject them into the story. who gets what
-scraps and when?
+ideas for puzzles:
+promesst-style; mirrors, beams of light
+(simple) switches which
+
+as they reach the final hallway / heart of the castle, things begin to glitch
+more and more. they are transported, for a few moments, to many places. a
+pastoral town where someone cries out in terror at them. the smoldering ruins of
+a city. an mountain pass in the midst of a blizzard. all these places flash in
+for just a few moments, and then they are gone.
+
+finally, they reach the room of the forsaken.
+an office
+more strange contraptions
+a platform of battle
+
+they begin to speak. conversation notes:
+- he says that boon feels familiar, and that he can feel the ripples he makes in
+  the magical world. he knows he is powerful because he made it to him
+- a bit sad for having to wage war
+- amused that the humans do not know it
+- "hmm...what would be a fitting name in your language? something appropriately
+  ancient, something a bit frightening, something powerful. for i am all of
+  these things, you may call me hegdesius."
+- he does not know that boon has the spirit of a fallen kin in him
+- tells them about decision points & split timelines
+- there is much history between your people and mine. he does not tell boon the
+  full story, but he says he's observed a very strange group of people who seem
+  to have a handle on the truth of the matter (group 2)
+
+
+they battle. as you land the death blow, hegdesius is in shock. it is babbling
+the way you would when you learned you had let your entire race down. he regrets
+he does not have time to warn the others, but he hopes they will be able to
+sense the three deaths though distant they are.
+
+everyone returns to the camp in the forest.
+** while you were away
+@detail more memorable characters at the base
+@pacing there isn't a lot of gameplay in these next three scenes
+
+when they return to the base, everyone seems shocked to see them. they tell them
+that the group has been gone for ten days. once people realized that the
+government was serious about going full on war mode, tensions between all
+parties escalated. the populace is agitated, but are getting fed and
+paid. altogether life is normal, and most signs point to the government treating
+people humanely. nothing has been heard from most of the hackers -- they are all
+assumed either MIA or dead. those in group 1 who are still fervently for attack
+have begun splintering off, running raids on government construction projects,
+demolishing construction and killing guards and civilians in the process. those
+who have remained have decided one thing: they must follow boon.
+
+and group 2. group 2 has been especially problematic. they have begun slaying
+magic wielders essentially at random. word has it that they believe there is no
+longer any more time to bide. they speak of strange things that have the ring of
+prophecies -- decision points, the breaking of mankind, a powerful one imbued
+with the spirit of an outsider. they seek this one, say that if the prophecies
+are wrong or if the one is dead then all hope is lost. this is the extent to
+which they have communicated with the other factions.
+
+the government, too, has done its part to lash out. there have been an
+unprecedented number of raids on all kinds of places -- basement hideouts,
+server racks, remote camps, etc. this camp has gone undetected because of the
+bad reputation of the forest. hundreds of revolutionaries have died in the past
+week. families of the killed and captured have gone missing, families of
+defectors as well. even though they haven't split off yet, everyone still
+remaining feels that they are coming to a critical point in the revolution, and
+that something has to be done. they need boon to make a plan.
+
+boon says that they should go talk to group 2, see if they can wrangle their
+support against a common foe and deal with their murderous tendencies
+later. someone at the camp replies (@detail who? no nameless soldiers) that,
+well, this is a bit awkward, but we were hoping you wouldn't say that. see, a
+few days ago a lone messenger came to their camp and dropped off a message.
+
+@detail
+it is a small scrap of prophecy.
+not really sure what i want it to say. not something too corny. want to stay
+away from words like 'the chosen one' and 'the keepers'. anyway, the prophecy
+says that they know that boon must be alive or everything is fucked.
+the prophecy given by group 2 alludes to a prophetic hint that the groop
+received at the castle
+
+they tell you to go to a hole in the wall restaurant and ask for a table under
+the name 'troy'
+
+** the restaurant
+boon, sewell, and evans walk over to the restaurant. right outside, they see the
+sun glint off of something and go to pick it up. it is a small figurine. when
+they enter the restaurant, they tell the clerk the pass phrase. the clerk makes
+an offhand comment -- never seen you around here, you don't look like the usual
+type. but i was told someone by this name would be coming around.
+
+when they walk in, they immediately realize that it's a trap. they see cops,
+guards, officials everywhere. this is a magical hotbed, and the combined power
+in there is enough to wipe the three of you off of the face of the planet. you
+have no choice but to fight. but strangely, boon absolutely tears through
+everyone. every attack is a one hit kill. after a single battle, everyone
+remaining in the restaurant scrams, quick, except for one man.
+
+they approach the man and speak to him. he seems cool, collected, and slick --
+very slick. he does not come off as sinister, merely unsettling. you can tell
+that he appreciates having the power in this (or any) situation. (this is theseus)
+
+he says that he is a double agent for group 2 who functions inside the
+government. the figurine that boon had is -- or was -- akin to an angreal. a
+magnifier of power which, combined with his natural talents, made him more
+powerful than anyone in the room could fathom. extremely rare. it was also a
+relic, found wrapped in a scroll describing its use; only the one prophesized
+would have the access to the dogma needed to use it. moreover, its use would be
+like a chemical reaction with the one prophesized: a bright flash of heat and
+smoke, and then its contribution would be spent.
+
+boon is confused. he says that they have encountered things that sound similarly
+prophetic, and in situations where he is inclined to believe them, but he has no
+context.
+
+the man smiles and says, i think we've been waiting for you for a long time.
+he bades them come with him to learn about some things they will find very
+interesting. he bades them over to his suitcase, which contains a square stone
+glowing with a bright blue circle in the center. 
+** hello, group 2
+with a flash, they are in a building that looks like a laboratory. everything is
+sleek light blue and silver, fluorescent, angular. it looks like a spaceship or
+something out of westworld. the party freaks out a bit on entry and asks where
+they hell they are. theseus replies, "about three miles under the surface of the
+earth under, oh, let's say southern china".
+
+everyone is shocked at this, even those who have been practicing the dogma for
+decades. they argue about how it is possible. theseus says that this will make a
+lot more sense if they let him explain what he brought them here for.
+
+theseus goes on to reveal quite a bit about the origins of the revolution and
+the knowledge that group 2 have discovered since the schism. he dispels some
+rumors about group 2 (they only search books, they have no regard for reality)
+and confirm others (they are actively and violently against the use of
+magic).
+
+--
+don't want to plan this conversation out too rigidly or repeat what i've written
+elsewhere -- group 2 genuinely believe that boon is the one they seek, they will
+divulge all information to him excepting things they may find inconvenient
+(which i will have to revisit when i sharpen up their motives).
+
+tess is part of this conversation
+
+conversation outline:
+how could you kill your own kind?
+they are not exactly our kind: [the schism]
+
+how do you know this is true?
+100+ years of research, specific pieces of prophecy. and speaking of prophecy,
+there is something you may be very interested to know. you are an outsider, and
+you have unimaginable potential -- more than any human who has ever lived. you
+are "the one imbued with the spirit of an outsider". we're pretty sure the fate
+of the human race is on your shoulders.
+--
+
+they tell boon that they want to take over the sa'angreal to link together
+humanity to have a chance at taking out the forsaken. they believe that boon is
+the only one with the proper power to wield it. they'd like his more ragtag
+group of dogmatics to join them as a boots-on-the-ground force in taking the
+sa'angreal. boon agrees. theseus tells him that he should return to america and
+begin training his band of militants into something more resembling an
+army. theseus also says that although everything must proceed with great
+urgency, there are no concrete plans yet -- getting firsthand intel on the
+government and training up an actually competent force is the most useful thing
+that boon can do right now. 
+
+before boon leaves, theseus pulls him aside and tells him to be very wary of
+LRB. theseus says that he is no mere government shill -- even though most
+everyone in the government can channel, LRB is on another level. until today, he
+was the most powerful dogmatic known to $group2. he has locked away more
+information on magic than most people will ever learn. 
+
+he also gives boon a small angreal that will allow him to access the portal into
+their base whenever. 
+
+SPECULATION
+he doesn't know that once they hold control of the sa'angreal, they'll try to
+overpower boon and use his power to tap into things which are known to exist,
+yet unknown in use. maybe:
+still all of humanity (evil)
+cut off our timeline from the greater thread (undefined behavior, probably evil)
+use him as a da'mane of universal power and try to conquer reality
+
+do they have a reason from keeping them from sharing this information with
+$group1? one reason would be theseus' manipulative personality. 
+** an uneasy toast
+everyone returns to the base. evans approaches boon alone. he asks boon what he
+makes of $group2 now that they're away from everyone. boon says he feels a bit
+uneasy -- how they went about contacting him, the displays of grandeur and force
+to show how powerful they are -- but he mostly trusts them. he thinks that if
+they were any less aggressive, they could have caught a false prophet. and
+moreover, this is a group of people who have dedicated their lives to piecing
+together this puzzle and searching for a savior to take them home. evans asks
+how many people you think died walking into that restaurant? he says that
+theseus' confidence and influence make him uneasy. and he says that the woman is
+hard, hard like she's seen some shit. 
+
+evans asks boon what he's going to tell the rest of $group1. boon is surprised
+at this question -- he thought it was implicit that he was going to tell them
+all of it. evans lashes out a bit here. he says that they could never handle
+that. he says that every last one of us is going to die in this war. at least
+give them the dignity of thinking that they have a chance to live. (note: he
+doesn't mean that he knows they will fail -- just that they will die). boon
+agrees, and he says that he will reveal:
+$group2 work in secrecy, and he can't reveal much about them besides the fact
+that they are working with us now
+the government factories are a front for harnessing the sa'angreal
+we must be wary around the sa'angreal -- destroying it could have unknown
+consequences. 
+he is a man of prophecy
+
+boon delivers the town hall. he saves the declaration of prophecy for last. when
+he says it, everyone is silent. finally, ike steps up. he says something to the
+effect of "well, lad. i knew there were something special about you. i don't
+need to see nothin more to tell you that i'm with you until i keel over". at
+this, there's a rousing scene. everyone feels some momentum and joy, this is the
+first real "victory" for the revolution. scene fades out with people clapping
+boon on the back, toasting, etc.
+** one last brief aside...
+@cutscene
+
+cut out to tess and theseus. they are talking alone in a dim room. 
+*theseus*: i can't believe he just came to us. it was almost too easy. tess, this
+is the moments that our ancestors lived and died for. a hundred years of work
+and blood and death in the hopes that one day we would live this moment and
+execute their plan. 
+*tess*:    is it really their plan that we're executing theseus?
+*theseus*: no...but at this point, it's the only plan. the situation is far worse
+than anyone realizes, including those government clowns. LRB is dangerous. 
+*tess*:    do you ever regret this life, theseus?
+*theseus*: no. sometimes the knowledge is like a mountain on me. but we both know
+this is the only way that we can save humanity. anyway, the boy -- after all
+this time, i somehow expected...more
+*tess*:    we know nothing about him
+*theseus*: we know that he's green
+*tess*:    you must let him breathe. i can feel these things. the moment that he
+walked in, i knew he was the one we sought. he is yet weak, but given time and
+guidance, he'll be stronger than either of us could imagine. but the more you
+try to mold him, the more he'll resist. 
+*theseus*: i hope you're right tess...
+* backstory
+** savior, prophecy
+during the time of the greeks, before the golden era of greek culture, dogma was
+discovered. its users were like infants, completely unsure of what they were
+doing and not aware of what they were doing or where they were going. they were
+too weak to summon creatures for battle. 
+
+dogma, however, allows you to see the pure form of things, as all things
+are imbued with dogma. the dogma inside a thing is its true perfect form, and
+what we see in the real world is a reflection or shadow of that. the greeks were
+able to tap into a primitive form of this kind of dogma, and as such gained
+incredible insights into the world around them. their ideas about many abstract
+things either still ring true today (logic, mathematics, politics) or are
+astoundingly clever given the limitations of the time (atomic theory). 
+
+slowly, they became more powerful. their use of dogma, while still primitive
+compared to what could be, was getting more and more refined. they were able to
+build useful things, they were able to self-organize in a way completely yet
+unseen. but in gaining this power, they caught the attention of beings that live
+entirely on the dogmatic plane. these beings had never encountered any other
+creature that could use dogma, so they let them be and observed them. they sent
+down their kind under the guise of humans, but left them in peace. 
+
+the greeks eventually gained enough power to form a technological society. they
+invented things like computers, strange forms of locomotion, and they began to
+conquer the world. 
+
+the dam finally breaks when one man comes of age. he is the most powerful
+dogmatic humankind has ever known. he has the ability to see the flow of dogma,
+truly see it as dogma, and manipulate it. when he does this, he taints the
+magical source. for the magical beings, it's like receiving an electric
+shock. the human dogmatic begins growing more powerful at an exponential rate,
+reaching the power of the magical beings, surpassing it. he's a magnifying glass
+and dogma is the sun. the magical beings realize that the source is not just
+temporarily tainted, but has a permanent stain. 
+
+the magical beings begin to commit genocide. the dogmatic realizes what is
+happening and begins to formulate a plan to save humanity. he realizes that he
+isn't strong enough to take all of them head on, but he also realizes that his
+power surpasses that of any single one of them. he has access to techniques
+which they do not. and one of those techniques will save his race.
+
+the final battle comes. the savior links with every living human dogmatic, and
+channels the power through them to fully taint the source and rewrite time. the
+earthly plane shatters, and time folds in on itself. history now exists as a
+shadow of what it once was -- the same kinds of things happen, but far less
+intensely. people are rewritten out of time from its very first moment. all of
+the butterfly effects that lead to humans gaining the power are changed in
+perfect unison to manipulate the universe itself. 
+
+this much power flowing through all of the dogmatics utterly destroys
+them. their souls burn like white hot suns out of their eyes and are erased
+forever. their empty husks continue to channel like lightning rods in the hands
+of the savior. his mind is swirling chaos, his mind is not a mind, he has lost
+any grasp he had on himself. he, too, becomes nothing more than a lightning rod
+until, holding out like the last fence post in a tornado, he is ripped from
+reality and atomized. 
+
+breadcrumbs are left in this altered history. prophecies. the savior knows that
+one day, humans will rediscover magic again. they will open the door to the
+plane of the beings, and will leave themselves wide open to a strike once
+again. he leaves clues that they could only possibly understand if they
+had some kind of access to dogma. and, finally, he leaves a dogmatic
+nuke. something that has distilled inside it the force needed to link humanity
+once more and defend themselves from the magical creatures. he knows that this
+thing cannot be used except in the most dire time, lest humanity destroy itself,
+so he makes his notes opaque, something that could only be deciphered in the
+perfect circumstance. 
+
+the prophecies:
+- there will be a chosen one imbued with the spirit of an outsider
+- there is a dogmatic superweapon
+- there is a dogmatic plane, and beings live on it
+- humans tainted the source for the magical beings
+- humans can link to amplify their power
+- pieces of forgotten dogma
+- one man, unchosen, will discover the nature of reality. 
+
+the magical beings are devastated. their lifeblood has been poisoned, and the
+dogmatic link between their plane and reality's plane has been severed. there is
+no way to return and fix it or extract revenge. they know that their fate has
+been sealed. they must wait excruciating millenia to die. 
+
+one of them, however, is different. it sees the fury and passion and
+unhesitating sacrifice of the savior, and it feels pity. it understands that the
+humans fell into a power they could never truly comprehend. it understands that
+the hurt they caused the beings could not have been intentional and, upon being
+stricken, fought back as any rational creature would do. it hates its comrades
+for not understanding this. and so, many years later, as humans are recovering
+the dogmatic source, it lies on its deathbed. it decides that this must be the
+right thing to do, and it expunges its soul from its body and places it into
+that of one human boy...
 ** the return of dogmatics + the revolution
 the revolution has a storied and complicated tradition. dogma began to rise once
 more approximately four hundred years ago. the beginnings of understanding of
@@ -384,54 +822,49 @@ some maddeningly shiny technique that when used would destroy humanity?
 something that would cut us off from the magical source? all this prophecy is
 very much a sleeping bear.
 
-and so they split off. and not cleanly either -- both groups thinking that the
-other was wantonly throwing the fate of the human race in the trash led to a
-complete severing of ties along with plenty of deaths, backstabbings, and
-betrayals. this was a messy divorce. the first group became the group referred
-to as $group2 (ascetics). they fervently hunted the trail of the puzzle, and
-over the next hundred years actually made quite fair progress putting together
-all of the pieces (see: section 'group 2' for a list of things they know at the
-time of the story). the second group decided to consolidate their power into an
-entity that could control the world, and they decided on the united states of
-america. this is the group referred to as 'the government'. 
+and so they split off. lots of bad blood, both groups thinking that the other
+was wantonly playing with the fate of humanity. the first group morphed into
+today's revolutionaries. they began by sticking to their word, and devoting
+their lives to understanding the mystery at hand, and to their credit made quite
+a bit of progress over the next hundred years. [[$group2]] has a more detailed list
+of who they are and what they know at the time of the story.
 
-there was also a third group, a sect of those who wished to solve the puzzle but
-did not think that stopping magic was the way to do it. this is $group1,
-ironically. they decided that if the puzzle was this ingrained in reality,
-whatever was coming for them was like a freight train at this
-point. unstoppable. coming no matter what you did. and they were a 'die on your
-feet, not on your knees' kind of people. so they dedicated themselves to
-studying the art of battle dogma.
+the second group decided to consolidate their power into an entity that could
+control the world, and they decided on the united states of america. this is the
+group referred to as 'the government'. they did not leave themselves completely
+blind to the prophecies or the more refined parts of dogma. on the contrary,
+when your enemy is finding previously lost scraps of powerful dogma, you need to
+pump resources into R&D too just to keep up. 
 
 the government has far more resources, and has thus been able to dedicate entire
 warehouses full of people to working on cracking dogmatic secrets nonstop. it is
 a massive industry, and because of this they are quite advanced as
-dogmatics. group 2 have also been able to keep pace, however, with the help of
+dogmatics. $group2 have also been able to keep pace, however, with the help of
 the (rather substantial) amounts of magical knowledge hidden within the puzzle
 they were solving. part of this magic is defensive or evasive magic, which has
-made group 2 nigh impossible to snuff out in the intervening period.
+made $group2 nigh impossible to snuff out in the intervening period.
 
-$group1 has neither of these things (massive resources or ancient dogmatic
-knowledge). for this reason, they have remained mostly underground -- at times
-not even really existing, just clinging together. but what they lack in
-resources they make up for in spirit. 
+since the schism, cat and mouse would be an appropriate way to describe the
+relationship of these two groups. as the government became more authoritarian,
+$group2 became more and more firmly opposed to what they were doing. $group2
+lacked the true power and resources that the government had, so in terms of
+e.g. a coup they were powerless. but their extensive magical knowledge made them
+a thorn in the side of the government: taking down power grids, stilling key
+members, raiding their databases, spreading out mass information campaigns to
+the people. 
 
-the fighters believe faithfully in their cause -- even if the smaller numbers
-means that their odds are longer. 
-
-** $group1 (fighters)
-those felt they were powerful to attack the government head on in force. they
-have many powerful dogmatics trained in battle. at this point, boon asks what they
-mean by battle. they explain that there are strange magical beasts that can be
-summoned and controlled (with great effort) by those trained. this first group
-uses these beasts to attack government outposts and seize government
-assets. however, they've realized that they weren't as strong as they'd
-thought. they cannot directly attack the government or attempt a coup. they
-would be destroyed if they tried. in the two years since, they have settled for
-being a thorn in the side of the government. they have suffered many losses and
-have seen many friends and family die. they are extremely hardened and bitter,
-especially at the lack of support from their once-brothers.
-** $group2 (ascetics)
+that being said, the role of $group2 has not changed: unearth the true meaning
+of the distortions in reality caused by mankind's use of dogma. the government's
+role, however, has become twisted and muddied with time and the hulking mass of
+bureaucracy one needs to sustain something of its size. from the outside,
+$group2 isn't really sure what the aims of the government are. some people think
+they want to make a push to hunt them down and exterminate them, finally gaining
+a complete monopoly on dogma. others think that some brass in the government are
+looking for something to turn them into god emperors. some think that the
+government is so unwieldy that it could not have a cogent, organization-wide
+aim, and that it is really a system of interlocking power struggles that moves
+forward solely on inertia. 
+** $group2
 the second group kind of resembles religious ascetics. they see what magic has
 wrought. they see all of the inequality, exploitation, and they reject it. their
 goal is to destroy magic. they learn all they can of magic so as to better see
@@ -875,15 +1308,14 @@ near the end of the dungeon, there'll be a boss battle. ike trips over a root,
 and out from the forest comes a dark, specter-looking creature. it tries to grab
 boon. ike yells at him to fight, damnit, and you nervously plunge into battle. 
 
-once you defeat it, ike seems impressed. he says no one he know has ever picked
-up on battling that quickly. he says that you're going to come with him to see
-some of the rev's brass. 
+once you defeat it, it begins to wither into dust. you hear its death rattles
+and, right before it perishes for good, it seethes a word into your head: Agnus.
+
+ike does not seem to notice this. he is impressed. he says no one he know has
+ever picked up on battling that quickly. he says that you're going to come with
+him to see some of the rev's brass. boon does not mention the word. 
 ** brass tacks
-when you come to the camp, you're greeted by:
-sewell
-evans
-tess
-theseus
+when you come to the camp, you're greeted by evans.
 
 first, they assure you that you're no longer in danger. they half-heartedly
 scold ike for bringing boon on such a dangerous route, but are similarly
@@ -964,454 +1396,198 @@ you approach the door of the castle and hear a conversation grow louder. it is a
 man, with an old voice, like bill. @note: no actual voice acting, that's just
 how i imagine him. from kill bill, for those interested readers. he says that
 work is progressing just fine, but he must ask again: why can they not simply
-unlock it for him? at this moment you peer between the slats of the door. evans
-nearly cries out in surprise: it's LRB! and he seems to be cavorting with
-something that is there and not at the same time.
+unlock it for him? at this moment you peer between the slats of the door, but
+it's too fuzzy to make anything out. 
 
-another voice appears, gravelly and guttural, barely human. it asks him why he
-doesn't turn his grandfather into a computer programmer. i have no control over
+another voice appears, gravelly and guttural, barely human. it asks him why his
+grandfather met his grandmother. could you not prevent that? i have no control over
 that, says the first voice, my grandfather has already lived and died. and so,
 too, is why i cannot open the sa'angreal for you. know that i have done what i
 can, and do not ask again lest you invoke my wrath.
 
+the gravelly voice begins again and says that time is growing short. time's
+binds are growing tighter, faster than anyone could have expected. my senses
+have been failing me -- i've been unable to push time's threads into their
+place. i've felt another of our kind on this plane, yet it cannot be. we are
+degrading. there are 
+** weit re skl.dafasdjfsdklfjsdaf write stuff here!!!!!!
+where are we in the story? man, what an exciting life where being adventurous
+constitutes smoking a cigarette. the tensions in the story -- who is boon, what
+is the government doing, what's up with the prophecies. we barely know anything
+about the prophecies at this point. we know there is a mysterious man kind of
+working with the other beings but at the same time being controlled by them. we
+want to know more about this man. we want to know more about these beasts. we
+want to know more about these prophecies and we want to know more about the man
+but we can't quite yet and we have to disguise the fact that it's LRB and i
+don't know if LRB has even been introduced yet let me check that!!!!! ok i
+checked and we don't know about him yet. so there's nothing there, we just know
+that the government is a strange entity and they are doing strange things but
+there's no skin in the game yet. we could do this a couple of ways. the first
+way is to somehow engineer a meeting or something between the band and the
+government where lrb is there and as you hear him speak boon whispers to one of
+his comrades, jesus christ, i've heard that voice before! i know that voice! and
+then you come to grips with this realization that the government is maybe
+working to actively destroy you and you have to figure out what to do about it,
+and then the second thing that we could do is that you gradually learn more
+about LRB until at the ened there's this big reveal and it turns out that it was
+him the whole time like a scooby doo mask. maybe this is too big though, i think
+this is the right goal just listing out what you actually care about right now
+and then figuring out where it goes and how to reveal that location. kind of
+just winging it right now but i do know the salient points of the story
+- lrb's troubled backstory
+- his desire to save mankind in accordance with his visions
+- the sa'angreal left by the savior
+- theseus' betrayal 
+- boon's choice at the end
+
+the revs:
+theseus and tess' mysterious knowledge of the prophecies and forgotten dogma. 
+evans' need to protect people
+unraveling the prophecies
+
+act one:
+become ingrained with the revolution.
+learn of theseus' and tess' strange place.
+begin a budding mentorship with theseus.
+begin a budding mentorship with evans.
+understand that lrb is behind the government's strange behavior.
+learn about a mysterious man working with the others.
+learn of the three others working on this plane.
+
+act two: 
+kill the three others. 
+learn of the savior. 
+learn of the sa'angreal. 
+
+act three: 
+learn of lrb's true nature. face theseus' betrayal. make the decision.
+
+problem right now. fleshing out the first act. leaving it on how it's left right
+now is awesome because some cool shit happens and you wanna find out who the guy
+is and you wanna go kill the baddies  but some more stuff needs to happen
+first. to set that up
+i want him to learn at least a little bit about the prophecies. theseus is the
+guy who really knows about the prophecies. maybe he takes boon aside, they go
+somewhere to do something, and theseus speaks with him. hey, i know a little of
+these prophecies and, call me crazy, but i think your showing up wasn't
+coincidence. i think you were fated to come here to help us unravel this
+mystery. here's what we know:
+<not everything theseus knows>
+
+so many thoughts, do i need to organize them or just write? is the plan i have
+sufficient? i say there is no way to know. 
+
+why would theseus just take him out on a mission? he just met the guy. 
+
+i keep having this idea of theseus and boon sneaking into somewhere, like the
+slave tank room. LRB pops up and has a conversation with his henchmen while you
+hide. you glean some valuable information on a place the government would like
+to go or what they would like to do. 
+** write stuff 2
+not sure why this is happening right now, but hey. sometimes when the urge hits
+you, you gotta do it. i think that the approach i had right above of trying to
+lay out the super big road map of the story is a good idea. i am ok with winging
+it and refining it for the most part, but i have enough stuff to make a
+direction at this point. 
+
+ultimately the main thrust of the story is this: 
+there are magical beasts which are working to destroy mankind. you, as
+prophesized, must stop them. 
+
+that's it. it's that simple. the devil's in the details, though, and these are
+the main stops that get you there. 
+
+@goals
+(d) the complicated history between mankind, the forsaken, and dogma. 
+(s) the existence of the forsaken and their aims (imminent death of mankind)
+(q) the betrayal of one forsaken against its people
+(w) the realization that boon himself is a forsaken incarnate
+(e) the warping of reality as it begins to crumble
+(r) the role of the government in the emergence of the forsaken
+(t) the role of the revolution
+(y) the sa'angreal and the struggle to control it
+(u) evans, a hard-faced and battle worn father figure
+(i) ike, a lovable uncle
+(o) tess, a quiet but intimidating woman prone to bouts of fanciful passion
+(p) theseus, a snake with a thirst for power
+(a) lrb, a man devoted to his species with the loneliness of responsibility
+
+and those are just the main stops -- there are more themes and ideas that i want
+to work in over the course of the game. and i think that is plenty of stuff to
+get started. there just needs to be arcs that realize these individual pieces. 
+
+one way you can do this is with a heavily dungeon-based design. the more i think
+about this, the better it seems. that is to say, a series of large dungeons
+which make up the bulk of the game. 
+the pros:
+dungeons will be fun to design
+without random encounters, dungeons are how gameplay is going to happen
+the idea of a dungeon is flexible enough to be molded into different
+things. because at its core, a dungeon just means an isolated map that you have
+to get through. you might be infiltrating a government base. or checking out a
+dogmatic castle in space. 
+the cons:
+don't like the flow of no story -> no story -> bunch of plot points unloaded at
+a dungeon2
+
+how can i introduce more story points without breaking the flow of the game?
+this is a pretty serious problem. it's something about major plot points
+becoming too obvious -- if you get down to the end of a dungeon, well of course
+the story is about to be advanced. and remember, stories aren't about hiding
+their contents from the experiencer. but it feels so un-real to have it broken
+up so herky-jerky. 
+
+one thing i can think of is mini-dungeons, quests, whatever you want to call
+them. the pillars of the game will be the large beastly dungeons. but not
+everything has to be so large. so really these are still dungeons, but the point
+is that they are not centerpieces. 
+
+thinking of what final fantasy does here. honestly, it's a lot of what i
+described. big dungeons followed by cut scenes. but the thing with final fantasy
+is that there is a lot of variance in there. for example, the scene in narshe
+where you split up to defend. or going down the river. or finding sabin in the
+mountains. or the spirit train. sure, you could construe most of these things as
+dungeons, but they're different. it doesn't feel like you're tackling a huge
+thing, which makes it flow better. 
+
+one thing that i think might be fucking me up is the thought of them continuing
+to return to the base. i don't like that, because that's super boring. there's
+only so many ways you can dispatch a team from a base before it gets worn
+out. but they're a revolution -- they need some place to meet up, and there
+needs to be some place to disseminate information. but doing it this way makes
+you lose the sense of grand adventure. going from narshe down to meeting a king
+in figaro, escaping down the river, all of this stuff. a bonus that it brings is
+that it's a lot easier to make. i don't know if i could finish this game if i
+octupled the number of locales in the game. i just don't think that would
+work. so perhaps this will just require some creativity on my part. i think it's
+fine to roll with this for now. 
+
+in two minds right now. it's easier and maybe more fun (see: easier) to think
+about almost like meta goals instead of structuring the story itself. this story
+is so so heavily influenced by the wheel of time. which is good, because the
+wheel of time has so much going on for it. but it's bad, because the wheel of
+time is good because of its sprawling realism and complexity. i'm just not sure
+that i can do that in a game right now. but the ideas i have here are
+excellent. i love them. and it is a story and scope that i want to tell. how do
+i make this story intriguing without having so much sprawl? 
+
+okay, take more hints from ff6 than wot here. wheel of time is fantastic because
+there aren't clearly defined goals. you can feel the characters figuring
+everything out as they go, and there are plenty of curveballs. watching 50
+characters all acting and reacting is beautiful. in ff6, though, everything is a
+lot simpler. things happen, information is learned, and then people do
+stuff. there's much less interpersonal relationships, and there is no
+information hiding at all. information hiding takes a long time to resolve. try
+to keep what is going on in the plot straightforward, and write few scenes that
+don't directly advance the main plot. 
+
+--
+(u, s, r) evans and boon's journey into the forest. 
+(o, p, s) a short cut-scene between theseus and tess, where they discuss the
+question of whether boon is the prophesized one. where they discuss the
+prophecies coming to a head. 
+
 * act two
-** what just happened?
-the three meet up once again. sewell and evans are shocked at how powerful boon
-has gotten. they talk about what happened to then. 
-@detail
-sewell feels:
-
-evans feels:
-
-boon feels: 
-in over his head
-important
-like a puppet in a play
-can't understand the changes to himself
-weak for being afraid
-good about the revolution (?)
-
-(basic points)
-sewell: they're abusing everyday people. they're playing with them like animals
-to further their goals. i didn't realize what was going on when i joined, i
-thought we were just messing around with some government servers.
-$group1leader: nothing worse than what the government does every day. and besides, what
-do you think those servers power? you think no one ever skipped a meal because
-of your actions?
-sewell: ...
-
-evans: they're sending kids out to try to kill guards. they're indoctrinating
-them. most people can't protect themselves, but kids least of all.
-$group1leader: do you have proof?
-evans: not that they're sending them out, but i saw two indoctrinated lads with
-my own eyes
-$group1leader: kids younger than them made bigger decisions throughout history. the cause
-is just. i don't like to see them die any more than you, but that's their
-prerogative.
-
-the conversation ends with considerable tension between the three. $group1leader ends it
-by telling them that there is a government unveiling of a massive construction
-project. boon walked within a mile of the site a few days ago and felt a ripple
-in the power. there is something fishy. plus, he heard that LRB will be there to
-speak personally.
-
-$group1leader tells them to go talk to the bedkeeper to get somewhere to sleep, then come
-back to him the next day.
-
-as boon walks away, he gets a flash. it is brief -- kind of an idyllic pastoral
-society. he can walk around, talk to people. they greet him as a good
-friend. they offer him tea and stew. he walks up to a dark man who appears out
-of place. the man begins to sputter nonsense, angry, surprised, until boon runs
-away. he falls, and he flashes back into reality. 
-
-@sidequests
-** the announcement
-once they come back and talk to boon, they black out and back in near the
-construction place. it's right out side of the city limits, on the north
-side. they've billed this as an announcement that is going to change the way
-that people live their lives, it's been plastered over the news. there are a lot
-of people here. everyone is a bit excited, a bit nervous.
-
-LRB walks on to the stage as his theme plays. the crowd silences as he walks
-onto the stage. he announces that government researchers have been slavishly
-researching a new kind of technology. recently, they've made a
-breakthrough. they've discovered a class of weapons that will make america
-unilaterally the most powerful nation on earth. he brings out a poor lad. he
-takes out a spray bottle and sprays in the man's vicinity. the man immediately
-begins screaming, writhing around, tearing at his face, tearing at his throat,
-begging to die.
-
-LRB calmly steps up to the podium and speaks. weapons that cause this level of
-pain have existed before, but not at /scale/. we can employ this weapon so that
-every person in a one hundred mile radius will behave exactly as this man until
-they die in appx. 72 hours from dehydration. this weapon could be easily
-deployed to every major city in the nation. production units already exist.
-
-he says that the city will be converted into a massive factory. they will expand
-the city to five times its current size, with all of the space being used for
-weapons manufacturing and all of the citizens as loyal employees. effective next
-week.
-
-everyone is in shock. LRB excuses himself. sewell, boon, and evans quickly talk
-amongst themselves. they all feel the ripple in the power. they know that the
-weapon he is talking about is magical in nature. they feel urgency, and they
-decide to explore the area more while everyone is in a commotion.
-
-they see LRB walking in a direction, then down a set of stairs carved into the
-ground. there's a guard there. they talk past him or kill him and walk down into
-a tunnel. the tunnel is LRB's personal escape bunker -- partially a bug out box
-and partially a place to relax.
-
-** the tunnel
-@dungeon
-the tunnel has guards, but it's not swarming with them. in the tunnel are
-several places to explore: a library of books on ancient history, political
-theory. a room of strange magical fixtures. a private office containing LRB's
-some of these rooms have wards. you must find an air vent to spy on his
-room. @detail should make this into a heavier dungeon
-magical experimentation room
-LRB's diary + library with books of interest
-a warded room which spawns "ghost" trainers
-
-once you get to the end, you see LRB with a few guards and a few important
-looking people. the air is somber. LRB is sitting in a fine chair and others are
-standing. one man who is standing angrily tells LRB how he promised there
-wouldn't be any more violence like this. not against their own. LRB is silent,
-and the other man keeps talking.
-
-after a moment, LRB stands up. the man stops talking. guards begin to shuffle
-away. LRB has a short monologue about unflinching authority. he kills the man,
-and all is silent. he bades everyone leave, and as they are leaving he calls his
-son to stay. his son is his one confidant. bred specifically to be magical, and
-only exists so that LRB has someone to pass on this mantle of extreme importance
-to. they are silent for a moment.
-
-- strange moment of clarity regarding his ruthlessness
-- time is growing short
-- in some capacity, he is aware of boon's existence
-- the search for the sa'angreal is going well, and LRB is sure that this is the
-  one that is propesized
-- the forsaken grow closer -- he felt two of them wink out of existence, but
-  four more exist. one, like a god king, has retreated to the magical plane
-  after the death of two of its subordinates. the other three are here figuring
-  out what happened and moving their plan forward. he senses one of them in this
-  very city -- sometimes, it feels intensely close (this is boon).
-  - the four:
-	- desert
-	- the crazy one
-	- god-king
-	- boon
-- one of the forsaken is out in a mirage palace in the desert. LRB has felt the
-  other ones, sometimes in partial existence, sometimes only for a few days or
-  moments.
-
-** consolidate
-after this conversation, they leave, and everyone returns to the base. they have
-a conversation that consolidates some knowledge and viewpoints.
-- there are forsaken coming to destroy humanity
-- LRB knows about them and has kept it from everybody, including seemingly the
-  government itself
-- there is a massive channeling tool that is LRB's hope to defeat them
-- boon needs a cheering up @detail from who? need to flesh out sewell/evans more
-  before I plan this conversation. 
-- $group1leader thinks that LRB probably wants to become an omnipotent ruler by
-  means of harnessing some dark dark magic
-- sewell + evans aren't entirely convinced, but believe it's plausible. they
-  also float the idea that maybe they have to /help/ LRB or face the extinction
-  of man
-- further disgust at the government for the murder
-- chosen one? they mostly realize that this must be boon
-- we shouldn't tell everyone else about the sa'angreal
-
-they decide that they have to go investigate the desert, no matter the
-danger. they don't know exactly where it is or how to activate the mirage, so
-they go looking for clues on how to get there. evans knows a man who runs a
-hustle in the desert. he looks for sand patches that get blown around to uncover
-sand that is perfect for glassmaking. if anyone would know anything, it'd be
-him. his name is barr.
-
-@sidequests
-** the desert
-(THIS CHAPTER IS AWESOME)
-
-the group travels out to the edge of the desert, where barr has a few tents and
-dune buggies set up. he's dressed kind of like hunter s thompson, he's smoking a
-cigarette. he claps evans on the shoulder like they're old buddies, says how
-evans helped him out of a serious jam years back. they ask him how business has
-been -- he says bad, real bad. people keep disappearing. it started with his
-friend Cyg, a kind of feisty raider girl who always rode into the desert with a
-shoufa, a gun, and plenty of supplies. not like her to get lost like this. he
-can't hire out anyone to go because it's practically a death wish, and he won't
-do it himself.
-
-they tell barr that they'll pay him a large sum of money to escort them out. he
-looks at them like they're crazy and tries to convince them not to, but in the
-end finally relents. they tell him that they are looking for a castle in the
-middle of the desert. he's taken a bit aback, because he's seen flashes of a
-castle out of the corner of his eyes that match their description. he says it
-started happening right before people started disappearing, and that it's always
-in this one quarter mile radius of the desert.
-
-they drive out there, talking on the way @detail. the dune buggy shudders, the
-screen glitches a bit, and all of a sudden they're standing in a dimly lit
-basement. boon somehow understands that they are in another world. they explore
-for a bit and solve a few puzzles, and boon comes to a shining place on the
-ground. he says that he knows that this will transport them back to their
-world. he uses it, and the four of them are brought to a portal stone right
-outside of the castle.
-
-@dungeon
-they work through the castle and the house, solving puzzles. in a room
-in the house, they find the people who were lost. he sees cyg and calls out to
-her, but she doesn't respond. no one else says a word. without warning, you
-begin battling her. once defeated, everyone else runs over to you. they tell you
-that when they fell into this building, cyg was already here. she had food but
-it looked untouched. all she would do was ramble about the sins of man and the
-return of the righteous. she didn't eat or drink for days.
-
-@detail
-ideas for puzzles:
-promesst-style; mirrors, beams of light
-(simple) switches which
-
-as they reach the final hallway / heart of the castle, things begin to glitch
-more and more. they are transported, for a few moments, to many places. a
-pastoral town where someone cries out in terror at them. the smoldering ruins of
-a city. an mountain pass in the midst of a blizzard. all these places flash in
-for just a few moments, and then they are gone.
-
-finally, they reach the room of the forsaken.
-an office
-more strange contraptions
-a platform of battle
-
-they begin to speak. conversation notes:
-- he says that boon feels familiar, and that he can feel the ripples he makes in
-  the magical world. he knows he is powerful because he made it to him
-- a bit sad for having to wage war
-- amused that the humans do not know it
-- "hmm...what would be a fitting name in your language? something appropriately
-  ancient, something a bit frightening, something powerful. for i am all of
-  these things, you may call me hegdesius."
-- he does not know that boon has the spirit of a fallen kin in him
-- tells them about decision points & split timelines
-- there is much history between your people and mine. he does not tell boon the
-  full story, but he says he's observed a very strange group of people who seem
-  to have a handle on the truth of the matter (group 2)
-
-
-they battle. as you land the death blow, hegdesius is in shock. it is babbling
-the way you would when you learned you had let your entire race down. he regrets
-he does not have time to warn the others, but he hopes they will be able to
-sense the three deaths though distant they are.
-
-everyone returns to the camp in the forest.
-** while you were away
-@detail more memorable characters at the base
-@pacing there isn't a lot of gameplay in these next three scenes
-
-when they return to the base, everyone seems shocked to see them. they tell them
-that the group has been gone for ten days. once people realized that the
-government was serious about going full on war mode, tensions between all
-parties escalated. the populace is agitated, but are getting fed and
-paid. altogether life is normal, and most signs point to the government treating
-people humanely. nothing has been heard from most of the hackers -- they are all
-assumed either MIA or dead. those in group 1 who are still fervently for attack
-have begun splintering off, running raids on government construction projects,
-demolishing construction and killing guards and civilians in the process. those
-who have remained have decided one thing: they must follow boon.
-
-and group 2. group 2 has been especially problematic. they have begun slaying
-magic wielders essentially at random. word has it that they believe there is no
-longer any more time to bide. they speak of strange things that have the ring of
-prophecies -- decision points, the breaking of mankind, a powerful one imbued
-with the spirit of an outsider. they seek this one, say that if the prophecies
-are wrong or if the one is dead then all hope is lost. this is the extent to
-which they have communicated with the other factions.
-
-the government, too, has done its part to lash out. there have been an
-unprecedented number of raids on all kinds of places -- basement hideouts,
-server racks, remote camps, etc. this camp has gone undetected because of the
-bad reputation of the forest. hundreds of revolutionaries have died in the past
-week. families of the killed and captured have gone missing, families of
-defectors as well. even though they haven't split off yet, everyone still
-remaining feels that they are coming to a critical point in the revolution, and
-that something has to be done. they need boon to make a plan.
-
-boon says that they should go talk to group 2, see if they can wrangle their
-support against a common foe and deal with their murderous tendencies
-later. someone at the camp replies (@detail who? no nameless soldiers) that,
-well, this is a bit awkward, but we were hoping you wouldn't say that. see, a
-few days ago a lone messenger came to their camp and dropped off a message.
-
-@detail
-it is a small scrap of prophecy.
-not really sure what i want it to say. not something too corny. want to stay
-away from words like 'the chosen one' and 'the keepers'. anyway, the prophecy
-says that they know that boon must be alive or everything is fucked.
-the prophecy given by group 2 alludes to a prophetic hint that the groop
-received at the castle
-
-they tell you to go to a hole in the wall restaurant and ask for a table under
-the name 'troy'
-
-** the restaurant
-boon, sewell, and evans walk over to the restaurant. right outside, they see the
-sun glint off of something and go to pick it up. it is a small figurine. when
-they enter the restaurant, they tell the clerk the pass phrase. the clerk makes
-an offhand comment -- never seen you around here, you don't look like the usual
-type. but i was told someone by this name would be coming around.
-
-when they walk in, they immediately realize that it's a trap. they see cops,
-guards, officials everywhere. this is a magical hotbed, and the combined power
-in there is enough to wipe the three of you off of the face of the planet. you
-have no choice but to fight. but strangely, boon absolutely tears through
-everyone. every attack is a one hit kill. after a single battle, everyone
-remaining in the restaurant scrams, quick, except for one man.
-
-they approach the man and speak to him. he seems cool, collected, and slick --
-very slick. he does not come off as sinister, merely unsettling. you can tell
-that he appreciates having the power in this (or any) situation. (this is theseus)
-
-he says that he is a double agent for group 2 who functions inside the
-government. the figurine that boon had is -- or was -- akin to an angreal. a
-magnifier of power which, combined with his natural talents, made him more
-powerful than anyone in the room could fathom. extremely rare. it was also a
-relic, found wrapped in a scroll describing its use; only the one prophesized
-would have the access to the dogma needed to use it. moreover, its use would be
-like a chemical reaction with the one prophesized: a bright flash of heat and
-smoke, and then its contribution would be spent.
-
-boon is confused. he says that they have encountered things that sound similarly
-prophetic, and in situations where he is inclined to believe them, but he has no
-context.
-
-the man smiles and says, i think we've been waiting for you for a long time.
-he bades them come with him to learn about some things they will find very
-interesting. he bades them over to his suitcase, which contains a square stone
-glowing with a bright blue circle in the center. 
-** hello, group 2
-with a flash, they are in a building that looks like a laboratory. everything is
-sleek light blue and silver, fluorescent, angular. it looks like a spaceship or
-something out of westworld. the party freaks out a bit on entry and asks where
-they hell they are. theseus replies, "about three miles under the surface of the
-earth under, oh, let's say southern china".
-
-everyone is shocked at this, even those who have been practicing the dogma for
-decades. they argue about how it is possible. theseus says that this will make a
-lot more sense if they let him explain what he brought them here for.
-
-theseus goes on to reveal quite a bit about the origins of the revolution and
-the knowledge that group 2 have discovered since the schism. he dispels some
-rumors about group 2 (they only search books, they have no regard for reality)
-and confirm others (they are actively and violently against the use of
-magic).
-
---
-don't want to plan this conversation out too rigidly or repeat what i've written
-elsewhere -- group 2 genuinely believe that boon is the one they seek, they will
-divulge all information to him excepting things they may find inconvenient
-(which i will have to revisit when i sharpen up their motives).
-
-tess is part of this conversation
-
-conversation outline:
-how could you kill your own kind?
-they are not exactly our kind: [the schism]
-
-how do you know this is true?
-100+ years of research, specific pieces of prophecy. and speaking of prophecy,
-there is something you may be very interested to know. you are an outsider, and
-you have unimaginable potential -- more than any human who has ever lived. you
-are "the one imbued with the spirit of an outsider". we're pretty sure the fate
-of the human race is on your shoulders.
---
-
-they tell boon that they want to take over the sa'angreal to link together
-humanity to have a chance at taking out the forsaken. they believe that boon is
-the only one with the proper power to wield it. they'd like his more ragtag
-group of dogmatics to join them as a boots-on-the-ground force in taking the
-sa'angreal. boon agrees. theseus tells him that he should return to america and
-begin training his band of militants into something more resembling an
-army. theseus also says that although everything must proceed with great
-urgency, there are no concrete plans yet -- getting firsthand intel on the
-government and training up an actually competent force is the most useful thing
-that boon can do right now. 
-
-before boon leaves, theseus pulls him aside and tells him to be very wary of
-LRB. theseus says that he is no mere government shill -- even though most
-everyone in the government can channel, LRB is on another level. until today, he
-was the most powerful dogmatic known to $group2. he has locked away more
-information on magic than most people will ever learn. 
-
-he also gives boon a small angreal that will allow him to access the portal into
-their base whenever. 
-
-SPECULATION
-he doesn't know that once they hold control of the sa'angreal, they'll try to
-overpower boon and use his power to tap into things which are known to exist,
-yet unknown in use. maybe:
-still all of humanity (evil)
-cut off our timeline from the greater thread (undefined behavior, probably evil)
-use him as a da'mane of universal power and try to conquer reality
-
-do they have a reason from keeping them from sharing this information with
-$group1? one reason would be theseus' manipulative personality. 
-** an uneasy toast
-everyone returns to the base. evans approaches boon alone. he asks boon what he
-makes of $group2 now that they're away from everyone. boon says he feels a bit
-uneasy -- how they went about contacting him, the displays of grandeur and force
-to show how powerful they are -- but he mostly trusts them. he thinks that if
-they were any less aggressive, they could have caught a false prophet. and
-moreover, this is a group of people who have dedicated their lives to piecing
-together this puzzle and searching for a savior to take them home. evans asks
-how many people you think died walking into that restaurant? he says that
-theseus' confidence and influence make him uneasy. and he says that the woman is
-hard, hard like she's seen some shit. 
-
-evans asks boon what he's going to tell the rest of $group1. boon is surprised
-at this question -- he thought it was implicit that he was going to tell them
-all of it. evans lashes out a bit here. he says that they could never handle
-that. he says that every last one of us is going to die in this war. at least
-give them the dignity of thinking that they have a chance to live. (note: he
-doesn't mean that he knows they will fail -- just that they will die). boon
-agrees, and he says that he will reveal:
-$group2 work in secrecy, and he can't reveal much about them besides the fact
-that they are working with us now
-the government factories are a front for harnessing the sa'angreal
-we must be wary around the sa'angreal -- destroying it could have unknown
-consequences. 
-he is a man of prophecy
-
-boon delivers the town hall. he saves the declaration of prophecy for last. when
-he says it, everyone is silent. finally, ike steps up. he says something to the
-effect of "well, lad. i knew there were something special about you. i don't
-need to see nothin more to tell you that i'm with you until i keel over". at
-this, there's a rousing scene. everyone feels some momentum and joy, this is the
-first real "victory" for the revolution. scene fades out with people clapping
-boon on the back, toasting, etc.
-** one last brief aside...
-@cutscene
-
-cut out to tess and theseus. they are talking alone in a dim room. 
-*theseus*: i can't believe he just came to us. it was almost too easy. tess, this
-is the moments that our ancestors lived and died for. a hundred years of work
-and blood and death in the hopes that one day we would live this moment and
-execute their plan. 
-*tess*:    is it really their plan that we're executing theseus?
-*theseus*: no...but at this point, it's the only plan. the situation is far worse
-than anyone realizes, including those government clowns. LRB is dangerous. 
-*tess*:    do you ever regret this life, theseus?
-*theseus*: no. sometimes the knowledge is like a mountain on me. but we both know
-this is the only way that we can save humanity. anyway, the boy -- after all
-this time, i somehow expected...more
-*tess*:    we know nothing about him
-*theseus*: we know that he's green
-*tess*:    you must let him breathe. i can feel these things. the moment that he
-walked in, i knew he was the one we sought. he is yet weak, but given time and
-guidance, he'll be stronger than either of us could imagine. but the more you
-try to mold him, the more he'll resist. 
-*theseus*: i hope you're right tess...
 * act three
 ** what happens after a toast?
 this act opens up with boon someone waking up in his bed in the camp. he says

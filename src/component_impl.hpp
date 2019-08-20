@@ -17,6 +17,7 @@ Sprite* Graphic_Component::get_current_frame() {
 	return active_animation->frames[active_animation->icur_frame];
 }
 void Graphic_Component::init_from_table(TableNode* gc) {
+	this->z = tds_int2(gc, "z");
 	TableNode* animations = tds_table2(gc, "Animations");
 	this->animations.clear();
 	
@@ -105,6 +106,14 @@ void Task_Component::init_from_table(TableNode* table) {
 string BattleComponent::name() { return "BattleComponent"; }
 void BattleComponent::init_from_table(TableNode* table) {
 	this->health = tds_int2(table, "health");
+
+	// Put the pointer to the move data that we parsed in at init time
+	// into the component's list of moves
+	TableNode* moves_table = tds_table2(table, "moves");
+	for (int idx = 0; idx < moves_table->assignments.size(); idx++) {
+		string move_name = tds_string2(moves_table, to_string(idx));
+		moves.push_back(move_data[move_name]);
+	}
 }
 
 string TileComponent::name() { return "TileComponent"; }

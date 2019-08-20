@@ -1,0 +1,11 @@
+moves = {
+    mega_kick = {
+	    power = 4
+	},
+	pound = {
+	    power = 2
+	}
+	waveshine = {
+	    power = 10
+	}
+}

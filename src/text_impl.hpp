@@ -32,7 +32,7 @@ void Text_Box::begin(string text) {
 				set.set_max_point();
 				sets.push_back(set);
 				set.lines.clear();
-			}259
+			}
 			
 			// Reset everything for the next line
 			cur_line = word = "";

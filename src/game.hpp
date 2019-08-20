@@ -74,6 +74,26 @@ struct Battle : Layer {
 };
 Battle battle;
 
+struct Camera_Motion {
+	int frame_start;
+	int frame_end;
+	glm::vec2 camera_start;
+	glm::vec2 distance;
+};
+
+struct Cutscene {
+	Level* level;
+
+	vector<Camera_Motion> camera_motions;
+	int active_motion_idx = 0;
+	int frame = 0;
+	bool done = false;
+
+	void init(TableNode* table);
+	Camera_Motion current_motion();
+	void next_frame();
+};
+
 enum Editor_State {
 	IDLE,
 	INSERT,
@@ -144,6 +164,20 @@ struct Game : Layer {
 };
 Game game;
 
+struct Cutscene_Thing : Layer {
+	unordered_map<string, Cutscene*> cutscenes;
+	Cutscene* active_cutscene;
+
+	void update(float dt) override;
+	void render() override;
+	void init() override;
+};
+Cutscene_Thing cutscene_thing;
+
 int iactive_layer = 0;
-vector<Layer*> all_layers = { &editor, &game, &battle};
+vector<Layer*> all_layers = { &editor, &cutscene_thing, &game, &battle};
 Layer* active_layer = &editor;
+#define EDITOR_IDX   0
+#define CUTSCENE_IDX 1
+#define GAME_IDX     2
+#define BATTLE_IDX   3

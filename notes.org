@@ -219,11 +219,6 @@ When you figure that an entity has to go to a new state, you go to the big list
 of instantiated entities (right now, stored in the Level). You loop through it
 until you find the one that matches. You tell it to move to a new state and load
 a new task. 
-* The Small List
-- Get the game to compile on someone else's computer
-- A list of locales for Tom
-** joey
-- Collision detection + handling
 * The Big List
 - Finish the story
   - Flesh out all of the characters

@@ -44,8 +44,8 @@ Console::Console()
 	AddLog("Welcome to Dear ImGui!");
 }
 Console::~Console() {}
-int Console::Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }
-int  Console::Strnicmp(const char* str1, const char* str2, int n) {
+int   Console::Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }
+int   Console::Strnicmp(const char* str1, const char* str2, int n) {
 	int d = 0;
 	while (n > 0 && (d = toupper(*str2) - toupper(*str1)) == 0 && *str1) {
 		str1++;
@@ -55,15 +55,15 @@ int  Console::Strnicmp(const char* str1, const char* str2, int n) {
 	return d;
 }
 char* Console::Strdup(const char *str) { size_t len = strlen(str) + 1; void* buff = malloc(len); return (char*)memcpy(buff, (const void*)str, len); }
-void Console::Strtrim(char* str) { char* str_end = str + strlen(str); while (str_end > str && str_end[-1] == ' ') str_end--; *str_end = 0; }
-void Console::ClearLog()
+void  Console::Strtrim(char* str) { char* str_end = str + strlen(str); while (str_end > str && str_end[-1] == ' ') str_end--; *str_end = 0; }
+void  Console::ClearLog()
 {
 	for (int i = 0; i < Items.Size; i++)
 		free(Items[i]);
 	Items.clear();
 	ScrollToBottom = true;
 }
-void Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
+void  Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 {
 	char buf[1024];
 	va_list args;
@@ -74,7 +74,7 @@ void Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 	Items.push_back(Strdup(buf));
 	ScrollToBottom = true;
 }
-void Console::Draw(const char* title)
+void  Console::Draw(const char* title)
 {
 	ImGui::SetNextWindowSize(ImVec2(520, 600), ImGuiCond_FirstUseEver);
 	if (!ImGui::Begin(title, NULL))
@@ -151,12 +151,12 @@ void Console::Draw(const char* title)
 	
 	ImGui::End();
 }
-int  Console::TextEditCallbackStub(ImGuiTextEditCallbackData* data) // In C++11 you are better off using lambdas for this sort of forwarding callbacks
+int   Console::TextEditCallbackStub(ImGuiTextEditCallbackData* data) // In C++11 you are better off using lambdas for this sort of forwarding callbacks
 {
 	Console* console = (Console*)data->UserData;
 	return console->TextEditCallback(data);
 }
-int  Console::TextEditCallback(ImGuiTextEditCallbackData* data)
+int   Console::TextEditCallback(ImGuiTextEditCallbackData* data)
 {
 	//AddLog("cursor: %d, selection: %d-%d", data->CursorPos, data->SelectionStart, data->SelectionEnd);
 	switch (data->EventFlag)
@@ -254,7 +254,7 @@ int  Console::TextEditCallback(ImGuiTextEditCallbackData* data)
 	}
 	return 0;
 }
-void Console::ExecCommand(char* command_line)
+void  Console::ExecCommand(char* command_line)
 {
 	AddLog("# %s\n", command_line);
 	
@@ -353,6 +353,28 @@ void Battle::update(float dt) {
 	if (input.is_down[GLFW_KEY_D]) {
 		camera.offset += glm::vec2{.025, 0};
 	}
+
+	ImGui::Begin("Battle View!", 0, ImGuiWindowFlags_AlwaysAutoResize);
+	int unique_btn_index = 0;
+	fox_for(idx, 2) {
+		EntityHandle actor = battlers[idx];
+		auto bc = actor->get_component<BattleComponent>();
+		ImGui::Text("Player %d", idx);
+		ImGui::Text("Health: %d", bc->health);
+		
+		ImGui::Text("Moves:");
+		for (auto move : bc->moves) {
+			string unique_move_id = move->name + to_string(unique_btn_index);
+			unique_btn_index++;
+			if (ImGui::Button(unique_move_id.c_str())) {
+				EntityHandle other = idx ? battlers[0] : battlers[1];
+				auto other_bc = other->get_component<BattleComponent>();
+				other_bc->health -= move->power;
+			}
+		}
+	}
+	ImGui::End();
+	
 }
 
 void Editor::init() {
@@ -1023,6 +1045,67 @@ void Editor::render() {
 	}
 }
 
+void Cutscene::init(TableNode* table) {
+	this->level = levels[tds_string2(table, "level")];
+
+	TableNode* camera_motions_data = tds_table2(table, "camera");
+	for (KVPNode* kvp : camera_motions_data->assignments) {
+		TableNode* motion_data = (TableNode*)kvp->value;
+		Camera_Motion camera_motion;
+		
+		camera_motion.frame_start = tds_float2(motion_data, "frame_start");
+		camera_motion.frame_end = tds_float2(motion_data, "frame_end");
+		camera_motion.camera_start = {tds_float2(motion_data, "camera_start", "x"), tds_float2(motion_data, "camera_start", "y")};
+		camera_motion.distance = {tds_float2(motion_data, "distance", "x"), tds_float2(motion_data, "distance", "y")};
+
+		this->camera_motions.emplace_back(camera_motion);
+	}
+}
+
+Camera_Motion Cutscene::current_motion() {
+	return camera_motions[active_motion_idx];
+}
+
+void Cutscene::next_frame() {
+	frame++;
+	
+	if (frame > current_motion().frame_end) {
+		active_motion_idx++;
+		if (active_motion_idx >= camera_motions.size()) {
+			frame = 0;
+			done = true;
+		}
+	}
+}
+
+void Cutscene_Thing::update(float ) {
+	if (!active_cutscene->done) {
+		Camera_Motion camera_motion = active_cutscene->current_motion();
+	
+		int count_frames = camera_motion.frame_end - camera_motion.frame_start;
+		glm::vec2 move_per_frame = {
+			camera_motion.distance.x / count_frames,
+			camera_motion.distance.y / count_frames
+		};
+
+		camera.offset += move_per_frame;
+
+		active_cutscene->next_frame();
+	}
+}
+void Cutscene_Thing::render() {
+	if (active_cutscene)
+		active_cutscene->level->draw();
+	
+	renderer.render_for_frame();
+}
+void Cutscene_Thing::init() {
+	TableNode* cutscene_data = tds_table("cutscenes", "test");
+	Cutscene* cutscene = new Cutscene;
+	cutscene->init(cutscene_data);
+	this->cutscenes["test"] = cutscene;
+	this->active_cutscene = cutscene;
+}
 
 void Game::init() {
 	particle_system.init();
@@ -1038,7 +1121,7 @@ void Game::update(float dt) {
 		show_console = !show_console;
 	}
 	if (show_console) {
-		console.Draw("tdnsconsole");
+		console.Draw("tdconsole");
 	}
 	
 	// Set up the camera so that the entity it's following is centered

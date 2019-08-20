@@ -2,20 +2,29 @@ meta = {}
 meta.script_dirs = {
    # Utils has to be first so entities can use them 
     "utils",
+	"battle",
 	"buildings",
 	"characters",
 	"levels",
 	"props",
 	"state",
+	"cutscenes"
 }
 
 entity = {}
 
 config = {}
 config.fonts = {
-    font_dir = "/Users/thspader/Library/Fonts/",
-	default = {
-	    apple = "Inconsolata-Regular"
-		windows = "Arial"
-	},
+	apple = {
+        font_dir = "/Users/thspader/Library/Fonts/",
+	    default = "Inconsolata-Regular"
+    },
+	windows = {
+	    font_dir = "C:/Windows/Fonts/"
+		default = "Arial"
+	}
+}
+
+config.screen = {
+    default = "1440"
 }
