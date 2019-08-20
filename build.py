@@ -84,6 +84,18 @@ def make_cd_build_dir():
         pass
     os.chdir(build_dir)
 
+def print_info(message):
+    print(colorama.Fore.BLUE + "[tdbuild] " + colorama.Fore.RESET + message)
+
+def print_error(message):
+    print(colorama.Fore.RED + "[tdbuild] " + colorama.Fore.RESET + message)
+
+def print_warning(message):
+    print(colorama.Fore.YELLOW + "[tdbuild] " + colorama.Fore.RESET + message)
+    
+def print_success(message):
+    print(colorama.Fore.GREEN + "[tdbuild] " + colorama.Fore.RESET + message)
+
 class tdbuild():
     def __init__(self):        
         self.build_cmd = ""
@@ -100,7 +112,7 @@ class tdbuild():
             self.build_mac()
         
     def build_mac(self):
-        print("...building from", os.getcwd())
+        print_info("Running from {}".format(os.getcwd()))
 
         # Find the path to the compiler using 'which'
         compiler = build_options['Darwin']['compiler']
@@ -108,8 +120,7 @@ class tdbuild():
         compiler_path, err = process.communicate()
         compiler_path = compiler_path.decode('UTF-8').strip()
         if err:
-            print(colorama.Fore.RED + '[ERROR]')
-            print(colorama.Fore.RED + "which {} errored out, so not sure what's up with that".format(compiler))
+            print_error("which {} errored out, so not sure what's up with that")
             
         self.push(compiler_path)
 
@@ -139,17 +150,35 @@ class tdbuild():
 
         self.push('-o ' + build_options['Darwin']['out'])
         
-        print("...generated compiler command:")
-        print(self.build_cmd)
-        print("...building")
+        print_info("Generated compiler command:")
+        print(self.build_cmd.split(" "))
+        print_info("Invoking the compiler")
 
-        # Run the command you just generated. Use os.system() because
-        # subprocess.run() wants a list but doesn't play nice with it!
         make_cd_build_dir()
-        os.system(self.build_cmd)
 
-        print(colorama.Fore.GREEN + "[BUILD SUCCESSFUL]")
-        
+        process = subprocess.Popen(self.build_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        compiler_messages, err = process.communicate()
+        compiler_messages = compiler_messages.decode('UTF-8').split('\n')
+        err = err.decode('UTF-8').split('\n')
+
+        compile_error = False
+        compile_warning = False
+        for message in err:
+            if 'error' in message:
+                print(message)
+                compile_error = True
+            elif 'warning' in message:
+                print_warning(message)
+                compile_warning = True
+
+        if compile_error or compile_warning:
+            print("")
+            
+        if compile_error:
+            print(colorama.Fore.RED + "[BUILD FAILED]")
+        else:
+            print(colorama.Fore.GREEN + "[BUILD SUCCESSFUL]")
+
     def build_windows(self):
         print(colorama.Fore.BLUE + "[tdbuild] " + colorama.Fore.RESET + "Running from {}".format(os.getcwd()))
         
@@ -194,9 +223,9 @@ class tdbuild():
 
         make_cd_build_dir()
         
-        print(colorama.Fore.BLUE + "[tdbuild] " + colorama.Fore.RESET + "Generated compiler command:")
-        print(colorama.Fore.BLUE + "[tdbuild] " + colorama.Fore.RESET + self.build_cmd)
-        print(colorama.Fore.BLUE + "[tdbuild] " + colorama.Fore.RESET + "Invoking the compiler")
+        print_info(colorama.Fore.BLUE + "[tdbuild] " + colorama.Fore.RESET + "Generated compiler command:")
+        print_info(self.build_cmd)
+        print_info("Invoking the compiler")
         print("")
         
         # @hack: is there a better way to keep a process open?
