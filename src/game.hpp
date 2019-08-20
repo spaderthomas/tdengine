@@ -84,6 +84,7 @@ struct Camera_Motion {
 struct Cutscene {
 	Level* level;
 
+	vector<Task*> tasks;
 	vector<Camera_Motion> camera_motions;
 	int active_motion_idx = 0;
 	int frame = 0;

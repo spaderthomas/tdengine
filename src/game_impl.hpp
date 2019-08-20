@@ -1046,7 +1046,8 @@ void Editor::render() {
 }
 
 void Cutscene::init(TableNode* table) {
-	this->level = levels[tds_string2(table, "level")];
+	this->level = levels[tds_string2(table, LEVEL_KEY)];
+	this->level->load_entities(tds_table2(table, ENTITIES_KEY));	
 
 	TableNode* camera_motions_data = tds_table2(table, "camera");
 	for (KVPNode* kvp : camera_motions_data->assignments) {

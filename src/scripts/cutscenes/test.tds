@@ -1,56 +1,89 @@
 cutscenes.test = {}
 cutscenes.test.level = "overworld"
 cutscenes.test.entities = {
-    "intro_police"
-	"wilson"
+    {
+	    name = "intro_police",
+		components = {
+		    Position_Component = {
+			    scale = {
+				    x = 1.0
+					y = 1.0
+				},
+				pos = {
+				    x = 0.0,
+					y = 0.0
+				}
+			}
+		}
+	}
 }
-cutscenes.test.camera = {
+#cutscenes.test.camera = {
+#    {
+#	    frame_start = 0
+#		frame_end = 120
+#		camera_start = {
+#		    x = 0
+#			y = 0
+#		}
+#		distance = {
+#		    x = .25
+#			y = .25
+#		}
+#    }
+#    {
+#	    frame_start = 121
+#		frame_end = 140
+#		camera_start = {
+#		    x = .25
+#			y = .25
+#		}
+#		distance = {
+#		    x = -.5
+#			y = -.5
+#		}
+#    }
+#    {
+#	    frame_start = 141
+#		frame_end = 180
+#		camera_start = {
+#		    x = -.25
+#			y = -.25
+#		}
+#		distance = {
+#		    x = -.25
+#			y = .25
+#	    }
+#    }
+#    {
+#	    frame_start = 181
+#		frame_end = 220
+#		camera_start = {
+#		    x = -.25
+#			y = .25
+#		}
+#		distance = {
+#		    x = .25  
+#			y = -.25
+#	    }
+#    }
+#}
+
+cutscenes.test.actions = {
     {
-	    frame_start = 0
-		frame_end = 120
-		camera_start = {
-		    x = 0
-			y = 0
-		}
-		distance = {
-		    x = .25
+		entity = "intro_police",
+		kind = "Teleport_Action",
+		dest = {
+		    x = .5,
+			y = .5
+		},
+		is_blocking = false,
+	},
+	{
+	    entity = "camera",
+		frames = 40,
+        distance = {
+		    x = .25,
 			y = .25
-		}
-    }
-    {
-	    frame_start = 121
-		frame_end = 140
-		camera_start = {
-		    x = .25
-			y = .25
-		}
-		distance = {
-		    x = -.5
-			y = -.5
-		}
-    }
-    {
-	    frame_start = 141
-		frame_end = 180
-		camera_start = {
-		    x = -.25
-			y = -.25
-		}
-		distance = {
-		    x = -.25
-			y = .25
-	    }
-    }
-    {
-	    frame_start = 181
-		frame_end = 220
-		camera_start = {
-		    x = -.25
-			y = .25
-		}
-		distance = {
-		    x = .25  
-			y = -.25
-	    }
-    }
+		},
+	}
 }

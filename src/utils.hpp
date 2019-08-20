@@ -430,6 +430,7 @@ const string COMPONENTS_KEY  = "components";
 const string ENTITY_KEY      = "entity";
 const string ENTITIES_KEY    = "entities";
 const string GAME_STATE_KEY  = "game_state";
+const string LEVEL_KEY       = "level";
 const string LEVELS_KEY      = "levels";
 const string NAME_KEY        = "name";
 const string NAMES_KEY       = "names";
