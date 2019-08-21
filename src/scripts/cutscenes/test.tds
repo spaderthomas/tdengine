@@ -80,10 +80,12 @@ cutscenes.test.actions = {
 	},
 	{
 	    entity = "camera",
+		kind = "Camera_Pan_Action",
 		frames = 40,
-        distance = {
+        dest = {
 		    x = .25,
 			y = .25
 		},
+		is_blocking = true
 	}
 }

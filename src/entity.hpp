@@ -1,6 +1,6 @@
 struct Entity {
-	int id;
 	static int next_id;
+	int id;
 	string name;
 	unordered_map<const type_info*, pool_handle<any_component>> components;
 	

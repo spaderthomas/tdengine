@@ -94,6 +94,10 @@ bool vec_almost_equals(glm::vec2 vec, glm::vec2 target) {
 	return glm::length(vec - target) < DEFAULT_FLOAT_TOLERANCE;
 }
 
+glm::vec2 vec_divide(glm::vec2 vec, float by) {
+	return glm::vec2 { vec.x / by, vec.y / by };
+}
+
 
 // Colors
 glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's favorite three floating point numbers.
@@ -424,7 +428,7 @@ bool show_state_tweaker = true;
 bool show_task_editor = true;
 
 
-// @spader 3/19/19: Not 100% convinced these are a good idea.
+const string ACTIONS_KEY     = "actions";
 const string CH_STATE_KEY    = "character_state";
 const string COMPONENTS_KEY  = "components";
 const string ENTITY_KEY      = "entity";

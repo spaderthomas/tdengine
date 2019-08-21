@@ -103,14 +103,6 @@ void Level::load_entities(TableNode* entities_table) {
 //@leak We never free up any tiles that were previously allocated.
 void Level::load() {
 	load_entities(tds_table(LEVELS_KEY, name, ENTITIES_KEY));
-	
-	fox_for(idx, entities_table->assignments.size()) {
-		TableNode* entity_table = tds_table2(entities_table, to_string(idx));
-		string name = tds_string2(entity_table, NAME_KEY);
-		EntityHandle handle = Entity::create(name);
-		handle->load(entity_table);
-		entities.push_back(handle);
-	}
 
 	tiles.clear();
 	TableNode* tiles_table = tds_table(LEVELS_KEY, name, TILES_KEY);

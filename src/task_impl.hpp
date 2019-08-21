@@ -56,7 +56,16 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 		action->y = tds_float2(table, "dest", "y");
 		
 		action_generic = action;
-	} else {
+	}
+	else if (kind == "Camera_Pan_Action") {
+		Camera_Pan_Action* action = new Camera_Pan_Action;
+		action->dest.x = tds_float2(table, "dest", "x");
+		action->dest.y = tds_float2(table, "dest", "y");
+		action->count_frames = tds_int2(table, "frames");
+		
+		action_generic = action;
+	}
+	else {
 		tdns_log.write("Tried to create an action with an invalid kind: " + kind);
 		return nullptr;
 	}
@@ -173,6 +182,13 @@ bool Teleport_Action::update(float dt) {
 	return true;
 }
 
+bool Camera_Pan_Action::update(float dt) {
+	auto layer = all_layers[iactive_layer];
+	layer->camera.offset += dest / (float)count_frames;
+
+	frames_elapsed++;
+	return count_frames == frames_elapsed;
+}
 
 
 bool Task::update(float dt) {

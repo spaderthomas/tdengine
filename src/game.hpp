@@ -74,25 +74,15 @@ struct Battle : Layer {
 };
 Battle battle;
 
-struct Camera_Motion {
-	int frame_start;
-	int frame_end;
-	glm::vec2 camera_start;
-	glm::vec2 distance;
-};
-
 struct Cutscene {
 	Level* level;
 
-	vector<Task*> tasks;
-	vector<Camera_Motion> camera_motions;
-	int active_motion_idx = 0;
+	Task task;
 	int frame = 0;
 	bool done = false;
 
 	void init(TableNode* table);
-	Camera_Motion current_motion();
-	void next_frame();
+	void update(float dt);
 };
 
 enum Editor_State {

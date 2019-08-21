@@ -38,3 +38,7 @@ easy. @done 3/27/19
 @joey 3/28/19: Fix the grid snapping at resolutions other than 720p.
 Works fine on my computer for any configuration, even if I resize the window
 through native Windows drag and then reset the screen with the console.
+* Install Script
+string root_dir = {cwd} in src/machine_conf.hpp
+install inconsolata
+mark path to font dir

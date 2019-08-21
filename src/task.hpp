@@ -50,6 +50,15 @@ struct Teleport_Action : Action {
 	string kind() override { return "Teleport_Action"; }
 };
 
+struct Camera_Pan_Action : Action {
+	glm::vec2 dest;
+	int count_frames;
+	int frames_elapsed = 0;
+
+	bool update(float dt) override;
+	string kind() override { return "Camera_Pan_Action"; };
+};
+
 struct Action_Queue {
 	deque<Action*> actions;
 	int index = 0;
@@ -85,6 +94,7 @@ struct Action_Queue {
 		index = 0;
 	}
 };
+
 struct Task {
 	Action_Queue action_queue;
 	EntityHandle actor;

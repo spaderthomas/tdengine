@@ -16,7 +16,7 @@ entity = {}
 config = {}
 config.fonts = {
 	apple = {
-        font_dir = "/Users/thspader/Library/Fonts/",
+        font_dir = "/Users/spader/Library/Fonts/",
 	    default = "Inconsolata-Regular"
     },
 	windows = {

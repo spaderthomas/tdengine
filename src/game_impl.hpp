@@ -1047,51 +1047,27 @@ void Editor::render() {
 
 void Cutscene::init(TableNode* table) {
 	this->level = levels[tds_string2(table, LEVEL_KEY)];
-	this->level->load_entities(tds_table2(table, ENTITIES_KEY));	
+	this->level->load_entities(tds_table2(table, ENTITIES_KEY));
 
-	TableNode* camera_motions_data = tds_table2(table, "camera");
-	for (KVPNode* kvp : camera_motions_data->assignments) {
-		TableNode* motion_data = (TableNode*)kvp->value;
-		Camera_Motion camera_motion;
+	TableNode* actions = tds_table2(table, ACTIONS_KEY);
+	for (KVPNode* kvp : actions->assignments) {
+		TableNode* action_table = (TableNode*)kvp->value;
+		string entity_name = tds_string2(action_table, ENTITY_KEY);
 		
-		camera_motion.frame_start = tds_float2(motion_data, "frame_start");
-		camera_motion.frame_end = tds_float2(motion_data, "frame_end");
-		camera_motion.camera_start = {tds_float2(motion_data, "camera_start", "x"), tds_float2(motion_data, "camera_start", "y")};
-		camera_motion.distance = {tds_float2(motion_data, "distance", "x"), tds_float2(motion_data, "distance", "y")};
-
-		this->camera_motions.emplace_back(camera_motion);
+		EntityHandle entity = this->level->get_first_matching_entity(entity_name);
+		Action* action = action_from_table(action_table, entity);
+		this->task.add_action(action);
 	}
 }
 
-Camera_Motion Cutscene::current_motion() {
-	return camera_motions[active_motion_idx];
-}
-
-void Cutscene::next_frame() {
+void Cutscene::update(float dt) {
 	frame++;
-	
-	if (frame > current_motion().frame_end) {
-		active_motion_idx++;
-		if (active_motion_idx >= camera_motions.size()) {
-			frame = 0;
-			done = true;
-		}
-	}
+	task.update(dt);
 }
 
-void Cutscene_Thing::update(float ) {
+void Cutscene_Thing::update(float dt) {
 	if (!active_cutscene->done) {
-		Camera_Motion camera_motion = active_cutscene->current_motion();
-	
-		int count_frames = camera_motion.frame_end - camera_motion.frame_start;
-		glm::vec2 move_per_frame = {
-			camera_motion.distance.x / count_frames,
-			camera_motion.distance.y / count_frames
-		};
-
-		camera.offset += move_per_frame;
-
-		active_cutscene->next_frame();
+		active_cutscene->update(dt);
 	}
 }
 void Cutscene_Thing::render() {

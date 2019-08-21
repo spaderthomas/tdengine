@@ -119,8 +119,9 @@ class tdbuild():
         process = subprocess.Popen(['which', compiler], stdout=subprocess.PIPE)
         compiler_path, err = process.communicate()
         compiler_path = compiler_path.decode('UTF-8').strip()
-        if err:
-            print_error("which {} errored out, so not sure what's up with that")
+        if err or not compiler_path:
+            print_error("which {} errored out, so not sure what's up with that".format(build_options['Darwin']['compiler']))
+            exit()
             
         self.push(compiler_path)
 
@@ -165,7 +166,7 @@ class tdbuild():
         compile_warning = False
         for message in err:
             if 'error' in message:
-                print(message)
+                print_error(message)
                 compile_error = True
             elif 'warning' in message:
                 print_warning(message)
