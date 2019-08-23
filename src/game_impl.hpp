@@ -1066,24 +1066,38 @@ void Cutscene::update(float dt) {
 }
 
 void Cutscene_Thing::update(float dt) {
+	// @spader 8/22/2019: This is kind of hacky. I mean, we always want this to happen, but do I want
+	// the camera to know what layer it's camera-ing for?
+	camera.update(dt);
+	input.world_pos = input.screen_pos + camera.offset;
+	
 	if (!active_cutscene->done) {
 		active_cutscene->update(dt);
 	}
-
+	
 	physics_system.process(1.f / 60.f);
 }
+
 void Cutscene_Thing::render() {
 	if (active_cutscene)
 		active_cutscene->level->draw();
 	
 	renderer.render_for_frame();
 }
+
 void Cutscene_Thing::init() {
 	TableNode* cutscene_data = tds_table("cutscenes", "test");
-	Cutscene* cutscene = new Cutscene;
+	Cutscene* cutscene = new Cutscene; // @leak if we call this 2ce
 	cutscene->init(cutscene_data);
+	this->active_level = levels[tds_string2(cutscene_data, LEVEL_KEY)];
 	this->cutscenes["test"] = cutscene;
 	this->active_cutscene = cutscene;
+	this->camera.offset = { 0.f, 0.f };
+}
+
+void Cutscene_Thing::reload() {
+	ScriptManager.script_dir(absolute_path(path_join({"src", "scripts", "cutscenes"})));
+	init();
 }
 
 void Game::init() {
@@ -1104,11 +1118,9 @@ void Game::update(float dt) {
 	}
 	
 	// Set up the camera so that the entity it's following is centered
-	def_get_cmp(follow_pc, camera.following.deref(), Position_Component);
-	camera.offset = follow_pc->world_pos;
-	camera.offset += glm::vec2{-.5, -.5};
+	camera.update(dt);
 	input.world_pos = input.screen_pos + camera.offset;
-	
+
 	for (auto entity : active_level->entities) {
 		update_task(entity, dt);
 	}

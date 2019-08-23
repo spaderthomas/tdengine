@@ -59,6 +59,13 @@ struct Camera_Pan_Action : Action {
 	string kind() override { return "Camera_Pan_Action"; };
 };
 
+struct Camera_Follow_Action : Action {
+	string who;
+	
+	bool update(float dt) override;
+	string kind() override { return "Camera_Follow_Action"; };
+};
+
 struct Action_Queue {
 	deque<Action*> actions;
 	int index = 0;

@@ -1,3 +1,10 @@
+dog = {
+	stuff = 1,
+	other_stuff = {
+        pull_up_in_a_coffin = true
+	}
+}
+
 cutscenes.test = {}
 cutscenes.test.level = "overworld"
 cutscenes.test.entities = {
@@ -12,6 +19,21 @@ cutscenes.test.entities = {
 				pos = {
 				    x = 0.0,
 					y = 0.0
+				}
+			}
+		}
+	},
+	{
+	    name = "wilson",
+		components = {
+		    Position_Component = {
+			    scale = {
+				    x = 1.0
+					y = 1.0
+				},
+				pos = {
+				    x = 0.1,
+					y = 0.1
 				}
 			}
 		}
@@ -73,8 +95,8 @@ cutscenes.test.actions = {
 		entity = "intro_police",
 		kind = "Teleport_Action",
 		dest = {
-		    x = .5,
-			y = .5
+		    x = -.5,
+			y = -.5
 		},
 		is_blocking = true,
 	},
@@ -82,19 +104,24 @@ cutscenes.test.actions = {
 		entity = "intro_police",
 		kind = "Movement_Action",
 		dest = {
-		    x = 0,
-			y = 0
+		    x = .4,
+			y = .4
 		},
 		is_blocking = false,
-    }
+    },
 	{
-	    entity = "camera",
-		kind = "Camera_Pan_Action",
-		frames = 40,
-        dest = {
-		    x = -.5,
-			y = -.5
+		entity = "wilson",
+		kind = "Movement_Action",
+		dest = {
+		    x = .3,
+			y = .3
 		},
-		is_blocking = true
+		is_blocking = false,
+    },
+	{
+		entity = "camera",
+		kind = "Camera_Follow_Action",
+		who = "intro_police"
+		is_blocking = false,
 	}
 }

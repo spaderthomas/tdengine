@@ -58,9 +58,48 @@ vector<string> split(const string &str, char delim) {
 }
 
 #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
-#define string_comp(a, b) (!(a).compare((b)))
+#define are_strings_equal(a, b) (!(a).compare((b)))
+
+void normalize_path(string& str) {
+	string from = "/";
+	string to = "\\";
+	
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+}
 
 // shamelessly copped from
+// https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
+// also this doesn't work lol
+bool are_paths_equal(string a, string b) {
+	auto tokenize = [](auto& str) {
+		size_t pos = 0;
+		string delimiter = "\\";
+		vector<string> out;
+		while ((pos = str.find(delimiter)) != std::string::npos) {
+			out.push_back(str.substr(0, pos));
+			str.erase(0, pos + delimiter.length());
+		}
+
+		return out;
+	};
+
+	auto tokens_a = tokenize(a);
+	auto tokens_b = tokenize(b);
+
+	if (tokens_a.size() != tokens_b.size()) return false;
+
+	for (int i = 0; i < tokens_a.size(); i++) {
+		if (!are_strings_equal(tokens_a[i], tokens_b[i])) return false;
+	}
+
+	return true;
+}
+
+// shamelessly copped fromi
 // https://stackoverflow.com/questions/447206/c-isfloat-function
 bool is_float( string myString ) {
     std::istringstream iss(myString);

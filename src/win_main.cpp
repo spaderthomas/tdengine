@@ -66,6 +66,7 @@ using namespace std;
 #include "tdapi.hpp"
 #include "glfw_callbacks.hpp"
 
+#include "camera_impl.hpp"
 #include "battle_impl.hpp"
 #include "state.hpp"
 #include "tdscript_impl.hpp"
@@ -251,6 +252,9 @@ int main() {
 		if (global_input.was_pressed(GLFW_KEY_F4)) {
 			iactive_layer = (iactive_layer + 1) % all_layers.size();
 			active_layer = all_layers[iactive_layer];
+		}
+		if (global_input.was_pressed(GLFW_KEY_F5)) {
+			active_layer->reload();
 		}
 		
 		// MEAT

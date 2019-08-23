@@ -255,21 +255,6 @@ entity.sand_path_bottomleft_outer.components.Position_Component = {}
 entity.sand_path_bottomleft_outer.components.TileComponent = {}
 
 
-entity.border_left_sand_grass = {}
-entity.border_left_sand_grass.components = {}
-entity.border_left_sand_grass.components.Graphic_Component = {
-    Animations = {
-        border_left_sand_grass = {
-            "border_left_sand_grass.png"
-        }
-    }
-    default_animation = "border_left_sand_grass"
-    z = 0
-}
-entity.border_left_sand_grass.components.Position_Component = {}
-entity.border_left_sand_grass.components.TileComponent = {}
-
-
 entity.sand_path_bottomright_outer = {}
 entity.sand_path_bottomright_outer.components = {}
 entity.sand_path_bottomright_outer.components.Graphic_Component = {

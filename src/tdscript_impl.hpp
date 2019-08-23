@@ -628,6 +628,9 @@ bool TDScript::is_nested_identifier(string& key) {
 	return false;
 }
 ASTNode* TDScript::parse(string script_path) {
+	normalize_path(script_path);
+	std::cout << script_path << std::endl;
+	
 	if (!lexer.init(script_path)) {
 		return nullptr;
 	}
@@ -635,9 +638,12 @@ ASTNode* TDScript::parse(string script_path) {
 	
 	KVPNode* kvp;
 	while ((kvp = parse_assign())) {
-		string& key = kvp->key;
+
+		string old = kvp->key;
+		string key = kvp->key;
+		TableNode* containing_table = global_scope;
 		
-		// If we're adding to a table which already exists, put this assignment in that table's node
+		// If we're adding to a table which already exists, find that table
 		if (is_nested_identifier(key)) {
 			string key_copy = key;
 			char* c_key = (char*)key_copy.c_str();
@@ -651,13 +657,22 @@ ASTNode* TDScript::parse(string script_path) {
 			string value_key = keys.back();
 			keys.erase(keys.end() - 1);
 			
-			TableNode* existing_table = global_scope->get_table(keys);
+			containing_table = global_scope->get_table(keys);
+
+			// The node itself needs to have the updated key (e.g "stuff" instead of "nested.my.stuff")
 			kvp->key = value_key;
-			existing_table->assignments.push_back(kvp);
+			key = value_key;
 		}
-		else {
-			global_scope->assignments.push_back(kvp);
+
+		for (auto it = containing_table->assignments.begin(); it != containing_table->assignments.end(); it++) {
+			KVPNode* existing_kvp = *it;
+			if (existing_kvp->key == key) {
+				containing_table->assignments.erase(it);
+				break;
+			}
 		}
+
+		containing_table->assignments.push_back(kvp);
 	}
 	
 	return global_scope;
@@ -841,7 +856,8 @@ void TDScript::script_dir(string dir_path) {
 			if (is_tds(path)) {
 				// Don't double run the init file 
 				string maybe_init_file = dir_path + "/__init__.tds";
-				if (string_comp(path, maybe_init_file)) {
+				normalize_path(maybe_init_file);
+				if (are_strings_equal(path, maybe_init_file)) {
 					continue;
 				}
 				

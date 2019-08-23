@@ -65,6 +65,12 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 		
 		action_generic = action;
 	}
+	else if (kind == "Camera_Follow_Action") {
+		Camera_Follow_Action* action = new Camera_Follow_Action;
+		action->who = tds_string2(table, "who");
+		
+		action_generic = action;
+	}
 	else {
 		tdns_log.write("Tried to create an action with an invalid kind: " + kind);
 		return nullptr;
@@ -188,6 +194,14 @@ bool Camera_Pan_Action::update(float dt) {
 
 	frames_elapsed++;
 	return count_frames == frames_elapsed;
+}
+
+bool Camera_Follow_Action::update(float dt) {
+	auto layer = all_layers[iactive_layer];
+	auto level = layer->active_level;
+	auto entity = level->get_first_matching_entity(this->who);
+	layer->camera.following = entity;
+	return true;
 }
 
 

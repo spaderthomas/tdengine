@@ -58,8 +58,9 @@ struct Layer {
 	Input input;
 	Level* active_level;
 	Camera camera;
-	
+
 	virtual void update(float dt) = 0;
+	virtual void reload() {}
 	virtual void exec_console_cmd(char* cmd) {}
 	virtual void render() {}
 	virtual void init() {}
@@ -159,6 +160,7 @@ struct Cutscene_Thing : Layer {
 	unordered_map<string, Cutscene*> cutscenes;
 	Cutscene* active_cutscene;
 
+	void reload() override;
 	void update(float dt) override;
 	void render() override;
 	void init() override;

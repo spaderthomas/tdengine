@@ -33,7 +33,8 @@ build_options = {
             'glfw3.lib'
         ],
         'ignore': [
-            '4099'
+            '4099',
+            '4068'   # unknown pragma
         ],
         'machine': 'X86',
         'out': 'tdengine.exe',
