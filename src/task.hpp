@@ -81,11 +81,13 @@ struct Action_Queue {
 	}
 
 	void remove(Action* action) {
-		for (auto iter = actions.begin(); iter != actions.end();) {
-			if (*iter == action) {
-				iter = actions.erase(iter);
+		for (auto it = actions.begin(); it != actions.end();) {
+			if (*it == action) {
+				it = actions.erase(it);
+				if (it - actions.begin() <= index)  
+					index = fox_max(index - 1, 0);
 			} else {
-				iter++;
+				it++;
 			}
 		}
 	}

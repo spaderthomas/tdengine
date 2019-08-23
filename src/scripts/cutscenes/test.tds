@@ -76,15 +76,24 @@ cutscenes.test.actions = {
 		    x = .5,
 			y = .5
 		},
-		is_blocking = false,
+		is_blocking = true,
 	},
+	{
+		entity = "intro_police",
+		kind = "Movement_Action",
+		dest = {
+		    x = 0,
+			y = 0
+		},
+		is_blocking = false,
+    }
 	{
 	    entity = "camera",
 		kind = "Camera_Pan_Action",
 		frames = 40,
         dest = {
-		    x = .25,
-			y = .25
+		    x = -.5,
+			y = -.5
 		},
 		is_blocking = true
 	}

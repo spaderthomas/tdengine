@@ -401,6 +401,7 @@ void StringLiteralNode::dump(TableWriter& output) {
 
 bool Lexer::init(string script_path) {
 	file = ifstream(script_path);
+	file_path = script_path;
 	fox_assert(file.good());
 	file.seekg(0, ios_base::end);
 	auto file_size = file.tellg();
@@ -537,7 +538,7 @@ Token Lexer::next_token_internal() {
 						decimal.push_back(c);
 					}
 					else if (is_dot(c)) {
-						string error_msg = "Bad floating point number at line " + to_string(line_number);
+						string error_msg = "Bad floating point number at line " + to_string(line_number) + " of file " + file_path;
 						tdns_log.write(error_msg);
 						fox_assert(0);
 					}
@@ -569,8 +570,10 @@ Token Lexer::next_token_internal() {
 			return token;
 		}
 		else {
-			string error_msg = "Found unrecognized token: " + c;
-			error_msg += "\nLine number: " + to_string(line_number);
+			string i_hate_cpp;
+			i_hate_cpp += c;
+			string error_msg = "Found unrecognized token: " + i_hate_cpp;
+			error_msg += "\nLine number: " + to_string(line_number) + " of file " + file_path;;
 			tdns_log.write(error_msg);
 			fox_assert(0);
 			Token dummy_for_compiler;
@@ -711,7 +714,7 @@ KVPNode* TDScript::parse_assign() {
 		auto table_node = parse_table();
 		cur_token = lexer.next_token();
 		if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
-			string error_msg = "Unfinished table at line " + to_string(lexer.line_number);
+			string error_msg = "Unfinished table at line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
 			tdns_log.write(error_msg);
 			fox_assert(0);
 		}
@@ -739,7 +742,7 @@ KVPNode* TDScript::parse_assign() {
 			auto table_node = parse_table(); val_node = table_node;
 			cur_token = lexer.next_token();
 			if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
-				string error_msg = "Unfinished table at line " + to_string(lexer.line_number);
+				string error_msg = "Unfinished table at line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
 				tdns_log.write(error_msg);
 				fox_assert(0);
 			}
@@ -787,14 +790,14 @@ KVPNode* TDScript::parse_assign() {
 					auto table_node = parse_table(); val_node = table_node;
 					cur_token = lexer.next_token();
 					if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
-						string error_msg = "Unfinished table at line " + to_string(lexer.line_number);
+						string error_msg = "Unfinished table at line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
 						tdns_log.write(error_msg);
 						fox_assert(0);
 					}
 				}
 			}
 			else {
-				string error_msg = "Malformed assignment on line " + to_string(lexer.line_number);
+				string error_msg = "Malformed assignment on line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
 				tdns_log.write(error_msg);
 				fox_assert(0);
 			}
@@ -807,7 +810,7 @@ KVPNode* TDScript::parse_assign() {
 		}
 	}
 	else {
-		string error_msg = "Expected identifier at line " + to_string(lexer.line_number);
+		string error_msg = "Expected identifier at line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
 		tdns_log.write(error_msg);
 		fox_assert(0);
 		return nullptr;

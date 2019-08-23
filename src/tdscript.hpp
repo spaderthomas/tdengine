@@ -204,6 +204,7 @@ struct Token {
 };
 struct Lexer {
 	ifstream file;
+	string file_path;
 	int line_number = 1;
 	vector<Token> tokens;
 	uint token_idx;

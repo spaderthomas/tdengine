@@ -46,7 +46,7 @@ entity.intro_police.scripts.intro1 = {
 		 x = .5,
 		 y = .5
 	  },
-	  is_blocking = true
+	  is_blocking = false
    },
    {
 	  kind = "Dialogue_Action",

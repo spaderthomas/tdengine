@@ -35,6 +35,7 @@ build_options = {
         'ignore': [
             '4099'
         ],
+        'machine': 'X86',
         'out': 'tdengine.exe',
         'runtime_library': 'MDd',
         'warnings': [
@@ -95,6 +96,9 @@ def print_warning(message):
     
 def print_success(message):
     print(colorama.Fore.GREEN + "[tdbuild] " + colorama.Fore.RESET + message)
+
+def quote(string):
+    return '"{}"'.format(string)
 
 class tdbuild():
     def __init__(self):        
@@ -200,31 +204,34 @@ class tdbuild():
         for warning in build_options['Windows']['warnings']:
             self.push("/wd{}".format(warning))
 
-        self.push("-" + build_options['Windows']['runtime_library'])
+        self.push("/" + build_options['Windows']['runtime_library'])
 
         for source_file in build_options['source_files']:
             full_source_file_path = os.path.join(build_options['source_dir'], source_file)
-            self.push(full_source_file_path)
+            self.push(quote(full_source_file_path))
 
         for include_dir in build_options['include_dirs']:
-            self.push('/I\"{}\"'.format(include_dir))
+            self.push('/I{}'.format(quote(include_dir)))
 
         self.push("/link")
         for system_lib in build_options['Windows']['system_libs']:
             self.push(system_lib)
 
         for user_lib in build_options['Windows']['user_libs']:
-            self.push(os.path.join(build_options['lib_dir'], user_lib))
+            self.push(quote(os.path.join(build_options['lib_dir'], user_lib)))
             
         for ignore in build_options['Windows']['ignore']:
             self.push("/ignore:" + ignore)
+
+        if 'machine' in build_options['Windows']:
+            self.push("/MACHINE:{}".format(build_options['Windows']['machine']))
 
         self.push("/out:" + build_options['Windows']['out'])
 
 
         make_cd_build_dir()
         
-        print_info(colorama.Fore.BLUE + "[tdbuild] " + colorama.Fore.RESET + "Generated compiler command:")
+        print_info("Generated compiler command:")
         print_info(self.build_cmd)
         print_info("Invoking the compiler")
         print("")
@@ -283,7 +290,3 @@ if __name__ == "__main__":
 
         for fname in copied_files:
             os.remove(fname)
-
-        
-        
-    

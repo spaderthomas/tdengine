@@ -1069,6 +1069,8 @@ void Cutscene_Thing::update(float dt) {
 	if (!active_cutscene->done) {
 		active_cutscene->update(dt);
 	}
+
+	physics_system.process(1.f / 60.f);
 }
 void Cutscene_Thing::render() {
 	if (active_cutscene)
