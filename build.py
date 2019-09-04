@@ -78,6 +78,8 @@ build_options = {
     }
 }
 
+NEW_FONT_CONFIG = '# NEW_FONT_CONFIG'
+
 def make_cd_build_dir():
     build_dir = os.path.join(os.getcwd(), build_options['build_dir'])
     try:
@@ -109,7 +111,6 @@ class tdbuild():
     def push(self, item):
         self.build_cmd = self.build_cmd + item + " "
         
-
     def build(self):
         if platform.system() == 'Windows':
             self.build_windows()
@@ -267,6 +268,39 @@ class tdbuild():
         os.chdir(os.path.dirname(os.path.realpath(__file__)))
         subprocess.run([os.path.join(os.getcwd(), build_options['build_dir'], build_options[platform.system()]['out'])]) 
                  
+    def setup(self):
+        print_info("...running setup")
+        computer = input("What is the name of this computer? ")
+        font_dir = input("Where are your fonts stored? ")
+        default_font = input("What's your default font? ")
+
+        with open('src/scripts/init.skeleton', 'r') as init_skeleton:
+            contents = init_skeleton.readlines()
+            for i, line in enumerate(contents):
+                if NEW_FONT_CONFIG in line:
+                    del contents[i]
+                    contents.insert(i, "\t" + computer + " = {\n")
+                    contents.insert(i + 1, '\t\tfont_dir = "{}"\n'.format(font_dir))
+                    contents.insert(i + 2, '\t\tdefault = "{}"\n'.format(default_font))
+                    contents.insert(i + 3, "\t}\n")
+                    break
+
+            with open('src/scripts/__init__.tds', 'w+') as init_out:
+                init_out.write("".join(contents))
+
+        project_path = os.path.dirname(os.path.realpath(__file__))
+        project_path = os.path.join(project_path, "") # add a trailing slash
+        with open('src/machine_conf.hpp', "w+") as machine_cpp:
+            lines = [
+                'string root_dir = "{}";\n'.format(project_path),
+                'string computer_id = "{}";'.format(computer)
+            ]
+            machine_cpp.writelines(lines)
+
+        with open('src/scripts/machine_conf.py', 'w+') as machine_py:
+            machine_py.write('GLOBAL_PROJ_ROOT_DIR = "{}"'.format(project_path))
+
+
 
 if __name__ == "__main__":
     builder = tdbuild()
@@ -291,3 +325,10 @@ if __name__ == "__main__":
 
         for fname in copied_files:
             os.remove(fname)
+    elif sys.argv[1] == "setup":
+        os.chdir(os.path.dirname(os.path.realpath(__file__)))
+
+        builder.setup()
+
+
+

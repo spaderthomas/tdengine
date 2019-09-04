@@ -64,6 +64,7 @@ vector<string> split(const string &str, char delim) {
 #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
 #define are_strings_equal(a, b) (!(a).compare((b)))
 
+#ifdef WIN32
 void normalize_path(string& str) {
 	string from = "/";
 	string to = "\\";
@@ -74,6 +75,18 @@ void normalize_path(string& str) {
         start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
 }
+#else
+void normalize_path(string& str) {
+	string from = "/";
+	string to = "/";
+	
+    size_t start_pos = 0;
+    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
+        str.replace(start_pos, from.length(), to);
+        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+    }
+}
+#endif
 
 // shamelessly copped from
 // https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
