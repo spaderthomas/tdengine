@@ -298,6 +298,18 @@ void  Console::ExecCommand(char* command_line)
 		}
 	} else if (Stricmp(command, "reload") == 0) {
 		active_layer->reload();
+	} else if (Stricmp(command, "screen") == 0) {
+		char* res = strtok(NULL, " ");
+		if (!res) {
+			AddLog("format: screen {640, 720, 1080, 1440}");
+			return;
+		}
+		
+		if (!strcmp(res, "640")) use_640_360();
+		else if (!strcmp(res, "720")) use_720p();
+		else if (!strcmp(res, "1080")) use_1080p();
+		else if (!strcmp(res, "1440")) use_1440p();
+		else AddLog("format: screen {640, 720, 1080, 1440}");
 	}
 	
 	if (!ran_generic_command) active_layer->exec_console_cmd(command_line);
@@ -573,19 +585,6 @@ void Editor::exec_console_cmd(char* command_line) {
 	
 	if (console.Stricmp(command, "save") == 0) {
 		active_level->save();
-	}
-	else if (console.Stricmp(command, "screen") == 0) {
-		char* res = strtok(NULL, " ");
-		if (!res) {
-			console.AddLog("format: screen {640, 720, 1080, 1440}");
-			return;
-		}
-		
-		if (!strcmp(res, "640")) use_640_360();
-		else if (!strcmp(res, "720")) use_720p();
-		else if (!strcmp(res, "1080")) use_1080p();
-		else if (!strcmp(res, "1440")) use_1440p();
-		else console.AddLog("format: screen {640, 720, 1080, 1440}");
 	}
 	else if (console.Stricmp(command, "go") == 0) {
 		char* x = strtok(NULL, " ");

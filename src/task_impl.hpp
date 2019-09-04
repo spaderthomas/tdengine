@@ -218,15 +218,15 @@ bool Camera_Follow_Action::update(float dt) {
 			} else {
 				// @note @spader 9/3/2019: Make these variables in a scripted file
 				if (world_offset.x < pc->world_pos.x) {
-					camera.offset.x += .005;
+					camera.offset.x += .005f;
 				} else {
-					camera.offset.x -= .005;
+					camera.offset.x -= .005f;
 				}
 
 				if (world_offset.y < pc->world_pos.y) {
-					camera.offset.y += .005;
+					camera.offset.y += .005f;
 				} else {
-					camera.offset.y -= .005;
+					camera.offset.y -= .005f;
 				}
 			}
 		}

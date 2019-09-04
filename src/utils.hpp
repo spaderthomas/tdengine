@@ -24,7 +24,10 @@ string os_id = "apple";
 #elif defined _WIN32 || defined _WIN64
 string os_id = "windows";
 #endif
-	
+
+#if  defined(__APPLE__) || defined(__linux__)
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 
 #define NULL_ENTITY { -1, nullptr }
 

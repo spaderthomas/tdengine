@@ -895,7 +895,10 @@ void init_tdscript() {
 }
 
 void test_tdscript() {
+	#if  defined(__APPLE__) || defined(__linux__)
     #pragma GCC diagnostic ignored "-Wunused-variable"
+    #endif
+
 	string boonhouse_test = tds_string2(ScriptManager.global_scope, "entity", "boonhouse_door", "components", "Graphic_Component", "Animations", "boonhouse_door", "0");
 	string cantina_test = tds_string2(ScriptManager.global_scope, "entity", "picture", "components", "Graphic_Component", "Animations", "picture", "0");
 	string intro_police_test = tds_string2(ScriptManager.global_scope, "entity", "intro_police", "scripts", "intro1", "4", "kind");
@@ -936,6 +939,8 @@ void test_tdscript() {
 	TableNode* some_table = new TableNode;
 	some_table->push_back(true);
 	tds_set(some_table, "settin_it");
+	#if  defined(__APPLE__) || defined(__linux__)
     #pragma GCC diagnostic pop
+    #endif
 }
 
