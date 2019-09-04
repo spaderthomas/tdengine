@@ -15,18 +15,6 @@ entity = {}
 
 config = {}
 config.fonts = {
-	personal_mac = {
-        font_dir = "/Users/spader/Library/Fonts/",
-	    default = "Inconsolata-Regular"
-    },
-	gouki = {
-	    font_dir = "C:/Windows/Fonts/"
-		default = "Arial"
-	},
-    akuma = {
-	    font_dir = "C:/Windows/Fonts/"
-		default = "Arial"
-	}
 	work_mac = {
 		font_dir = "/Users/thspader/Library/Fonts"
 		default = "Inconsolata-Regular"

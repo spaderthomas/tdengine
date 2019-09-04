@@ -274,19 +274,32 @@ class tdbuild():
         font_dir = input("Where are your fonts stored? ")
         default_font = input("What's your default font? ")
 
+        new_skellington = []
         with open('src/scripts/init.skeleton', 'r') as init_skeleton:
             contents = init_skeleton.readlines()
             for i, line in enumerate(contents):
                 if NEW_FONT_CONFIG in line:
+                    # Kill the old comment
                     del contents[i]
+
+                    # Add the new table entry
                     contents.insert(i, "\t" + computer + " = {\n")
                     contents.insert(i + 1, '\t\tfont_dir = "{}"\n'.format(font_dir))
                     contents.insert(i + 2, '\t\tdefault = "{}"\n'.format(default_font))
                     contents.insert(i + 3, "\t}\n")
+
+                    # Write it to where the real init file goes
+                    with open('src/scripts/__init__.tds', 'w+') as init_out:
+                        init_out.write("".join(contents))
+
+                    # Update the skellerton to have this config so we can commit to source control
+                    contents.insert(i + 4, "\t" + NEW_FONT_CONFIG + "\n")
+                    new_skellington = contents
                     break
 
-            with open('src/scripts/__init__.tds', 'w+') as init_out:
-                init_out.write("".join(contents))
+        with open('src/scripts/init.skeleton', 'w') as init_skeleton:
+            init_skeleton.write("".join(new_skellington))
+
 
         project_path = os.path.dirname(os.path.realpath(__file__))
         project_path = os.path.join(project_path, "") # add a trailing slash

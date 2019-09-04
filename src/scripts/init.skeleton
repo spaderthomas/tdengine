@@ -19,7 +19,7 @@ config.fonts = {
 		font_dir = "/Users/thspader/Library/Fonts"
 		default = "Inconsolata-Regular"
 	}
-    # NEW_FONT_CONFIG
+	# NEW_FONT_CONFIG
 }
 
 config.screen = {
