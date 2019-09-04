@@ -633,7 +633,7 @@ bool TDScript::is_nested_identifier(string& key) {
 }
 ASTNode* TDScript::parse(string script_path) {
 	normalize_path(script_path);
-	std::cout << script_path << std::endl;
+	tdns_log.write("Scripted file: " + script_path, Log_Flags::File);
 	
 	if (!lexer.init(script_path)) {
 		return nullptr;

@@ -60,6 +60,8 @@ struct Layer {
 	Camera camera;
 	Console console;
 
+	virtual void enter() { }
+	virtual void exit() {  }
 	virtual void update(float dt) = 0;
 	virtual void reload() {}
 	virtual void exec_console_cmd(char* cmd) {}
@@ -77,13 +79,14 @@ struct Battle : Layer {
 Battle battle;
 
 struct Cutscene {
+	string name;
 	Level* level;
 
 	Task task;
 	int frame = 0;
 	bool done = false;
 
-	void init(TableNode* table);
+	void init(string name, TableNode* table);
 	void update(float dt);
 };
 
@@ -133,9 +136,8 @@ struct Editor : Layer {
 	
 	
 	// Big stuff
-	void reload_lua();
 	void reload_assets();
-	void reload_everything();
+	void reload() override;
 	void exec_console_cmd(char* cmd) override;
 	void update(float dt) override;
 	void render() override;
@@ -159,6 +161,7 @@ struct Cutscene_Thing : Layer {
 	unordered_map<string, Cutscene*> cutscenes;
 	Cutscene* active_cutscene;
 
+	void exit() override;
 	void do_cutscene(string which);
 	void reload() override;
 	void update(float dt) override;

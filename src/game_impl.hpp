@@ -296,6 +296,8 @@ void  Console::ExecCommand(char* command_line)
 			AddLog("usage: layer {which}\n");
 			AddLog("\toptions: editor, cutscene, game, battle\n");
 		}
+	} else if (Stricmp(command, "reload") == 0) {
+		active_layer->reload();
 	}
 	
 	if (!ran_generic_command) active_layer->exec_console_cmd(command_line);
@@ -608,9 +610,6 @@ void Editor::exec_console_cmd(char* command_line) {
 	else if (console.Stricmp(command, "load") == 0) {
 		active_level->load();
 	}
-	else if (console.Stricmp(command, "reload") == 0) {
-		reload_everything();
-	}
 	else if (console.Stricmp(command, "grid") == 0) {
 		if (kind == TILE && state != IDLE) {
 			last_show_grid = !show_grid;
@@ -657,7 +656,7 @@ void Editor::reload_assets() {
 	tile_tree = Entity_Tree::create(absolute_path("textures/tiles"));
 	active_level->load();
 }
-void Editor::reload_everything() {
+void Editor::reload() {
 	// Reset the script state; anything unsaved will be lost
 	init_tdscript(); // @leak
 	init_state();
@@ -740,7 +739,7 @@ void Editor::update(float dt) {
 					reload_assets();
 				}
 				if (ImGui::MenuItem("everything")) {
-					reload_everything();
+					reload();
 				}
 				ImGui::EndMenu();
 			}
@@ -1067,7 +1066,8 @@ void Editor::render() {
 	}
 }
 
-void Cutscene::init(TableNode* table) {
+void Cutscene::init(string name, TableNode* table) {
+	this->name = name;
 	this->level = levels[tds_string2(table, LEVEL_KEY)];
 	this->level->load_entities(tds_table2(table, ENTITIES_KEY));
 
@@ -1118,19 +1118,25 @@ void Cutscene_Thing::render() {
 }
 
 void Cutscene_Thing::init() {
+	for (auto& [name, cutscene] : cutscenes) {
+		free(cutscene);
+	}
+	this->active_cutscene = nullptr;
+	
 	TableNode* all_cutscenes = tds_table(CUTSCENES_KEY);
 	for (auto node : all_cutscenes->assignments) {
 		KVPNode* kvp = (KVPNode*)node;
-		TableNode* cutscene_data = (TableNode*)kvp->value;
-		Cutscene* cutscene = new Cutscene; // @leak if we call this 2ce
-		cutscene->init(cutscene_data);
+		Cutscene* cutscene = new Cutscene;
+		cutscene->init(kvp->key, (TableNode*)kvp->value);
 		this->cutscenes[kvp->key] = cutscene;
 	}
 }
 
 void Cutscene_Thing::reload() {
+	string old_active_cutscene = active_cutscene->name;
 	ScriptManager.script_dir(absolute_path(path_join({"src", "scripts", "cutscenes"})));
 	init();
+	this->active_cutscene = cutscenes[old_active_cutscene];
 }
 
 void Cutscene_Thing::do_cutscene(string which) {
@@ -1147,10 +1153,17 @@ void Cutscene_Thing::exec_console_cmd(char* command_line) {
 	if (console.Stricmp(command, "cutscene") == 0) {
 		char* which = strtok(NULL, " ");
 		do_cutscene(which);
+	} else if (console.Stricmp(command, "reload") == 0) {
+		reload();
 	} else {
 		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);
 	}
 
+}
+
+// 
+void Cutscene_Thing::exit() {
+	this->active_level->load();
 }
 	
 void Game::init() {
@@ -1162,10 +1175,6 @@ void Game::init() {
 void Game::update(float dt) {
 	static int frame = 0;
 	
-	// Toggle the console
-	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
-		show_console = !show_console;
-	}
 	if (show_console) {
 		console.Draw("tdconsole");
 	}

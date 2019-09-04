@@ -250,8 +250,10 @@ int main() {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		
 		if (global_input.was_pressed(GLFW_KEY_F4)) {
+			active_layer->exit();
 			iactive_layer = (iactive_layer + 1) % all_layers.size();
 			active_layer = all_layers[iactive_layer];
+			active_layer->enter();
 		}
 		if (global_input.was_pressed(GLFW_KEY_F5)) {
 			active_layer->reload();
