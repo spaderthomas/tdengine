@@ -77,7 +77,9 @@ string Vision_Component::name() { return "Vision"; }
 
 string Interaction_Component::name() { return "Interaction_Component"; }
 
-
+void Door_Component::init_from_table(TableNode* table) {
+	to = tds_string2(table, TO_KEY);
+}
 TableNode* Door_Component::save() const {
 	TableNode* self = new TableNode;
 	tds_set2(self, to, TO_KEY);

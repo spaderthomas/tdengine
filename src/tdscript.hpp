@@ -88,6 +88,7 @@ struct TableNode : ASTNode {
 	TableNode* get_table(vector<string> keys);
 	ASTNode*   get_raw(vector<string> keys);
 	ASTNode*   maybe_key(string key);
+	bool       has_key(string key);
 	
 	void       set(vector<string> keys, int value);
 	void       set(vector<string> keys, string value);

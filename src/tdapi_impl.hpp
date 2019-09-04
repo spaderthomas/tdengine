@@ -111,20 +111,21 @@ tdapi bool are_interacting(EntityHandle initiator, EntityHandle receiver) {
 		return collision;
 	}
 }
-tdapi void draw_aabb(EntityHandle me) {
-	Points_Box box = get_bounding_box_world(me);
+
+tdapi void draw_aabb(EntityHandle entity) {
+	Points_Box box = get_bounding_box_world(entity);
 	draw_rect_world(box, green);
 }
-tdapi void update_animation(EntityHandle me, float dt) {
-	def_get_cmp(gc, me.deref(), Graphic_Component);
+tdapi void update_animation(EntityHandle entity, float dt) {
+	def_get_cmp(gc, entity.deref(), Graphic_Component);
 	auto anim = gc->active_animation;
 	anim->time_to_next_frame -= dt;
 	if (anim->time_to_next_frame <= 0.f) {
 		anim->next_frame();
 	}
 }
-tdapi void update_task(EntityHandle me, float dt) {
-	def_get_cmp(tc, me.deref(), Task_Component);
+tdapi void update_task(EntityHandle entity, float dt) {
+	def_get_cmp(tc, entity.deref(), Task_Component);
 	if (tc) {
 		tc->task->update(dt);
 	}

@@ -82,8 +82,13 @@ void  Console::Draw(const char* title)
 		ImGui::End();
 		return;
 	}
-	
-	ImGui::TextWrapped("Enter 'HELP' for help, press TAB to use text completion.");
+
+	if (ImGui::CollapsingHeader("INFO")) {
+		for (auto& [key, value] : layer_map) {
+			if (value == active_layer)
+				ImGui::Text("Layer: %s", key.c_str());
+		}
+	}
 	
 	if (ImGui::SmallButton("Clear")) { ClearLog(); } ImGui::SameLine();
 	bool copy_to_clipboard = ImGui::SmallButton("Copy"); ImGui::SameLine();
@@ -268,8 +273,32 @@ void  Console::ExecCommand(char* command_line)
 		break;
 	}
 	History.push_back(Strdup(command_line));
+
+	// If this gets set, we know not to pipe the command down to the layer-specific handler
+	bool ran_generic_command = false;
+
+	auto copy = (char*)calloc(sizeof(command_line) + 1, sizeof(char));
+	strcpy(copy, command_line);
+	char* command = strtok(copy, " ");
+	if (Stricmp(command, "layer") == 0) {
+		ran_generic_command = true;
+		char* which = strtok(NULL, " ");
+		if (which) {
+    		auto it = find_if(layer_map.begin(), layer_map.end(), [which](auto kvp) {
+					return kvp.first == which;
+				});
+
+			if (it != layer_map.end()) {
+				active_layer = layer_map[which];
+				iactive_layer = std::distance(layer_map.begin(), it);
+			}
+		} else {
+			AddLog("usage: layer {which}\n");
+			AddLog("\toptions: editor, cutscene, game, battle\n");
+		}
+	}
 	
-	active_layer->exec_console_cmd(command_line);
+	if (!ran_generic_command) active_layer->exec_console_cmd(command_line);
 }
 
 
@@ -340,6 +369,10 @@ void Battle::render() {
 }
 
 void Battle::update(float dt) {
+	if (show_console) {
+		console.Draw("tdconsole");
+	}
+	
 	camera.following = battlers[0];
 	if (input.is_down[GLFW_KEY_W]) {
 		camera.offset += glm::vec2{0, .025};
@@ -655,15 +688,7 @@ void Editor::undo_mark() {
 void Editor::update(float dt) {	
 	static bool open = true;
 	ShowExampleAppCustomNodeGraph(&open);
-	
-#if 0
-	// Set up the camera so that the entity it's following is centered
-	def_get_cmp(follow_pc, camera.following.deref(), Position_Component);
-	camera.offset = follow_pc->world_pos;
-	camera.offset += glm::vec2{ -.5, -.5 };
-	input.world_pos = input.screen_pos + camera.offset;
-#endif
-	
+		
 	if (input.is_down[GLFW_KEY_W]) {
 		camera.offset += glm::vec2{0, .025};
 	}
@@ -694,9 +719,6 @@ void Editor::update(float dt) {
 	}
 	
 	// Toggle the console on control
-	if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
-		show_console = !show_console;
-	}
 	if (show_console) {
 		console.Draw("tdconsole");
 	}
@@ -1052,8 +1074,13 @@ void Cutscene::init(TableNode* table) {
 	TableNode* actions = tds_table2(table, ACTIONS_KEY);
 	for (KVPNode* kvp : actions->assignments) {
 		TableNode* action_table = (TableNode*)kvp->value;
-		string entity_name = tds_string2(action_table, ENTITY_KEY);
-		
+
+		// Some actions have no attached entity.
+		string entity_name = "";
+		if (action_table->has_key(ENTITY_KEY)) {
+			entity_name = tds_string2(action_table, ENTITY_KEY);
+		}
+
 		EntityHandle entity = this->level->get_first_matching_entity(entity_name);
 		Action* action = action_from_table(action_table, entity);
 		this->task.add_action(action);
@@ -1066,12 +1093,16 @@ void Cutscene::update(float dt) {
 }
 
 void Cutscene_Thing::update(float dt) {
+	if (show_console) {
+		console.Draw("tdconsole");
+	}
+
 	// @spader 8/22/2019: This is kind of hacky. I mean, we always want this to happen, but do I want
 	// the camera to know what layer it's camera-ing for?
 	camera.update(dt);
 	input.world_pos = input.screen_pos + camera.offset;
 	
-	if (!active_cutscene->done) {
+	if (active_cutscene && !active_cutscene->done) {
 		active_cutscene->update(dt);
 	}
 	
@@ -1083,16 +1114,18 @@ void Cutscene_Thing::render() {
 		active_cutscene->level->draw();
 	
 	renderer.render_for_frame();
+	text_box.render();
 }
 
 void Cutscene_Thing::init() {
-	TableNode* cutscene_data = tds_table("cutscenes", "test");
-	Cutscene* cutscene = new Cutscene; // @leak if we call this 2ce
-	cutscene->init(cutscene_data);
-	this->active_level = levels[tds_string2(cutscene_data, LEVEL_KEY)];
-	this->cutscenes["test"] = cutscene;
-	this->active_cutscene = cutscene;
-	this->camera.offset = { 0.f, 0.f };
+	TableNode* all_cutscenes = tds_table(CUTSCENES_KEY);
+	for (auto node : all_cutscenes->assignments) {
+		KVPNode* kvp = (KVPNode*)node;
+		TableNode* cutscene_data = (TableNode*)kvp->value;
+		Cutscene* cutscene = new Cutscene; // @leak if we call this 2ce
+		cutscene->init(cutscene_data);
+		this->cutscenes[kvp->key] = cutscene;
+	}
 }
 
 void Cutscene_Thing::reload() {
@@ -1100,6 +1133,26 @@ void Cutscene_Thing::reload() {
 	init();
 }
 
+void Cutscene_Thing::do_cutscene(string which) {
+	auto cutscene = cutscenes[which];
+	this->active_level = cutscene->level;
+	this->active_cutscene = cutscene;
+	this->camera.offset = { 0.f, 0.f };
+}
+
+void Cutscene_Thing::exec_console_cmd(char* command_line) {
+	char* command = strtok(command_line, " ");
+	if (!command) return;
+	
+	if (console.Stricmp(command, "cutscene") == 0) {
+		char* which = strtok(NULL, " ");
+		do_cutscene(which);
+	} else {
+		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);
+	}
+
+}
+	
 void Game::init() {
 	particle_system.init();
 	active_dialogue = new Dialogue_Tree;

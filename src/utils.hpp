@@ -470,22 +470,26 @@ bool show_task_editor = true;
 const string ACTIONS_KEY     = "actions";
 const string CH_STATE_KEY    = "character_state";
 const string COMPONENTS_KEY  = "components";
+const string CUTSCENES_KEY   = "cutscenes";
 const string ENTITY_KEY      = "entity";
 const string ENTITIES_KEY    = "entities";
 const string GAME_STATE_KEY  = "game_state";
+const string HERO_KEY        = "boon";
 const string LEVEL_KEY       = "level";
 const string LEVELS_KEY      = "levels";
 const string NAME_KEY        = "name";
 const string NAMES_KEY       = "names";
 const string NEXT_STATE_KEY  = "next_state";
+const string PAN_KEY         = "pan";
 const string POS_KEY         = "pos";
 const string SCALE_KEY       = "scale";
 const string SCRIPTS_KEY     = "scripts";
 const string STATE_KEY       = "State_Machine";
-const string TILES_KEY       = "tiles";
 const string TO_KEY          = "to";
+const string TILES_KEY       = "tiles";
 const string TRANSITIONS_KEY = "transitions";
 const string VARS_KEY        = "vars";
+const string WHICH_KEY       = "which";
 
 /* Random shit */
 void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void *userParam) {

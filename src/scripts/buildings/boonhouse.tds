@@ -1,6 +1,10 @@
 entity.boonhouse_door = {}
 entity.boonhouse_door.components = {}
 
+entity.boonhouse_door.components.Door_Component = {
+    to = "overworld"
+}
+
 entity.boonhouse_door.components.Graphic_Component = {
     Animations = {
         boonhouse_door = {

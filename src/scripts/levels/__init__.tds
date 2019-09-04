@@ -1,5 +1,6 @@
 levels = {}
 levels.names = {
     "overworld",
-	"playground"
+	"playground",
+	"boon_house"
 }

@@ -2,6 +2,8 @@ struct Component {
 	virtual TableNode* save() const;
 	virtual void load(TableNode* table) { cout << "Tried to call virtual load() on base Component"; };
 	virtual string name() { return "Component"; };
+
+	// @spader 8/23/2019: Make init_from_table virtual
 };
 struct Graphic_Component : Component {
 	vector<Animation*> animations;
@@ -45,6 +47,7 @@ struct Door_Component : Component {
 	string to;
 	glm::vec2 position;
 	
+	void init_from_table(TableNode* table);
 	TableNode* save() const override;
 	void load(TableNode* self);
 	string name() override;
@@ -116,3 +119,4 @@ unordered_map<string, const type_info*> component_map = {
 #define def_get_cmp(var, entity, type) type* var = (entity)->get_component<type>()
 #define get_cmp(entity, type) (entity)->get_component<type>()
 #define def_cast_cmp(varname, cmp, type) type* varname = dynamic_cast<type*>((cmp))
+#define if_component(var, entity, type) type* var = (entity)->get_component<type>(); if ((var))

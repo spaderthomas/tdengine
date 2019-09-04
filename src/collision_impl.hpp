@@ -55,14 +55,20 @@ void Physics_System::process(float dt) {
 	}
 
 	for (auto& element : collisions) {
-		auto me_box = Center_Box::from_entity(element.me);
-		auto other_box = Center_Box::from_entity(element.other);
-		if (me_box && other_box) {
+		auto me = Center_Box::from_entity(element.me);
+		auto other = Center_Box::from_entity(element.other);
+		if (me && other) {
 			glm::vec2 penetration;
-			if (are_boxes_colliding(*me_box, *other_box, penetration)) {
+			if (are_boxes_colliding(*me, *other, penetration)) {
 				cout << "Collision found between " << element.me->name << ", " << element.other->name <<  endl;
 				def_get_cmp(mypos, element.me.deref(), Position_Component);
 				mypos->world_pos -= penetration;
+
+				if_component(door, element.me, Door_Component) {
+					if (element.other->name == HERO_KEY) {
+						active_layer->active_level = levels[door->to];
+					}
+				}
 			}
 		}
 	}

@@ -358,6 +358,10 @@ ASTNode* TableNode::maybe_key(string key) {
 	
 	return nullptr;
 }
+bool TableNode::has_key(string key) {
+	return maybe_key(key);
+}
+
 void TableNode::dump(TableWriter& output) {
 	output.begin_table();
 	for (auto& assignment : assignments) {

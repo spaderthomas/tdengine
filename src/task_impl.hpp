@@ -68,7 +68,13 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 	else if (kind == "Camera_Follow_Action") {
 		Camera_Follow_Action* action = new Camera_Follow_Action;
 		action->who = tds_string2(table, "who");
+		if (table->has_key(PAN_KEY)) action->pan = tds_bool2(table, "pan");
 		
+		action_generic = action;
+	}
+	else if (kind == "Cutscene_Action") {
+		Cutscene_Action* action = new Cutscene_Action;
+		action->which = tds_string2(table, WHICH_KEY);
 		action_generic = action;
 	}
 	else {
@@ -131,22 +137,22 @@ void Dialogue_Action::init() {
 }
 bool Dialogue_Action::update(float dt) {
 	Dialogue_Node* node = tree->traverse();
-	if (game.input.was_pressed(GLFW_KEY_1)) {
+	if (active_layer->input.was_pressed(GLFW_KEY_1)) {
 		node->set_response(0);
 	}
-	else if (game.input.was_pressed(GLFW_KEY_2)) {
+	else if (active_layer->input.was_pressed(GLFW_KEY_2)) {
 		node->set_response(1);
 	}
-	else if (game.input.was_pressed(GLFW_KEY_3)) {
+	else if (active_layer->input.was_pressed(GLFW_KEY_3)) {
 		node->set_response(2);
 	}
-	else if (game.input.was_pressed(GLFW_KEY_4)) {
+	else if (active_layer->input.was_pressed(GLFW_KEY_4)) {
 		node->set_response(3);
 	}
 	
 	node->show_line();
 	
-	if (game.input.was_pressed(GLFW_KEY_SPACE)) {
+	if (active_layer->input.was_pressed(GLFW_KEY_SPACE)) {
 		// If the dialogue has fully shown
 		if (text_box.is_all_text_displayed()) {
 			// Break if node is terminal
@@ -191,7 +197,7 @@ bool Teleport_Action::update(float dt) {
 bool Camera_Pan_Action::update(float dt) {
 	auto layer = all_layers[iactive_layer];
 	layer->camera.offset += dest / (float)count_frames;
-
+	
 	frames_elapsed++;
 	return count_frames == frames_elapsed;
 }
@@ -200,11 +206,43 @@ bool Camera_Follow_Action::update(float dt) {
 	auto layer = all_layers[iactive_layer];
 	auto level = layer->active_level;
 	auto entity = level->get_first_matching_entity(this->who);
-	layer->camera.following = entity;
-	return true;
+	auto& camera = layer->camera;
+
+	bool close_enough = false;
+	if (pan) {
+		auto world_offset = camera.offset;
+		world_offset -= glm::vec2{-.5, -.5};
+		if_component(pc, entity, Position_Component) {
+			if (vec_almost_equals(world_offset, pc->world_pos)) {
+				close_enough = true;
+			} else {
+				// @note @spader 9/3/2019: Make these variables in a scripted file
+				if (world_offset.x < pc->world_pos.x) {
+					camera.offset.x += .005;
+				} else {
+					camera.offset.x -= .005;
+				}
+
+				if (world_offset.y < pc->world_pos.y) {
+					camera.offset.y += .005;
+				} else {
+					camera.offset.y -= .005;
+				}
+			}
+		}
+   
+	}
+
+	if (!pan || close_enough) {
+		layer->camera.following = entity;
+		return true;
+	}
+	return false;
 }
 
-
+bool Cutscene_Action::update(float dt) {
+	return true;
+}
 bool Task::update(float dt) {
 	// Run through actions until we reach one which blocks or the queue is empty
 	Action* next_action;
@@ -357,7 +395,5 @@ void TaskEditor::show() {
 	ImGui::EndChild();
 	ImGui::PopStyleColor();
 	ImGui::PopStyleVar(2);
-	ImGui::End();
-	
-	
+	ImGui::End();	
 }

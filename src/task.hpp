@@ -53,7 +53,7 @@ struct Teleport_Action : Action {
 struct Camera_Pan_Action : Action {
 	glm::vec2 dest;
 	int count_frames;
-	int frames_elapsed = 0;
+	int frames_elapsed = 0; 
 
 	bool update(float dt) override;
 	string kind() override { return "Camera_Pan_Action"; };
@@ -61,9 +61,17 @@ struct Camera_Pan_Action : Action {
 
 struct Camera_Follow_Action : Action {
 	string who;
+	bool pan;
 	
 	bool update(float dt) override;
 	string kind() override { return "Camera_Follow_Action"; };
+};
+
+struct Cutscene_Action : Action {
+	string which;
+	
+	bool update(float dt) override;
+	string kind() override { return "Cutscene_Action"; };
 };
 
 struct Action_Queue {

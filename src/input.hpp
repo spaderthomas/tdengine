@@ -1,6 +1,10 @@
 typedef int GLFW_KEY_TYPE;
 #define GLFW_KEY_CONTROL 349
 #define GLFW_KEY_SUPER 350
+#define GLFW_KEY_SHIFT 351
+
+#define ASCII_UNDERSCORE 95
+
 struct Input {
 	bool should_update;
 	glm::vec2 px_pos;
@@ -25,7 +29,11 @@ struct Input {
 			mod_is_down |= is_down[GLFW_KEY_LEFT_SUPER];
 			mod_is_down |= is_down[GLFW_KEY_RIGHT_SUPER];
 		}
-
+		if (mod_key == GLFW_KEY_SHIFT) {
+			mod_is_down |= is_down[GLFW_KEY_LEFT_SHIFT];
+			mod_is_down |= is_down[GLFW_KEY_RIGHT_SHIFT];
+		}
+		
 		return mod_is_down && was_pressed(cmd_key);
 	}
 
@@ -57,7 +65,14 @@ void fill_imgui_input() {
 	}
 	// Fill in the input characters
 	for (int key = GLFW_KEY_SPACE; key < GLFW_KEY_A; key++) {
-		if (global_input.was_pressed(key)) {
+		// @hack @spader 8/23/2019 Should make this more generic, but who cares
+		bool used_shift = false;
+		if (key == GLFW_KEY_MINUS && global_input.chord(GLFW_KEY_SHIFT, GLFW_KEY_MINUS)) {
+			io.AddInputCharacter(ASCII_UNDERSCORE);
+			used_shift = true;
+		}
+
+		if (!used_shift && global_input.was_pressed(key)) {
 			io.AddInputCharacter(key);
 		}
 	}
@@ -67,6 +82,7 @@ void fill_imgui_input() {
 			io.AddInputCharacter(key + 0x20);
 		}
 	}
+
 
 	// Add controller keys
 	io.KeyCtrl = io.KeysDown[GLFW_KEY_LEFT_CONTROL] || io.KeysDown[GLFW_KEY_RIGHT_CONTROL];

@@ -1,12 +1,5 @@
-dog = {
-	stuff = 1,
-	other_stuff = {
-        pull_up_in_a_coffin = true
-	}
-}
-
 cutscenes.test = {}
-cutscenes.test.level = "overworld"
+cutscenes.test.level = "boon_house"
 cutscenes.test.entities = {
     {
 	    name = "intro_police",
@@ -39,58 +32,29 @@ cutscenes.test.entities = {
 		}
 	}
 }
-#cutscenes.test.camera = {
-#    {
-#	    frame_start = 0
-#		frame_end = 120
-#		camera_start = {
-#		    x = 0
-#			y = 0
-#		}
-#		distance = {
-#		    x = .25
-#			y = .25
-#		}
-#    }
-#    {
-#	    frame_start = 121
-#		frame_end = 140
-#		camera_start = {
-#		    x = .25
-#			y = .25
-#		}
-#		distance = {
-#		    x = -.5
-#			y = -.5
-#		}
-#    }
-#    {
-#	    frame_start = 141
-#		frame_end = 180
-#		camera_start = {
-#		    x = -.25
-#			y = -.25
-#		}
-#		distance = {
-#		    x = -.25
-#			y = .25
-#	    }
-#    }
-#    {
-#	    frame_start = 181
-#		frame_end = 220
-#		camera_start = {
-#		    x = -.25
-#			y = .25
-#		}
-#		distance = {
-#		    x = .25  
-#			y = -.25
-#	    }
-#    }
-#}
+
 
 cutscenes.test.actions = {
+    {
+		kind = "Dialogue_Action"
+		dialogue = {
+	        text = "...dog...ring...ring...",
+	        terminal = true,
+	        responses = {},
+	        children = {}
+		},
+		is_blocking = true
+	},
+    {
+		kind = "Dialogue_Action"
+		dialogue = {
+	        text = "Hey, it's Pops. Could you swing by Ike's before I get home? I need a set of T9s so I can put in your new hard drive.",
+	        terminal = true,
+	        responses = {},
+	        children = {}
+		},
+		is_blocking = true
+	},
     {
 		entity = "intro_police",
 		kind = "Teleport_Action",
@@ -121,7 +85,8 @@ cutscenes.test.actions = {
 	{
 		entity = "camera",
 		kind = "Camera_Follow_Action",
-		who = "intro_police"
+		who = "intro_police",
+		pan = true,
 		is_blocking = false,
 	}
 }

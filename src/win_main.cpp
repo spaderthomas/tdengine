@@ -256,6 +256,9 @@ int main() {
 		if (global_input.was_pressed(GLFW_KEY_F5)) {
 			active_layer->reload();
 		}
+		if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
+			show_console = !show_console;
+		}
 		
 		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();

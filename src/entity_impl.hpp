@@ -64,7 +64,7 @@ pool_handle<Entity> Entity::create(string entity_name) {
 		//    since that information is dependent on the level the entity is in -- so this
 		//    step is optional. 
 		if (type == "Graphic_Component") {
-			pool_handle<any_component> handle = entity->add_component<Graphic_Component>();
+			auto handle = entity->add_component<Graphic_Component>();
 			Graphic_Component* component = &handle()->graphic_component;
 			component->init_from_table(component_table);
 			
@@ -84,13 +84,13 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			entity->add_component<Position_Component>();
 		}
 		else if (type == "Movement_Component") {
-			pool_handle<any_component> handle = entity->add_component<Movement_Component>();
+			auto handle = entity->add_component<Movement_Component>();
 			Movement_Component* component = &handle()->movement_component;
 			component->init_from_table(component_table);
 			component->wish = glm::vec2(0.f);
 		}
 		else if (type == "Vision") {
-			pool_handle<any_component> handle = entity->add_component<Vision_Component>();
+			auto handle = entity->add_component<Vision_Component>();
 			Vision_Component* component = &handle()->vision;
 			component->init_from_table(component_table);
 		}
@@ -98,15 +98,17 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			entity->add_component<Interaction_Component>();
 		}
 		else if (type == "Door_Component") {
-			entity->add_component<Door_Component>();
+			auto handle = entity->add_component<Door_Component>();
+			Door_Component* component = &handle()->door_component;
+			component->init_from_table(component_table);
 		}
 		else if (type == "Collision_Component") {
-			pool_handle<any_component> handle = entity->add_component<Collision_Component>();
+			auto handle = entity->add_component<Collision_Component>();
 			Collision_Component* component = &handle()->collision_component;
 			component->init_from_table(component_table);
 		}
 		else if (type == "Task_Component") {
-			pool_handle<any_component> handle = entity->add_component<Task_Component>();
+			auto handle = entity->add_component<Task_Component>();
 			Task_Component* component = &handle()->task_component;
 			component->init_from_table(component_table);
 			
@@ -119,7 +121,7 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			component->task = task;
 		}
 		else if (type == "BattleComponent") {
-			pool_handle<any_component> handle = entity->add_component<BattleComponent>();
+			auto handle = entity->add_component<BattleComponent>();
 			BattleComponent* component = &handle()->battle_component;
 			component->init_from_table(component_table);
 		}

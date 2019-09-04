@@ -58,6 +58,7 @@ struct Layer {
 	Input input;
 	Level* active_level;
 	Camera camera;
+	Console console;
 
 	virtual void update(float dt) = 0;
 	virtual void reload() {}
@@ -139,14 +140,12 @@ struct Editor : Layer {
 	void update(float dt) override;
 	void render() override;
 	void init() override;
-	Console console;
 };
 Editor editor;
 
 struct Game : Layer {
 	Dialogue_Tree* active_dialogue;
 	Particle_System particle_system;
-	Console console;
 	
 	bool in_dialogue = false;
 	
@@ -160,15 +159,23 @@ struct Cutscene_Thing : Layer {
 	unordered_map<string, Cutscene*> cutscenes;
 	Cutscene* active_cutscene;
 
+	void do_cutscene(string which);
 	void reload() override;
 	void update(float dt) override;
 	void render() override;
 	void init() override;
+	void exec_console_cmd(char* cmd) override;
 };
 Cutscene_Thing cutscene_thing;
 
 int iactive_layer = 0;
 vector<Layer*> all_layers = { &editor, &cutscene_thing, &game, &battle};
+map<string, Layer*> layer_map = {
+	{ "editor", &editor },
+	{ "cutscene", &cutscene_thing },
+	{ "game", &game },
+	{ "battle", &battle },
+};
 Layer* active_layer = &editor;
 #define EDITOR_IDX   0
 #define CUTSCENE_IDX 1
