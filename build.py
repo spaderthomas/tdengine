@@ -103,6 +103,10 @@ def print_success(message):
 def quote(string):
     return '"{}"'.format(string)
 
+def trailing_slash(path):
+    return os.path.join(path, "")
+
+
 class tdbuild():
     def __init__(self):        
         self.build_cmd = ""
@@ -271,8 +275,8 @@ class tdbuild():
     def setup(self):
         print_info("...running setup")
         computer = input("What is the name of this computer? ")
-        font_dir = input("Where are your fonts stored? ")
-        default_font = input("What's your default font? ")
+        font_dir = input("Where are your fonts stored? [please include trailing slash] ")
+        default_font = input("What's your default font? [a TTF file, don't include extension]")
 
         new_skellington = []
         with open('src/scripts/init.skeleton', 'r') as init_skeleton:
@@ -284,13 +288,14 @@ class tdbuild():
 
                     # Add the new table entry
                     contents.insert(i, "\t" + computer + " = {\n")
-                    contents.insert(i + 1, '\t\tfont_dir = "{}"\n'.format(font_dir))
+                    contents.insert(i + 1, '\t\tfont_dir = "{}"\n'.format(trailing_slash(font_dir)))
                     contents.insert(i + 2, '\t\tdefault = "{}"\n'.format(default_font))
                     contents.insert(i + 3, "\t}\n")
 
                     # Write it to where the real init file goes
                     with open('src/scripts/__init__.tds', 'w+') as init_out:
                         init_out.write("".join(contents))
+                        print_info("Created configuration file at src/scripts/__init__.tds")
 
                     # Update the skellerton to have this config so we can commit to source control
                     contents.insert(i + 4, "\t" + NEW_FONT_CONFIG + "\n")
@@ -309,9 +314,12 @@ class tdbuild():
                 'string computer_id = "{}";'.format(computer)
             ]
             machine_cpp.writelines(lines)
+            print_info("Created src/machine_conf.hpp")
+
 
         with open('src/scripts/machine_conf.py', 'w+') as machine_py:
             machine_py.write('GLOBAL_PROJ_ROOT_DIR = "{}"'.format(project_path))
+            print_info("Created src/scripts/machine_conf.py")
 
 
 

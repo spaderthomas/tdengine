@@ -19,12 +19,6 @@ typedef int32_t int32;
 typedef int64_t int64;
 typedef unsigned char tdbyte;
 
-#ifdef __APPLE__
-string os_id = "apple";
-#elif defined _WIN32 || defined _WIN64
-string os_id = "windows";
-#endif
-
 #if  defined(__APPLE__) || defined(__linux__)
 #pragma GCC diagnostic ignored "-Wunused-variable"
 #endif
@@ -64,6 +58,7 @@ vector<string> split(const string &str, char delim) {
 #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
 #define are_strings_equal(a, b) (!(a).compare((b)))
 
+// @note @spader 9/4/2019 Realllllllyyyyyyy need a better way of making paths good
 #ifdef WIN32
 void normalize_path(string& str) {
 	string from = "/";
