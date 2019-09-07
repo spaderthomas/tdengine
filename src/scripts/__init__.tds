@@ -16,7 +16,11 @@ entity = {}
 config = {}
 config.fonts = {
 	work_mac = {
-		font_dir = "/Users/thspader/Library/Fonts/"
+		font_dir = "/Users/thspader/Library/Fonts"
+		default = "Inconsolata-Regular"
+	}
+	AKUMA = {
+		font_dir = "/usr/share/fonts/TTF/"
 		default = "Inconsolata-Regular"
 	}
 }
