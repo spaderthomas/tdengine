@@ -73,12 +73,12 @@ void normalize_path(string& str) {
 #else
 void normalize_path(string& str) {
 	string from = "/";
-	string to = "/";
+	string level = "/";
 	
     size_t start_pos = 0;
     while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), to);
-        start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
+        str.replace(start_pos, from.length(), level);
+        start_pos += level.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
 }
 #endif
@@ -500,7 +500,6 @@ const string SCALE_KEY       = "scale";
 const string SCRIPTS_KEY     = "scripts";
 const string STATE_KEY       = "State_Machine";
 const string TEXT_KEY        = "text";
-const string TO_KEY          = "to";
 const string TILES_KEY       = "tiles";
 const string TRANSITIONS_KEY = "transitions";
 const string VARS_KEY        = "vars";

@@ -274,12 +274,10 @@ int main() {
 		
 		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();
-		ImGui::PushFont(imgui_font);
 		active_layer->update(seconds_per_update);
 		active_layer->render();
 
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
-		ImGui::PopFont();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		

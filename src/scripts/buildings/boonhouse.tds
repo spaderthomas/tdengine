@@ -2,13 +2,13 @@ entity.boonhouse_door = {}
 entity.boonhouse_door.components = {}
 
 entity.boonhouse_door.components.Door_Component = {
-    to = "overworld"
+    level = "overworld"
 }
 
 entity.boonhouse_door.components.Graphic_Component = {
     Animations = {
         boonhouse_door = {
-            "boonhouse_door.png"
+            "door_generic.png"
         }
     },
     default_animation = "boonhouse_door",

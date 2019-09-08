@@ -4,7 +4,11 @@ levels.boon_house = {
 			name = "boonhouse_door"
 			components = {
 				Door_Component = {
-					to = "overworld"
+					level = "overworld",
+					where = {
+				        x = 0,
+						y = 0
+					}
 				}
 				Position_Component = {
 					scale = {

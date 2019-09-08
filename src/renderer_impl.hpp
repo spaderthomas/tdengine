@@ -56,23 +56,26 @@ void Renderer::render_for_frame() {
 			}
 
 			Sprite* sprite = render_element.gc->get_current_frame();
-			if (sprite) {
-				sprite->atlas->bind();
-
-				// Point the texture coordinates to this sprite's texcoords
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), sprite->tex_coord_offset);
-				glEnableVertexAttribArray(1);
-				
-				SRT transform = SRT::no_transform();
-				transform.scale = render_element.gc->scale;
-				transform.translate = gl_from_screen(render_element.pc->world_pos);
-				transform.translate -= camera_translation;
-				auto transform_mat = mat3_from_transform(transform);
-				shader->set_mat3("transform", transform_mat);
-
-				shader->check();
-				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			if (!sprite->is_initialized()) {
+				tdns_log.write("Trying to render, but the sprite was uninitialized. Sprite was: " + sprite->name);
+				fox_assert(false);
 			}
+			
+			sprite->atlas->bind();
+
+			// Point the texture coordinates to this sprite's texcoords
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), sprite->tex_coord_offset);
+			glEnableVertexAttribArray(1);
+			
+			SRT transform = SRT::no_transform();
+			transform.scale = render_element.gc->scale;
+			transform.translate = gl_from_screen(render_element.pc->world_pos);
+			transform.translate -= camera_translation;
+			auto transform_mat = mat3_from_transform(transform);
+			shader->set_mat3("transform", transform_mat);
+
+			shader->check();
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 		}
 	}
 

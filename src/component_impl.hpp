@@ -78,16 +78,16 @@ string Vision_Component::name() { return "Vision"; }
 string Interaction_Component::name() { return "Interaction_Component"; }
 
 void Door_Component::init_from_table(TableNode* table) {
-	to = tds_string2(table, TO_KEY);
+	level = tds_string2(table, LEVEL_KEY);
 }
 TableNode* Door_Component::save() const {
 	TableNode* self = new TableNode;
-	tds_set2(self, to, TO_KEY);
+	tds_set2(self, level, LEVEL_KEY);
 	
 	return self;
 }
 void Door_Component::load(TableNode* self) {
-	to = tds_string2(self, TO_KEY);
+	level = tds_string2(self, LEVEL_KEY);
 }
 string Door_Component::name() { return "Door_Component"; }
 

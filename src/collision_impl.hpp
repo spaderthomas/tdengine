@@ -64,9 +64,11 @@ void Physics_System::process(float dt) {
 				def_get_cmp(mypos, element.me.deref(), Position_Component);
 				mypos->world_pos -= penetration;
 
-				if_component(door, element.me, Door_Component) {
-					if (element.other->name == HERO_KEY) {
-						active_layer->active_level = levels[door->to];
+				// @hack 9/8/2019: Right now, the game always uses the hero as 'me' and other stuff in the game as 'other'.
+				// Clearly, this won't work for real collision detection and is already hacky here!
+				if_component(door, element.other, Door_Component) {
+					if (element.me->name == HERO_KEY) {
+						active_layer->active_level = levels[door->level];
 					}
 				}
 			}

@@ -93,12 +93,12 @@ void Editor::draw_component_editor() {
 		else if (dynamic_cast<Door_Component*>(component)) {
 			if (ImGui::TreeNode("Door Component")) {
 				def_cast_cmp(door, component, Door_Component);
-				if (ImGui::BeginCombo("##setdoor", door->to.c_str(), 0)) {
+				if (ImGui::BeginCombo("##setdoor", door->level.c_str(), 0)) {
 					for (auto& kvp : levels) {
 						const string& name = kvp.first;
-						bool is_selected = door->to.c_str() == name;
+						bool is_selected = door->level.c_str() == name;
 						if (ImGui::Selectable(name.c_str(), &is_selected)) {
-							door->to = name;
+							door->level = name;
 						}
 						if (is_selected) {
 							ImGui::SetItemDefaultFocus();

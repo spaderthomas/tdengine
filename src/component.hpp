@@ -44,7 +44,7 @@ struct Interaction_Component : Component {
 	string name() override;
 };
 struct Door_Component : Component {
-	string to;
+	string level;
 	glm::vec2 position;
 	
 	void init_from_table(TableNode* table);
