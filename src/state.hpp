@@ -49,7 +49,7 @@ void update_state(string state_name, bool value) {
 	game_state[state_name] = value;
 	
 	// Get the list of entities that have registered themselves to this state variable
-	vector<string>& entities_to_check = state_map[state_name];
+	auto& entities_to_check = state_map[state_name];
 	for (auto& entity_name : entities_to_check) {
 		// Grab the entity's current state
 		const string& current_state = tds_string2(ScriptManager.global_scope, CH_STATE_KEY, entity_name);

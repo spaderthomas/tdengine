@@ -32,6 +32,7 @@ EntityHandle Level::get_first_matching_entity(string name) {
 	}
 
 	return { -1, nullptr };
+
 }
 EntityHandle Level::erase_first_matching_entity(string name) {
 	for (auto it = entities.begin(); it != entities.end(); it++) {
@@ -46,6 +47,25 @@ EntityHandle Level::erase_first_matching_entity(string name) {
 }
 void Level::clear_entities() {
 	entities.clear(); // @leak
+}
+void Level::replace_entities(TableNode* entities_table) {
+	fox_for(i, entities_table->assignments.size()) {
+		TableNode* entity_table = tds_table2(entities_table, to_string(i));
+		string name = tds_string2(entity_table, NAME_KEY);
+
+		// Erase the old entity with this name if it exists
+		auto it = std::find_if(entities.begin(), entities.end(), [&name](auto& entity) {
+			return entity->name == name;
+		});
+
+		if (it != entities.end())
+			entities.erase(it);
+
+		// Make a fresh one with the defaults from the table and add it to the vector
+		auto entity = Entity::create(name);
+		entity->load(entity_table);
+		entities.push_back(entity);
+	}
 }
 
 void Level::draw() {
@@ -132,4 +152,23 @@ void init_levels() {
 		level->load();
 		levels[level_name] = level;
 	}
+}
+
+bool is_valid_level_name(string name) {
+	for (auto& kvp : levels) {
+		if (kvp.first == name) {
+			return true;
+		}
+	}
+	
+	return false;
+}
+
+void swap_level(Layer* layer, string name) {
+	if (!is_valid_level_name(name)) {
+		layer->console.AddLog("Invalid level name");
+		return;
+	}
+		
+	layer->active_level = levels[name];
 }

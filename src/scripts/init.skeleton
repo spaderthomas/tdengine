@@ -23,6 +23,10 @@ config.fonts = {
 		font_dir = "/usr/share/fonts/TTF/"
 		default = "Inconsolata-Regular"
 	}
+	GOUKI = {
+		font_dir = "C:/Windows/Fonts/"
+		default = "Inconsolata-Regular"
+	}
 	# NEW_FONT_CONFIG
 }
 

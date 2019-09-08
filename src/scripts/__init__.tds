@@ -23,7 +23,13 @@ config.fonts = {
 		font_dir = "/usr/share/fonts/TTF/"
 		default = "Inconsolata-Regular"
 	}
+	GOUKI = {
+		font_dir = "C:/Windows/Fonts/"
+		default = "Inconsolata-Regular"
+	}
 }
+
+config.imgui_font_size = 32.0
 
 config.screen = {
     default = "1440"

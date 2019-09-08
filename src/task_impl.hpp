@@ -235,7 +235,7 @@ bool Camera_Follow_Action::update(float dt) {
 				}
 			}
 		}
-   
+		
 	}
 
 	if (!pan || close_enough) {

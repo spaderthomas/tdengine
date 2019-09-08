@@ -279,3 +279,6 @@ a new task.
 	- The Encampment
 	- The Shed
 - Music
+* stuff
+@spader 9/7/2019: The install script doesn't work on windows because the
+backslash escapes the closing quotation mark. 

@@ -60,6 +60,8 @@ using namespace std;
 #include "entity.hpp"
 #include "camera.hpp"
 #include "input.hpp"
+#include "console.hpp"
+#include "layer.hpp"
 #include "level.hpp"
 #include "game.hpp"
 #include "editor.hpp"
@@ -68,6 +70,7 @@ using namespace std;
 #include "tdapi.hpp"
 #include "glfw_callbacks.hpp"
 
+#include "console_impl.hpp"
 #include "camera_impl.hpp"
 #include "battle_impl.hpp"
 #include "state.hpp"
@@ -121,6 +124,13 @@ int main() {
 	
 	glfwSwapInterval(0);
 
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplGlfwGL3_Init(g_window, false);
+	auto& imio = ImGui::GetIO();
+	imio.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	ImGui::StyleColorsDark();
+
 	component_pool.init();
 	entity_pool.init();
 	
@@ -150,12 +160,7 @@ int main() {
 	test_tdscript();
 	
 	
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui_ImplGlfwGL3_Init(g_window, false);
-	auto& imio = ImGui::GetIO();
-	imio.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	ImGui::StyleColorsDark();
+
 	
 	// Set up some debug output
 	GLint flags;
@@ -233,7 +238,9 @@ int main() {
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
 	
-	
+
+	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), tds_float(CONFIG_KEY, "imgui_font_size"));
+   
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {
 		double frame_start_time = glfwGetTime();
@@ -267,10 +274,12 @@ int main() {
 		
 		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();
+		ImGui::PushFont(imgui_font);
 		active_layer->update(seconds_per_update);
 		active_layer->render();
-		
+
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
+		ImGui::PopFont();
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		

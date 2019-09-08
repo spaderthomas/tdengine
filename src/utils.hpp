@@ -38,6 +38,7 @@ typedef unsigned char tdbyte;
 #	define fox_assert(expr) assert(expr)
 #endif
 
+
 // STL extensions 
 template<typename vec_type>
 void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {
@@ -481,6 +482,7 @@ bool show_task_editor = true;
 const string ACTIONS_KEY     = "actions";
 const string CH_STATE_KEY    = "character_state";
 const string COMPONENTS_KEY  = "components";
+const string CONFIG_KEY      = "config";
 const string CUTSCENES_KEY   = "cutscenes";
 const string DIALOGUE_KEY    = "dialogue";
 const string ENTITY_KEY      = "entity";
@@ -503,6 +505,7 @@ const string TILES_KEY       = "tiles";
 const string TRANSITIONS_KEY = "transitions";
 const string VARS_KEY        = "vars";
 const string WHICH_KEY       = "which";
+
 
 /* Random shit */
 void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void *userParam) {

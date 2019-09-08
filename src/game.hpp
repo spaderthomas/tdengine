@@ -1,28 +1,3 @@
-struct Console {
-    char                  InputBuf[256];
-    ImVector<char*>       Items;
-    bool                  ScrollToBottom;
-    ImVector<char*>       History;
-    int                   HistoryPos;    // -1: new line, 0..History.Size-1 browsing history.
-    ImVector<const char*> Commands;
-	Console();
-	~Console();
-    
-	// Portable helpers
-	static int Stricmp(const char* str1, const char* str2);
-	static int Strnicmp(const char* str1, const char* str2, int n);
-	static char* Strdup(const char *str);
-	static void  Strtrim(char* str);
-	
-	void ClearLog();
-	void AddLog(const char* fmt, ...) IM_FMTARGS(2);
-	void Draw(const char* title);
-	void ExecCommand(char* command_line);
-	
-	static int TextEditCallbackStub(ImGuiTextEditCallbackData* data); 
-	int TextEditCallback(ImGuiTextEditCallbackData* data);
-};
-
 struct Particle {
 	glm::vec2 velocity = glm::vec2(0.f);
 	glm::vec2 position = glm::vec2(0.f);
@@ -44,20 +19,6 @@ struct Particle_System {
 	void update(float dt);
 };
 
-struct Layer {
-	Input input;
-	Level* active_level;
-	Camera camera;
-	Console console;
-
-	virtual void enter() { }
-	virtual void exit() {  }
-	virtual void update(float dt) = 0;
-	virtual void reload() {}
-	virtual void exec_console_cmd(char* cmd) {}
-	virtual void render() {}
-	virtual void init() {}
-};
 
 struct Battle : Layer {
 	EntityHandle battlers[2];
@@ -80,8 +41,6 @@ struct Cutscene {
 	void update(float dt);
 };
 
-
-
 struct Game : Layer {
 	Dialogue_Tree* active_dialogue;
 	Particle_System particle_system;
@@ -91,6 +50,7 @@ struct Game : Layer {
 	void update(float dt) override;
 	void render() override;
 	void init() override;
+	void exec_console_cmd(char* cmd) override;
 };
 Game game;
 

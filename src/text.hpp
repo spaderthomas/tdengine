@@ -23,11 +23,7 @@ void init_fonts() {
 		exit(0);
 	}
 
-	TableNode* font_config = tds_table("config", "fonts");
-	string font_dir = tds_string2(font_config, computer_id, "font_dir");
-	string default_font = tds_string2(font_config, computer_id, "default");
-	// @hack use pathjoin
-	string default_font_path = font_dir + default_font + ".ttf";
+	auto default_font_path = get_default_font_path();
 	if (FT_New_Face(freetype, default_font_path.c_str(), 0, &face)) {
 		tdns_log.write("Failed to load font: " + default_font_path);
 		exit(0);

@@ -237,22 +237,7 @@ void Editor::exec_console_cmd(char* command_line) {
 		
 	}
 	else if (console.Stricmp(command, "level") == 0) {
-		string level_name = strtok(NULL, " ");
-		
-		bool is_valid_level_name = false;
-		for (auto& kvp : levels) {
-			if (kvp.first == level_name) {
-				is_valid_level_name = true;
-				break;
-			}
-		}
-		if (!is_valid_level_name) {
-			console.AddLog("Invalid level name");
-			return;
-		}
-		
-		this->active_level = levels[level_name];
-		active_layer->active_level = levels[level_name];
+		swap_level(this, strtok(NULL, " "));
 	}
 	else {
 		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);

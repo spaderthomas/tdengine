@@ -246,3 +246,4 @@ struct TDScript {
 };
 TDScript ScriptManager;
 
+string get_default_font_path();
