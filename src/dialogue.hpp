@@ -1,16 +1,18 @@
 struct Dialogue_Node {
-	string full_text;
+	vector<string> all_text;
 	vector<string> responses;
 	vector<Dialogue_Node*> children;
 	int response = -1;
+	int text_idx = 0;
 
-	bool already_drew_line = false; // To prevent us from spamming the text box with the same string
+	bool should_submit_next_text = false; // To prevent us from spamming the text box with the same string
 	bool terminal = false; // Terminal nodes exit dialogue on spacebar
 
 	void set_response(int response);
 	bool has_response();
 	Dialogue_Node* next();
-	void show_line();
+	void do_current_text();
+	bool is_done();
 	void init_from_table(TableNode* table);
 };
 struct Dialogue_Tree {

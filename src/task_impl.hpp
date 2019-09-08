@@ -103,7 +103,7 @@ bool And_Action::update(float dt) {
 	return done;
 }
 
-bool Movement_Action::update(float dt) {
+bool Movement_Action::update(float dt) { 
 	def_get_cmp(pc, actor.deref(), Position_Component);
 	
 	if (vec_almost_equals(pc->world_pos, dest)) {
@@ -150,23 +150,28 @@ bool Dialogue_Action::update(float dt) {
 		node->set_response(3);
 	}
 	
-	node->show_line();
+	node->do_current_text();
 	
 	if (active_layer->input.was_pressed(GLFW_KEY_SPACE)) {
-		// If the dialogue has fully shown
+		// If the text we submitted has fully shown
 		if (text_box.is_all_text_displayed()) {
-			// Break if node is terminal
-			if (node->terminal) {
-				text_box.reset_and_hide();
-				return true;
-			}
-			// Show responses if it is not
-			else {
-				string all_response_text;
-				for (auto& response : node->responses) {
-					all_response_text += response + "\r";
+			// If this node has no more text to show
+			if (node->is_done()) {
+				// Break if node is terminal
+				if (node->terminal) {
+					text_box.reset_and_hide();
+					return true;
 				}
-				text_box.begin(all_response_text);
+				// Show responses if it is not
+				else {
+					string all_response_text;
+					for (auto& response : node->responses) {
+						all_response_text += response + "\r";
+					}
+					text_box.begin(all_response_text);
+				}
+			} else {
+				node->should_submit_next_text = true;
 			}
 		}
 		// If the set has shown fully (but not ALL dialogue), go to the next set
@@ -260,13 +265,13 @@ bool Task::update(float dt) {
 	action_queue.reset_top(); // Reset the index to the top of the queue
 	
 	// If there are no more actions, this task is done
-	if (!action_queue.actions.size()) return true;
+	if (!action_queue.size()) return true;
 	
 	return false;
 }
 
-void Task::add_action(Action* a) {
-	action_queue.push(a);
+void Task::add_action(Action* action) {
+	action_queue.push(action);
 }
 
 void Task::init_from_table(TableNode* table, EntityHandle actor) {

@@ -44,7 +44,6 @@ string os_id = "windows";
 #	define fox_assert(expr) assert(expr)
 #endif
 
-
 // STL extensions 
 template<typename vec_type>
 void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {
@@ -475,6 +474,7 @@ const string ACTIONS_KEY     = "actions";
 const string CH_STATE_KEY    = "character_state";
 const string COMPONENTS_KEY  = "components";
 const string CUTSCENES_KEY   = "cutscenes";
+const string DIALOGUE_KEY    = "dialogue";
 const string ENTITY_KEY      = "entity";
 const string ENTITIES_KEY    = "entities";
 const string GAME_STATE_KEY  = "game_state";
@@ -489,6 +489,7 @@ const string POS_KEY         = "pos";
 const string SCALE_KEY       = "scale";
 const string SCRIPTS_KEY     = "scripts";
 const string STATE_KEY       = "State_Machine";
+const string TEXT_KEY        = "text";
 const string TO_KEY          = "to";
 const string TILES_KEY       = "tiles";
 const string TRANSITIONS_KEY = "transitions";

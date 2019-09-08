@@ -75,15 +75,19 @@ struct Cutscene_Action : Action {
 };
 
 struct Action_Queue {
-	deque<Action*> actions;
+	vector<Action*> actions;
 	int index = 0;
+
+	Action* operator[](int i) {
+		return actions[i];
+	}
 
 	void push(Action* action) {
 		actions.push_back(action);
 	}
 
 	void push_front(Action* action) {
-		actions.push_front(action);
+		actions.insert(actions.begin(), action);
 	}
 
 	Action* next() {
@@ -105,6 +109,10 @@ struct Action_Queue {
 				it++;
 			}
 		}
+	}
+
+	int size() {
+		return actions.size();
 	}
 
 	void reset_top() {

@@ -1068,7 +1068,6 @@ void Editor::render() {
 void Cutscene::init(string name, TableNode* table) {
 	this->name = name;
 	this->level = levels[tds_string2(table, LEVEL_KEY)];
-	this->level->load_entities(tds_table2(table, ENTITIES_KEY));
 
 	TableNode* actions = tds_table2(table, ACTIONS_KEY);
 	for (KVPNode* kvp : actions->assignments) {
@@ -1132,15 +1131,38 @@ void Cutscene_Thing::init() {
 }
 
 void Cutscene_Thing::reload() {
+	// Save the old state 
 	string old_active_cutscene = active_cutscene->name;
+	
+	// Do this so no old state hangs around from the last time the cutscene ran
+	active_cutscene->level->clear_entities();
+	camera.following = NULL_ENTITY;
+	
+	// Reload the scripts for the cutscene and reload them into C++ structs 
 	ScriptManager.script_dir(absolute_path(path_join({"src", "scripts", "cutscenes"})));
 	init();
-	this->active_cutscene = cutscenes[old_active_cutscene];
+
+	// Restore state
+	do_cutscene(old_active_cutscene);
 }
 
 void Cutscene_Thing::do_cutscene(string which) {
 	auto cutscene = cutscenes[which];
 	this->active_level = cutscene->level;
+	this->active_level->load_entities(tds_table(CUTSCENES_KEY, which, ENTITIES_KEY));
+
+	auto cutscene_actions = tds_table(CUTSCENES_KEY, which, ACTIONS_KEY);
+	fox_for(i, cutscene->task.action_queue.size()) {
+		TableNode* action_table = tds_table2(cutscene_actions, to_string(i));
+		string entity_name = "";
+		if (action_table->has_key(ENTITY_KEY)) {
+			entity_name = tds_string2(action_table, ENTITY_KEY);
+		}
+
+		Action* action = cutscene->task.action_queue[i];
+		action->actor = active_level->get_first_matching_entity(entity_name);
+	}
+	
 	this->active_cutscene = cutscene;
 	this->camera.offset = { 0.f, 0.f };
 }

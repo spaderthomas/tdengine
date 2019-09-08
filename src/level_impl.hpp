@@ -44,6 +44,9 @@ EntityHandle Level::erase_first_matching_entity(string name) {
 
 	return { -1, nullptr };
 }
+void Level::clear_entities() {
+	entities.clear(); // @leak
+}
 
 void Level::draw() {
 	vector<EntityHandle>* containers[2] = {&tiles, &entities};

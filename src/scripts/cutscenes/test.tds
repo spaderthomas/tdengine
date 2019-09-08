@@ -38,17 +38,10 @@ cutscenes.test.actions = {
     {
 		kind = "Dialogue_Action"
 		dialogue = {
-	        text = "...dog...ring...ring...",
-	        terminal = true,
-	        responses = {},
-	        children = {}
-		},
-		is_blocking = true
-	},
-    {
-		kind = "Dialogue_Action"
-		dialogue = {
-	        text = "Hey, it's Pops. Could you swing by Ike's before I get home? I need a set of T9s so I can put in your new hard drive.",
+	        text = {
+				 "...ring...ring...i am a telephone",
+				 "it's me, your father, please go to the hardware store!"
+		    }
 	        terminal = true,
 	        responses = {},
 	        children = {}

@@ -21,7 +21,9 @@ entity.wilson.scripts.intro = {
    {
 	  kind = "Dialogue_Action",
 	  dialogue = {
-		 text = "*intro dialogue*",
+		 text = {
+		     "*intro dialogue*",
+	     }
 		 terminal = true,
 		 responses = {
 			"dialogue makes games fun lol"

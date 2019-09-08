@@ -7,7 +7,9 @@ entity.wilson.scripts.main1 = {
    {
 	  kind = "Dialogue_Action",
 	  dialogue = {
-		 text = "*main1 dialogue*",
+		 text = {
+		     "*main1 dialogue*",
+	     }
 		 terminal = true,
 		 responses = {},
 		 children = {}

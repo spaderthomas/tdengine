@@ -51,14 +51,18 @@ entity.intro_police.scripts.intro1 = {
    {
 	  kind = "Dialogue_Action",
 	  dialogue = {
-		 text = "What are you doing here? Attendance of the execution is mandatory under penalty of prison time.",
+		 text = {
+		 	  "What are you doing here? Attendance of the execution is mandatory under penalty of prison time.",
+	     }
 		 terminal = false,
 		 responses = {
 			"My apologies officer, I was just getting on my way.",
 		 },
 		 children = {
 			{
-			   text = "That you better, son. I've got my eye on you.",
+			   text = {
+			       "That you better, son. I've got my eye on you.",
+			   }
 			   terminal = true,
 			   responses = {},
 			   children = {}

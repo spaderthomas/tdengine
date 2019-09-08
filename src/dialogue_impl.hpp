@@ -1,4 +1,4 @@
-void Dialogue_Node::set_response(int response) {
+ void Dialogue_Node::set_response(int response) {
 	if (response >= (int)children.size()) return;
 	this->response = response;
 }
@@ -9,21 +9,30 @@ Dialogue_Node* Dialogue_Node::next() {
 	if (has_response()) return children[response];
 	return nullptr;
 }
-void Dialogue_Node::show_line() {
-	if (!already_drew_line)
-		text_box.begin(full_text);
-	already_drew_line = true;
+void Dialogue_Node::do_current_text() {
+	if (should_submit_next_text) {
+		text_box.begin(all_text[text_idx]);
+		text_idx++;
+	}
+	should_submit_next_text = false;
+}
+bool Dialogue_Node::is_done() {
+	return text_idx == all_text.size();
 }
 
 void Dialogue_Node::init_from_table(TableNode* table) {
-	full_text.clear();
+	all_text.clear();
 	responses.clear();
 	response = -1;
 	children.clear();
-	already_drew_line = false;
+	should_submit_next_text = true;
 
 	terminal = tds_table2(table, "terminal");
-	full_text = tds_string2(table, "text");
+	
+	TableNode* texts = tds_table2(table, TEXT_KEY);
+	fox_for(i, texts->assignments.size()) {
+		this->all_text.push_back(tds_string2(texts, to_string(i)));
+	}
 	
 	TableNode* responses = tds_table2(table, "responses");
 	fox_for(resp_idx, responses->assignments.size()) {
@@ -100,7 +109,7 @@ void Dialogue_Tree::load() {
 	Dialogue_Node* cur = root;
 	fox_iter(it, this_scene_dialogue) {
 		cur->response = *it;
-		cur->already_drew_line = false; //@hack -- should probably figure out where to actually do this
+		cur->should_submit_next_text = true; //@hack -- should probably figure out where to actually do this
 		cur = cur->children[*it];
 	}
 
