@@ -62,6 +62,8 @@ using namespace std;
 #include "input.hpp"
 #include "level.hpp"
 #include "game.hpp"
+#include "editor.hpp"
+#include "layers.hpp"
 #include "collision.hpp"
 #include "tdapi.hpp"
 #include "glfw_callbacks.hpp"
@@ -83,6 +85,7 @@ using namespace std;
 #include "level_impl.hpp"
 #include "renderer_impl.hpp"
 #include "text_impl.hpp"
+#include "editor_impl.hpp"
 #include "game_impl.hpp"
 #include "tdapi_impl.hpp"
 

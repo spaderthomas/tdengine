@@ -23,6 +23,7 @@ config.fonts = {
 		font_dir = "/usr/share/fonts/TTF/"
 		default = "Inconsolata-Regular"
 	}
+	# NEW_FONT_CONFIG
 }
 
 config.screen = {

@@ -406,7 +406,10 @@ void StringLiteralNode::dump(TableWriter& output) {
 bool Lexer::init(string script_path) {
 	file = ifstream(script_path);
 	file_path = script_path;
-	fox_assert(file.good());
+	if (!file.good()) {
+		tdns_log.write("File was not good: " + script_path);
+		fox_assert(file.good());
+	}
 	file.seekg(0, ios_base::end);
 	auto file_size = file.tellg();
 	file.seekg(0, ios_base::beg);
