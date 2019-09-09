@@ -1,4 +1,5 @@
 game_state = {
     intro_door_answered = false,
-	wilson_test1 = false
+	wilson_test1 = false,
+	should_play_test = false,
 }

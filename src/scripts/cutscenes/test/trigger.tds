@@ -1,2 +1,44 @@
 entity.CT_test = {}
+
 entity.CT_test.components = {}
+entity.CT_test.components.Task_Component = {}
+
+entity.CT_test.scripts = {}
+entity.CT_test.scripts.waiting = {
+    {
+	    kind = "Spin_Action",
+		is_blocking = false
+	}
+}
+entity.CT_test.scripts.playing = {
+    {
+		kind = "Cutscene_Action",
+		is_blocking = false,
+		which = "test"
+	}
+}
+
+entity.CT_test.State_Machine = {}
+entity.CT_test.State_Machine.waiting = {
+    task = entity.CT_test.scripts.waiting,
+	transitions = {
+    	{
+    	    vars = {
+    		    should_play_test = true
+    	    },
+    		next_state = "playing"
+    	}
+	}
+}
+
+entity.CT_test.State_Machine.playing = {
+    task = entity.CT_test.scripts.playing,
+	transitions = {
+	    {
+	        vars = {
+	    	    should_play_test = false
+	        },
+		    next_state = "waiting"
+	    }
+	}
+}

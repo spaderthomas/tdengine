@@ -80,6 +80,7 @@ void update_state(string state_name, bool value) {
 				// we're in the editor or something and we haven't loaded the game yet.
 				//
 				// Also, we should probably do this for each layer
+				
 				auto& entities = game.active_level->entities;
 				for (auto entity : entities) {
 					if (entity->name == entity_name) {

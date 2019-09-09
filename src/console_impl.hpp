@@ -261,9 +261,32 @@ void  Console::ExecCommand(char* command_line)
 			AddLog("usage: layer {which}\n");
 			AddLog("\toptions: editor, cutscene, game, battle\n");
 		}
-	} else if (Stricmp(command, "reload") == 0) {
+	}
+	else if (Stricmp(command, "editor") == 0) {
+		ran_generic_command = true;
+		active_layer = &editor;
+		iactive_layer = EDITOR_IDX;
+	}
+	else if (Stricmp(command, "cutscene_thing") == 0) {
+		ran_generic_command = true;
+		active_layer = &cutscene_thing;
+		iactive_layer = CUTSCENE_IDX;
+	}
+	else if (Stricmp(command, "game") == 0) {
+		ran_generic_command = true;
+		active_layer = &game;
+		iactive_layer = GAME_IDX;
+	}
+	else if (Stricmp(command, "battle") == 0) {
+		ran_generic_command = true;
+		active_layer = &battle;
+		iactive_layer = BATTLE_IDX;
+	}
+	else if (Stricmp(command, "reload") == 0) {
+		ran_generic_command = true;
 		active_layer->reload();
 	} else if (Stricmp(command, "screen") == 0) {
+		ran_generic_command = true;
 		char* res = strtok(NULL, " ");
 		if (!res) {
 			AddLog("format: screen {640, 720, 1080, 1440}");

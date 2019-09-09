@@ -142,6 +142,9 @@ TableNode* Entity::save() {
 	for (auto& kvp : components) {
 		auto& handle = kvp.second;
 		Component* component = (Component*)handle();
+		// 9/8/2019 @hack: If you check for existence, you push a null component back to the vector. Which would make
+		// this null when you try to save it, because it doesn't really exist. Feels hacky. 
+		if (!component) continue;
 		TableNode* saved = component->save();
 		// Components that have no state to save just return nullptr
 		// So if we get that, just ignore saving this component.

@@ -469,7 +469,6 @@ void Editor::update(float dt) {
 			// If we press it, toggle the state
 			if (ImGui::Button(kvp.first.c_str())) {
 				update_state(kvp.first, !value);
-				cout << "vbdafa";
 			}
 			
 			ImGui::PopStyleColor(2);

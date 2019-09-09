@@ -21,6 +21,10 @@ levels.boon_house = {
 					}
 				}
 			}
+		},
+		{
+		    name = "CT_test",
+			components = {}
 		}
 	}
 	tiles = {

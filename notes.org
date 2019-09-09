@@ -282,3 +282,14 @@ a new task.
 * stuff
 @spader 9/7/2019: The install script doesn't work on windows because the
 backslash escapes the closing quotation mark. 
+
+@spader 9/8/2019: When you load a Position Component, if it has no scale then
+default to (1, 1). Ditto for when you save it -- if it's (1, 1), don't write it
+to the file. Will make the files easier to read.
+
+@spader 9/8/2019: Rename State_Machine key to state.
+
+@spader 9/8/2019: Make it so that you can automatically create a sub-table
+without forward declaring it
+* polish
+@spader 9/8/2019: Fade-out/Fade-in for doors

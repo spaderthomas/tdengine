@@ -74,6 +74,11 @@ struct Cutscene_Action : Action {
 	string kind() override { return "Cutscene_Action"; };
 };
 
+struct Spin_Action : Action {
+	bool update(float dt) override;
+	string kind() override { return "Spin_Action"; };
+};
+
 struct Action_Queue {
 	vector<Action*> actions;
 	int index = 0;

@@ -77,6 +77,10 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 		action->which = tds_string2(table, WHICH_KEY);
 		action_generic = action;
 	}
+	else if (kind == "Spin_Action") {
+		Spin_Action* action = new Spin_Action;
+		action_generic = action;
+	}
 	else {
 		tdns_log.write("Tried to create an action with an invalid kind: " + kind);
 		return nullptr;
@@ -246,8 +250,18 @@ bool Camera_Follow_Action::update(float dt) {
 }
 
 bool Cutscene_Action::update(float dt) {
+	// @spader 9/8/2019: This might come back to bite me later. Kind of willy-nilly changine layers.
+	// Probably cutscenes shouldn't be in a separate layer except for testing. 
+	active_layer = all_layers[CUTSCENE_IDX];
+	iactive_layer = CUTSCENE_IDX;
+	cutscene_thing.do_cutscene(which);
 	return true;
 }
+
+bool Spin_Action::update(float dt) {
+	return false;
+}
+
 bool Task::update(float dt) {
 	// Run through actions until we reach one which blocks or the queue is empty
 	Action* next_action;
