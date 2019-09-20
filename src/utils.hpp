@@ -461,6 +461,11 @@ bool is_tds(string& path) {
 	return true;
 }
 
+string get_default_font_path() {
+	// @hack use pathjoin
+	return absolute_path("fonts/Inconsolata-Regular.ttf");
+}
+
 
 /* ImGui options */
 
@@ -487,6 +492,7 @@ const string CUTSCENES_KEY   = "cutscenes";
 const string DIALOGUE_KEY    = "dialogue";
 const string ENTITY_KEY      = "entity";
 const string ENTITIES_KEY    = "entities";
+const string FONTS_KEY       = "fonts";
 const string GAME_STATE_KEY  = "game_state";
 const string HERO_KEY        = "boon";
 const string LEVEL_KEY       = "level";

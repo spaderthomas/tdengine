@@ -1,4 +1,5 @@
-* state
+* old notes
+** state
 -- 12/10
 kind of like triggers in a database, or a wave propagation algorithm. which
 sounds hard to write -- it's like you have some arbitrary piece of state
@@ -279,10 +280,10 @@ a new task.
 	- The Encampment
 	- The Shed
 - Music
-* stuff
+* bugs
 @spader 9/7/2019: The install script doesn't work on windows because the
 backslash escapes the closing quotation mark. 
-
+* qol
 @spader 9/8/2019: When you load a Position Component, if it has no scale then
 default to (1, 1). Ditto for when you save it -- if it's (1, 1), don't write it
 to the file. Will make the files easier to read.
@@ -291,5 +292,51 @@ to the file. Will make the files easier to read.
 
 @spader 9/8/2019: Make it so that you can automatically create a sub-table
 without forward declaring it
+
+@spader 9/10/2019: Make an emacs extension for tds
+
+@spader 9/10/2019: Move more stuff over from This_Case to ThisCase
+
+@spader 9/10/2019: Do something better than a fat union and a mapping of
+string::type_id for handling components. Maybe use base pointers like a real
+boy. 
 * polish
 @spader 9/8/2019: Fade-out/Fade-in for doors
+* switching layers
+objective one: i want changes in the editor to effect the other layers. if i add
+some entity in the editor, i want it to be there when i tab over to the
+game. i want it to be there when i tab over to the cutscene tester. but this
+isn't always the case. when i change shit in the game, i don't want it to touch
+the editor. the cutscene tester should be isolated too. after writing this out,
+it seems a lot clearer what i should do. 
+
+the editor needs to hold its own state. maybe this means make the levels and
+stuff non-global, but i'm not sure. when you swap out from the editor, it's
+gonna take all the shit it has and put it somewhere. when you swap back to it,
+it's going to restore all that shit. 
+
+you also want to be able to tab over to the game, do whatever, tab to the
+editor, do whatever, and then be back in the same state in the game as before.
+
+i dunno now. because there's some shit you want to be in a different state, and
+some shit you want to keep the same. if entities start moving around and shit,
+you want the game to just 'freeze'. no changes. but if you add tiles, you want
+that change to be reflected in the game. is there some kind of pattern between
+changes i do want to see and changes i don't want to see? 
+
+-- 9/11/2019 00:22
+
+one clear change that i can make is to get rid of the cutscene layer. when you
+want to test a cutscene, just run the console command from the game. the game
+will save its old state, load up everything for the cutscene, and then restore
+it. 
+
+that might just fix everything. 
+
+in the editor, don't update tasks. everything is frozen. or make it a checkbox,
+in case you do want that. 
+
+another idea. levels are split into two. one is a backdrop, the other is
+actors. anything that's just there becomes a part of the backdrop. you can
+always reuse the same backdrop. but then you have to keep the actors aligned, so
+that's the same problem as i had before. i think it's best to save/restore. 

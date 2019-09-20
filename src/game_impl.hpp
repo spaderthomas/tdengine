@@ -188,6 +188,13 @@ void Cutscene_Thing::reload() {
 	// Restore state
 	do_cutscene(old_active_cutscene);
 }
+bool Cutscene_Thing::does_cutscene_exist(const string& which) {
+	for (auto& [name, cutscene] : cutscenes) {
+		if (name == which) return true;
+	}
+
+	return false;
+}
 
 void Cutscene_Thing::do_cutscene(string which) {
 	auto cutscene = cutscenes[which];
@@ -216,7 +223,8 @@ void Cutscene_Thing::exec_console_cmd(char* command_line) {
 	
 	if (console.Stricmp(command, "cutscene") == 0) {
 		char* which = strtok(NULL, " ");
-		do_cutscene(which);
+		if (does_cutscene_exist())
+			do_cutscene(which);
 	} else if (console.Stricmp(command, "reload") == 0) {
 		reload();
 	} else {

@@ -367,8 +367,7 @@ class tdbuild():
     def setup(self):
         print_info("...running setup")
         computer = input("What is the name of this computer? ")
-        font_dir = input("Where are your fonts stored? [please include trailing slash] ")
-        default_font = input("What's your default font? [a TTF file, don't include extension]")
+        imgui_font_size = input("What's your preferred GUI font size? ")
 
         new_skellington = []
         with open('src/scripts/init.skeleton', 'r') as init_skeleton:
@@ -380,9 +379,7 @@ class tdbuild():
 
                     # Add the new table entry
                     contents.insert(i, "\t" + computer + " = {\n")
-                    contents.insert(i + 1, '\t\tfont_dir = "{}"\n'.format(trailing_slash(font_dir)))
-                    contents.insert(i + 2, '\t\tdefault = "{}"\n'.format(default_font))
-                    contents.insert(i + 3, "\t}\n")
+                    contents.insert(i + 1, '\t\timgui_font_size = "{}"\n'.format(imgui_font_size))
 
                     # Write it to where the real init file goes
                     with open('src/scripts/__init__.tds', 'w+') as init_out:

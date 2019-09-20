@@ -27,6 +27,14 @@
   restaurant, they put on a face for you.
 - musical themes when you do something good or bad
 - helping people cope as the world's seams become undone
+- death is lighter than a feather, duty is heavier than a mountain. 
+- the one-way door of adulthood, responsibility. life ceasing to be as simple,
+  and the surprising lack of control you have over it.
+- the weight of real life pressing your dreams down into a thin sliver of what
+  they once were. 
+- the difference between science and magic is meaningless. any magic that
+  derives from axioms is just science wearing a moustache. the idea of a system
+  that is not axiomatic is a paradox. 
 * sidequest ideas
 *** the crier
 you stumble into a pedestrian. he seems almost raving mad. he is onto the
@@ -41,6 +49,43 @@ innocent life.
   in and out, occasionally glitching
 - mana spark blocky characters and more detailed world stuff. also their color
   pallette. 
+- undertale-style fonts 
+* gameplay ideas
+i think it'd be too complicated to swap out trainers. but it would be a good
+mechanic to have party support. so, for example, if you have tess in your party,
+your beasts might get 5% lifegain per turn. in-game, this could be just
+whoever's in your party. you could even choose from a couple of these for each
+trainer. competitively, you could choose a loadout of three characters. i can
+see that adding some good depth without being too confusing -- there could also
+be mixups/hidden information in here. two, three, four viable abilities for each
+trainer in your loadout. good players can conceal which ones they really have
+until the right moment. 
+* miscellamania
+see it everywhere. could see them in how people talked. the people only talked
+to serve the symbols, though they didn't know it. could see it in their eyes,
+glints, projecting, copper gleaming like a devil. began to see the patterns
+everywhere. the universe unfolded itself for me, i was cursed, i could see the
+slow loping patterns down to tight recursive curls in the symbols. all was
+revealed. except what the fucking scrolls meant. 
+
+four cities. or three cities. that was fun in vampire. you kind of exhaust a
+city, and then you're onto another one with semingly infinite possibilities. 
+
+@goals
+(d) the complicated history between mankind, the forsaken, and dogma. 
+(s) the existence of the forsaken and their aims (imminent death of mankind)
+(q) the betrayal of one forsaken against its people
+(w) the realization that boon himself is a forsaken incarnate
+(e) the warping of reality as it begins to crumble
+(r) the role of the government in the emergence of the forsaken
+(t) the role of the revolution
+(y) the sa'angreal and the struggle to control it
+(u) evans, a hard-faced and battle worn father figure
+(i) ike, a lovable uncle
+(o) tess, a quiet but intimidating woman prone to bouts of fanciful passion
+(p) theseus, a snake with a thirst for power
+(a) lrb, a man devoted to his species with the loneliness of responsibility
+
 * old stuff
 ** lifestyles of the poor & unknown
 sewell runs and ends up in a poor part of town. he gets stopped by two people
@@ -661,6 +706,499 @@ walked in, i knew he was the one we sought. he is yet weak, but given time and
 guidance, he'll be stronger than either of us could imagine. but the more you
 try to mold him, the more he'll resist. 
 *theseus*: i hope you're right tess...
+** weit re skl.dafasdjfsdklfjsdaf write stuff here!!!!!!
+where are we in the story? man, what an exciting life where being adventurous
+constitutes smoking a cigarette. the tensions in the story -- who is boon, what
+is the government doing, what's up with the prophecies. we barely know anything
+about the prophecies at this point. we know there is a mysterious man kind of
+working with the other beings but at the same time being controlled by them. we
+want to know more about this man. we want to know more about these beasts. we
+want to know more about these prophecies and we want to know more about the man
+but we can't quite yet and we have to disguise the fact that it's LRB and i
+don't know if LRB has even been introduced yet let me check that!!!!! ok i
+checked and we don't know about him yet. so there's nothing there, we just know
+that the government is a strange entity and they are doing strange things but
+there's no skin in the game yet. we could do this a couple of ways. the first
+way is to somehow engineer a meeting or something between the band and the
+government where lrb is there and as you hear him speak boon whispers to one of
+his comrades, jesus christ, i've heard that voice before! i know that voice! and
+then you come to grips with this realization that the government is maybe
+working to actively destroy you and you have to figure out what to do about it,
+and then the second thing that we could do is that you gradually learn more
+about LRB until at the ened there's this big reveal and it turns out that it was
+him the whole time like a scooby doo mask. maybe this is too big though, i think
+this is the right goal just listing out what you actually care about right now
+and then figuring out where it goes and how to reveal that location. kind of
+just winging it right now but i do know the salient points of the story
+- lrb's troubled backstory
+- his desire to save mankind in accordance with his visions
+- the sa'angreal left by the savior
+- theseus' betrayal 
+- boon's choice at the end
+
+the revs:
+theseus and tess' mysterious knowledge of the prophecies and forgotten dogma. 
+evans' need to protect people
+unraveling the prophecies
+
+act one:
+become ingrained with the revolution.
+learn of theseus' and tess' strange place.
+begin a budding mentorship with theseus.
+begin a budding mentorship with evans.
+understand that lrb is behind the government's strange behavior.
+learn about a mysterious man working with the others.
+learn of the three others working on this plane.
+
+act two: 
+kill the three others. 
+learn of the savior. 
+learn of the sa'angreal. 
+
+act three: 
+learn of lrb's true nature. face theseus' betrayal. make the decision.
+
+problem right now. fleshing out the first act. leaving it on how it's left right
+now is awesome because some cool shit happens and you wanna find out who the guy
+is and you wanna go kill the baddies  but some more stuff needs to happen
+first. to set that up
+i want him to learn at least a little bit about the prophecies. theseus is the
+guy who really knows about the prophecies. maybe he takes boon aside, they go
+somewhere to do something, and theseus speaks with him. hey, i know a little of
+these prophecies and, call me crazy, but i think your showing up wasn't
+coincidence. i think you were fated to come here to help us unravel this
+mystery. here's what we know:
+<not everything theseus knows>
+
+so many thoughts, do i need to organize them or just write? is the plan i have
+sufficient? i say there is no way to know. 
+
+why would theseus just take him out on a mission? he just met the guy. 
+
+i keep having this idea of theseus and boon sneaking into somewhere, like the
+slave tank room. LRB pops up and has a conversation with his henchmen while you
+hide. you glean some valuable information on a place the government would like
+to go or what they would like to do. 
+** what happens after a toast?
+this act opens up with boon someone waking up in his bed in the camp. he says
+there's bad news, the government finally got the balls to raid the camp. they
+did it in the middle of the night, and they didn't challenge anyone directly,
+but they took most of the camp's food. they're not going to be able to hold out
+past a week if they don't do something about it. the lad says ike, evans, and
+sewell are waiting for boon in the meeting room.  
+
+boon goes there and sewell and ike are arguing. evans is observing. sewell
+thinks that they should go personally to accompany an attack force against the
+government's thugs. ike says that would be foolhardy and they couldn't afford
+any of them to go. sewell says they need our help now. boon listens to them
+argue for a minute, coughs, and once they quiet down he says that he will go by
+himself. he has a stronger magical sense than anyone, he could easily sneak
+around and scope it out, and most importantly he's in charge. 
+
+ike less acquiesces than realizes that he isn't going to win. once they leave,
+evans pulls him aside. he tells boon that it actually is foolhardy to go alone,
+but the only thing more foolish than one person would be more than one. he tells
+him not to tell theseus that he did this. he tells boon before he leaves that a
+couple people around camp have been looking for him, and that they might need
+some help with a few things before he goes. 
+
+as boon walks away, he gets a flash. the screen flickers frames of a scene,
+until it stablizes. it's a deer, looking all around, animal fear in its
+eyes. the deer finally spots its stalker, a coyote, and it attacks. the deer
+moves to run away and the coyote tackles it. the deer's heart thumps louder and
+louder, deeper, faster. they tumble, the deer kicks the coytote. the fear grows
+deeper into its eyes. the camera pants into the deer's chest and watches as its
+heart pulses and finally explodes
+
+@sidequests
+** i was only expecting a few thugs!
+@detail where is the govt camp in relation to the rev. camp?
+when boon approaches the govt camp, he sees two people approaching. he ducks
+behind a tree. he hears the two men talking a bit frantically. they say: 
+- their commander, ernst, is starting to seriously freak them out
+- he also seems to have gotten really, really strong in the past few weeks
+- they're afraid
+- he's been claiming there is a purple-haired dogmatic made of pure evil
+- they don't know if they believe him.
+is possessed by one of the forsaken (but secretly)
+
+they say that they're a bit afraid to be alone, but they're more afraid of what
+ernst will do to them if he discovers that they aren't properly keeping
+watch. they part ways and one begins patrolling near you. 
+
+you go up to the first one. he nearly shits his pants when he sees you. after
+speaking to you, he says that boon's not as terrifying as ernst made him
+sound. boon asks more about ernst. he says that one day he walked into camp and
+ernst was hanging traitors, and that his eyes had turned pure black, all
+iris. he said that there he's set up rooms entirely of traps and that he stays
+holed up in a room deep in the compound most of the time. 
+
+boon asks if he's afraid, he says yes, that he just got roped into this as
+a kid. the kid gives boons the layout to the base. he tells the kid to either
+scram back to the rev. camp or battle him. 
+
+the base is way way more high tech than the campground the revs have. first of
+all it's an actual building. everything looks like glossy metal, it's all blocky
+and slate gray. inside there are several areas
+
+@dungeon
+room ideas:
+there is a mostly-deserted (as of now) barracks, like how the 2nd floor of the
+office is with square hallway with rooms on the side and then a large space in
+the middle
+there is a boiler room that has an awesome core of purple snarling electricity
+that's being powered by a dogmatic
+there's an auditorium that has the entrace to a secret basement -- there are a
+ton of people there, but you can make them get out (fire alarm?)
+there is an officer's quarters. when you go in here, you will see ernst walking
+out. he doesn't notice you. he mentions that he feels an unwieldy presence, like
+a rat in his barracks. he's flecking spit as he talks. he yells almost to the
+wind that he dares that slime to come challenge him face to face, and he says
+he'll be waiting in the basement
+
+journals have notes of ernst's madness. you can hear people whispering about
+it. 
+
+as you go through and hit certain spots, ernst will appear. he seems madder and
+madder each time you see him, ranting about how he can practically smell boon
+
+finally you reach his secret room. he says that boon is the one who has showed
+up in his dreams, the one he saw slaying his family and drinking their blood,
+the one who appears in the back of his mind and consumes it for hours at a
+time. once ernst has been defeated, a spirit seeps from him. it's a message left
+by the last forsaken. it says that it knew boon would be drawn here by the
+threads of time. it's like a pre-recorded message, so you can't respond, and it
+tells boon of the pain and suffering that his species has inflicted on the
+dogmatic beings. it tells him that the humans' use of magic is tainting the
+source for his kind, which is kind of akin to pissing in the water supply. can't
+live like that. it says that if boon wishes to chat, triggering this message
+will pass on something else that has been planted in theseus' mind. he will know
+where to go.
+** base & talkin' to theseus
+boon returns to the camp and goes to talk to sewell and evans. they confide that
+boon's tales of heroism have been going pretty far to keep the morale up, but
+that they've been keeping the camp running smoothly. @detail this is more to
+cover up for the fact that sewell and evans haven't really had a big part in the
+plot so far. there needs to be a good warstory with the 2 or 3 of them earlier
+in the story. and then probably sewell dies.
+
+anyway, point is that they powwow a bit. evans asks how the being could have
+known of theseus' existence or their associatin with him -- must be that they're
+getting more powerful on this domain. he thinks that boon should ignore the
+request to go talk, probably just a pity ploy to get them alone with something
+that can kill them. boon disagrees, says that magical power has felt strange
+inside him lately. he's new, so he wasn't sure if it was normal, but it could be
+the taint they're talking about @detail would be cool if there were some random,
+unexplained glitching and flashing earlier in the story (boon actually
+experiencing the taint)
+
+before they leave, they inform the revs that the entire camp is likely abandoned
+or close to it. they can head in and ransack all the food they want. 
+
+the three of them use the angreal to return to $group2's base. on seeing them,
+he gives them a cheeky/confident "what the hell have you guys been up to?". he
+knows some shit had to have gone down for him to get a message zapped straight
+to his brain. boon tells him more or less what happened. theseus says, yeah,
+that sounds about right. once boon gets to the part about humans tainting the
+source, theseus has a revelation.
+
+he says that LRB's sa'angreal may or may not be enough to defeat these beings --
+we really don't know -- but you know what it would be perfect for? cutting off
+humankind from the source. he must somehow know about this and be plotting to
+send humankind back to the stone ages. it all makes sense! we have to stop him! 
+
+perhaps in here: some boon disagreement, followed by some firm tess
+
+on to the actual message: it's a true meeting request. the $thing left a
+teleportation angreal somewhere, and they gotta go get it, then they can summon
+it and have a chat. the angreal is being held in a small government encampment
+on the foothills of the mountains. it's a place where they store and study the
+various angreals and dogmatic instruments that they find but do not know what
+they do with. 
+
+theseus knows of this place, and says that it's pretty heavily guarded. as in,
+this can't be a one man show. the revolutionaries finally have their mission.
+** the heavily guarded shed
+they all return to the base and inform the revs that they have intel that the
+government is keeping some serious magical machinery locked up in a compound
+down by the foothills of the mountain. tess and theseus here know a bit about it
+and are willing to accompany us, in exchange for a bit of the booty. here's a
+kind of funny scene with ike and tess butting heads
+
+rousing speech to the revs, they are all super up and happy to follow their
+leader into battle. boon agrees to go separately from the main party, and will
+meet everyone at a rendezvous point. it is evening. you gotta walk through the
+forest and then the city to make it to the foothills
+
+@sidequests
+
+once you make it to the point, you see all your people there. you go over the
+plan with them: spread out to secure the perimeter while the powerful dogmatics
+take over from inside. theseus is leading a small band of them, boon's going
+alone, ike's taking a small group of them, everyone else is scattering. 
+
+@dungeon
+this one is like a more traditional dungeon, with a few caveats:
+- there are a lot of cool magical artifacts
+- there are notes about where these artifacts were found, theories on what they
+  might do. these read like SCP entries (work is infecting my brain, i read SCP
+  as SCPI)
+- some of these artifacts are actually in-game hold items
+- mini legend of zelda: e.g. in zelda you need the hookshot to do a certain
+  dungeon then you get the feather boots or whatever. well, maybe this dungeon
+  is that but on a smaller scale. each "room" has an item that you use to get
+  through that room
+
+when boon gets to the room, theseus+tess already there. theseus breathlessly
+cries out when boon enters. he says that they faced problems -- dogmatics far
+stronger than they anticipated. for the weaker revs that theseus was
+shepherding, it was a slaughter. they are all dead. 
+
+after a moment of looking around, tess screams. the camera pans over in time to
+see her dematerialize. theseus and boon look at each other like -- was that just
+an accident? did someone plan this?
+
+boon feels a beacon call out to him -- it's tess. before being magically
+shackled, she sends out a distress beacon. it tells him the general area where
+she is. 
+
+he doesn't know this, but it's in a sealed off room deeper in the dungeon. the
+thing that she interacted with was a linking angreal. touch one and you're
+instantly transported to where the other one is. the other one is stored in
+another such room on prem. tess is basically blackout, so she's not able to just
+touch the one in her room and return. her distress beacon notifies everyone in a
+large radius. this is so unusual that the happening filters up to LRB himself. 
+
+upon traversing some more dungeon, you come to where tess is. you enter the
+room, and you see LRB and a couple of his cronies there prodding at her. they're
+surprised to see you. they have a few of the revs, including ike, held hostage. 
+
+they banter. boon says, hey, i know what you're up to. i know about
+everything. and lrb says, yeah, i figured that. boon asks why he's doing this
+when they could just join forces and try to fight it together. lrb wistfully
+says that boon could never understand. finally, he says that this is not the
+time to battle. humanity awaits. @detail this convo -- make LRB have just a
+flash of likeability but on the whole evil. 
+
+LRB throws down an ultimatum. we're close to figuring out how to use the
+sa'angreal. so very, very close. one week more and we will unleash it against
+the $things. to wait any longer would be suicide. you are an unknown
+quantity. cease, desist, and let the adults handle this. 
+
+he sets off a vortex on the other side of the room -- the camera pans, and back,
+and he's gone. left there is a couple of his cronies. you pick one to fight,
+theseus takes the other. the guy you fight is named lars. he's huge, shaved
+bald, he's got deep set dark mean eyes. you talk briefly with him before you
+battle. @detail give him a lil personality
+** the meeting
+before they leave the shed, boon reminds them of the reason they came here. the
+reason that he remembered? he's been able to sense the angreal here the whole
+time. in fact, it's right..over...there! they talk and decide that sewell +
+evans + ike should return to the base to tell everyone what's up. boon, tess,
+and theseus continue. 
+
+it also tells boon about: 
+the taint, what it does to their kind, and why they need humans to stop using
+dogma. 
+LRB is known to them, and known to be powerful, and plans to do -something- with
+the sa'angreal 
+the $thing reveals to boon that he is the living spirit of one of their dead
+it tells him how he can save himself. surely, you have experienced strange
+happenings lately? tell me of them. yes, that is the taint as sure as i have
+ever heard it. they will not cease. they will drive you mad. you will become
+trapped in this land of ephemeral inexistence, incorporeal, floating, for
+eternity. you cannot fathom this. and if you defeat our assault against you,
+this is what we will experience. taste that truth and understand why we fight
+you. 
+
+so the being, understanding that the only chance it has is to have boon close
+off the portal between dimensions, will give boon the tools to do so -- even if
+it means sacrificing its comrades. it tells boon where the last of its kind on
+this dimension lies. it tells boon that this being holds the key to powering the
+sa'angreal. it also tells boon that it is currently suffering deeply from the
+taint. it is in great pain, if it can be called that. it is likely to be more
+than a bit crazy. 
+
+why are you telling us this? 
+our kind our not like yours. our lives are not linear. in some way, the best
+human word for what our lives are is 'predestined'. it is the necessary trade
+that we accept in order to see the universe so clearly. that is not to say that
+i am without motive. i think at the end of your journey you will understand our
+kind much better.
+
+and so they cease speaking. all return to the base to consult.
+** rally cry!
+theseus suggests that they take the whole group with them to fight the last
+$thing. theseus then more or less executes the lot of them. he does this because
+the less power boon has, the less he has to live for, the more likely he is to
+die or sacrifice himself. is that sturdy? yeah. and then tess comes up to you
+and she's like hey this happened let's kill theseus. 
+** a key, a key
+man, this place has to kick ass. you're hunting what is essentially a demon
+that's gone mad to find a key to the most powerful channeling tool in the known
+universe. 
+
+a dungeon that becomes more reality distorted the farther you go through it
+
+doors that don't go back to where they came from 
+
+a world of rooms, for lack of a better term. a place that seems fey and alien,
+but not altogether unlike our world. a place in three and a half
+dimensions. things bleed over from the dogmatic world here. things resemble the
+real world here. the light is pink. the characters faces are slightly
+distorted. 
+** notes
+GUIDELINES
+- don't forget about making the government do things that make them unlikeable
+- make LRB a more important part of the story
+- make boon interact with his followers more
+- more than setpieces: ike, sewell, evans, tess
+- theseus isn't quite a setpiece but is not fully fleshed out. what is his
+  relationship with boon? 
+
+THESEUS is going to try to use the sa'angreal to still all the humans and take
+control in the power vacuum that follows
+LRB is going to try to use the sa'angreal to directly battle the beings
+
+they confront LRB, but learn that without his power humanity is lost -- so they
+begrudgingly team up with him
+lrb is humanity's only hope, and the being tries to trick boon into killing him
+actually take out the sa'angreal, only to realize that there is a bigger threat
+
+$group2 forces boon to lead $group1 to sacrifice themselves for the
+cause. something like -- they are itching to take action against the
+government. they beg boon to take them somewhere. they have a big success there,
+and for the first time in this whole thing they have some momentum. but then
+theseus whispers something in boon's ear, and he has to lead them on a suicide
+run. he can't tell them. and at the end, before they die, they realize that
+their cherished one has betrayed them. 
+
+actually yeah. we're going with that. the framing will be that theseus is slime,
+but that his brand of sliminess perfectly straddles the border between 'it
+sucks, but this is what has to be done' and 'i am advancing my own interests by
+sacrificing thousands of people'.
+
+actually, that should be act 4. act 4 is where everything is about to pop -- the
+government is going to use the sa'angreal, the $things are becoming more and
+more corporeal, boon is feeling pressure from his role as a leader vs that of a
+follower to $group2. 
+
+act 3 needs to flesh more things out
+
+GOALS
+- flesh out theseus as a guy who's not so good
+- a budding relationship between boon and tess. establish her first as what her
+  shell is -- tough, unflinching, stubborn. but give them small, private moments
+  of understanding (like empathy amongst equals)
+- kill the third $thing, make clear that with its death the $things are now
+  making great haste to enact their plan. give some semblance of what the plan
+  is. 
+- ratchet up the tension with the government. by the end of this act, there must
+  be an ultimatum or otherwise concrete plan that they have that has to be
+  stopped. 
+** write stuff 2
+not sure why this is happening right now, but hey. sometimes when the urge hits
+iyou, you gotta do it. i think that the approach i had right above of trying to
+lay out the super big road map of the story is a good idea. i am ok with winging
+it and refining it for the most part, but i have enough stuff to make a
+direction at this point.
+
+ultimately the main thrust of the story is this: 
+there are magical beasts which are working to destroy mankind. you, as
+prophesized, must stop them. 
+
+that's it. it's that simple. the devil's in the details, though, and these are
+the main stops that get you there. 
+
+@goals
+(d) the complicated history between mankind, the forsaken, and dogma. 
+(s) the existence of the forsaken and their aims (imminent death of mankind)
+(q) the betrayal of one forsaken against its people
+(w) the realization that boon himself is a forsaken incarnate
+(e) the warping of reality as it begins to crumble
+(r) the role of the government in the emergence of the forsaken
+(t) the role of the revolution
+(y) the sa'angreal and the struggle to control it
+(u) evans, a hard-faced and battle worn father figure
+(i) ike, a lovable uncle
+(o) tess, a quiet but intimidating woman prone to bouts of fanciful passion
+(p) theseus, a snake with a thirst for power
+(a) lrb, a man devoted to his species with the loneliness of responsibility
+
+and those are just the main stops -- there are more themes and ideas that i want
+to work in over the course of the game. and i think that is plenty of stuff to
+get started. there just needs to be arcs that realize these individual pieces. 
+
+one way you can do this is with a heavily dungeon-based design. the more i think
+about this, the better it seems. that is to say, a series of large dungeons
+which make up the bulk of the game. 
+the pros:
+dungeons will be fun to design
+without random encounters, dungeons are how gameplay is going to happen
+the idea of a dungeon is flexible enough to be molded into different
+things. because at its core, a dungeon just means an isolated map that you have
+to get through. you might be infiltrating a government base. or checking out a
+dogmatic castle in space. 
+the cons:
+don't like the flow of no story -> no story -> bunch of plot points unloaded at
+a dungeon2
+
+how can i introduce more story points without breaking the flow of the game?
+this is a pretty serious problem. it's something about major plot points
+becoming too obvious -- if you get down to the end of a dungeon, well of course
+the story is about to be advanced. and remember, stories aren't about hiding
+their contents from the experiencer. but it feels so un-real to have it broken
+up so herky-jerky. 
+
+one thing i can think of is mini-dungeons, quests, whatever you want to call
+them. the pillars of the game will be the large beastly dungeons. but not
+everything has to be so large. so really these are still dungeons, but the point
+is that they are not centerpieces. 
+
+thinking of what final fantasy does here. honestly, it's a lot of what i
+described. big dungeons followed by cut scenes. but the thing with final fantasy
+is that there is a lot of variance in there. for example, the scene in narshe
+where you split up to defend. or going down the river. or finding sabin in the
+mountains. or the spirit train. sure, you could construe most of these things as
+dungeons, but they're different. it doesn't feel like you're tackling a huge
+thing, which makes it flow better. 
+
+one thing that i think might be fucking me up is the thought of them continuing
+to return to the base. i don't like that, because that's super boring. there's
+only so many ways you can dispatch a team from a base before it gets worn
+out. but they're a revolution -- they need some place to meet up, and there
+needs to be some place to disseminate information. but doing it this way makes
+you lose the sense of grand adventure. going from narshe down to meeting a king
+in figaro, escaping down the river, all of this stuff. a bonus that it brings is
+that it's a lot easier to make. i don't know if i could finish this game if i
+octupled the number of locales in the game. i just don't think that would
+work. so perhaps this will just require some creativity on my part. i think it's
+fine to roll with this for now. 
+
+in two minds right now. it's easier and maybe more fun (see: easier) to think
+about almost like meta goals instead of structuring the story itself. this story
+is so so heavily influenced by the wheel of time. which is good, because the
+wheel of time has so much going on for it. but it's bad, because the wheel of
+time is good because of its sprawling realism and complexity. i'm just not sure
+that i can do that in a game right now. but the ideas i have here are
+excellent. i love them. and it is a story and scope that i want to tell. how do
+i make this story intriguing without having so much sprawl? 
+
+okay, take more hints from ff6 than wot here. wheel of time is fantastic because
+there aren't clearly defined goals. you can feel the characters figuring
+everything out as they go, and there are plenty of curveballs. watching 50
+characters all acting and reacting is beautiful. in ff6, though, everything is a
+lot simpler. things happen, information is learned, and then people do
+stuff. there's much less interpersonal relationships, and there is no
+information hiding at all. information hiding takes a long time to resolve. try
+to keep what is going on in the plot straightforward, and write few scenes that
+don't directly advance the main plot. 
+
+--
+(u, s, r) evans and boon's journey into the forest. 
+(o, p, s) a short cut-scene between theseus and tess, where they discuss the
+question of whether boon is the prophesized one. where they discuss the
+prophecies coming to a head. 
 * backstory
 ** savior, prophecy
 during the time of the greeks, before the golden era of greek culture, dogma was
@@ -1219,7 +1757,10 @@ boon, but he's not one to show his empathy through words of comfort or
 affirmation. he's the kind of guy where the fact that he cares enough to
 apologize or offer any gruff words of encouragement is equivalent to another man
 giving a long heartfelt speech. 
-* act one
+** Harkon Organa
+** natalia ilyena
+** pei de
+* story
 ** intro
 boon is sitting in his living room. his phone rings. it's his dad, and he asks
 him if boon can go to ike's the hardware store a bit across town before he comes
@@ -1392,6 +1933,8 @@ perfectly kempt -- beautiful hedges and flowers adorn the outside, the marble
 steps gleam to perfection. yet the world flickers and distorts as you approach
 it. 
 
+[should the palace be a dungeon? yes. i have just edited this file.]
+
 you approach the door of the castle and hear a conversation grow louder. it is a
 man, with an old voice, like bill. @note: no actual voice acting, that's just
 how i imagine him. from kill bill, for those interested readers. he says that
@@ -1409,500 +1952,227 @@ the gravelly voice begins again and says that time is growing short. time's
 binds are growing tighter, faster than anyone could have expected. my senses
 have been failing me -- i've been unable to push time's threads into their
 place. i've felt another of our kind on this plane, yet it cannot be. we are
-degrading. there are 
-** weit re skl.dafasdjfsdklfjsdaf write stuff here!!!!!!
-where are we in the story? man, what an exciting life where being adventurous
-constitutes smoking a cigarette. the tensions in the story -- who is boon, what
-is the government doing, what's up with the prophecies. we barely know anything
-about the prophecies at this point. we know there is a mysterious man kind of
-working with the other beings but at the same time being controlled by them. we
-want to know more about this man. we want to know more about these beasts. we
-want to know more about these prophecies and we want to know more about the man
-but we can't quite yet and we have to disguise the fact that it's LRB and i
-don't know if LRB has even been introduced yet let me check that!!!!! ok i
-checked and we don't know about him yet. so there's nothing there, we just know
-that the government is a strange entity and they are doing strange things but
-there's no skin in the game yet. we could do this a couple of ways. the first
-way is to somehow engineer a meeting or something between the band and the
-government where lrb is there and as you hear him speak boon whispers to one of
-his comrades, jesus christ, i've heard that voice before! i know that voice! and
-then you come to grips with this realization that the government is maybe
-working to actively destroy you and you have to figure out what to do about it,
-and then the second thing that we could do is that you gradually learn more
-about LRB until at the ened there's this big reveal and it turns out that it was
-him the whole time like a scooby doo mask. maybe this is too big though, i think
-this is the right goal just listing out what you actually care about right now
-and then figuring out where it goes and how to reveal that location. kind of
-just winging it right now but i do know the salient points of the story
-- lrb's troubled backstory
-- his desire to save mankind in accordance with his visions
-- the sa'angreal left by the savior
-- theseus' betrayal 
-- boon's choice at the end
+degrading. go to the desert, seek out the other. the other being will be in the
+same castle, but in a different/warped timeline. tell him what i have told
+you. tell him that we must act quickly. your sa'angreal will be released in
+time. 
+** meeting with theseus
+as their conversation winds down, evans motions that you guys need to book it
+out of here. the screen fades out and back in at the camp. boon and evans run
+up, a bit breathless. everyone's back already, and they're shocked to see boon
+and evans. they start recounting the story, and theseus tells them that they
+need to meet with him and tess. as soon as possible. he walks to his room. boon
+and evans chat alone for a moment. evans says not to tell everything to theseus,
+and that he doesn't trust him. he showed up outta nowhere one day, associated
+with a splintered sect of the revolution that are like aes sedai crossed with
+monks. deeply powerful, of unknown but high influence, but purely committed to
+the advancement of dogmatic knowledge. he's not sure what theseus' game is, but
+it's best to let evans do the talking. and tess -- she's quiet, firm, cold. she
+defers to theseus, but no one else. 
 
-the revs:
-theseus and tess' mysterious knowledge of the prophecies and forgotten dogma. 
-evans' need to protect people
-unraveling the prophecies
+they meet in the room. they recount their tale, more fully, but withholding the
+castle and the mossy fork. they recount the man they saw, and theseus says that
+the description sounds like LRB. he lets them in on a secret. the reason his
+sect sent him here was to investigate some strange, ancient writings. 
 
-act one:
-become ingrained with the revolution.
-learn of theseus' and tess' strange place.
-begin a budding mentorship with theseus.
-begin a budding mentorship with evans.
-understand that lrb is behind the government's strange behavior.
-learn about a mysterious man working with the others.
-learn of the three others working on this plane.
+references to them have been popping up everywhere. at first, it was three
+books, found by chance. ancient books found in an excavation of a proto-magical
+site. the books were unlike any other from the period -- these people were
+primitive, and yet these books seemed bound by fine machinery. they were written
+in a strange alien tongue, characters dashed schizophrenically across the
+pages. the script looked sinister. it felt evil. we studied it, yet we could not
+translate it without a reference. would but this were where it ended. 
 
-act two: 
-kill the three others. 
-learn of the savior. 
-learn of the sa'angreal. 
+once we had the symbols, though, we began to see references to them. the
+organization of cities. tiny, tiny, scribbled on the signs in the background of
+oil paintings. microscopic scans of cellular structures. slowly, things began to
+link together. we could translate words. then sentences, then even a few easy
+passages. the passages showed up, too. shakespeare was rife with them. the words
+became plain but their meaning as opaque as ever. anyway, i'll stop there. i've
+already said more than i should. 
 
-act three: 
-learn of lrb's true nature. face theseus' betrayal. make the decision.
+i'm a leading expert on all of this stuff. i'm also, let's just be honest here,
+one of the four or five best dogmatics alive right now. 
 
-problem right now. fleshing out the first act. leaving it on how it's left right
-now is awesome because some cool shit happens and you wanna find out who the guy
-is and you wanna go kill the baddies  but some more stuff needs to happen
-first. to set that up
-i want him to learn at least a little bit about the prophecies. theseus is the
-guy who really knows about the prophecies. maybe he takes boon aside, they go
-somewhere to do something, and theseus speaks with him. hey, i know a little of
-these prophecies and, call me crazy, but i think your showing up wasn't
-coincidence. i think you were fated to come here to help us unravel this
-mystery. here's what we know:
-<not everything theseus knows>
+with all of the weirdness happening here, well, it's a good a bet as any that
+the two are related. one person but two voices -- the prophecies rant and rave
+about mysterious beings. perhaps we've hit upon something? the desert, you say?
 
-so many thoughts, do i need to organize them or just write? is the plan i have
-sufficient? i say there is no way to know. 
+"well, it seems clear what the next step should be."
 
-why would theseus just take him out on a mission? he just met the guy. 
+"i agree. i know a man out in the desert, a sander, barr rhett. he makes a
+living riding out on dune buggies, scanning the landscape for primetime mining
+spots. it's dangerous work, but he hasn't kicked it yet. he owes me a favor. me
+and the lad will set out tomorrow"
 
-i keep having this idea of theseus and boon sneaking into somewhere, like the
-slave tank room. LRB pops up and has a conversation with his henchmen while you
-hide. you glean some valuable information on a place the government would like
-to go or what they would like to do. 
-** write stuff 2
-not sure why this is happening right now, but hey. sometimes when the urge hits
-you, you gotta do it. i think that the approach i had right above of trying to
-lay out the super big road map of the story is a good idea. i am ok with winging
-it and refining it for the most part, but i have enough stuff to make a
-direction at this point. 
+"and of course, we will accompany you"
 
-ultimately the main thrust of the story is this: 
-there are magical beasts which are working to destroy mankind. you, as
-prophesized, must stop them. 
+"..."
+"fine."
+"but however much you two know about this metaphysical shit, you don't know
+nothing about leading a mission. leave that to me, and keep me in the loop if we
+find anything, and we're square"
 
-that's it. it's that simple. the devil's in the details, though, and these are
-the main stops that get you there. 
+"watch how you speak to me. you know less than you think of my past."
+** the desert
+(THIS CHAPTER IS AWESOME)
 
-@goals
-(d) the complicated history between mankind, the forsaken, and dogma. 
-(s) the existence of the forsaken and their aims (imminent death of mankind)
-(q) the betrayal of one forsaken against its people
-(w) the realization that boon himself is a forsaken incarnate
-(e) the warping of reality as it begins to crumble
-(r) the role of the government in the emergence of the forsaken
-(t) the role of the revolution
-(y) the sa'angreal and the struggle to control it
-(u) evans, a hard-faced and battle worn father figure
-(i) ike, a lovable uncle
-(o) tess, a quiet but intimidating woman prone to bouts of fanciful passion
-(p) theseus, a snake with a thirst for power
-(a) lrb, a man devoted to his species with the loneliness of responsibility
+the group travels out to the edge of the desert, where barr has a few tents and
+dune buggies set up. he's dressed kind of like hunter s thompson, he's smoking a
+cigarette. he claps evans on the shoulder like they're old buddies, says how
+evans helped him out of a serious jam years back. they ask him how business has
+been -- he says bad, real bad. people keep disappearing. it started with his
+friend Cyg, a kind of feisty raider girl who always rode into the desert with a
+shoufa, a gun, and plenty of supplies. not like her to get lost like this. he
+can't hire out anyone to go because it's practically a death wish, and he won't
+do it himself.
 
-and those are just the main stops -- there are more themes and ideas that i want
-to work in over the course of the game. and i think that is plenty of stuff to
-get started. there just needs to be arcs that realize these individual pieces. 
+they tell barr that they'll pay him a large sum of money to escort them out. he
+looks at them like they're crazy and tries to convince them not to, but in the
+end finally relents. they tell him that they are looking for a castle in the
+middle of the desert. he's taken a bit aback, because he's seen flashes of a
+castle out of the corner of his eyes that match their description. he says it
+started happening right before people started disappearing, and that it's always
+in this one quarter mile radius of the desert.
 
-one way you can do this is with a heavily dungeon-based design. the more i think
-about this, the better it seems. that is to say, a series of large dungeons
-which make up the bulk of the game. 
-the pros:
-dungeons will be fun to design
-without random encounters, dungeons are how gameplay is going to happen
-the idea of a dungeon is flexible enough to be molded into different
-things. because at its core, a dungeon just means an isolated map that you have
-to get through. you might be infiltrating a government base. or checking out a
-dogmatic castle in space. 
-the cons:
-don't like the flow of no story -> no story -> bunch of plot points unloaded at
-a dungeon2
-
-how can i introduce more story points without breaking the flow of the game?
-this is a pretty serious problem. it's something about major plot points
-becoming too obvious -- if you get down to the end of a dungeon, well of course
-the story is about to be advanced. and remember, stories aren't about hiding
-their contents from the experiencer. but it feels so un-real to have it broken
-up so herky-jerky. 
-
-one thing i can think of is mini-dungeons, quests, whatever you want to call
-them. the pillars of the game will be the large beastly dungeons. but not
-everything has to be so large. so really these are still dungeons, but the point
-is that they are not centerpieces. 
-
-thinking of what final fantasy does here. honestly, it's a lot of what i
-described. big dungeons followed by cut scenes. but the thing with final fantasy
-is that there is a lot of variance in there. for example, the scene in narshe
-where you split up to defend. or going down the river. or finding sabin in the
-mountains. or the spirit train. sure, you could construe most of these things as
-dungeons, but they're different. it doesn't feel like you're tackling a huge
-thing, which makes it flow better. 
-
-one thing that i think might be fucking me up is the thought of them continuing
-to return to the base. i don't like that, because that's super boring. there's
-only so many ways you can dispatch a team from a base before it gets worn
-out. but they're a revolution -- they need some place to meet up, and there
-needs to be some place to disseminate information. but doing it this way makes
-you lose the sense of grand adventure. going from narshe down to meeting a king
-in figaro, escaping down the river, all of this stuff. a bonus that it brings is
-that it's a lot easier to make. i don't know if i could finish this game if i
-octupled the number of locales in the game. i just don't think that would
-work. so perhaps this will just require some creativity on my part. i think it's
-fine to roll with this for now. 
-
-in two minds right now. it's easier and maybe more fun (see: easier) to think
-about almost like meta goals instead of structuring the story itself. this story
-is so so heavily influenced by the wheel of time. which is good, because the
-wheel of time has so much going on for it. but it's bad, because the wheel of
-time is good because of its sprawling realism and complexity. i'm just not sure
-that i can do that in a game right now. but the ideas i have here are
-excellent. i love them. and it is a story and scope that i want to tell. how do
-i make this story intriguing without having so much sprawl? 
-
-okay, take more hints from ff6 than wot here. wheel of time is fantastic because
-there aren't clearly defined goals. you can feel the characters figuring
-everything out as they go, and there are plenty of curveballs. watching 50
-characters all acting and reacting is beautiful. in ff6, though, everything is a
-lot simpler. things happen, information is learned, and then people do
-stuff. there's much less interpersonal relationships, and there is no
-information hiding at all. information hiding takes a long time to resolve. try
-to keep what is going on in the plot straightforward, and write few scenes that
-don't directly advance the main plot. 
-
---
-(u, s, r) evans and boon's journey into the forest. 
-(o, p, s) a short cut-scene between theseus and tess, where they discuss the
-question of whether boon is the prophesized one. where they discuss the
-prophecies coming to a head. 
-
-* act two
-* act three
-** what happens after a toast?
-this act opens up with boon someone waking up in his bed in the camp. he says
-there's bad news, the government finally got the balls to raid the camp. they
-did it in the middle of the night, and they didn't challenge anyone directly,
-but they took most of the camp's food. they're not going to be able to hold out
-past a week if they don't do something about it. the lad says ike, evans, and
-sewell are waiting for boon in the meeting room.  
-
-boon goes there and sewell and ike are arguing. evans is observing. sewell
-thinks that they should go personally to accompany an attack force against the
-government's thugs. ike says that would be foolhardy and they couldn't afford
-any of them to go. sewell says they need our help now. boon listens to them
-argue for a minute, coughs, and once they quiet down he says that he will go by
-himself. he has a stronger magical sense than anyone, he could easily sneak
-around and scope it out, and most importantly he's in charge. 
-
-ike less acquiesces than realizes that he isn't going to win. once they leave,
-evans pulls him aside. he tells boon that it actually is foolhardy to go alone,
-but the only thing more foolish than one person would be more than one. he tells
-him not to tell theseus that he did this. he tells boon before he leaves that a
-couple people around camp have been looking for him, and that they might need
-some help with a few things before he goes. 
-
-as boon walks away, he gets a flash. the screen flickers frames of a scene,
-until it stablizes. it's a deer, looking all around, animal fear in its
-eyes. the deer finally spots its stalker, a coyote, and it attacks. the deer
-moves to run away and the coyote tackles it. the deer's heart thumps louder and
-louder, deeper, faster. they tumble, the deer kicks the coytote. the fear grows
-deeper into its eyes. the camera pants into the deer's chest and watches as its
-heart pulses and finally explodes
-
-@sidequests
-** i was only expecting a few thugs!
-@detail where is the govt camp in relation to the rev. camp?
-when boon approaches the govt camp, he sees two people approaching. he ducks
-behind a tree. he hears the two men talking a bit frantically. they say: 
-- their commander, ernst, is starting to seriously freak them out
-- he also seems to have gotten really, really strong in the past few weeks
-- they're afraid
-- he's been claiming there is a purple-haired dogmatic made of pure evil
-- they don't know if they believe him.
-is possessed by one of the forsaken (but secretly)
-
-they say that they're a bit afraid to be alone, but they're more afraid of what
-ernst will do to them if he discovers that they aren't properly keeping
-watch. they part ways and one begins patrolling near you. 
-
-you go up to the first one. he nearly shits his pants when he sees you. after
-speaking to you, he says that boon's not as terrifying as ernst made him
-sound. boon asks more about ernst. he says that one day he walked into camp and
-ernst was hanging traitors, and that his eyes had turned pure black, all
-iris. he said that there he's set up rooms entirely of traps and that he stays
-holed up in a room deep in the compound most of the time. 
-
-boon asks if he's afraid, he says yes, that he just got roped into this as
-a kid. the kid gives boons the layout to the base. he tells the kid to either
-scram back to the rev. camp or battle him. 
-
-the base is way way more high tech than the campground the revs have. first of
-all it's an actual building. everything looks like glossy metal, it's all blocky
-and slate gray. inside there are several areas
+they drive out there, talking on the way @detail. the dune buggy shudders, the
+screen glitches a bit, and all of a sudden they're standing in a dimly lit
+basement. boon somehow understands that they are in another world. they explore
+for a bit and solve a few puzzles, and boon comes to a shining place on the
+ground. he says that he knows that this will transport them back to their
+world. he uses it, and the four of them are brought to a portal stone right
+outside of the castle.
 
 @dungeon
-room ideas:
-there is a mostly-deserted (as of now) barracks, like how the 2nd floor of the
-office is with square hallway with rooms on the side and then a large space in
-the middle
-there is a boiler room that has an awesome core of purple snarling electricity
-that's being powered by a dogmatic
-there's an auditorium that has the entrace to a secret basement -- there are a
-ton of people there, but you can make them get out (fire alarm?)
-there is an officer's quarters. when you go in here, you will see ernst walking
-out. he doesn't notice you. he mentions that he feels an unwieldy presence, like
-a rat in his barracks. he's flecking spit as he talks. he yells almost to the
-wind that he dares that slime to come challenge him face to face, and he says
-he'll be waiting in the basement
+they work through the castle and the house, solving puzzles. in a room
+in the house, they find the people who were lost. he sees cyg and calls out to
+her, but she doesn't respond. no one else says a word. without warning, you
+begin battling her. once defeated, everyone else runs over to you. they tell you
+that when they fell into this building, cyg was already here. she had food but
+it looked untouched. all she would do was ramble about the sins of man and the
+return of the righteous. she didn't eat or drink for days.
 
-journals have notes of ernst's madness. you can hear people whispering about
-it. 
+@detail
+ideas for puzzles:
+promesst-style; mirrors, beams of light
+(simple) switches which
 
-as you go through and hit certain spots, ernst will appear. he seems madder and
-madder each time you see him, ranting about how he can practically smell boon
+as they reach the final hallway / heart of the castle, things begin to glitch
+more and more. they are transported, for a few moments, to many places. a
+pastoral town where someone cries out in terror at them. the smoldering ruins of
+a city. an mountain pass in the midst of a blizzard. all these places flash in
+for just a few moments, and then they are gone.
 
-finally you reach his secret room. he says that boon is the one who has showed
-up in his dreams, the one he saw slaying his family and drinking their blood,
-the one who appears in the back of his mind and consumes it for hours at a
-time. once ernst has been defeated, a spirit seeps from him. it's a message left
-by the last forsaken. it says that it knew boon would be drawn here by the
-threads of time. it's like a pre-recorded message, so you can't respond, and it
-tells boon of the pain and suffering that his species has inflicted on the
-dogmatic beings. it tells him that the humans' use of magic is tainting the
-source for his kind, which is kind of akin to pissing in the water supply. can't
-live like that. it says that if boon wishes to chat, triggering this message
-will pass on something else that has been planted in theseus' mind. he will know
-where to go.
-** base & talkin' to theseus
-boon returns to the camp and goes to talk to sewell and evans. they confide that
-boon's tales of heroism have been going pretty far to keep the morale up, but
-that they've been keeping the camp running smoothly. @detail this is more to
-cover up for the fact that sewell and evans haven't really had a big part in the
-plot so far. there needs to be a good warstory with the 2 or 3 of them earlier
-in the story. and then probably sewell dies.
+finally, they reach the room of the forsaken.
+an office
+more strange contraptions
+a platform of battle
 
-anyway, point is that they powwow a bit. evans asks how the being could have
-known of theseus' existence or their associatin with him -- must be that they're
-getting more powerful on this domain. he thinks that boon should ignore the
-request to go talk, probably just a pity ploy to get them alone with something
-that can kill them. boon disagrees, says that magical power has felt strange
-inside him lately. he's new, so he wasn't sure if it was normal, but it could be
-the taint they're talking about @detail would be cool if there were some random,
-unexplained glitching and flashing earlier in the story (boon actually
-experiencing the taint)
+they begin to speak. conversation notes:
+- he says that boon feels familiar, and that he can feel the ripples he makes in
+  the magical world. he knows he is powerful because he made it to him
+- a bit sad for having to wage war
+- amused that the humans do not know it
+- "hmm...what would be a fitting name in your language? something appropriately
+  ancient, something a bit frightening, something powerful. for i am all of
+  these things, you may call me hegdesius."
+- he does not know that boon has the spirit of a fallen kin in him
+- there is much history between your people and mine. he does not tell boon the
+  full story, but he says he's observed a very strange group of people who seem
+  to have a handle on the truth of the matter (group 2)
 
-before they leave, they inform the revs that the entire camp is likely abandoned
-or close to it. they can head in and ransack all the food they want. 
 
-the three of them use the angreal to return to $group2's base. on seeing them,
-he gives them a cheeky/confident "what the hell have you guys been up to?". he
-knows some shit had to have gone down for him to get a message zapped straight
-to his brain. boon tells him more or less what happened. theseus says, yeah,
-that sounds about right. once boon gets to the part about humans tainting the
-source, theseus has a revelation.
+they battle. as you land the death blow, hegdesius is in shock. it is babbling
+the way you would when you learned you had let your entire race down. he regrets
+he does not have time to warn the others, but he hopes they will be able to
+sense his death though distant they are.
 
-he says that LRB's sa'angreal may or may not be enough to defeat these beings --
-we really don't know -- but you know what it would be perfect for? cutting off
-humankind from the source. he must somehow know about this and be plotting to
-send humankind back to the stone ages. it all makes sense! we have to stop him! 
+as the beast fades out, there's a sense of stunned calm in the group. barr
+breaks the silence. 
 
-perhaps in here: some boon disagreement, followed by some firm tess
+"well, shit. what the fuck are you guys into?"
 
-on to the actual message: it's a true meeting request. the $thing left a
-teleportation angreal somewhere, and they gotta go get it, then they can summon
-it and have a chat. the angreal is being held in a small government encampment
-on the foothills of the mountains. it's a place where they store and study the
-various angreals and dogmatic instruments that they find but do not know what
-they do with. 
+thesus, ignoring him, speaks to boon and evans: "well, it would seem that we
+have some more to catch up on. shall we return?"
+** 
+back at the camp, they're sitting inside theseus' and tess' room. they're
+telling boon and evans more about what they've gleaned from the prophecies and
+how it fits in with what they just saw.
 
-theseus knows of this place, and says that it's pretty heavily guarded. as in,
-this can't be a one man show. the revolutionaries finally have their mission.
-** the heavily guarded shed
-they all return to the base and inform the revs that they have intel that the
-government is keeping some serious magical machinery locked up in a compound
-down by the foothills of the mountain. tess and theseus here know a bit about it
-and are willing to accompany us, in exchange for a bit of the booty. here's a
-kind of funny scene with ike and tess butting heads
+- some unknown gray ancient evil is coming. different words have been used to
+  describe them -- beasts, energy, manifestations, all roughly translated words
+  from the texts. we aren't even sure to what extent the evil is corporeal. 
+- the government must have some idea about this, and it's why they're acting so
+  strangely. 
+- we can't rule out the possibility that the government is working with the evil
+  in order to harness it or live alongside it in the post-apocalyptic
+  landscape. 
+- boon is certainly at the center of this, somehow. 
 
-rousing speech to the revs, they are all super up and happy to follow their
-leader into battle. boon agrees to go separately from the main party, and will
-meet everyone at a rendezvous point. it is evening. you gotta walk through the
-forest and then the city to make it to the foothills
+they've got a guy who is a fair expert on this part of the prophecies. he stays
+in the capital. whereabouts unknown -- he was sent in a few years ago to
+infiltrate the government, but he's only sent back signals of life, not status
+updates. went by the name of harkon organa. it'd be good for you to go in and
+try to find him. with the ward and your lack of attachment to the revolution,
+you're far less conspicuous than any of us. could also be a good chance to get a
+feel for some other secret members we have around the city. 
 
-@sidequests
+they give him a list of names, people who were last in contact with harkon. 
 
-once you make it to the point, you see all your people there. you go over the
-plan with them: spread out to secure the perimeter while the powerful dogmatics
-take over from inside. theseus is leading a small band of them, boon's going
-alone, ike's taking a small group of them, everyone else is scattering. 
+natalia ilyena. a scientist who runs an underground dogmatic laboratory for the
+resistance. she's sharp as a whip, confident, no bullshit. when harkon came to
+the capital, he triaged with her before infiltration. 
 
-@dungeon
-this one is like a more traditional dungeon, with a few caveats:
-- there are a lot of cool magical artifacts
-- there are notes about where these artifacts were found, theories on what they
-  might do. these read like SCP entries (work is infecting my brain, i read SCP
-  as SCPI)
-- some of these artifacts are actually in-game hold items
-- mini legend of zelda: e.g. in zelda you need the hookshot to do a certain
-  dungeon then you get the feather boots or whatever. well, maybe this dungeon
-  is that but on a smaller scale. each "room" has an item that you use to get
-  through that room
+pei de. he's a non-dogmatic. a chinese janitor who the resistance pays
+handsomely to act as a middleman for various operations. leaving doors open,
+passing messages along, you name it. he stays out of danger and gets to play at
+secret agent while putting a few bucks in his pocket. 
 
-when boon gets to the room, theseus+tess already there. theseus breathlessly
-cries out when boon enters. he says that they faced problems -- dogmatics far
-stronger than they anticipated. for the weaker revs that theseus was
-shepherding, it was a slaughter. they are all dead. 
+they also tell you to check out the city a bit. scope it out -- now that you
+know about dogma, the way that a few things work might make more sense. talk to
+the people, get a feel for what they 
+** with the cicadas in the night
+as boon and evans walk out, boon stops.
 
-after a moment of looking around, tess screams. the camera pans over in time to
-see her dematerialize. theseus and boon look at each other like -- was that just
-an accident? did someone plan this?
+"evans, i don't know what to do.."
 
-boon feels a beacon call out to him -- it's tess. before being magically
-shackled, she sends out a distress beacon. it tells him the general area where
-she is. 
+"huh?"
 
-he doesn't know this, but it's in a sealed off room deeper in the dungeon. the
-thing that she interacted with was a linking angreal. touch one and you're
-instantly transported to where the other one is. the other one is stored in
-another such room on prem. tess is basically blackout, so she's not able to just
-touch the one in her room and return. her distress beacon notifies everyone in a
-large radius. this is so unusual that the happening filters up to LRB himself. 
+"with any of this. i have no idea what i'm doing. i mean, i'm gonna have to kill
+more of those things, right?"
 
-upon traversing some more dungeon, you come to where tess is. you enter the
-room, and you see LRB and a couple of his cronies there prodding at her. they're
-surprised to see you. they have a few of the revs, including ike, held hostage. 
+"it sure seems like it."
 
-they banter. boon says, hey, i know what you're up to. i know about
-everything. and lrb says, yeah, i figured that. boon asks why he's doing this
-when they could just join forces and try to fight it together. lrb wistfully
-says that boon could never understand. finally, he says that this is not the
-time to battle. humanity awaits. @detail this convo -- make LRB have just a
-flash of likeability but on the whole evil. 
+"i don't even know how i beat the first one. it feels like i just close my eyes
+and put my mind just right and all of this dogma stuff...just happens."
 
-LRB throws down an ultimatum. we're close to figuring out how to use the
-sa'angreal. so very, very close. one week more and we will unleash it against
-the $things. to wait any longer would be suicide. you are an unknown
-quantity. cease, desist, and let the adults handle this. 
+"what are you getting at, lad?"
 
-he sets off a vortex on the other side of the room -- the camera pans, and back,
-and he's gone. left there is a couple of his cronies. you pick one to fight,
-theseus takes the other. the guy you fight is named lars. he's huge, shaved
-bald, he's got deep set dark mean eyes. you talk briefly with him before you
-battle. @detail give him a lil personality
-** the meeting
-before they leave the shed, boon reminds them of the reason they came here. the
-reason that he remembered? he's been able to sense the angreal here the whole
-time. in fact, it's right..over...there! they talk and decide that sewell +
-evans + ike should return to the base to tell everyone what's up. boon, tess,
-and theseus continue. 
+"i'm scared. i don't know how i could ever prepare for what i have to do. i feel
+like i'm gonna lose"
 
-it also tells boon about: 
-the taint, what it does to their kind, and why they need humans to stop using
-dogma. 
-LRB is known to them, and known to be powerful, and plans to do -something- with
-the sa'angreal 
-the $thing reveals to boon that he is the living spirit of one of their dead
-it tells him how he can save himself. surely, you have experienced strange
-happenings lately? tell me of them. yes, that is the taint as sure as i have
-ever heard it. they will not cease. they will drive you mad. you will become
-trapped in this land of ephemeral inexistence, incorporeal, floating, for
-eternity. you cannot fathom this. and if you defeat our assault against you,
-this is what we will experience. taste that truth and understand why we fight
-you. 
+"lad, what's the fun in life if you can always prepare for it? sometimes you
+just have to walk through that door"
 
-so the being, understanding that the only chance it has is to have boon close
-off the portal between dimensions, will give boon the tools to do so -- even if
-it means sacrificing its comrades. it tells boon where the last of its kind on
-this dimension lies. it tells boon that this being holds the key to powering the
-sa'angreal. it also tells boon that it is currently suffering deeply from the
-taint. it is in great pain, if it can be called that. it is likely to be more
-than a bit crazy. 
+"..."
 
-why are you telling us this? 
-our kind our not like yours. our lives are not linear. in some way, the best
-human word for what our lives are is 'predestined'. it is the necessary trade
-that we accept in order to see the universe so clearly. that is not to say that
-i am without motive. i think at the end of your journey you will understand our
-kind much better.
 
-and so they cease speaking. all return to the base to consult.
-** rally cry!
-theseus suggests that they take the whole group with them to fight the last
-$thing. theseus then more or less executes the lot of them. he does this because
-the less power boon has, the less he has to live for, the more likely he is to
-die or sacrifice himself. is that sturdy? yeah. and then tess comes up to you
-and she's like hey this happened let's kill theseus. 
-** a key, a key
-man, this place has to kick ass. you're hunting what is essentially a demon
-that's gone mad to find a key to the most powerful channeling tool in the known
-universe. 
+** CITY 1 SIDEQUESTS
+*** the crier
+you stumble into a pedestrian. he seems almost raving mad. he is onto the
+conspiracy. he knows that magic exists -- not beyond a shadow of a doubt, but
+enough to make him lose his mind with the sheer possibility. he brings you back
+to his house where he shows you wild notes strewn everywhere. he seems on the
+brink of some great discovery and some great publication. you must choose
+whether to let him live and perhaps blow everything up or to take an otherwise
+innocent life.
+** finding harkon
+so the idea here is that each of the three give you some kind of information
+about where to find harkon. and once you have all three pieces, you can go to
+him. some kind of secret messages left to them? encryption? the three-fold
+message is an SOS. he's trapped. shit's gone south. the message says what
+facility he's being held in, but it's not timestamped, and there's no
+instructions for what to do once you get there. 
 
-a dungeon that becomes more reality distorted the farther you go through it
 
-doors that don't go back to where they came from 
 
-a world of rooms, for lack of a better term. a place that seems fey and alien,
-but not altogether unlike our world. a place in three and a half
-dimensions. things bleed over from the dogmatic world here. things resemble the
-real world here. the light is pink. the characters faces are slightly
-distorted. 
-** notes
-GUIDELINES
-- don't forget about making the government do things that make them unlikeable
-- make LRB a more important part of the story
-- make boon interact with his followers more
-- more than setpieces: ike, sewell, evans, tess
-- theseus isn't quite a setpiece but is not fully fleshed out. what is his
-  relationship with boon? 
-
-THESEUS is going to try to use the sa'angreal to still all the humans and take
-control in the power vacuum that follows
-LRB is going to try to use the sa'angreal to directly battle the beings
-
-they confront LRB, but learn that without his power humanity is lost -- so they
-begrudgingly team up with him
-lrb is humanity's only hope, and the being tries to trick boon into killing him
-actually take out the sa'angreal, only to realize that there is a bigger threat
-
-$group2 forces boon to lead $group1 to sacrifice themselves for the
-cause. something like -- they are itching to take action against the
-government. they beg boon to take them somewhere. they have a big success there,
-and for the first time in this whole thing they have some momentum. but then
-theseus whispers something in boon's ear, and he has to lead them on a suicide
-run. he can't tell them. and at the end, before they die, they realize that
-their cherished one has betrayed them. 
-
-actually yeah. we're going with that. the framing will be that theseus is slime,
-but that his brand of sliminess perfectly straddles the border between 'it
-sucks, but this is what has to be done' and 'i am advancing my own interests by
-sacrificing thousands of people'.
-
-actually, that should be act 4. act 4 is where everything is about to pop -- the
-government is going to use the sa'angreal, the $things are becoming more and
-more corporeal, boon is feeling pressure from his role as a leader vs that of a
-follower to $group2. 
-
-act 3 needs to flesh more things out
-
-GOALS
-- flesh out theseus as a guy who's not so good
-- a budding relationship between boon and tess. establish her first as what her
-  shell is -- tough, unflinching, stubborn. but give them small, private moments
-  of understanding (like empathy amongst equals)
-- kill the third $thing, make clear that with its death the $things are now
-  making great haste to enact their plan. give some semblance of what the plan
-  is. 
-- ratchet up the tension with the government. by the end of this act, there must
-  be an ultimatum or otherwise concrete plan that they have that has to be
-  stopped. 

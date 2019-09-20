@@ -947,11 +947,4 @@ void test_tdscript() {
     #endif
 }
 
-string get_default_font_path() {
-	TableNode* font_config = tds_table("config", "fonts");
-	string font_dir = tds_string2(font_config, computer_id, "font_dir");
-	string default_font = tds_string2(font_config, computer_id, "default");
-	
-	// @hack use pathjoin
-	return font_dir + default_font + ".ttf";
-}
+

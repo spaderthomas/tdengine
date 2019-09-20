@@ -16,20 +16,18 @@ entity = {}
 config = {}
 config.fonts = {
 	work_mac = {
-		font_dir = "/Users/thspader/Library/Fonts"
-		default = "Inconsolata-Regular"
+		imgui_font_size = 32.0
 	}
 	AKUMA = {
-		font_dir = "/usr/share/fonts/TTF/"
-		default = "Inconsolata-Regular"
+		imgui_font_size = 16.0
 	}
 	GOUKI = {
-		font_dir = "C:/Windows/Fonts/"
-		default = "Inconsolata-Regular"
+		imgui_font_size = 32.0
 	}
 	# NEW_FONT_CONFIG
 }
 
+
 config.screen = {
-    default = "1440"
+    default = "1080"
 }

@@ -239,7 +239,7 @@ int main() {
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
 	
 
-	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), tds_float(CONFIG_KEY, "imgui_font_size"));
+	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), tds_float(CONFIG_KEY, FONTS_KEY, computer_id, "imgui_font_size"));
    
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {
