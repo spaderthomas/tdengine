@@ -223,7 +223,7 @@ void Cutscene_Thing::exec_console_cmd(char* command_line) {
 	
 	if (console.Stricmp(command, "cutscene") == 0) {
 		char* which = strtok(NULL, " ");
-		if (does_cutscene_exist())
+		if (does_cutscene_exist(which))
 			do_cutscene(which);
 	} else if (console.Stricmp(command, "reload") == 0) {
 		reload();

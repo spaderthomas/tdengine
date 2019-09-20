@@ -59,7 +59,7 @@ struct Cutscene_Thing : Layer {
 	Cutscene* active_cutscene;
 
 	void exit() override;
-	bool does_cutscene_exist(const string& which) {
+	bool does_cutscene_exist(const string& which);
 	void do_cutscene(string which);
 	void reload() override;
 	void update(float dt) override;
