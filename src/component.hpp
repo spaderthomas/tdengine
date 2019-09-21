@@ -21,7 +21,6 @@ struct Graphic_Component : Component {
 };
 struct Position_Component : Component {
 	glm::vec2 world_pos = glm::vec2(0.f);
-	glm::vec2 scale = glm::vec2(1.f);
 	
 	TableNode* save() const override;
 	void load(TableNode* self) override;

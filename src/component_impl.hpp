@@ -76,21 +76,15 @@ TableNode* Position_Component::save() const {
 	
 	// Could make something to let you create nested tables if they don't exist,
 	// but typo errors + explicit > implicit means I'll leave it for now
-	TableNode* scale_table = new TableNode;
-	tds_set2(self, scale_table, SCALE_KEY);
 	TableNode* pos_table = new TableNode;
 	tds_set2(self, pos_table, POS_KEY);
 	
-	tds_set2(self, scale.x, SCALE_KEY, "x");
-	tds_set2(self, scale.y, SCALE_KEY, "y");
 	tds_set2(self, world_pos.x, POS_KEY, "x");
 	tds_set2(self, world_pos.y, POS_KEY, "y");
 	
 	return self;
 }
 void Position_Component::load(TableNode* self) {
-	scale.x = tds_float2(self, SCALE_KEY, "x");
-	scale.y = tds_float2(self, SCALE_KEY, "y");
 	world_pos.x = tds_float2(self, POS_KEY, "x");
 	world_pos.y = tds_float2(self, POS_KEY, "y");
 }
