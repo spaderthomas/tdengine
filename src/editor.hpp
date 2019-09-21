@@ -44,7 +44,6 @@ struct Editor : Layer {
 	EntityHandle selected;
 	void translate();
 	void delete_selected();
-	void draw_component_editor();
 	
 	// Undo 
 	vector<function<void()>> action_stack;

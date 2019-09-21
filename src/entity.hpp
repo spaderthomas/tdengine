@@ -21,6 +21,8 @@ struct Entity {
 	
 	TableNode* save();
 	void load(TableNode* self);
+
+	void imgui_visualizer();
 };
 int Entity::next_id = 0;
 

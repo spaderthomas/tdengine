@@ -2,6 +2,7 @@ struct Component {
 	virtual TableNode* save() const;
 	virtual void load(TableNode* table) { cout << "Tried to call virtual load() on base Component"; };
 	virtual string name() { return "Component"; };
+	virtual void imgui_visualizer() = 0;
 
 	// @spader 8/23/2019: Make init_from_table virtual
 };
@@ -10,11 +11,13 @@ struct Graphic_Component : Component {
 	Animation* active_animation = nullptr;
 	glm::vec2 scale;
 	int z;
-	
+
+	void begin_animation(string wish);
 	void add_animation(Animation* anim);
 	Sprite* get_current_frame();
 	void init_from_table(TableNode* table);
 	string name() override;
+	void imgui_visualizer() override;
 };
 struct Position_Component : Component {
 	glm::vec2 world_pos = glm::vec2(0.f);
@@ -23,12 +26,14 @@ struct Position_Component : Component {
 	TableNode* save() const override;
 	void load(TableNode* self) override;
 	string name() override;
+	void imgui_visualizer() override;
 };
 struct Movement_Component : Component {
 	glm::vec2 speed;
 	glm::vec2 wish;
 	void init_from_table(TableNode* table);
 	string name() override;
+	void imgui_visualizer() override;
 };
 struct Vision_Component : Component {
 	float width;
@@ -36,12 +41,14 @@ struct Vision_Component : Component {
 	
 	void init_from_table(TableNode* table);
 	string name() override;
+	void imgui_visualizer() override;
 };
 struct Interaction_Component : Component {
 	bool was_interacted_with = false;
 	EntityHandle other;
 	
 	string name() override;
+	void imgui_visualizer() override;
 };
 struct Door_Component : Component {
 	string level;
@@ -51,6 +58,7 @@ struct Door_Component : Component {
 	TableNode* save() const override;
 	void load(TableNode* self);
 	string name() override;
+	void imgui_visualizer() override;
 };
 enum Collider_Kind : int;
 struct Collision_Component : Component {
@@ -62,12 +70,14 @@ struct Collision_Component : Component {
 	
 	void init_from_table(TableNode* table);
 	string name() override;
+	void imgui_visualizer() override;
 };
 struct Task_Component : Component {
 	Task* task;
 	
 	string name() override;
 	void init_from_table(TableNode* table);
+	void imgui_visualizer() override;
 };
 struct BattleComponent : Component {
 	unsigned health;
@@ -75,6 +85,7 @@ struct BattleComponent : Component {
 	
 	void init_from_table(TableNode* table);
 	string name() override;
+	void imgui_visualizer() override;
 };
 struct TileComponent : Component {
 	int x;
@@ -83,6 +94,7 @@ struct TileComponent : Component {
 	string name() override;
 	TableNode* save() const override;
 	void load(TableNode* self);
+	void imgui_visualizer() override;
 };
 
 //@metaprogramming

@@ -245,24 +245,7 @@ void  Console::ExecCommand(char* command_line)
 	auto copy = (char*)calloc(sizeof(command_line) + 1, sizeof(char));
 	strcpy(copy, command_line);
 	char* command = strtok(copy, " ");
-	if (Stricmp(command, "layer") == 0) {
-		ran_generic_command = true;
-		char* which = strtok(NULL, " ");
-		if (which) {
-    		auto it = find_if(layer_map.begin(), layer_map.end(), [which](auto kvp) {
-					return kvp.first == which;
-				});
-
-			if (it != layer_map.end()) {
-				active_layer = layer_map[which];
-				iactive_layer = std::distance(layer_map.begin(), it);
-			}
-		} else {
-			AddLog("usage: layer {which}\n");
-			AddLog("\toptions: editor, cutscene, game, battle\n");
-		}
-	}
-	else if (Stricmp(command, "editor") == 0) {
+	if (Stricmp(command, "editor") == 0) {
 		ran_generic_command = true;
 		active_layer = &editor;
 		iactive_layer = EDITOR_IDX;

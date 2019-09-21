@@ -166,6 +166,15 @@ void Entity::destroy(pool_handle<Entity> handle) {
 	entity_pool.mark_available(handle);
 }
 
+void Entity::imgui_visualizer() {
+	// Iterate through components, displaying whatever you need
+	for (auto& kvp : components) {
+		pool_handle<any_component> handle = kvp.second;
+		Component* component = (Component*)handle();
+		if (component) component->imgui_visualizer();
+	}
+}
+
 void init_hero() {
 	g_hero = Entity::create("boon");
 }

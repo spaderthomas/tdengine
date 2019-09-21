@@ -57,85 +57,6 @@ void Editor::delete_selected() {
 	selected = { -1, nullptr };
 }
 
-void Editor::draw_component_editor() {
-	ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
-	
-	// Iterate through components, displaying whatever you need
-	for (auto& kvp : selected()->components) {
-		pool_handle<any_component> handle = kvp.second;
-		Component* component = (Component*)handle();
-		
-		//@metaprogramming
-		if (dynamic_cast<Graphic_Component*>(component)) {
-			if (ImGui::TreeNode("Graphic Component")) {
-				def_cast_cmp(gc, component, Graphic_Component);
-				
-				// Display animation info
-				Animation* current_animation = gc->active_animation;
-				if (ImGui::BeginCombo("Animations", current_animation->name.c_str(), 0)) {
-					for (auto anim : gc->animations) {
-						bool is_selected = anim->name == current_animation->name;
-						if (ImGui::Selectable(anim->name.c_str(), is_selected)) {
-							set_animation(selected, anim->name);
-						}
-						if (is_selected) {
-							ImGui::SetItemDefaultFocus();
-						}
-					}
-					ImGui::EndCombo();
-				}
-				
-				// Display scale info
-				ImGui::SliderFloat2("Scale", glm::value_ptr(gc->scale), 0.f, 1.f);
-				ImGui::TreePop();
-			}
-		}
-		else if (dynamic_cast<Door_Component*>(component)) {
-			if (ImGui::TreeNode("Door Component")) {
-				def_cast_cmp(door, component, Door_Component);
-				if (ImGui::BeginCombo("##setdoor", door->level.c_str(), 0)) {
-					for (auto& kvp : levels) {
-						const string& name = kvp.first;
-						bool is_selected = door->level.c_str() == name;
-						if (ImGui::Selectable(name.c_str(), &is_selected)) {
-							door->level = name;
-						}
-						if (is_selected) {
-							ImGui::SetItemDefaultFocus();
-						}
-					}
-					ImGui::EndCombo();
-				}
-				ImGui::TreePop();
-			}
-		}
-		else if (dynamic_cast<Position_Component*>(component)) {
-			if (ImGui::TreeNode("Position Component")) {
-				def_cast_cmp(pc, component, Position_Component);
-				ImGui::SliderFloat2("Position", glm::value_ptr(pc->world_pos), 0.f, 2.f);
-				ImGui::TreePop();
-			}
-		}
-		else if (dynamic_cast<BattleComponent*>(component)) {
-			if (ImGui::TreeNode("Battle Component")) {
-				def_cast_cmp(bc, component, BattleComponent);
-				ImGui::SliderInt("Health", (int*)&bc->health, 0, 10);
-				ImGui::TreePop();
-			}
-		}
-		else if (dynamic_cast<TileComponent*>(component)) {
-			if (ImGui::TreeNode("Tile Component")) {
-				def_cast_cmp(tc, component, TileComponent);
-				int min = tc->x - 20;
-				int max = tc->x + 20;
-				ImGui::SliderInt("Position", &tc->x, min, max);
-				ImGui::TreePop();
-			}
-		}
-	}
-	
-	ImGui::End();
-}
 void Editor::draw_tile_tree(Entity_Tree* root) {
 	if (ImGui::CollapsingHeader("Tile Selector")) {
 		for (auto child : root->children) {
@@ -278,9 +199,6 @@ void Editor::undo_mark() {
 	}
 }
 void Editor::update(float dt) {	
-	static bool open = true;
-	ShowExampleAppCustomNodeGraph(&open);
-		
 	if (input.is_down[GLFW_KEY_W]) {
 		camera.offset += glm::vec2{0, .025};
 	}
@@ -387,8 +305,7 @@ void Editor::update(float dt) {
 	
 	if (show_script_selector) {
 		ImGui::Begin("Scripts", 0, flags);
-		static ImGuiTextFilter filter;
-		filter.Draw("Filter");
+		static ImGuiTextFilter script_filter;
 		
 		static string script_current = script_to_entity.begin()->first;
 		
@@ -398,7 +315,7 @@ void Editor::update(float dt) {
 		if (ImGui::BeginCombo("##choose_script", script_current.c_str(), 0)) {
 			for (auto& kvp : script_to_entity) {
 				auto& script = kvp.first;
-				if (filter.PassFilter(script.c_str())) {
+				if (script_filter.PassFilter(script.c_str())) {
 					bool is_selected = (script == script_current);
 					if (ImGui::Selectable(script.c_str(), is_selected)) {
 						script_current = script;
@@ -409,10 +326,15 @@ void Editor::update(float dt) {
 			ImGui::EndCombo();
 		}
 		
+		script_filter.Draw("Filter Scripts");
+		static ImGuiTextFilter entity_filter;
+		entity_filter.Draw("Filter Entities");
+		
 		// Populate a list of selectables that, when clicked, create the corresponding entity
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 		ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
 		for (auto& entity : script_to_entity[script_current]) {
+			if (!entity_filter.PassFilter(entity.c_str())) continue;
 			if (ImGui::Selectable(entity.c_str())) {
 				// If we were selecting a tile, reset our grid settings
 				if (this->kind == TILE) {
@@ -450,8 +372,24 @@ void Editor::update(float dt) {
 			}
 			ImGui::EndCombo();
 		}
+
+		// Draw component editor for each entity
+		if (ImGui::TreeNode("boon")) {
+			g_hero->imgui_visualizer();
+			ImGui::TreePop();
+		}
+		
+		auto level = levels[level_current];
+		for (auto entity : level->entities) {
+			if (ImGui::TreeNode(entity->name.c_str())) {
+				entity->imgui_visualizer();
+				ImGui::TreePop();
+			}
+		}
 		ImGui::End();
 	}
+
+	
 	
 	if (show_state_tweaker) {
 		ImGui::Begin("State", 0, flags);
@@ -564,7 +502,10 @@ void Editor::update(float dt) {
 		}
 	}
 	else if (state == EDIT) {
-		draw_component_editor();
+		ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
+		if (selected) selected->imgui_visualizer();
+		ImGui::End();
+
 		if (input.was_pressed(GLFW_MOUSE_BUTTON_LEFT)) {
 			auto bounding_box = Center_Box::from_entity(selected);
 			if (bounding_box) {
@@ -608,7 +549,9 @@ void Editor::update(float dt) {
 		}
 	}
 	else if (state == DRAG) {
-		draw_component_editor();
+		ImGui::Begin("components", 0, ImGuiWindowFlags_AlwaysAutoResize);
+		if (selected) selected->imgui_visualizer();
+		ImGui::End();
 		translate();
 		
 		if (!input.is_down[GLFW_MOUSE_BUTTON_LEFT]) {

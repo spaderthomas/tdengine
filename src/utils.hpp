@@ -448,16 +448,10 @@ bool is_png(string& asset_path) {
 	return true;
 }
 
-bool is_lua(string& path) {
-	if (path.size() < 5) { return false; } // "x.lua" is the shortest name
-	string should_be_lua_extension = path.substr(path.size() - 4, 4);
-	if (should_be_lua_extension.compare(".lua")) return false;
-	return true;
-}
 bool is_tds(string& path) {
 	if (path.size() < 5) { return false; } // "x.tds" is the shortest name
-	string should_be_lua_extension = path.substr(path.size() - 4, 4);
-	if (should_be_lua_extension.compare(".tds")) return false;
+	string should_be_tds_extension = path.substr(path.size() - 4, 4);
+	if (should_be_tds_extension.compare(".tds")) return false;
 	return true;
 }
 
@@ -481,7 +475,7 @@ bool show_tile_selector = true;
 bool show_script_selector = true;
 bool show_level_selector = true;
 bool show_state_tweaker = true;
-bool show_task_editor = true;
+bool show_task_editor = false;
 
 
 const string ACTIONS_KEY     = "actions";

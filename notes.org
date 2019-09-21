@@ -283,6 +283,8 @@ a new task.
 * bugs
 @spader 9/7/2019: The install script doesn't work on windows because the
 backslash escapes the closing quotation mark. 
+@spader 9/20/2019: You can't select a cactus
+@spader 9/20/2019: You can't remove tiles unless you're using undo
 * qol
 @spader 9/8/2019: When you load a Position Component, if it has no scale then
 default to (1, 1). Ditto for when you save it -- if it's (1, 1), don't write it
@@ -300,6 +302,8 @@ without forward declaring it
 @spader 9/10/2019: Do something better than a fat union and a mapping of
 string::type_id for handling components. Maybe use base pointers like a real
 boy. 
+
+@spader 9/20/2019: Move all the flags in utils.hpp into a TDS file. 
 * polish
 @spader 9/8/2019: Fade-out/Fade-in for doors
 * switching layers

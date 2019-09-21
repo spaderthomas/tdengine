@@ -46,6 +46,8 @@ tiles = [
     ]
 
 
+print('AAAAAAAAAAAAAAAAAAAAAAHHHHHHHHHHHHHH')
+print(os.getcwd())
 with open("src/scripts/utils/tiles.tds", "w") as f:
     f.write(WARNING);
     for i, tile in enumerate(tiles):
