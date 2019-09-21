@@ -10,22 +10,6 @@ struct SRT {
 		t.translate = glm::vec3(0.0f);
 		return t;
 	}
-
-	void save(json& j) const {
-		j["translate.x"] = translate.x;
-		j["translate.y"] = translate.y;
-		j["scale.x"] = scale.x;
-		j["scale.y"] = scale.y;
-		j["rad_rot"] = rad_rot;
-	}
-	
-	void load(json& j) {
-		translate.x = j["translate.x"];
-		translate.y = j["translate.y"];
-		scale.x = j["scale.x"];
-		scale.y = j["scale.y"];
-		rad_rot = j["rad_rot"];
-	}
 };
 
 glm::mat3 identity_mat3() {
