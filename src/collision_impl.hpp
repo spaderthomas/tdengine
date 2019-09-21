@@ -68,7 +68,8 @@ void Physics_System::process(float dt) {
 				// Clearly, this won't work for real collision detection and is already hacky here!
 				if_component(door, element.other, Door_Component) {
 					if (element.me->name == HERO_KEY) {
-						active_layer->active_level = levels[door->level];
+						// @hack 9/20/2019: I mean, you only want this to happen in the game. But this is still hacky as fuck. 
+						game.active_level = levels[door->level];
 					}
 				}
 			}

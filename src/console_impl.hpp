@@ -242,26 +242,29 @@ void  Console::ExecCommand(char* command_line)
 	// If this gets set, we know not to pipe the command down to the layer-specific handler
 	bool ran_generic_command = false;
 
-	auto copy = (char*)calloc(sizeof(command_line) + 1, sizeof(char));
-	strcpy(copy, command_line);
+	auto copy = Strdup(command_line);
 	char* command = strtok(copy, " ");
 	if (Stricmp(command, "editor") == 0) {
 		ran_generic_command = true;
+		show_console = false;
 		active_layer = &editor;
 		iactive_layer = EDITOR_IDX;
 	}
 	else if (Stricmp(command, "cutscene_thing") == 0) {
 		ran_generic_command = true;
+		show_console = false;
 		active_layer = &cutscene_thing;
 		iactive_layer = CUTSCENE_IDX;
 	}
 	else if (Stricmp(command, "game") == 0) {
 		ran_generic_command = true;
+		show_console = false;
 		active_layer = &game;
 		iactive_layer = GAME_IDX;
 	}
 	else if (Stricmp(command, "battle") == 0) {
 		ran_generic_command = true;
+		show_console = false;
 		active_layer = &battle;
 		iactive_layer = BATTLE_IDX;
 	}
@@ -282,6 +285,46 @@ void  Console::ExecCommand(char* command_line)
 		else if (!strcmp(res, "1440")) use_1440p();
 		else AddLog("format: screen {640, 720, 1080, 1440}");
 	}
+	else if (Stricmp(command, "level") == 0) {
+		ran_generic_command = true;
+		char* which = strtok(NULL, " ");
+
+		// Just because you always want the game and editor to be synced for sure
+		if (active_layer == &game) {
+			swap_level(&editor, which);
+		}
+		else if (active_layer == &editor) {
+			swap_level(&game, which);
+		}
+		
+		swap_level(active_layer, which);
+	} else if (Stricmp(command, "state") == 0) {
+		ran_generic_command = true;
+		char* which = strtok(NULL, " ");
+		bool value;
+		istringstream(strtok(NULL, " ")) >> std::boolalpha >> value;
+		update_state(which, value);
+	} else if (Stricmp(command, "state?") == 0) {
+		ran_generic_command = true;
+		string which = strtok(NULL, " ");
+		
+		bool found = false;
+		for (auto& [state_name, value] : game_state) {
+			if (!Stricmp(state_name.c_str(), which.c_str())) {
+				found = true;
+				string message = game_state[which] ?
+					which + " = true" :
+					which + " = false";
+				AddLog(message.c_str());
+			}
+		}
+
+		if (!found) {
+			string message = "Sorry, couldn't find the state named [" + which + "]";
+			AddLog(message.c_str());
+		}
+	}
+	
 	
 	if (!ran_generic_command) active_layer->exec_console_cmd(command_line);
 }

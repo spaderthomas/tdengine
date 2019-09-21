@@ -287,12 +287,5 @@ void Game::render() {
 	text_box.render();
 }
 void Game::exec_console_cmd(char* command_line) {
-	char* command = strtok(command_line, " ");
-	if (!command) return;
-	
-	
-	if (console.Stricmp(command, "level") == 0) {
-		swap_level(this, strtok(NULL, " "));
-	}
 
 }

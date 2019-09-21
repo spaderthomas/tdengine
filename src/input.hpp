@@ -3,6 +3,7 @@ typedef int GLFW_KEY_TYPE;
 #define GLFW_KEY_SUPER 350
 #define GLFW_KEY_SHIFT 351
 
+#define ASCII_QMARK      63
 #define ASCII_UNDERSCORE 95
 
 struct Input {
@@ -66,12 +67,17 @@ void fill_imgui_input() {
 	// Fill in the input characters
 	for (int key = GLFW_KEY_SPACE; key < GLFW_KEY_A; key++) {
 		// @hack @spader 8/23/2019 Should make this more generic, but who cares
+		// @spader 9/20/2019 Used this hack again
 		bool used_shift = false;
 		if (key == GLFW_KEY_MINUS && global_input.chord(GLFW_KEY_SHIFT, GLFW_KEY_MINUS)) {
 			io.AddInputCharacter(ASCII_UNDERSCORE);
 			used_shift = true;
 		}
-
+		if (key == GLFW_KEY_SLASH && global_input.chord(GLFW_KEY_SHIFT, GLFW_KEY_SLASH)) {
+			io.AddInputCharacter(ASCII_QMARK);
+			used_shift = true;
+		}
+		
 		if (!used_shift && global_input.was_pressed(key)) {
 			io.AddInputCharacter(key);
 		}

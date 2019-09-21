@@ -59,9 +59,6 @@ tdapi void move_entity(EntityHandle me, bool up, bool down, bool left, bool righ
 tdapi void set_animation(EntityHandle me, string wish_name) {
 	def_get_cmp(gc, me.deref(), Graphic_Component);
 	gc->begin_animation(wish_name);
-
-	string msg = "Tried to set active animation to " + wish_name + " but it was not registered in the component!";
-	tdns_log.write(msg);
 }
 tdapi void set_animation_no_reset(EntityHandle me, string wish_name) {
 	def_get_cmp(gc, me.deref(), Graphic_Component);

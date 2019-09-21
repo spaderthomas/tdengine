@@ -4,6 +4,7 @@ struct Action {
 	virtual bool update(float dt) = 0;
 	virtual void init() {};
 	virtual string kind() = 0;
+	virtual void imgui_visualizer() = 0;
 };
 Action* action_from_table(TableNode* table, EntityHandle actor);
 void init_is_blocking_tds(Action* action, TableNode* table);
@@ -13,6 +14,7 @@ struct And_Action : Action {
 	vector<Action*> actions;
 	bool update(float dt) override;
 	string kind() override { return "And_Action"; }
+	void imgui_visualizer() override;
 };
 
 struct Movement_Action : Action {
@@ -20,11 +22,13 @@ struct Movement_Action : Action {
 
 	bool update(float dt) override;
 	string kind() override { return "Movement_Action"; }
+	void imgui_visualizer() override;
 };
 
 struct Wait_For_Interaction_Action : Action {
 	bool update(float dt) override;
 	string kind() override { return "Wait_For_Interaction_Action"; }
+	void imgui_visualizer() override;
 };
 
 struct Dialogue_Action : Action {
@@ -32,6 +36,7 @@ struct Dialogue_Action : Action {
 	bool update(float dt) override;
 	void init() override;
 	string kind() override { return "Dialogue_Action"; }
+	void imgui_visualizer() override;
 };
 
 struct Set_State_Action : Action {
@@ -40,6 +45,7 @@ struct Set_State_Action : Action {
 
 	bool update(float dt) override;
 	string kind() override { return "Set_State_Action"; }
+	void imgui_visualizer() override;
 };
 
 struct Teleport_Action : Action {
@@ -48,6 +54,7 @@ struct Teleport_Action : Action {
 
 	bool update(float dt) override;
 	string kind() override { return "Teleport_Action"; }
+	void imgui_visualizer() override;
 };
 
 struct Camera_Pan_Action : Action {
@@ -57,6 +64,7 @@ struct Camera_Pan_Action : Action {
 
 	bool update(float dt) override;
 	string kind() override { return "Camera_Pan_Action"; };
+	void imgui_visualizer() override;
 };
 
 struct Camera_Follow_Action : Action {
@@ -65,6 +73,7 @@ struct Camera_Follow_Action : Action {
 	
 	bool update(float dt) override;
 	string kind() override { return "Camera_Follow_Action"; };
+	void imgui_visualizer() override;
 };
 
 struct Cutscene_Action : Action {
@@ -72,11 +81,13 @@ struct Cutscene_Action : Action {
 	
 	bool update(float dt) override;
 	string kind() override { return "Cutscene_Action"; };
+	void imgui_visualizer() override;
 };
 
 struct Spin_Action : Action {
 	bool update(float dt) override;
 	string kind() override { return "Spin_Action"; };
+	void imgui_visualizer() override;
 };
 
 struct Action_Queue {
@@ -132,6 +143,7 @@ struct Task {
 	bool update(float dt);
 	void add_action(Action* a);
 	void init_from_table(TableNode* table, EntityHandle actor);
+	void imgui_visualizer();
 };
 
 struct TaskEditorNode {

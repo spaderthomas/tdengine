@@ -24,6 +24,7 @@ struct Shader {
 			unsigned int fsize = ftell(shader_source_file);
 			fseek(shader_source_file, 0, SEEK_SET);
 
+			// @leak
 			char *source = (char*)malloc(fsize + 1);
 			fread(source, fsize, 1, shader_source_file);
 			source[fsize] = 0;

@@ -8,6 +8,9 @@ void Graphic_Component::begin_animation(string wish) {
 			return;
 		}
 	}
+
+	string msg = "Tried to set active animation to " + wish + " but it was not registered in the component!";
+	tdns_log.write(msg);
 }
 void Graphic_Component::add_animation(Animation* anim) {
 	animations.push_back(anim);
@@ -180,6 +183,7 @@ void Task_Component::init_from_table(TableNode* table) {
 }
 void Task_Component::imgui_visualizer() {
 	if (ImGui::TreeNode("Task Component")) {
+		task->imgui_visualizer();
 		ImGui::TreePop();
 	}
 }

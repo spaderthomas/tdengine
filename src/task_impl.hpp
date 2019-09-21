@@ -106,6 +106,11 @@ bool And_Action::update(float dt) {
 	
 	return done;
 }
+void And_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("And Action")) {
+		ImGui::TreePop();
+	}
+}
 
 bool Movement_Action::update(float dt) { 
 	def_get_cmp(pc, actor.deref(), Position_Component);
@@ -122,6 +127,12 @@ bool Movement_Action::update(float dt) {
 	move_entity(actor, up, down, left, right);
 	return false;
 }	
+void Movement_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("Movement Action")) {
+		ImGui::Text("(%f, %f)", dest.x, dest.y);
+		ImGui::TreePop();
+	}
+}
 
 bool Wait_For_Interaction_Action::update(float dt) {
 	def_get_cmp(ic, actor.deref(), Interaction_Component);
@@ -134,6 +145,11 @@ bool Wait_For_Interaction_Action::update(float dt) {
 	}
 	
 	return false;
+}
+void Wait_For_Interaction_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("Wait For Interaction Action")) {
+		ImGui::TreePop();
+	}
 }
 
 void Dialogue_Action::init() {
@@ -192,15 +208,34 @@ bool Dialogue_Action::update(float dt) {
 	text_box.update(dt);
 	return false;
 }
+void Dialogue_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("Dialogue Action")) {
+		ImGui::TreePop();
+	}
+}
 
 bool Set_State_Action::update(float dt) {
 	update_state(this->var, this->value);
 	return true;
 }
+void Set_State_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("Set State Action")) {
+		string which = "State: " + this->var;
+		string val = this->value ? "Value: true" : "Value: false";
+		ImGui::Text(which.c_str());
+		ImGui::Text(val.c_str());
+		ImGui::TreePop();
+	}
+}
 
 bool Teleport_Action::update(float dt) {
 	teleport_entity(this->actor, this->x, this->y);
 	return true;
+}
+void Teleport_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("Teleport Action")) {
+		ImGui::TreePop();
+	}
 }
 
 bool Camera_Pan_Action::update(float dt) {
@@ -209,6 +244,11 @@ bool Camera_Pan_Action::update(float dt) {
 	
 	frames_elapsed++;
 	return count_frames == frames_elapsed;
+}
+void Camera_Pan_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("Camera Pan Action")) {
+		ImGui::TreePop();
+	}
 }
 
 bool Camera_Follow_Action::update(float dt) {
@@ -248,6 +288,11 @@ bool Camera_Follow_Action::update(float dt) {
 	}
 	return false;
 }
+void Camera_Follow_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("Camera Follow Action")) {
+		ImGui::TreePop();
+	}
+}
 
 bool Cutscene_Action::update(float dt) {
 	// @spader 9/8/2019: This might come back to bite me later. Kind of willy-nilly changine layers.
@@ -257,9 +302,21 @@ bool Cutscene_Action::update(float dt) {
 	cutscene_thing.do_cutscene(which);
 	return true;
 }
+void Cutscene_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("Cutscene Action")) {
+		string message = "Cutscene: " + which;
+		ImGui::Text(message.c_str());
+		ImGui::TreePop();
+	}
+}
 
 bool Spin_Action::update(float dt) {
 	return false;
+}
+void Spin_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("Spin Action")) {
+		ImGui::TreePop();
+	}
 }
 
 bool Task::update(float dt) {
@@ -296,6 +353,11 @@ void Task::init_from_table(TableNode* table, EntityHandle actor) {
 		this->add_action(action);
 	}
 }
+void Task::imgui_visualizer() {
+	for (auto action : action_queue.actions) {
+		action->imgui_visualizer();
+	}
+};
 
 // Pushes out a list of connected nodes that ImGui uses to render tasks
 vector<TaskEditorNode*> make_task_graph(Task* task, ImVec2 base) {
