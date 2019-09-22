@@ -50,7 +50,7 @@ struct Game : Layer {
 	void update(float dt) override;
 	void render() override;
 	void init() override;
-	void exec_console_cmd(char* cmd) override;
+	void do_cutscene(string which);
 };
 Game game;
 

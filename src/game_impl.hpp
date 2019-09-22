@@ -199,7 +199,7 @@ bool Cutscene_Thing::does_cutscene_exist(const string& which) {
 void Cutscene_Thing::do_cutscene(string which) {
 	auto cutscene = cutscenes[which];
 	this->active_level = cutscene->level;
-	this->active_level->replace_entities(tds_table(CUTSCENES_KEY, which, ENTITIES_KEY));
+	this->active_level->create_or_add_entities(tds_table(CUTSCENES_KEY, which, ENTITIES_KEY));
 
 	auto cutscene_actions = tds_table(CUTSCENES_KEY, which, ACTIONS_KEY);
 	fox_for(i, cutscene->task.action_queue.size()) {
@@ -233,7 +233,6 @@ void Cutscene_Thing::exec_console_cmd(char* command_line) {
 
 }
 
-// 
 void Cutscene_Thing::exit() {
 	if (this->active_level)
 		this->active_level->load();
@@ -286,6 +285,5 @@ void Game::render() {
 	renderer.render_for_frame();
 	text_box.render();
 }
-void Game::exec_console_cmd(char* command_line) {
-
+void Game::do_cutscene(string which) {
 }

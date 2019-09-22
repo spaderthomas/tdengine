@@ -242,7 +242,8 @@ void  Console::ExecCommand(char* command_line)
 	// If this gets set, we know not to pipe the command down to the layer-specific handler
 	bool ran_generic_command = false;
 
-	auto copy = Strdup(command_line);
+	auto copy = (char*)calloc(sizeof(command_line) + 1, sizeof(char));
+	strcpy(copy, command_line);
 	char* command = strtok(copy, " ");
 	if (Stricmp(command, "editor") == 0) {
 		ran_generic_command = true;
@@ -328,4 +329,5 @@ void  Console::ExecCommand(char* command_line)
 	
 	if (!ran_generic_command) active_layer->exec_console_cmd(command_line);
 }
+
 

@@ -5,14 +5,7 @@ cutscenes.test.entities = {
 	    name = "intro_police",
 		components = {
 		    Position_Component = {
-			    scale = {
-				    x = 1.0
-					y = 1.0
-				},
-				pos = {
-				    x = 0.0,
-					y = 0.0
-				}
+				pos = { x = 0.0, y = 0.0 }
 			}
 		}
 	},
@@ -20,14 +13,7 @@ cutscenes.test.entities = {
 	    name = "wilson",
 		components = {
 		    Position_Component = {
-			    scale = {
-				    x = 1.0
-					y = 1.0
-				},
-				pos = {
-				    x = 0.1,
-					y = 0.1
-				}
+				pos = { x = 0.1, y = 0.1 }
 			}
 		}
 	}
@@ -41,7 +27,6 @@ cutscenes.test.actions = {
 	        text = {
 				 "...ring...ring...i am a telephone",
 				 "it's me, your father, please go to the hardware store!",
-				 "i am a real boy"
 		    }
 	        terminal = true,
 	        responses = {},

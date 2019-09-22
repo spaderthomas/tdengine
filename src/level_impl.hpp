@@ -48,23 +48,29 @@ EntityHandle Level::erase_first_matching_entity(string name) {
 void Level::clear_entities() {
 	entities.clear(); // @leak
 }
-void Level::replace_entities(TableNode* entities_table) {
+void Level::create_or_add_entities(TableNode* entities_table) {
 	fox_for(i, entities_table->assignments.size()) {
 		TableNode* entity_table = tds_table2(entities_table, to_string(i));
 		string name = tds_string2(entity_table, NAME_KEY);
 
-		// Erase the old entity with this name if it exists
+		// Look for an existing entity of this name
 		auto it = std::find_if(entities.begin(), entities.end(), [&name](auto& entity) {
 			return entity->name == name;
 		});
 
-		if (it != entities.end())
-			entities.erase(it);
-
-		// Make a fresh one with the defaults from the table and add it to the vector
-		auto entity = Entity::create(name);
-		entity->load(entity_table);
-		entities.push_back(entity);
+		// If we find it, just update it with the parameters from the table
+		if (it != entities.end()) {
+			tdns_log.write("Just loaded an existing " + name + " for a cutscene");
+			auto entity = *it;
+			entity->load(entity_table);
+		}
+		// If we don't, make a fresh one and load some data from the table
+		else {
+			tdns_log.write("Just added a " + name + " for a cutscene");
+			auto entity = Entity::create(name);
+			entity->load(entity_table);
+			entities.push_back(entity);	
+		}
 	}
 }
 
