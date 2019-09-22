@@ -41,3 +41,35 @@ void GLFW_Error_Callback(int err, const char* msg) {
 	cout << err;
 	cout << msg;
 }
+
+int init_glfw() {
+		auto result = glfwInit();
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
+	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+	
+	g_window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "tdengine", NULL, NULL);
+	if (g_window == NULL) {
+		tdns_log.write("Failed to create GLFW window");
+		glfwTerminate();
+		return -1;
+	}
+	glfwMakeContextCurrent(g_window);
+
+	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
+		tdns_log.write("Failed to initialize GLAD");
+		return -1;
+	}
+	
+	glfwSetCursorPosCallback(g_window, GLFW_Cursor_Pos_Callback);
+	glfwSetMouseButtonCallback(g_window, GLFW_Mouse_Button_Callback);
+	glfwSetKeyCallback(g_window, GLFW_Key_Callback);
+	glfwSetScrollCallback(g_window, GLFW_Scroll_Callback);
+	glfwSetErrorCallback(GLFW_Error_Callback);
+	
+	glfwSwapInterval(0);
+
+	return 0;
+}

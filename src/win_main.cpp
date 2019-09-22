@@ -96,42 +96,10 @@ using namespace std;
 
 int main() {
 	tdns_log.init();
-	
-	auto result = glfwInit();
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
-	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-	
-	g_window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "tdengine", NULL, NULL);
-	if (g_window == NULL) {
-		std::cout << "Failed to create GLFW window" << std::endl;
-		glfwTerminate();
-		return -1;
-	}
-	glfwMakeContextCurrent(g_window);
 
-	if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-		std::cout << "Failed to initialize GLAD" << std::endl;
-		return -1;
-	}
+	EXIT_IF_ERROR(init_glfw());
+	init_imgui();
 	
-	glfwSetCursorPosCallback(g_window, GLFW_Cursor_Pos_Callback);
-	glfwSetMouseButtonCallback(g_window, GLFW_Mouse_Button_Callback);
-	glfwSetKeyCallback(g_window, GLFW_Key_Callback);
-	glfwSetScrollCallback(g_window, GLFW_Scroll_Callback);
-	glfwSetErrorCallback(GLFW_Error_Callback);
-	
-	glfwSwapInterval(0);
-
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGui_ImplGlfwGL3_Init(g_window, false);
-	auto& imio = ImGui::GetIO();
-	imio.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-	ImGui::StyleColorsDark();
-
 	component_pool.init();
 	entity_pool.init();
 	
@@ -141,27 +109,22 @@ int main() {
 	create_texture("textures/misc/text_box.png");
 	
 	init_tdscript();
+	test_tdscript();
 	change_window_size(tds_string("config", "screen", "default"));
 
-	load_move_data();
-					   
-					   
+	// Load all the game data out of TDS files
+	init_moves();
 	init_state();
 	init_levels();
 	init_fonts();
-	
+	init_cutscenes();
 	init_hero();
+	
 	game.init();
-	cutscene_thing.init();
 	editor.init();
 	battle.init();
 	
 	init_collider_matrix();
-	
-	test_tdscript();
-	
-	
-
 	
 	// Set up some debug output
 	GLint flags;

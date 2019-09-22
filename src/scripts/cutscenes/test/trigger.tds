@@ -3,6 +3,8 @@ entity.CT_test = {}
 entity.CT_test.components = {}
 entity.CT_test.components.Task_Component = {}
 
+# Give the trigger two scripts:
+# 1. While waiting do nothing
 entity.CT_test.scripts = {}
 entity.CT_test.scripts.waiting = {
     {
@@ -10,6 +12,7 @@ entity.CT_test.scripts.waiting = {
 		is_blocking = false
 	}
 }
+# 2. When triggered, start the cutscene
 entity.CT_test.scripts.playing = {
     {
 		kind = "Cutscene_Action",
@@ -18,6 +21,8 @@ entity.CT_test.scripts.playing = {
 	}
 }
 
+# Tie the waiting state to the waiting cutscene
+# Plus, make it transition when the trigger flag is set
 entity.CT_test.State_Machine = {}
 entity.CT_test.State_Machine.waiting = {
     task = entity.CT_test.scripts.waiting,
@@ -31,6 +36,7 @@ entity.CT_test.State_Machine.waiting = {
 	}
 }
 
+# Ditto for playing
 entity.CT_test.State_Machine.playing = {
     task = entity.CT_test.scripts.playing,
 	transitions = {

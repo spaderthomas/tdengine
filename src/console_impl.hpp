@@ -251,12 +251,6 @@ void  Console::ExecCommand(char* command_line)
 		active_layer = &editor;
 		iactive_layer = EDITOR_IDX;
 	}
-	else if (Stricmp(command, "cutscene_thing") == 0) {
-		ran_generic_command = true;
-		show_console = false;
-		active_layer = &cutscene_thing;
-		iactive_layer = CUTSCENE_IDX;
-	}
 	else if (Stricmp(command, "game") == 0) {
 		ran_generic_command = true;
 		show_console = false;
@@ -302,6 +296,7 @@ void  Console::ExecCommand(char* command_line)
 	} else if (Stricmp(command, "state") == 0) {
 		ran_generic_command = true;
 		char* which = strtok(NULL, " ");
+
 		bool value;
 		istringstream(strtok(NULL, " ")) >> std::boolalpha >> value;
 		update_state(which, value);
@@ -324,6 +319,14 @@ void  Console::ExecCommand(char* command_line)
 			string message = "Sorry, couldn't find the state named [" + which + "]";
 			AddLog(message.c_str());
 		}
+	} else if (Stricmp(command, "cutscene") == 0) {
+		ran_generic_command = true;
+		char* which = strtok(NULL, " ");
+		if (!does_cutscene_exist(which)) {
+			AddLog("Asked to start cutscene [%s], but couldn't find it.", which);
+		}
+
+		game.do_cutscene(which);
 	}
 	
 	

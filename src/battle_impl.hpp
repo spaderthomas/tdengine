@@ -2,7 +2,7 @@ void Move::init_from_table(TableNode* table) {
 	this->power = tds_int2(table, "power");
 }
 
-void load_move_data() {
+void init_moves() {
 	TableNode* tds_move_data = tds_table("moves");
 	for (auto& kvp : tds_move_data->assignments) {
 		Move* move = new Move;

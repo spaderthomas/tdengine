@@ -77,7 +77,7 @@ int Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 				ImVec2 bottom_left_tex_coords = ImVec2(ent_sprite->tex_coords[6], ent_sprite->tex_coords[7]);
 				ImVec2 button_size = ImVec2(32, 32);
 				ImGui::PushID(unique_btn_index++);
-				if (ImGui::ImageButton((ImTextureID)ent_sprite->atlas->handle,
+				if (ImGui::ImageButton((ImTextureID)(uintptr_t)ent_sprite->atlas->handle,
 									   button_size,
 									   bottom_left_tex_coords, top_right_tex_coords))
 				{

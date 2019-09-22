@@ -6,4 +6,4 @@ struct Move {
 };
 
 unordered_map<string, Move*> move_data;
-void load_move_data();
+void init_moves();

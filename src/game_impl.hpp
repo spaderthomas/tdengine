@@ -107,8 +107,6 @@ void Battle::update(float dt) {
 	
 }
 
-
-
 void Cutscene::init(string name, TableNode* table) {
 	this->name = name;
 	this->level = levels[tds_string2(table, LEVEL_KEY)];
@@ -134,61 +132,7 @@ void Cutscene::update(float dt) {
 	task.update(dt);
 }
 
-void Cutscene_Thing::update(float dt) {
-	if (show_console) {
-		console.Draw("tdconsole");
-	}
-
-	// @spader 8/22/2019: This is kind of hacky. I mean, we always want this to happen, but do I want
-	// the camera to know what layer it's camera-ing for?
-	camera.update(dt);
-	input.world_pos = input.screen_pos + camera.offset;
-	
-	if (active_cutscene && !active_cutscene->done) {
-		active_cutscene->update(dt);
-	}
-	
-	physics_system.process(1.f / 60.f);
-}
-
-void Cutscene_Thing::render() {
-	if (active_cutscene)
-		active_cutscene->level->draw();
-	
-	renderer.render_for_frame();
-	text_box.render();
-}
-
-void Cutscene_Thing::init() {
-	for (auto& [name, cutscene] : cutscenes) {
-		free(cutscene);
-	}
-	this->active_cutscene = nullptr;
-	
-	TableNode* all_cutscenes = tds_table(CUTSCENES_KEY);
-	for (auto node : all_cutscenes->assignments) {
-		KVPNode* kvp = (KVPNode*)node;
-		Cutscene* cutscene = new Cutscene;
-		cutscene->init(kvp->key, (TableNode*)kvp->value);
-		this->cutscenes[kvp->key] = cutscene;
-	}
-}
-
-void Cutscene_Thing::reload() {
-	// Save the old state 
-	string old_active_cutscene = active_cutscene->name;
-	
-	// Do this so no old state hangs around from the last time the cutscene ran
-	active_cutscene->level->clear_entities();
-	camera.following = NULL_ENTITY;
-	
-	// Reload the scripts for the cutscene and reload them into C++ structs 
-	ScriptManager.script_dir(absolute_path(path_join({"src", "scripts", "cutscenes"})));
-	init();
-	// Restore state
-	do_cutscene(old_active_cutscene);
-}
-bool Cutscene_Thing::does_cutscene_exist(const string& which) {
+bool does_cutscene_exist(const string& which) {
 	for (auto& [name, cutscene] : cutscenes) {
 		if (name == which) return true;
 	}
@@ -196,46 +140,23 @@ bool Cutscene_Thing::does_cutscene_exist(const string& which) {
 	return false;
 }
 
-void Cutscene_Thing::do_cutscene(string which) {
-	auto cutscene = cutscenes[which];
-	this->active_level = cutscene->level;
-	this->active_level->create_or_add_entities(tds_table(CUTSCENES_KEY, which, ENTITIES_KEY));
-
-	auto cutscene_actions = tds_table(CUTSCENES_KEY, which, ACTIONS_KEY);
-	fox_for(i, cutscene->task.action_queue.size()) {
-		TableNode* action_table = tds_table2(cutscene_actions, to_string(i));
-		string entity_name = "";
-		if (action_table->has_key(ENTITY_KEY)) {
-			entity_name = tds_string2(action_table, ENTITY_KEY);
-		}
-
-		Action* action = cutscene->task.action_queue[i];
-		action->actor = active_level->get_first_matching_entity(entity_name);
+void init_cutscenes() {
+	for (auto& [name, cutscene] : cutscenes) {
+		free(cutscene);
 	}
 	
-	this->active_cutscene = cutscene;
-	this->camera.offset = { 0.f, 0.f };
-}
-
-void Cutscene_Thing::exec_console_cmd(char* command_line) {
-	char* command = strtok(command_line, " ");
-	if (!command) return;
-	
-	if (console.Stricmp(command, "cutscene") == 0) {
-		char* which = strtok(NULL, " ");
-		if (does_cutscene_exist(which))
-			do_cutscene(which);
-	} else if (console.Stricmp(command, "reload") == 0) {
-		reload();
-	} else {
-		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);
+	TableNode* all_cutscenes = tds_table(CUTSCENES_KEY);
+	for (auto node : all_cutscenes->assignments) {
+		KVPNode* kvp = (KVPNode*)node;
+		Cutscene* cutscene = new Cutscene;
+		cutscene->init(kvp->key, (TableNode*)kvp->value);
+		cutscenes[kvp->key] = cutscene;
 	}
-
 }
 
-void Cutscene_Thing::exit() {
-	if (this->active_level)
-		this->active_level->load();
+void reload_cutscenes() {
+	ScriptManager.script_dir(absolute_path(path_join({"src", "scripts", "cutscenes"})));
+	init_cutscenes();
 }
 	
 void Game::init() {
@@ -244,6 +165,7 @@ void Game::init() {
 	active_level = levels["overworld"]; //@hack Probably a better way to do this
 	camera.following = g_hero;
 }
+
 void Game::update(float dt) {
 	static int frame = 0;
 	
@@ -258,9 +180,17 @@ void Game::update(float dt) {
 	for (auto entity : active_level->entities) {
 		update_task(entity, dt);
 	}
-	
-	if (in_dialogue) {
-	} else {
+
+	if (state == GameState::Dialogue) {
+		// ...
+	} else if (state == GameState::Cutscene) {
+		// Either run the cutscene or go back to the game
+		if (active_cutscene && active_cutscene->done) {
+			state = GameState::Game;
+		} else {
+			active_cutscene->update(dt);
+		}
+	} else if (state == GameState::Game) {
 		// Deal with the player
 		move_entity(g_hero, input.is_down[GLFW_KEY_W], input.is_down[GLFW_KEY_S], input.is_down[GLFW_KEY_A], input.is_down[GLFW_KEY_D]);
 		draw_entity(g_hero, Render_Flags::None);
@@ -280,10 +210,30 @@ void Game::update(float dt) {
 	
 	frame++;
 }
+
 void Game::render() {
 	active_level->draw();
 	renderer.render_for_frame();
 	text_box.render();
 }
+
 void Game::do_cutscene(string which) {
+	auto cutscene = cutscenes[which];
+	this->active_level = cutscene->level;
+	this->active_level->create_or_add_entities(tds_table(CUTSCENES_KEY, which, ENTITIES_KEY));
+
+	auto cutscene_actions = tds_table(CUTSCENES_KEY, which, ACTIONS_KEY);
+	fox_for(i, cutscene->task.action_queue.size()) {
+		TableNode* action_table = tds_table2(cutscene_actions, to_string(i));
+		string entity_name = "";
+		if (action_table->has_key(ENTITY_KEY)) {
+			entity_name = tds_string2(action_table, ENTITY_KEY);
+		}
+
+		Action* action = cutscene->task.action_queue[i];
+		action->actor = active_level->get_first_matching_entity(entity_name);
+	}
+	
+	this->active_cutscene = cutscene;
+	this->camera.offset = { 0.f, 0.f };
 }

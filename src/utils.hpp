@@ -3,7 +3,7 @@
 #define fox_min(a, b) (a) > (b) ? (b) : (a)
 #define fox_for(iterName, iterCount) for (unsigned int iterName = 0; iterName < (iterCount); ++iterName)
 #define fox_iter(iter_name, container) for (auto iter_name = (container).begin(); (iter_name) != (container).end(); (iter_name)++)
-
+#define EXIT_IF_ERROR(expr) if ((expr)) { return -1; }
 #define rand_float(max) (static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (max)))
 
 #define is_newline(c) ((c) == '\n' || (c) == '\r')
@@ -1164,4 +1164,13 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 	ImGui::EndGroup();
 	
 	ImGui::End();
+}
+
+void init_imgui() {
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGui_ImplGlfwGL3_Init(g_window, false);
+	auto& imgui = ImGui::GetIO();
+	imgui.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	ImGui::StyleColorsDark();
 }

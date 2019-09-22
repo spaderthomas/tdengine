@@ -304,6 +304,17 @@ string::type_id for handling components. Maybe use base pointers like a real
 boy. 
 
 @spader 9/20/2019: Move all the flags in utils.hpp into a TDS file. 
+@spader 9/22/2019: Also, have the engine watch this file for updated timestamp
+and automatically reload it. 
+
+@spader 9/22/2019: Move globals into a big struct, mostly for ease of
+readability. 
+
+@spader 9/22/2019: Use tdengine as a command line program. First thing: Add an
+action from the command line. Action headers go in a folder, and the CLI
+generates a new header into that folder. win_main can just #include
+"actions/action_includes.hpp". Would save me from writing a lot of boilerplate. 
+
 * polish
 @spader 9/8/2019: Fade-out/Fade-in for doors
 * switching layers
@@ -344,3 +355,32 @@ another idea. levels are split into two. one is a backdrop, the other is
 actors. anything that's just there becomes a part of the backdrop. you can
 always reuse the same backdrop. but then you have to keep the actors aligned, so
 that's the same problem as i had before. i think it's best to save/restore. 
+
+-- 9/22/2019 5:10
+
+just need to jot down some thoughts about how i handle cutscenes and stuff...
+
+i want to be able to fuck with cutscenes two ways: 
+1. i'm playing the game, i can flip some bits through the editor or through the
+   game itself, and then i can see if the cutscene triggers and if it does what
+   i want it to do. "integration test".
+2. i want to see if the cutscene just works mechanically. "unit test". 
+
+right now the cutscene action loads up the cutscene test layer and triggers a
+cutscene from that. that's definitely not what i want to do. first off, adding a
+new layer was kind of a pain in the ass because it was easy to forget stuff
+(update the console! do physics! update the camera!). second off, the -only-
+thing that layer does is to run a cutscene. so it's just a kind of bullshit
+piece of code. 
+
+i could probably just smush that into the editor? 
+
+also, side note, the battle layer is pretty whatever, so don't worry about
+that. 
+
+another thing with cutscenes, and i don't know if i am making shit too
+complicated here, but doesn't there need to be a set state for a cutscene to
+work? as in, should a cutscene only trigger if some certain flags are properly
+set? i don't think so...this game is supposed to be linear. so if that is the
+case, then i can just trigger a cutscene from literally anywhere and it will
+work. 

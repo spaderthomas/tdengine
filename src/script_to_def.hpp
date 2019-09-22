@@ -2,6 +2,22 @@
 
         unordered_map<string, vector<string>> script_to_entity = {
 	{
+		"utils/tiles.tds",
+		{"grass", "cobblestone2", "sand", "cobblestone1", "cobblestone4", "overworld_ground1", "cobblestone3", "grass_flower3", "grass_flower2", "grass_flower1", "sand_cracked", "wood_floor", "border_top_right_grass", "border_bottom_left_sand_grass", "border_top_sand_grass", "border_bottom_sand_grass", "border_right_sand_grass", "border_top_right_sand_grass", "border_top_left_sand_grass", "border_top_left_grass", "border_left_sand_grass", "border_bottom_right_grass", "border_bottom_right_sand_grass", "border_bottom_left_grass", "sand_path_left", "sand_path_bottomleft_inner", "sand_path_bottom", "sand_path_bottomleft_outer", "sand_path_bottomright_inner", "sand_path_topright_inner", "sand_path_right", "sand_path_topleft_inner", "sand_path_top", "sand_path_topright_outer", "sand_path_topleft_outer", "sand_path_bottomright_outer"}
+	},
+	{
+		"cutscenes/test/trigger.tds",
+		{"CT_test"}
+	},
+	{
+		"props/foliage.tds",
+		{"tree", "cactus", "bush"}
+	},
+	{
+		"props/fences.tds",
+		{"fence_left", "fence_middle", "fence_right", "fence_post", "fence_top"}
+	},
+	{
 		"buildings/boonhouse.tds",
 		{"boonhouse_door"}
 	},
@@ -14,6 +30,10 @@
 		{"door_overworld_boon"}
 	},
 	{
+		"characters/intro_police.tds",
+		{"intro_police"}
+	},
+	{
 		"characters/boi.tds",
 		{"boi"}
 	},
@@ -22,27 +42,7 @@
 		{"boon"}
 	},
 	{
-		"characters/intro_police.tds",
-		{"intro_police"}
-	},
-	{
-		"characters/wilson/scenes/intro.tds",
+		"characters/wilson/scenes/main1.tds",
 		{"wilson"}
-	},
-	{
-		"cutscenes/test/trigger.tds",
-		{"CT_test"}
-	},
-	{
-		"props/fences.tds",
-		{"fence_left", "fence_middle", "fence_right", "fence_post", "fence_top"}
-	},
-	{
-		"props/foliage.tds",
-		{"tree", "cactus", "bush"}
-	},
-	{
-		"utils/tiles.tds",
-		{"border_bottom_left_grass", "border_bottom_left_sand_grass", "border_bottom_right_grass", "border_bottom_right_sand_grass", "border_bottom_sand_grass", "border_left_sand_grass", "border_right_sand_grass", "border_top_left_grass", "border_top_left_sand_grass", "border_top_right_grass", "border_top_right_sand_grass", "border_top_sand_grass", "cobblestone1", "cobblestone2", "cobblestone3", "cobblestone4", "grass", "grass_flower1", "grass_flower2", "grass_flower3", "overworld_ground1", "sand", "sand_cracked", "wood_floor", "sand_path_bottom", "sand_path_bottomleft_inner", "sand_path_bottomleft_outer", "sand_path_bottomright_inner", "sand_path_bottomright_outer", "sand_path_left", "sand_path_right", "sand_path_top", "sand_path_topleft_inner", "sand_path_topleft_outer", "sand_path_topright_inner", "sand_path_topright_outer"}
 	}
 };

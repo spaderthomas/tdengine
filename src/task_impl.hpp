@@ -295,11 +295,7 @@ void Camera_Follow_Action::imgui_visualizer() {
 }
 
 bool Cutscene_Action::update(float dt) {
-	// @spader 9/8/2019: This might come back to bite me later. Kind of willy-nilly changine layers.
-	// Probably cutscenes shouldn't be in a separate layer except for testing. 
-	active_layer = all_layers[CUTSCENE_IDX];
-	iactive_layer = CUTSCENE_IDX;
-	cutscene_thing.do_cutscene(which);
+	game.do_cutscene(which);
 	return true;
 }
 void Cutscene_Action::imgui_visualizer() {
