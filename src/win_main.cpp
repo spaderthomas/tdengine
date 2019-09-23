@@ -257,6 +257,12 @@ int main() {
 		}
 		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
 	}
+
+	TableWriter writer;
+	writer.table = tds_table(EDITOR_KEY);
+	writer.table_name = "editor = ";
+	auto editor_file = absolute_path(path_join({"src", "scripts", "utils", "editor.tds"}));
+	writer.dump(editor_file);
     
 	return 0;
 }

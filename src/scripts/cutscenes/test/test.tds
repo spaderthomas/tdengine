@@ -26,7 +26,7 @@ cutscenes.test.actions = {
 		dialogue = {
 	        text = {
 				 "...ring...ring...i am a telephone",
-				 "it's me, your father, please go to the hardware store!",
+				 "yeah, here's some more dialogue for ya",
 		    }
 	        terminal = true,
 	        responses = {},

@@ -484,6 +484,7 @@ const string COMPONENTS_KEY  = "components";
 const string CONFIG_KEY      = "config";
 const string CUTSCENES_KEY   = "cutscenes";
 const string DIALOGUE_KEY    = "dialogue";
+const string EDITOR_KEY      = "editor";
 const string ENTITY_KEY      = "entity";
 const string ENTITIES_KEY    = "entities";
 const string FONTS_KEY       = "fonts";
@@ -1174,3 +1175,4 @@ void init_imgui() {
 	imgui.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::StyleColorsDark();
 }
+

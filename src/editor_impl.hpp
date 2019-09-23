@@ -34,7 +34,11 @@ pool_handle<Entity> Entity_Tree::find(string name) {
 }
 
 void Editor::init() {
-	active_level = levels["overworld"];
+	active_level = levels[tds_string(EDITOR_KEY, LEVEL_KEY)];
+	camera.offset = glm::vec2 {
+		tds_float(EDITOR_KEY, POS_KEY, "x"),
+		tds_float(EDITOR_KEY, POS_KEY, "y")
+	};
 	tile_tree = Entity_Tree::create(absolute_path("textures/tiles"));
 }
 void Editor::translate() {
@@ -175,6 +179,7 @@ void Editor::reload() {
 	init_tdscript(); // @leak
 	init_state();
 	init_levels();     // @leak
+	reload_cutscenes();
 	
 	init_hero();
 	game.init();
@@ -211,6 +216,10 @@ void Editor::update(float dt) {
 	if (input.is_down[GLFW_KEY_D]) {
 		camera.offset += glm::vec2{.025, 0};
 	}
+
+	tds_set(camera.offset.x, EDITOR_KEY, POS_KEY, "x");
+	tds_set(camera.offset.y, EDITOR_KEY, POS_KEY, "y");
+	tds_set(active_level->name, EDITOR_KEY, LEVEL_KEY);
 	
 	// Global ESC -- puts you back in idle
 	if (input.was_pressed(GLFW_KEY_ESCAPE)) {

@@ -1,0 +1,7 @@
+editor = {
+	level = "boon_house"
+	pos = {
+		x = -0.025000
+		y = 0.100000
+	}
+}

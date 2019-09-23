@@ -904,7 +904,7 @@ void test_tdscript() {
 
 	string boonhouse_test = tds_string2(ScriptManager.global_scope, "entity", "boonhouse_door", "components", "Graphic_Component", "Animations", "boonhouse_door", "0");
 	string cantina_test = tds_string2(ScriptManager.global_scope, "entity", "picture", "components", "Graphic_Component", "Animations", "picture", "0");
-	string intro_police_test = tds_string2(ScriptManager.global_scope, "entity", "intro_police", "scripts", "intro1", "4", "kind");
+	string intro_police_test = tds_string2(ScriptManager.global_scope, "entity", "intro_police", "scripts", "spin", "0", "kind");
 	string wilson_test = tds_string2(ScriptManager.global_scope, "entity", "wilson", "State_Machine", "main1", "task", "0", "kind");
 	
 	TableNode* gc = tds_table2(ScriptManager.global_scope, "entity", "wilson", "components", "Graphic_Component");

@@ -283,8 +283,13 @@ a new task.
 * bugs
 @spader 9/7/2019: The install script doesn't work on windows because the
 backslash escapes the closing quotation mark. 
+
 @spader 9/20/2019: You can't select a cactus
+
 @spader 9/20/2019: You can't remove tiles unless you're using undo
+
+@spader 9/22/2019: TDS should do some kind of conversions for integers and
+floats. 
 * qol
 @spader 9/22/2019: Use tdengine as a command line program. First thing: Add an
 action from the command line. Action headers go in a folder, and the CLI

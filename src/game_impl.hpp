@@ -158,7 +158,7 @@ void reload_cutscenes() {
 	ScriptManager.script_dir(absolute_path(path_join({"src", "scripts", "cutscenes"})));
 	init_cutscenes();
 }
-	
+
 void Game::init() {
 	particle_system.init();
 	active_dialogue = new Dialogue_Tree;
@@ -183,6 +183,7 @@ void Game::update(float dt) {
 	if (state == GameState::Dialogue) {
 	} else if (state == GameState::Cutscene) {
 		if (active_cutscene->update(dt)) {
+			camera.pan_and_follow(g_hero);
 			state = GameState::Game;
 		}
 	} else if (state == GameState::Game) {		

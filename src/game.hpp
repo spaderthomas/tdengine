@@ -42,6 +42,7 @@ struct Cutscene {
 unordered_map<string, Cutscene*> cutscenes;
 bool does_cutscene_exist(const string& which);
 void init_cutscenes();
+void reload_cutscenes();
 
 
 struct Game : Layer {
