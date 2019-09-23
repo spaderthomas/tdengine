@@ -327,6 +327,8 @@ void  Console::ExecCommand(char* command_line)
 		}
 
 		game.do_cutscene(which);
+	} else if (Stricmp(command, "exit") == 0) {
+		send_kill_signal = true;
 	}
 	
 	

@@ -35,10 +35,9 @@ struct Cutscene {
 
 	Task task;
 	int frame = 0;
-	bool done = false;
 
 	void init(string name, TableNode* table);
-	void update(float dt);
+	bool update(float dt);
 };
 unordered_map<string, Cutscene*> cutscenes;
 bool does_cutscene_exist(const string& which);

@@ -1,4 +1,3 @@
-
 // Entity
 tdapi Points_Box get_vision_box(EntityHandle me) {
 	def_get_cmp(pc, me.deref(), Position_Component);
@@ -152,3 +151,7 @@ tdapi void set_state(string var, bool val) {
 	update_state(var, val);
 }
 
+// Camera
+tdapi void camera_follow(EntityHandle entity) {
+	
+}

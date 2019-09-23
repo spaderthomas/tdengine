@@ -17,3 +17,4 @@ tdapi void update_task(EntityHandle me, float dt);
 tdapi bool are_entities_colliding(EntityHandle a, EntityHandle b);
 tdapi void register_potential_collision(EntityHandle me, EntityHandle other);
 tdapi void set_state(string var, bool val);
+tdapi void camera_follow(EntityHandle entity);

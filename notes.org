@@ -286,9 +286,23 @@ backslash escapes the closing quotation mark.
 @spader 9/20/2019: You can't select a cactus
 @spader 9/20/2019: You can't remove tiles unless you're using undo
 * qol
-@spader 9/8/2019: When you load a Position Component, if it has no scale then
-default to (1, 1). Ditto for when you save it -- if it's (1, 1), don't write it
-to the file. Will make the files easier to read.
+@spader 9/22/2019: Use tdengine as a command line program. First thing: Add an
+action from the command line. Action headers go in a folder, and the CLI
+generates a new header into that folder. win_main can just #include
+"actions/action_includes.hpp". Would save me from writing a lot of boilerplate. 
+
+@spader 9/20/2019: Move all the flags in utils.hpp into a TDS file. 
+@spader 9/22/2019: Also, have the engine watch this file for updated timestamp
+and automatically reload it. 
+
+@spader 9/22/2019: Format arguments for log writing. 
+
+@spader 9/22/2019: Move globals into a big struct, mostly for ease of
+readability. 
+
+@spader 9/10/2019: Do something better than a fat union and a mapping of
+string::type_id for handling components. Maybe use base pointers like a real
+boy. 
 
 @spader 9/8/2019: Rename State_Machine key to state.
 
@@ -298,23 +312,6 @@ without forward declaring it
 @spader 9/10/2019: Make an emacs extension for tds
 
 @spader 9/10/2019: Move more stuff over from This_Case to ThisCase
-
-@spader 9/10/2019: Do something better than a fat union and a mapping of
-string::type_id for handling components. Maybe use base pointers like a real
-boy. 
-
-@spader 9/20/2019: Move all the flags in utils.hpp into a TDS file. 
-@spader 9/22/2019: Also, have the engine watch this file for updated timestamp
-and automatically reload it. 
-
-@spader 9/22/2019: Move globals into a big struct, mostly for ease of
-readability. 
-
-@spader 9/22/2019: Use tdengine as a command line program. First thing: Add an
-action from the command line. Action headers go in a folder, and the CLI
-generates a new header into that folder. win_main can just #include
-"actions/action_includes.hpp". Would save me from writing a lot of boilerplate. 
-
 * polish
 @spader 9/8/2019: Fade-out/Fade-in for doors
 * switching layers

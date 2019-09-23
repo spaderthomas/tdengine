@@ -208,6 +208,8 @@ int main() {
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {
 		double frame_start_time = glfwGetTime();
+
+		if (send_kill_signal) return 0;
 		
 		// SETUP
 		// Call all GLFW callbacks

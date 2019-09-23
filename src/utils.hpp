@@ -476,7 +476,7 @@ bool show_script_selector = true;
 bool show_level_selector = true;
 bool show_state_tweaker = true;
 bool show_task_editor = false;
-
+bool send_kill_signal = false;
 
 const string ACTIONS_KEY     = "actions";
 const string CH_STATE_KEY    = "character_state";

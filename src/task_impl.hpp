@@ -252,41 +252,23 @@ void Camera_Pan_Action::imgui_visualizer() {
 }
 
 bool Camera_Follow_Action::update(float dt) {
-	auto layer = all_layers[iactive_layer];
-	auto level = layer->active_level;
-	auto entity = level->get_first_matching_entity(this->who);
-	auto& camera = layer->camera;
+	auto& camera = game.camera;
+	auto entity = game.active_level->get_first_matching_entity(this->who);
 
-	bool close_enough = false;
-	if (pan) {
-		auto world_offset = camera.offset;
-		world_offset -= glm::vec2{-.5, -.5};
-		if_component(pc, entity, Position_Component) {
-			if (vec_almost_equals(world_offset, pc->world_pos)) {
-				close_enough = true;
-			} else {
-				// @note @spader 9/3/2019: Make these variables in a scripted file
-				if (world_offset.x < pc->world_pos.x) {
-					camera.offset.x += .005f;
-				} else {
-					camera.offset.x -= .005f;
-				}
-
-				if (world_offset.y < pc->world_pos.y) {
-					camera.offset.y += .005f;
-				} else {
-					camera.offset.y -= .005f;
-				}
-			}
-		}
-		
-	}
-
-	if (!pan || close_enough) {
-		layer->camera.following = entity;
+	// If we don't pan, it's simple: Tell the camera to follow it, and we're done
+	if (!pan) {
+		camera.follow(entity);
 		return true;
 	}
-	return false;
+
+	// Make the camera track the entity (once)
+	if (is_first_update && pan) {
+		camera.pan_and_follow(entity);
+	}
+	is_first_update = false;
+
+	// Return when the camera is at the same position as the entity.
+	return camera.is_at_entity(camera.following);
 }
 void Camera_Follow_Action::imgui_visualizer() {
 	if (ImGui::TreeNode("Camera Follow Action")) {

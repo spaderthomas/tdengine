@@ -127,9 +127,9 @@ void Cutscene::init(string name, TableNode* table) {
 	}
 }
 
-void Cutscene::update(float dt) {
+bool Cutscene::update(float dt) {
 	frame++;
-	task.update(dt);
+	return task.update(dt);
 }
 
 bool does_cutscene_exist(const string& which) {
@@ -163,7 +163,7 @@ void Game::init() {
 	particle_system.init();
 	active_dialogue = new Dialogue_Tree;
 	active_level = levels["overworld"]; //@hack Probably a better way to do this
-	camera.following = g_hero;
+	camera.follow(g_hero);
 }
 
 void Game::update(float dt) {
@@ -177,36 +177,35 @@ void Game::update(float dt) {
 	camera.update(dt);
 	input.world_pos = input.screen_pos + camera.offset;
 
-	for (auto entity : active_level->entities) {
-		update_task(entity, dt);
+	
+
+	// Do all the state-specific stuff
+	if (state == GameState::Dialogue) {
+	} else if (state == GameState::Cutscene) {
+		if (active_cutscene->update(dt)) {
+			state = GameState::Game;
+		}
+	} else if (state == GameState::Game) {		
+		move_entity(g_hero, input.is_down[GLFW_KEY_W], input.is_down[GLFW_KEY_S], input.is_down[GLFW_KEY_A], input.is_down[GLFW_KEY_D]);
+		
+		for (auto entity : active_level->entities) {
+			update_task(entity, dt);
+		}
 	}
 
-	if (state == GameState::Dialogue) {
-		// ...
-	} else if (state == GameState::Cutscene) {
-		// Either run the cutscene or go back to the game
-		if (active_cutscene && active_cutscene->done) {
-			state = GameState::Game;
-		} else {
-			active_cutscene->update(dt);
-		}
-	} else if (state == GameState::Game) {
-		// Deal with the player
-		move_entity(g_hero, input.is_down[GLFW_KEY_W], input.is_down[GLFW_KEY_S], input.is_down[GLFW_KEY_A], input.is_down[GLFW_KEY_D]);
-		draw_entity(g_hero, Render_Flags::None);
+	draw_entity(g_hero, Render_Flags::None);
 		
-		// Handle collisions
-		for (auto& entity : active_level->entities) {
-			if (entity->get_component<Collision_Component>()) {
-				Collision_Element new_collision_element;
-				new_collision_element.me = g_hero;
-				new_collision_element.other = entity;
-				physics_system.collisions.push_back(new_collision_element);
-			}
+	// Handle collisions
+	for (auto& entity : active_level->entities) {
+		if (entity->get_component<Collision_Component>()) {
+			Collision_Element new_collision_element;
+			new_collision_element.me = g_hero;
+			new_collision_element.other = entity;
+			physics_system.collisions.push_back(new_collision_element);
 		}
-		
-		physics_system.process(1.f / 60.f);
 	}
+	
+	physics_system.process(1.f / 60.f);
 	
 	frame++;
 }
@@ -218,6 +217,12 @@ void Game::render() {
 }
 
 void Game::do_cutscene(string which) {
+	if (!does_cutscene_exist(which)) {
+		string message = "Called do_cutscene with [" + which + "], but couldn't find it";
+		tdns_log.write(message);
+		return;
+	}
+	
 	auto cutscene = cutscenes[which];
 	this->active_level = cutscene->level;
 	this->active_level->create_or_add_entities(tds_table(CUTSCENES_KEY, which, ENTITIES_KEY));
@@ -233,7 +238,8 @@ void Game::do_cutscene(string which) {
 		Action* action = cutscene->task.action_queue[i];
 		action->actor = active_level->get_first_matching_entity(entity_name);
 	}
-	
+
+	this->state = GameState::Cutscene;
 	this->active_cutscene = cutscene;
 	this->camera.offset = { 0.f, 0.f };
 }
