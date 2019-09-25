@@ -103,7 +103,7 @@ bool And_Action::update(float dt) {
 			it++;
 		}
 	}
-	
+
 	return done;
 }
 void And_Action::imgui_visualizer() {
