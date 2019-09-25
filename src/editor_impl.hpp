@@ -113,37 +113,47 @@ int Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 	return unique_btn_index;
 }
 void Editor::exec_console_cmd(char* command_line) {
-	char* command = strtok(command_line, " ");
-	if (!command) return;
-	
-	
-	if (console.Stricmp(command, "save") == 0) {
+	string copy = string(command_line);
+	auto tokens = split(copy, ' ');
+	if (tokens.empty()) {
+		string message = "Ran into an error parsing command. ";
+		message += "Command was: " + copy;
+		console.AddLog(message.c_str());
+	}
+
+	if (tokens[0] == "save") {
 		active_level->save();
 	}
-	else if (console.Stricmp(command, "go") == 0) {
-		char* x = strtok(NULL, " ");
-		if (!x) {
-			console.AddLog("format: go [x: float] [y: float]");
+	else if (tokens[0] == "go") {
+		string usage = "format: go [x: float] [y: float]";
+		if (tokens.size() != 3) {
+			console.AddLog(usage);
+			return;
+		}
+
+		string x = tokens[1];
+		if (x.empty()) {
+			console.AddLog(usage);
 			return;
 		}
 		
-		char* y = strtok(NULL, " ");
-		if (!y) {
-			console.AddLog("format: go [x: float] [y: float]");
+		string y = tokens[2];
+		if (y.empty()) {
+			console.AddLog(usage);
 			return;
 		}
 		
 		if (!is_float(x) || !is_float(y)) {
-			console.AddLog("format: go [x: float] [y: float]");
+			console.AddLog(usage);
 			return;
 		}
 		
 		camera.offset = glm::vec2{stof(x), stof(y)};
 	}
-	else if (console.Stricmp(command, "load") == 0) {
+	else if (tokens[0] == "load") {
 		active_level->load();
 	}
-	else if (console.Stricmp(command, "grid") == 0) {
+	else if (tokens[0] == "grid") {
 		if (kind == TILE && state != IDLE) {
 			last_show_grid = !show_grid;
 		} else {
@@ -151,7 +161,7 @@ void Editor::exec_console_cmd(char* command_line) {
 		}
 		show_grid = !show_grid;
 	}
-	else if (console.Stricmp(command, "snap") == 0) {
+	else if (tokens[0] == "snap") {
 		// If we're actually in tile mode, assume we want this new change to persist when we go back
 		if (kind == TILE && state != IDLE) {
 			last_snap_to_grid = !snap_to_grid;
@@ -160,9 +170,6 @@ void Editor::exec_console_cmd(char* command_line) {
 		}
 		snap_to_grid = !snap_to_grid;
 		
-	}
-	else if (console.Stricmp(command, "level") == 0) {
-		swap_level(this, strtok(NULL, " "));
 	}
 	else {
 		console.AddLog("Unknown command: '%s'. Loading up Celery Man instead.\n", command_line);

@@ -28,6 +28,9 @@ void  Console::ClearLog()
 	Items.clear();
 	ScrollToBottom = true;
 }
+void Console::AddLog(string message) {
+	AddLog(message.c_str());
+}
 void  Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
 {
 	char buf[1024];
@@ -244,6 +247,12 @@ void  Console::ExecCommand(char* command_line)
 
 	string copy = string(command_line);
 	auto tokens = split(copy, ' ');
+	if (tokens.empty()) {
+		string message = "Ran into an error parsing command. ";
+		message += "Command was: " + copy;
+		AddLog(message.c_str());
+	}
+	
 	if (tokens[0] == "editor") {
 		ran_generic_command = true;
 		show_console = false;
@@ -267,9 +276,16 @@ void  Console::ExecCommand(char* command_line)
 		active_layer->reload();
 	} else if (tokens[0] == "screen") {
 		ran_generic_command = true;
+
+		string usage = "format: screen {640, 720, 1080, 1440}";
+		if (tokens.size() != 2) {
+			AddLog(usage);
+			return;
+		}
+		
 		string res = tokens[1];
 		if (res.empty()) {
-			AddLog("format: screen {640, 720, 1080, 1440}");
+			AddLog(usage);
 			return;
 		}
 		
@@ -277,11 +293,17 @@ void  Console::ExecCommand(char* command_line)
 		else if (res == "720") use_720p();
 		else if (res == "1080") use_1080p();
 		else if (res == "1440") use_1440p();
-		else AddLog("format: screen {640, 720, 1080, 1440}");
+		else AddLog(usage);
 	}
 	else if (tokens[0] == "level") {
 		ran_generic_command = true;
 
+		string usage = "format: level {which}";
+		if (tokens.size() != 2) {
+			AddLog(usage);
+			return;
+		}
+		
 		string which = tokens[1];
 
 		// Just because you always want the game and editor to be synced for sure
@@ -295,6 +317,13 @@ void  Console::ExecCommand(char* command_line)
 		swap_level(active_layer, which);
 	} else if (tokens[0] == "state") {
 		ran_generic_command = true;
+		
+		string usage = "format: state {which} {true | false}";
+		if (tokens.size() != 3) {
+			AddLog(usage);
+			return;
+		}
+		
 		string which = tokens[1];
 
 		bool value;
@@ -302,6 +331,13 @@ void  Console::ExecCommand(char* command_line)
 		update_state(which, value);
 	} else if (tokens[0] == "state?") {
 		ran_generic_command = true;
+		
+		string usage = "format: state? {which}";
+		if (tokens.size() != 2) {
+			AddLog(usage);
+			return;
+		}
+		
 		string which = tokens[1];
 		
 		bool found = false;
@@ -321,7 +357,14 @@ void  Console::ExecCommand(char* command_line)
 		}
 	} else if (tokens[0] == "cutscene") {
 		ran_generic_command = true;
-		char* which = strtok(NULL, " ");
+
+		string usage = "format: cutscene {which}";
+		if (tokens.size() != 2) {
+			AddLog(usage);
+			return;
+		}
+		
+		string which = tokens[1];
 		if (!does_cutscene_exist(which)) {
 			AddLog("Asked to start cutscene [%s], but couldn't find it.", which);
 		}
