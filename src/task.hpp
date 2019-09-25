@@ -2,94 +2,13 @@ struct Action {
 	EntityHandle actor;
 	bool is_blocking = false;
 	virtual bool update(float dt) = 0;
-	virtual void init() {};
+	virtual void init(TableNode* table) {};
 	virtual string kind() = 0;
 	virtual void imgui_visualizer() = 0;
+	virtual void set_actor(EntityHandle actor) {};
 };
 Action* action_from_table(TableNode* table, EntityHandle actor);
 void init_is_blocking_tds(Action* action, TableNode* table);
-
-// Conjunction of actions which blocks until all are complete
-struct And_Action : Action {
-	vector<Action*> actions;
-	bool update(float dt) override;
-	string kind() override { return "And_Action"; }
-	void imgui_visualizer() override;
-};
-
-struct Movement_Action : Action {
-	glm::vec2 dest;
-
-	bool update(float dt) override;
-	string kind() override { return "Movement_Action"; }
-	void imgui_visualizer() override;
-};
-
-struct Wait_For_Interaction_Action : Action {
-	bool update(float dt) override;
-	string kind() override { return "Wait_For_Interaction_Action"; }
-	void imgui_visualizer() override;
-};
-
-struct Dialogue_Action : Action {
-	Dialogue_Tree* tree;
-	bool update(float dt) override;
-	void init() override;
-	string kind() override { return "Dialogue_Action"; }
-	void imgui_visualizer() override;
-};
-
-struct Set_State_Action : Action {
-	string var;
-	bool value;
-
-	bool update(float dt) override;
-	string kind() override { return "Set_State_Action"; }
-	void imgui_visualizer() override;
-};
-
-struct Teleport_Action : Action {
-	float x;
-	float y;
-
-	bool update(float dt) override;
-	string kind() override { return "Teleport_Action"; }
-	void imgui_visualizer() override;
-};
-
-struct Camera_Pan_Action : Action {
-	glm::vec2 dest;
-	int count_frames;
-	int frames_elapsed = 0; 
-
-	bool update(float dt) override;
-	string kind() override { return "Camera_Pan_Action"; };
-	void imgui_visualizer() override;
-};
-
-struct Camera_Follow_Action : Action {
-	string who;
-	bool pan;
-	bool is_first_update = true;
-	
-	bool update(float dt) override;
-	string kind() override { return "Camera_Follow_Action"; };
-	void imgui_visualizer() override;
-};
-
-struct Cutscene_Action : Action {
-	string which;
-	
-	bool update(float dt) override;
-	string kind() override { return "Cutscene_Action"; };
-	void imgui_visualizer() override;
-};
-
-struct Spin_Action : Action {
-	bool update(float dt) override;
-	string kind() override { return "Spin_Action"; };
-	void imgui_visualizer() override;
-};
 
 struct Action_Queue {
 	vector<Action*> actions;

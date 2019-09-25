@@ -1,300 +1,48 @@
 // This is just a factory function that reads table definitions of Actions and sets them up
 Action* action_from_table(TableNode* table, EntityHandle actor) {
-	// is_blocking is an optional key that any Action could have
-	// so we check if it exists and, if it does, we set it
-	
-	Action* action_generic;
+	Action* action;
 	
 	string kind = tds_string2(table, "kind"); 
 	if (kind == "Wait_For_Interaction_Action") {
-		Wait_For_Interaction_Action* action = new Wait_For_Interaction_Action;
-		action->actor = actor;
-		
-		action_generic = action;
+		action = new Wait_For_Interaction_Action;
 	}
 	else if (kind == "Dialogue_Action") {
-		Dialogue_Tree* tree = new Dialogue_Tree;
-		TableNode* dialogue_table = tds_table2(table, "dialogue");
-		tree->init_from_table(dialogue_table);
-		
-		Dialogue_Action* action = new Dialogue_Action;
-		action->init();
-		action->tree = tree;
-		action->actor = actor;
-		
-		action_generic = action;
+		action = new Dialogue_Action;
 	}
 	else if (kind == "Movement_Action") {
-		Movement_Action* action = new Movement_Action;
-		action->dest.x = tds_float2(table, "dest", "x"); 
-		action->dest.y = tds_float2(table, "dest", "y");
-		action->actor = actor;
-		
-		action_generic = action;
+		action = new Movement_Action;
 	}
 	else if (kind == "And_Action") {
-		And_Action* action = new And_Action;
-		TableNode* actions = tds_table2(table, "actions");
-		fox_for(action_idx, actions->assignments.size()) {
-			TableNode* action_table = tds_table2(table, "actions", to_string(action_idx));
-			action->actions.push_back(action_from_table(action_table, actor));
-		}
-		
-		action_generic = action;
-	}
+		action = new And_Action;
+   	}
 	else if (kind == "Set_State_Action") {
-		Set_State_Action* action = new Set_State_Action;
-		action->var = tds_string2(table, "var");
-		action->value = tds_bool2(table, "value");
-		
-		action_generic = action;
+		action = new Set_State_Action;
 	}
 	else if (kind == "Teleport_Action") {
-		Teleport_Action* action = new Teleport_Action;
-		action->actor = actor;
-		action->x = tds_float2(table, "dest", "x");
-		action->y = tds_float2(table, "dest", "y");
-		
-		action_generic = action;
+		action = new Teleport_Action;
 	}
 	else if (kind == "Camera_Pan_Action") {
-		Camera_Pan_Action* action = new Camera_Pan_Action;
-		action->dest.x = tds_float2(table, "dest", "x");
-		action->dest.y = tds_float2(table, "dest", "y");
-		action->count_frames = tds_int2(table, "frames");
-		
-		action_generic = action;
+		action = new Camera_Pan_Action;
 	}
 	else if (kind == "Camera_Follow_Action") {
-		Camera_Follow_Action* action = new Camera_Follow_Action;
-		action->who = tds_string2(table, "who");
-		if (table->has_key(PAN_KEY)) action->pan = tds_bool2(table, "pan");
-		
-		action_generic = action;
+		action = new Camera_Follow_Action;
 	}
 	else if (kind == "Cutscene_Action") {
-		Cutscene_Action* action = new Cutscene_Action;
-		action->which = tds_string2(table, WHICH_KEY);
-		action_generic = action;
+		action = new Cutscene_Action;
 	}
 	else if (kind == "Spin_Action") {
-		Spin_Action* action = new Spin_Action;
-		action_generic = action;
+		action = new Spin_Action;
 	}
+	// @NEXT@ [this one is for the code generator]
 	else {
 		tdns_log.write("Tried to create an action with an invalid kind: " + kind);
 		return nullptr;
 	}
 	
-	action_generic->is_blocking = tds_bool2(table, "is_blocking");
-	return action_generic;
-}
-
-// Update functions for each action
-bool And_Action::update(float dt) {
-	bool done = true;
-	for (auto it = actions.begin(); it != actions.end();) {
-		Action* action = *it;
-		if (action->update(dt)) {
-			it = actions.erase(it);
-		}
-		else {
-			done = false;
-			it++;
-		}
-	}
-
-	return done;
-}
-void And_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("And Action")) {
-		ImGui::TreePop();
-	}
-}
-
-bool Movement_Action::update(float dt) { 
-	def_get_cmp(pc, actor.deref(), Position_Component);
-	
-	if (vec_almost_equals(pc->world_pos, dest)) {
-		return true;
-	}
-	
-	bool up = pc->world_pos.y < dest.y;
-	bool down = pc->world_pos.y > dest.y;
-	bool right = pc->world_pos.x < dest.x;
-	bool left = pc->world_pos.x > dest.x;
-	
-	move_entity(actor, up, down, left, right);
-	return false;
-}	
-void Movement_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("Movement Action")) {
-		ImGui::Text("(%f, %f)", dest.x, dest.y);
-		ImGui::TreePop();
-	}
-}
-
-bool Wait_For_Interaction_Action::update(float dt) {
-	def_get_cmp(ic, actor.deref(), Interaction_Component);
-	if (ic->was_interacted_with) {
-		// Clear the IC so we don't call this again next frame.
-		ic->was_interacted_with = false;
-		ic->other = { 0, nullptr };
-		
-		return true;
-	}
-	
-	return false;
-}
-void Wait_For_Interaction_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("Wait For Interaction Action")) {
-		ImGui::TreePop();
-	}
-}
-
-void Dialogue_Action::init() {
-	is_blocking = true;
-}
-bool Dialogue_Action::update(float dt) {
-	Dialogue_Node* node = tree->traverse();
-	if (active_layer->input.was_pressed(GLFW_KEY_1)) {
-		node->set_response(0);
-	}
-	else if (active_layer->input.was_pressed(GLFW_KEY_2)) {
-		node->set_response(1);
-	}
-	else if (active_layer->input.was_pressed(GLFW_KEY_3)) {
-		node->set_response(2);
-	}
-	else if (active_layer->input.was_pressed(GLFW_KEY_4)) {
-		node->set_response(3);
-	}
-	
-	node->do_current_text();
-	
-	if (active_layer->input.was_pressed(GLFW_KEY_SPACE)) {
-		// If the text we submitted has fully shown
-		if (text_box.is_all_text_displayed()) {
-			// If this node has no more text to show
-			if (node->is_done()) {
-				// Break if node is terminal
-				if (node->terminal) {
-					text_box.reset_and_hide();
-					return true;
-				}
-				// Show responses if it is not
-				else {
-					string all_response_text;
-					for (auto& response : node->responses) {
-						all_response_text += response + "\r";
-					}
-					text_box.begin(all_response_text);
-				}
-			} else {
-				node->should_submit_next_text = true;
-			}
-		}
-		// If the set has shown fully (but not ALL dialogue), go to the next set
-		else if (text_box.is_current_set_displayed()) {
-			text_box.resume();
-		}
-		// If the dialogue has partially shown, skip to the end of the line set
-		else {
-			Line_Set& set = text_box.current_set();
-			set.point = set.max_point;
-		}
-	}
-	
-	text_box.update(dt);
-	return false;
-}
-void Dialogue_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("Dialogue Action")) {
-		ImGui::TreePop();
-	}
-}
-
-bool Set_State_Action::update(float dt) {
-	update_state(this->var, this->value);
-	return true;
-}
-void Set_State_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("Set State Action")) {
-		string which = "State: " + this->var;
-		string val = this->value ? "Value: true" : "Value: false";
-		ImGui::Text(which.c_str());
-		ImGui::Text(val.c_str());
-		ImGui::TreePop();
-	}
-}
-
-bool Teleport_Action::update(float dt) {
-	teleport_entity(this->actor, this->x, this->y);
-	return true;
-}
-void Teleport_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("Teleport Action")) {
-		ImGui::TreePop();
-	}
-}
-
-bool Camera_Pan_Action::update(float dt) {
-	auto layer = all_layers[iactive_layer];
-	layer->camera.offset += dest / (float)count_frames;
-	
-	frames_elapsed++;
-	return count_frames == frames_elapsed;
-}
-void Camera_Pan_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("Camera Pan Action")) {
-		ImGui::TreePop();
-	}
-}
-
-bool Camera_Follow_Action::update(float dt) {
-	auto& camera = game.camera;
-	auto entity = game.active_level->get_first_matching_entity(this->who);
-
-	// If we don't pan, it's simple: Tell the camera to follow it, and we're done
-	if (!pan) {
-		camera.follow(entity);
-		return true;
-	}
-
-	// Make the camera track the entity (once)
-	if (is_first_update && pan) {
-		camera.pan_and_follow(entity);
-	}
-	is_first_update = false;
-
-	// Return when the camera is at the same position as the entity.
-	return camera.is_at_entity(camera.following);
-}
-void Camera_Follow_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("Camera Follow Action")) {
-		ImGui::TreePop();
-	}
-}
-
-bool Cutscene_Action::update(float dt) {
-	game.do_cutscene(which);
-	return true;
-}
-void Cutscene_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("Cutscene Action")) {
-		string message = "Cutscene: " + which;
-		ImGui::Text(message.c_str());
-		ImGui::TreePop();
-	}
-}
-
-bool Spin_Action::update(float dt) {
-	return false;
-}
-void Spin_Action::imgui_visualizer() {
-	if (ImGui::TreeNode("Spin Action")) {
-		ImGui::TreePop();
-	}
+	action->init(table);
+	action->set_actor(actor);
+	action->is_blocking = tds_bool2(table, "is_blocking");
+	return action;
 }
 
 bool Task::update(float dt) {
