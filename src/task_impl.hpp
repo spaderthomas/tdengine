@@ -33,6 +33,9 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 	else if (kind == "Spin_Action") {
 		action = new Spin_Action;
 	}
+	else if (kind == "SupAction") {
+		action = new SupAction
+	}
 	// @NEXT@ [this one is for the code generator]
 	else {
 		tdns_log.write("Tried to create an action with an invalid kind: " + kind);

@@ -30,9 +30,9 @@ if __name__ == '__main__':
     
     which = args[0]
     if which == 'action':
-        print(args)
         name = args[1]
         lower_name = name.lower()
+        class_name = name + "Action"
         
         header_path = os.path.join(PROJECT_ROOT, 'src', 'actions', lower_name + '.hpp')
         with open(header_path, 'w+') as header:
@@ -41,4 +41,23 @@ if __name__ == '__main__':
         impl_path = os.path.join(PROJECT_ROOT, 'src', 'actions', lower_name + '_impl.hpp')
         with open(impl_path, 'w+') as impl:
             impl.write(IMPL_TEMPLATE % { 'action_name' : name })
+
+        FACTORY_CANARY = '@NEXT@'
+        factory_path = os.path.join(PROJECT_ROOT, 'src', 'task_impl.hpp')
+        contents = []
+        with open(factory_path, 'r') as factory:
+            contents = factory.readlines()
+            for index, line in enumerate(contents):
+                if FACTORY_CANARY in line:
+                    contents.insert(index, '\telse if (kind == "{}") {{\n'.format(class_name))
+                    contents.insert(index + 1, "\t\taction = new {}\n".format(class_name))
+                    contents.insert(index + 2, "\t}\n")
+                    break
+
+        with open(factory_path, 'w') as factory:
+            factory.write(''.join(contents))
+            
+    print("Generated header, impl, and factory for {}".format(class_name))
+        
+        
             
