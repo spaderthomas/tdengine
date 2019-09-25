@@ -242,47 +242,47 @@ void  Console::ExecCommand(char* command_line)
 	// If this gets set, we know not to pipe the command down to the layer-specific handler
 	bool ran_generic_command = false;
 
-	auto copy = (char*)calloc(sizeof(command_line) + 1, sizeof(char));
-	strcpy(copy, command_line);
-	char* command = strtok(copy, " ");
-	if (Stricmp(command, "editor") == 0) {
+	string copy = string(command_line);
+	auto tokens = split(copy, ' ');
+	if (tokens[0] == "editor") {
 		ran_generic_command = true;
 		show_console = false;
 		active_layer = &editor;
 		iactive_layer = EDITOR_IDX;
 	}
-	else if (Stricmp(command, "game") == 0) {
+	else if (tokens[0] == "game") {
 		ran_generic_command = true;
 		show_console = false;
 		active_layer = &game;
 		iactive_layer = GAME_IDX;
 	}
-	else if (Stricmp(command, "battle") == 0) {
+	else if (tokens[0] == "battle") {
 		ran_generic_command = true;
 		show_console = false;
 		active_layer = &battle;
 		iactive_layer = BATTLE_IDX;
 	}
-	else if (Stricmp(command, "reload") == 0) {
+	else if (tokens[0] == "reload") {
 		ran_generic_command = true;
 		active_layer->reload();
-	} else if (Stricmp(command, "screen") == 0) {
+	} else if (tokens[0] == "screen") {
 		ran_generic_command = true;
-		char* res = strtok(NULL, " ");
-		if (!res) {
+		string res = tokens[1];
+		if (res.empty()) {
 			AddLog("format: screen {640, 720, 1080, 1440}");
 			return;
 		}
 		
-		if (!strcmp(res, "640")) use_640_360();
-		else if (!strcmp(res, "720")) use_720p();
-		else if (!strcmp(res, "1080")) use_1080p();
-		else if (!strcmp(res, "1440")) use_1440p();
+		if (res == "640") use_640_360();
+		else if (res == "720") use_720p();
+		else if (res == "1080") use_1080p();
+		else if (res == "1440") use_1440p();
 		else AddLog("format: screen {640, 720, 1080, 1440}");
 	}
-	else if (Stricmp(command, "level") == 0) {
+	else if (tokens[0] == "level") {
 		ran_generic_command = true;
-		char* which = strtok(NULL, " ");
+
+		string which = tokens[1];
 
 		// Just because you always want the game and editor to be synced for sure
 		if (active_layer == &game) {
@@ -293,20 +293,20 @@ void  Console::ExecCommand(char* command_line)
 		}
 		
 		swap_level(active_layer, which);
-	} else if (Stricmp(command, "state") == 0) {
+	} else if (tokens[0] == "state") {
 		ran_generic_command = true;
-		char* which = strtok(NULL, " ");
+		string which = tokens[1];
 
 		bool value;
-		istringstream(strtok(NULL, " ")) >> std::boolalpha >> value;
+		istringstream(tokens[2]) >> std::boolalpha >> value;
 		update_state(which, value);
-	} else if (Stricmp(command, "state?") == 0) {
+	} else if (tokens[0] == "state?") {
 		ran_generic_command = true;
-		string which = strtok(NULL, " ");
+		string which = tokens[1];
 		
 		bool found = false;
 		for (auto& [state_name, value] : game_state) {
-			if (!Stricmp(state_name.c_str(), which.c_str())) {
+			if (state_name == which) {
 				found = true;
 				string message = game_state[which] ?
 					which + " = true" :
@@ -319,7 +319,7 @@ void  Console::ExecCommand(char* command_line)
 			string message = "Sorry, couldn't find the state named [" + which + "]";
 			AddLog(message.c_str());
 		}
-	} else if (Stricmp(command, "cutscene") == 0) {
+	} else if (tokens[0] == "cutscene") {
 		ran_generic_command = true;
 		char* which = strtok(NULL, " ");
 		if (!does_cutscene_exist(which)) {
@@ -327,7 +327,7 @@ void  Console::ExecCommand(char* command_line)
 		}
 
 		game.do_cutscene(which);
-	} else if (Stricmp(command, "exit") == 0) {
+	} else if (tokens[0] == "exit") {
 		send_kill_signal = true;
 	}
 	

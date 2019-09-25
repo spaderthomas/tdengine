@@ -160,7 +160,7 @@ void reload_cutscenes() {
 }
 
 void Game::init() {
-	particle_system.init();
+	//particle_system.init();
 	active_dialogue = new Dialogue_Tree;
 	active_level = levels["overworld"]; //@hack Probably a better way to do this
 	camera.follow(g_hero);

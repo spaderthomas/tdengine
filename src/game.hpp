@@ -48,7 +48,7 @@ void reload_cutscenes();
 struct Game : Layer {
 	Dialogue_Tree* active_dialogue;
 	Cutscene* active_cutscene;
-	Particle_System particle_system;
+	//Particle_System particle_system;
 
 	enum class GameState {
 		Game,

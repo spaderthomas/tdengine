@@ -59,8 +59,9 @@ void create_texture_atlas(string assets_dir) {
 
 		// Create some memory for our atlas
 		stbi_set_flip_vertically_on_load(false);
-		int32* atlas_data = (int32*)malloc(REGULAR_ATLAS_SIZE * REGULAR_ATLAS_SIZE * sizeof(int32));
-		memset(atlas_data, 0x0, sizeof(int32) * REGULAR_ATLAS_SIZE * REGULAR_ATLAS_SIZE);
+		int count_atlas_bytes = sizeof(int32) * REGULAR_ATLAS_SIZE * REGULAR_ATLAS_SIZE;
+		int32* atlas_data = (int32*)malloc(count_atlas_bytes);
+		memset(atlas_data, 0x0, count_atlas_bytes);
 
 		// Init some data for stb_rectpack
 		vector<stbrp_rect> rects;

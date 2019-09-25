@@ -36,7 +36,7 @@ void init_state() {
 
 void update_state(string state_name, bool value) {
 	// Set it directly in the script tree so if we save it later, it's up to date
-	tds_set2(ScriptManager.global_scope, value, "game_state", state_name);
+	tds_set2(ScriptManager.global_scope, value, string("game_state"), state_name);
 
 	// Set it in our in-memory CPP friendly structure
 	game_state[state_name] = value;
