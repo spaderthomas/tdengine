@@ -16,6 +16,3 @@ void Wait_For_Interaction_Action::imgui_visualizer() {
 		ImGui::TreePop();
 	}
 }
-void Wait_For_Interaction_Action::set_actor(EntityHandle actor) {
-	this->actor = actor;
-};

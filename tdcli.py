@@ -2,24 +2,24 @@ import sys, os
 
 PROJECT_ROOT = os.path.dirname(os.path.realpath(__file__))
 
-HEADER_TEMPLATE = '''struct %(action_name)sAction : Action {
+HEADER_TEMPLATE = '''struct %(action_name)s_Action : Action {
     bool update(float dt) override;
-    string kind() override { return "%(action_name)sAction"; };
+    string kind() override { return "%(action_name)s_Action"; };
     void imgui_visualizer() override;
     void init(TableNode* table) override;
 };
 '''
 
-IMPL_TEMPLATE = '''void %(action_name)sAction::init(TableNode* table) {
+IMPL_TEMPLATE = '''void %(action_name)s_Action::init(TableNode* table) {
 
 }
 
-bool %(action_name)sAction::update(float dt) {
+bool %(action_name)s_Action::update(float dt) {
 	return false;
 }
 
-void %(action_name)sAction::imgui_visualizer() {
-	if (ImGui::TreeNode("%(action_name)sAction")) {
+void %(action_name)s_Action::imgui_visualizer() {
+	if (ImGui::TreeNode("%(action_name)s_Action")) {
 		ImGui::TreePop();
 	}
 }
@@ -32,7 +32,7 @@ if __name__ == '__main__':
     if which == 'action':
         name = args[1]
         lower_name = name.lower()
-        class_name = name + "Action"
+        class_name = name + "_Action"
         
         header_path = os.path.join(PROJECT_ROOT, 'src', 'actions', lower_name + '.hpp')
         with open(header_path, 'w+') as header:

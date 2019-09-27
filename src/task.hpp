@@ -5,7 +5,6 @@ struct Action {
 	virtual void init(TableNode* table) {};
 	virtual string kind() = 0;
 	virtual void imgui_visualizer() = 0;
-	virtual void set_actor(EntityHandle actor) {};
 };
 Action* action_from_table(TableNode* table, EntityHandle actor);
 void init_is_blocking_tds(Action* action, TableNode* table);

@@ -33,18 +33,16 @@ Action* action_from_table(TableNode* table, EntityHandle actor) {
 	else if (kind == "Spin_Action") {
 		action = new Spin_Action;
 	}
-	else if (kind == "SupAction") {
-		action = new SupAction
-	}
 	// @NEXT@ [this one is for the code generator]
 	else {
 		tdns_log.write("Tried to create an action with an invalid kind: " + kind);
 		return nullptr;
 	}
-	
-	action->init(table);
-	action->set_actor(actor);
+
+	// @hack @spader 9/26/2019: 
+	action->actor = actor;
 	action->is_blocking = tds_bool2(table, "is_blocking");
+	action->init(table);
 	return action;
 }
 
