@@ -405,3 +405,16 @@ Things I want it to do:
 - Make new entities, and write their definitions out to a file.
   - Do this from templates. For example:
 	- Prop template.
+
+new entity wizard:
+select a file where it's gonna be put. 
+enter a name for it
+select components
+load up those components from template files (?)
+
+uhh so i probably want to add this to the tds state tree. actually, i don't
+think i do. what i want to do is build a table, then write it out to a file,
+then script that file -- i mean, i already have the table, so it would be smart
+to insert that table into the script tree. 
+
+customize the components

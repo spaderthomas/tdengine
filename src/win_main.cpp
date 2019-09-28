@@ -46,7 +46,6 @@ using namespace std;
 #include "machine_conf.hpp"
 #include "log.hpp"
 #include "db.hpp"
-#include "script_to_def.hpp"
 #include "utils.hpp"
 #include "tdscript.hpp"
 #include "text.hpp"

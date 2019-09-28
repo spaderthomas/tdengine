@@ -43,6 +43,14 @@ pool_handle<Entity> Entity_Tree::find(string name) {
 	return { -1, nullptr };
 }
 
+void Entity_Wizard::init() {
+}
+void Entity_Wizard::draw() {
+	ImGui::Text("Entity Wizard!");
+	ImGui::InputText("Name", name, 256);
+	ImGui::InputText("File", path, 256);
+}
+
 void Editor::init() {
 	active_level = levels[tds_string(EDITOR_KEY, LEVEL_KEY)];
 	camera.offset = glm::vec2 {
@@ -51,6 +59,7 @@ void Editor::init() {
 	};
 	tile_tree = Entity_Tree::create(absolute_path("textures/tiles"));
 	entity_info.init();
+	entity_wizard.init();
 }
 void Editor::translate() {
 	get_cmp(selected, Position_Component)->world_pos =
@@ -70,6 +79,9 @@ void Editor::delete_selected() {
 	
 	// Kill the thing from the editor
 	selected = { -1, nullptr };
+}
+void Editor::show_entity_wizard() {
+	
 }
 
 void Editor::draw_tile_tree(Entity_Tree* root) {
@@ -368,8 +380,11 @@ void Editor::update(float dt) {
 				this->state = INSERT;
 			}
 		}
+		
 		ImGui::PopStyleVar();
 		ImGui::EndChild();
+
+		entity_wizard.draw();
 		ImGui::End();
 	}
 	

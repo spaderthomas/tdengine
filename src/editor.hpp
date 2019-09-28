@@ -16,6 +16,14 @@ struct Entity_Info {
 	void init();
 };
 
+struct Entity_Wizard {
+	char name[256];
+	char path[256];
+
+	void init();
+	void draw();
+};
+
 enum Editor_State {
 	IDLE,
 	INSERT,
@@ -29,6 +37,7 @@ enum Selection_Kind {
 	ENTITY
 };
 struct Editor : Layer {
+	Entity_Wizard entity_wizard;
 	Entity_Info entity_info;
 	Entity_Tree* tile_tree;
 	void draw_tile_tree(Entity_Tree* root);
@@ -36,6 +45,7 @@ struct Editor : Layer {
 	Editor_State state = IDLE;
 	Selection_Kind kind = NONE;
 	TaskEditor task_editor;
+	void show_entity_wizard();
 	
 	// State for moving things around cleanly
 	glm::ivec2 last_grid_drawn = { 0, 0 };
