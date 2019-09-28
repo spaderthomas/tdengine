@@ -645,7 +645,7 @@ ASTNode* TDScript::parse(string script_path) {
 	
 	KVPNode* kvp;
 	while ((kvp = parse_assign())) {
-
+		kvp->file = script_path;
 		string old = kvp->key;
 		string key = kvp->key;
 		TableNode* containing_table = global_scope;

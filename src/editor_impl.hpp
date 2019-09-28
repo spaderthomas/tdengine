@@ -40,6 +40,12 @@ void Editor::init() {
 		tds_float(EDITOR_KEY, POS_KEY, "y")
 	};
 	tile_tree = Entity_Tree::create(absolute_path("textures/tiles"));
+	
+	auto entities = tds_table(ENTITY_KEY);
+	for (auto node : entities->assignments) {
+		KVPNode* kvp = (KVPNode*)node;
+		tdns_log.write(kvp->file);
+	}
 }
 void Editor::translate() {
 	get_cmp(selected, Position_Component)->world_pos =
@@ -320,7 +326,7 @@ void Editor::update(float dt) {
 	}
 	
 	if (show_script_selector) {
-		ImGui::Begin("Scripts", 0, flags);
+		ImGui::Begin("Entities", 0, flags);
 		static ImGuiTextFilter script_filter;
 		
 		static string script_current = script_to_entity.begin()->first;
@@ -616,3 +622,4 @@ void Editor::render() {
 		
 	}
 }
+

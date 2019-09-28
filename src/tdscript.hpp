@@ -71,6 +71,7 @@ struct StringLiteralNode : ASTNode {
 struct KVPNode : ASTNode {
 	string key;
 	ASTNode* value;
+	string file;
 	KVPNode() { type = ANK_AssignNode; key = ""; }
 	void dump(TableWriter& output) override;
 };

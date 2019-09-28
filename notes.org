@@ -295,6 +295,11 @@ to get it to show up in the chooser. It's probably better to generate that file
 as TDS or something else that C++ can read and parse into a native structure,
 rather than a native C++ map. 
 * qol
+@spader 9/20/2019: A more automated way to make entities. 
+A Python script?
+An interactive Python script?
+Something built into the engine?
+
 @spader 9/22/2019: Use tdengine as a command line program. First thing: Add an
 action from the command line. Action headers go in a folder, and the CLI
 generates a new header into that folder. win_main can just #include
@@ -321,11 +326,6 @@ without forward declaring it
 @spader 9/10/2019: Make an emacs extension for tds
 
 @spader 9/10/2019: Move more stuff over from This_Case to ThisCase
-
-@spader 9/20/2019: A more automated way to make entities. 
-A Python script?
-An interactive Python script?
-Something built into the engine?
 * polish
 @spader 9/8/2019: Fade-out/Fade-in for doors
 * switching layers
@@ -395,3 +395,13 @@ work? as in, should a cutscene only trigger if some certain flags are properly
 set? i don't think so...this game is supposed to be linear. so if that is the
 case, then i can just trigger a cutscene from literally anywhere and it will
 work. 
+* automation
+I think that the automation/CLI should be written in C++, so I don't have to
+write a parser for TDS in Python. 
+
+Things I want it to do:
+- Make new actions. This one is less than ideal because there's C++ code
+  involved, so I'll have to recompile the game. If I had hotloading, though...
+- Make new entities, and write their definitions out to a file.
+  - Do this from templates. For example:
+	- Prop template.

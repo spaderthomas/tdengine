@@ -492,7 +492,7 @@ entity.%(tile_name)s.components.TileComponent = {}
         print_prebuild("generate_entity_tree(): Generating entity tree")
 
         script_root_dir = os.path.join(PROJECT_ROOT, 'src', 'scripts')
-        project_root_dir = os.path.join(PROJECT_ROOT,  'src')
+        scripts_dir = os.path.join(PROJECT_ROOT,  'src', 'scripts')
         entity_table = "entity."
         defs = {}
         already_defined = []
@@ -563,8 +563,8 @@ entity.%(tile_name)s.components.TileComponent = {}
         table_code = table_code[:-2] # Remove last newline and comma
         table_code += "\n};"
 
-        with open(project_root_dir + "/script_to_def.hpp", "w") as f:
-            f.write(warning + signature + table_code)
+        #with open(scripts_dir + "/entity_file_map.tds", "w") as f:
+        #    f.write(warning + signature + table_code)
             
 
 # Main to let you invoke through the command line. 
