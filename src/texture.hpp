@@ -1,8 +1,3 @@
-namespace stdfs = std::experimental::filesystem;
-using namespace stdfs;
-
-
-
 #define REGULAR_ATLAS_SIZE 1024
 
 struct Texture : Asset {

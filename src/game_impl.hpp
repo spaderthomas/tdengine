@@ -88,7 +88,7 @@ void Battle::update(float dt) {
 	int unique_btn_index = 0;
 	fox_for(idx, 2) {
 		EntityHandle actor = battlers[idx];
-		auto bc = actor->get_component<BattleComponent>();
+		auto bc = actor->get_component<Battle_Component>();
 		ImGui::Text("Player %d", idx);
 		ImGui::Text("Health: %d", bc->health);
 		
@@ -98,7 +98,7 @@ void Battle::update(float dt) {
 			unique_btn_index++;
 			if (ImGui::Button(unique_move_id.c_str())) {
 				EntityHandle other = idx ? battlers[0] : battlers[1];
-				auto other_bc = other->get_component<BattleComponent>();
+				auto other_bc = other->get_component<Battle_Component>();
 				other_bc->health -= move->power;
 			}
 		}

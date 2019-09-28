@@ -38,7 +38,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 5
 				}
@@ -53,7 +53,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 5
 				}
@@ -68,7 +68,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 5
 				}
@@ -83,7 +83,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 6
 				}
@@ -98,7 +98,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 6
 				}
@@ -113,7 +113,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 6
 				}
@@ -128,7 +128,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 5
 				}
@@ -143,7 +143,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 6
 				}
@@ -158,7 +158,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 6
 				}
@@ -173,7 +173,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 5
 				}
@@ -188,7 +188,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 7
 				}
@@ -203,7 +203,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 7
 				}
@@ -218,7 +218,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 7
 				}
@@ -233,7 +233,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 7
 				}
@@ -248,7 +248,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 7
 				}
@@ -263,7 +263,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 6
 				}
@@ -278,7 +278,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 5
 				}
@@ -293,7 +293,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 7
 				}
@@ -308,7 +308,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 7
 				}
@@ -323,7 +323,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 6
 				}
@@ -338,7 +338,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 5
 				}
@@ -353,7 +353,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 5
 				}
@@ -368,7 +368,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 6
 				}
@@ -383,7 +383,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 7
 				}
@@ -398,7 +398,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 7
 				}
@@ -413,7 +413,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 6
 				}
@@ -428,7 +428,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 5
 				}
@@ -443,7 +443,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 5
 				}
@@ -458,7 +458,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 6
 				}
@@ -473,7 +473,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 7
 				}
@@ -488,7 +488,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 7
 				}
@@ -503,7 +503,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 6
 				}
@@ -518,7 +518,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 5
 				}
@@ -533,7 +533,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 5
 				}
@@ -548,7 +548,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 6
 				}
@@ -563,7 +563,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 7
 				}
@@ -578,7 +578,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 7
 				}
@@ -593,7 +593,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 6
 				}
@@ -608,7 +608,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 5
 				}
@@ -623,7 +623,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 5
 				}
@@ -638,7 +638,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 6
 				}
@@ -653,7 +653,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 7
 				}
@@ -668,7 +668,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 7
 				}
@@ -683,7 +683,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 6
 				}
@@ -698,7 +698,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 5
 				}
@@ -713,7 +713,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 5
 				}
@@ -728,7 +728,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 6
 				}
@@ -743,7 +743,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 7
 				}
@@ -758,7 +758,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 8
 				}
@@ -773,7 +773,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 8
 				}
@@ -788,7 +788,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 8
 				}
@@ -803,7 +803,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 8
 				}
@@ -818,7 +818,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 8
 				}
@@ -833,7 +833,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 8
 				}
@@ -848,7 +848,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 8
 				}
@@ -863,7 +863,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 8
 				}
@@ -878,7 +878,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 8
 				}
@@ -893,7 +893,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 8
 				}
@@ -908,7 +908,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 8
 				}
@@ -923,7 +923,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 8
 				}
@@ -938,7 +938,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 8
 				}
@@ -953,7 +953,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 8
 				}
@@ -968,7 +968,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 8
 				}
@@ -983,7 +983,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 8
 				}
@@ -998,7 +998,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 9
 				}
@@ -1013,7 +1013,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 9
 				}
@@ -1028,7 +1028,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 9
 				}
@@ -1043,7 +1043,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 9
 				}
@@ -1058,7 +1058,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 9
 				}
@@ -1073,7 +1073,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 9
 				}
@@ -1088,7 +1088,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 9
 				}
@@ -1103,7 +1103,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 9
 				}
@@ -1118,7 +1118,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 9
 				}
@@ -1133,7 +1133,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 9
 				}
@@ -1148,7 +1148,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 9
 				}
@@ -1163,7 +1163,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 9
 				}
@@ -1178,7 +1178,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 9
 				}
@@ -1193,7 +1193,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 9
 				}
@@ -1208,7 +1208,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 9
 				}
@@ -1223,7 +1223,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 9
 				}
@@ -1238,7 +1238,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 10
 				}
@@ -1253,7 +1253,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 10
 				}
@@ -1268,7 +1268,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 10
 				}
@@ -1283,7 +1283,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 10
 				}
@@ -1298,7 +1298,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 10
 				}
@@ -1313,7 +1313,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 10
 				}
@@ -1328,7 +1328,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 10
 				}
@@ -1343,7 +1343,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 10
 				}
@@ -1358,7 +1358,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 10
 				}
@@ -1373,7 +1373,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 10
 				}
@@ -1388,7 +1388,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 10
 				}
@@ -1403,7 +1403,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 10
 				}
@@ -1418,7 +1418,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 10
 				}
@@ -1433,7 +1433,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 10
 				}
@@ -1448,7 +1448,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 10
 				}
@@ -1463,7 +1463,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 10
 				}
@@ -1478,7 +1478,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 11
 				}
@@ -1493,7 +1493,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 11
 				}
@@ -1508,7 +1508,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 11
 				}
@@ -1523,7 +1523,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 11
 				}
@@ -1538,7 +1538,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 11
 				}
@@ -1553,7 +1553,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 11
 				}
@@ -1568,7 +1568,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 11
 				}
@@ -1583,7 +1583,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 11
 				}
@@ -1598,7 +1598,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 11
 				}
@@ -1613,7 +1613,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 11
 				}
@@ -1628,7 +1628,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 11
 				}
@@ -1643,7 +1643,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 11
 				}
@@ -1658,7 +1658,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 11
 				}
@@ -1673,7 +1673,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 11
 				}
@@ -1688,7 +1688,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 11
 				}
@@ -1703,7 +1703,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 11
 				}
@@ -1718,7 +1718,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 12
 				}
@@ -1733,7 +1733,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 12
 				}
@@ -1748,7 +1748,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 12
 				}
@@ -1763,7 +1763,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 12
 				}
@@ -1778,7 +1778,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 12
 				}
@@ -1793,7 +1793,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 12
 				}
@@ -1808,7 +1808,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 12
 				}
@@ -1823,7 +1823,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 12
 				}
@@ -1838,7 +1838,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 12
 				}
@@ -1853,7 +1853,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 12
 				}
@@ -1868,7 +1868,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 12
 				}
@@ -1883,7 +1883,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 12
 				}
@@ -1898,7 +1898,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 12
 				}
@@ -1913,7 +1913,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 12
 				}
@@ -1928,7 +1928,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 12
 				}
@@ -1943,7 +1943,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 12
 				}
@@ -1958,7 +1958,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 13
 				}
@@ -1973,7 +1973,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 13
 				}
@@ -1988,7 +1988,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 13
 				}
@@ -2003,7 +2003,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 13
 				}
@@ -2018,7 +2018,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 13
 				}
@@ -2033,7 +2033,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 13
 				}
@@ -2048,7 +2048,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 13
 				}
@@ -2063,7 +2063,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 13
 				}
@@ -2078,7 +2078,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 13
 				}
@@ -2093,7 +2093,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 13
 				}
@@ -2108,7 +2108,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 13
 				}
@@ -2123,7 +2123,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 13
 				}
@@ -2138,7 +2138,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 13
 				}
@@ -2153,7 +2153,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 13
 				}
@@ -2168,7 +2168,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 13
 				}
@@ -2183,7 +2183,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 13
 				}
@@ -2198,7 +2198,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 24
 					y = 14
 				}
@@ -2213,7 +2213,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 23
 					y = 14
 				}
@@ -2228,7 +2228,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 22
 					y = 14
 				}
@@ -2243,7 +2243,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 21
 					y = 14
 				}
@@ -2258,7 +2258,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 20
 					y = 14
 				}
@@ -2273,7 +2273,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 19
 					y = 14
 				}
@@ -2288,7 +2288,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 18
 					y = 14
 				}
@@ -2303,7 +2303,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 17
 					y = 14
 				}
@@ -2318,7 +2318,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 16
 					y = 14
 				}
@@ -2333,7 +2333,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 15
 					y = 14
 				}
@@ -2348,7 +2348,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 14
 					y = 14
 				}
@@ -2363,7 +2363,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 13
 					y = 14
 				}
@@ -2378,7 +2378,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 12
 					y = 14
 				}
@@ -2393,7 +2393,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 11
 					y = 14
 				}
@@ -2408,7 +2408,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 10
 					y = 14
 				}
@@ -2423,7 +2423,7 @@ levels.boon_house = {
 		{
 			name = "wood_floor"
 			components = {
-				TileComponent = {
+				Tile_Component = {
 					x = 9
 					y = 14
 				}

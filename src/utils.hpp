@@ -63,6 +63,10 @@ void string_replace(string& str, string from, string to) {
     }
 }
 
+bool does_string_contain_substr(string& str, string& substr) {
+	return str.find(substr) != string::npos;
+}
+
 #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
 #define are_strings_equal(a, b) (!(a).compare((b)))
 
@@ -1175,3 +1179,46 @@ void init_imgui() {
 	ImGui::StyleColorsDark();
 }
 
+string capitalize_component_name(string name_from_path) {
+	// Always capitalize the first character
+	name_from_path[0] = toupper(name_from_path[0]);
+	
+	// Also capitalize everything after an underscore
+	bool capitalize_next_char = false;
+	for (auto& c : name_from_path) {
+		if (c == '_') {
+			capitalize_next_char = true;
+			continue;
+		}
+
+		if (capitalize_next_char) {
+			c -= 32; // Would like to use toupper here...
+			capitalize_next_char = false;
+		}
+
+	}
+
+	return name_from_path;
+}
+
+vector<string> all_component_names() {
+	vector<string> ignore = {
+        "component_includes",
+		"component_impl_includes"
+	};
+	string impl = "_impl";
+
+	vector<string> names;
+	
+	auto component_dir = path_join({root_dir, "src", "components"});
+	for (const auto& entry : directory_iterator(component_dir)) {
+		string filename = entry.path().filename().replace_extension().c_str();
+		if (tdns_find(ignore, filename)) continue;
+		if (does_string_contain_substr(filename, impl)) continue;
+		
+		auto component_name = capitalize_component_name(filename);
+		names.push_back(component_name);
+	}
+	
+	return names;
+}

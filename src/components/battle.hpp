@@ -1,4 +1,4 @@
-struct BattleComponent : Component {
+struct Battle_Component : Component {
 	unsigned health;
 	vector<Move*> moves;
 	

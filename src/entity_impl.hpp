@@ -120,13 +120,13 @@ pool_handle<Entity> Entity::create(string entity_name) {
 			task->init_from_table(task_table, entity);
 			component->task = task;
 		}
-		else if (type == "BattleComponent") {
-			auto handle = entity->add_component<BattleComponent>();
-			BattleComponent* component = &handle()->battle_component;
+		else if (type == "Battle_Component") {
+			auto handle = entity->add_component<Battle_Component>();
+			Battle_Component* component = &handle()->battle_component;
 			component->init_from_table(component_table);
 		}
-		else if (type == "TileComponent") {
-			entity->add_component<TileComponent>();
+		else if (type == "Tile_Component") {
+			entity->add_component<Tile_Component>();
 		}
 	}
 	

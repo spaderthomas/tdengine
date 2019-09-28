@@ -1,5 +1,5 @@
-string TileComponent::name() { return "TileComponent"; }
-TableNode* TileComponent::save() const {
+string Tile_Component::name() { return "Tile_Component"; }
+TableNode* Tile_Component::save() const {
 	TableNode* self = new TableNode;
 
 	tds_set2(self, x, "x");
@@ -7,11 +7,11 @@ TableNode* TileComponent::save() const {
 
 	return self;
 }
-void TileComponent::load(TableNode* self) {
+void Tile_Component::load(TableNode* self) {
 	this->x = tds_int2(self, "x");
 	this->y = tds_int2(self, "y");
 }
-void TileComponent::imgui_visualizer() {
+void Tile_Component::imgui_visualizer() {
 	if (ImGui::TreeNode("Tile Component")) {
 		int min = x - 20;
 		int max = x + 20;

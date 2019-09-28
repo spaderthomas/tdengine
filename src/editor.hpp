@@ -19,6 +19,7 @@ struct Entity_Info {
 struct Entity_Wizard {
 	char name[256];
 	char path[256];
+	map<string, bool> components;
 
 	void init();
 	void draw();

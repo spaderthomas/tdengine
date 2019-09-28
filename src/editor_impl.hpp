@@ -5,7 +5,7 @@ void Entity_Info::init() {
 		this->entities.push_back(kvp->key);
 		this->file_map[kvp->file].push_back(kvp->key);
 		this->entity_to_file[kvp->key] = kvp->file;
-		tdns_log.write(relative_path(kvp->file));
+		//tdns_log.write(relative_path(kvp->file));
 	}
 }
 Entity_Tree* Entity_Tree::create(string dir) {
@@ -49,6 +49,13 @@ void Entity_Wizard::draw() {
 	ImGui::Text("Entity Wizard!");
 	ImGui::InputText("Name", name, 256);
 	ImGui::InputText("File", path, 256);
+
+	auto all_components = all_component_names();
+	fox_for(i, all_components.size()) {
+		auto name = all_components[i];
+		ImGui::Checkbox(name.c_str(), &components[name]);
+		if (i % 2) ImGui::SameLine();
+	}
 }
 
 void Editor::init() {

@@ -1,5 +1,5 @@
-string BattleComponent::name() { return "BattleComponent"; }
-void BattleComponent::init_from_table(TableNode* table) {
+string Battle_Component::name() { return "Battle_Component"; }
+void Battle_Component::init_from_table(TableNode* table) {
 	this->health = tds_int2(table, "health");
 
 	// Put the pointer to the move data that we parsed in at init time
@@ -10,7 +10,7 @@ void BattleComponent::init_from_table(TableNode* table) {
 		moves.push_back(move_data[move_name]);
 	}
 }
-void BattleComponent::imgui_visualizer() {
+void Battle_Component::imgui_visualizer() {
 	if (ImGui::TreeNode("Battle Component")) {
 		ImGui::SliderInt("Health", (int*)(&health), 0, 10);
 		ImGui::TreePop();

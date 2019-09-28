@@ -1,6 +1,6 @@
 EntityHandle Level::get_tile(int x, int y) {
 	for (auto& tile : tiles) {
-		auto tc = tile->get_component<TileComponent>();
+		auto tc = tile->get_component<Tile_Component>();
 		if (tc->x == x && tc->y == y) {
 			return tile;
 		}
@@ -11,7 +11,7 @@ EntityHandle Level::get_tile(int x, int y) {
 void Level::set_tile(EntityHandle tile, int x, int y) {
 	// If there was another tile in this spot, erase it
 	for (auto it = tiles.begin(); it != tiles.end(); ++it) {
-		auto tc = (*it)->get_component<TileComponent>();
+		auto tc = (*it)->get_component<Tile_Component>();
 		if (tc->x == x && tc->y == y) {
 			tiles.erase(it);
 			break;
@@ -19,7 +19,7 @@ void Level::set_tile(EntityHandle tile, int x, int y) {
 	}
 
 	if (tile) {
-		auto tc = tile->get_component<TileComponent>();
+		auto tc = tile->get_component<Tile_Component>();
 		tc->x = x;
 		tc->y = y;
 		tiles.push_back(tile);

@@ -64,7 +64,6 @@ build_options = {
             'objc',
             'bz2',
             'z',
-            'stdc++fs'
         ],
         'frameworks': [
             'Cocoa',
@@ -483,7 +482,7 @@ entity.%(tile_name)s.components.Graphic_Component = {
     z = 0
 }
 entity.%(tile_name)s.components.Position_Component = {}
-entity.%(tile_name)s.components.TileComponent = {}
+entity.%(tile_name)s.components.Tile_Component = {}
 
 ''' % {'tile_name' : tile}
             

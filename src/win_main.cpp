@@ -36,12 +36,13 @@ extern "C" {
 #include <sstream>
 #include <algorithm>
 #include <cmath>
-#include <experimental/filesystem>
 #include <typeindex>
 #include <optional>
 #include <iomanip>
 #include <limits>
+#include <filesystem>
 using namespace std;
+using namespace std::filesystem;
 
 #include "machine_conf.hpp"
 #include "log.hpp"
@@ -97,8 +98,10 @@ using namespace std;
 #include "tdapi_impl.hpp"
 
 
-int main() {
+int main() {	
 	tdns_log.init();
+
+	all_component_names();
 
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();

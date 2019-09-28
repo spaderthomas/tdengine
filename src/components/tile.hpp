@@ -1,4 +1,4 @@
-struct TileComponent : Component {
+struct Tile_Component : Component {
 	int x;
 	int y;
 	
