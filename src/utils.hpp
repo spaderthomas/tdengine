@@ -55,31 +55,25 @@ vector<string> split(const string &str, char delim) {
 	return tokens;
 }
 
-#define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
-#define are_strings_equal(a, b) (!(a).compare((b)))
-
-// @note @spader 9/4/2019 Realllllllyyyyyyy need a better way of making paths good
-#ifdef WIN32
-void normalize_path(string& str) {
-	string from = "/";
-	string to = "\\";
-	
+void string_replace(string& str, string from, string to) {
     size_t start_pos = 0;
     while((start_pos = str.find(from, start_pos)) != std::string::npos) {
         str.replace(start_pos, from.length(), to);
         start_pos += to.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
     }
 }
+
+#define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
+#define are_strings_equal(a, b) (!(a).compare((b)))
+
+// @note @spader 9/4/2019 Realllllllyyyyyyy need a better way of making paths good
+#ifdef WIN32
+void normalize_path(string& str) {
+	string_replace(str, "/", "\\");
+}
 #else
 void normalize_path(string& str) {
-	string from = "/";
-	string level = "/";
-	
-    size_t start_pos = 0;
-    while((start_pos = str.find(from, start_pos)) != std::string::npos) {
-        str.replace(start_pos, from.length(), level);
-        start_pos += level.length(); // In case 'to' contains 'from', like replacing 'x' with 'yx'
-    }
+	return;
 }
 #endif
 
@@ -428,6 +422,11 @@ string absolute_path(string dir_from_project_root) {
 		return dir_from_project_root;
 	}
 	return root_dir + dir_from_project_root;
+}
+
+string relative_path(string absolute) {
+	string_replace(absolute, root_dir, "");
+	return absolute;
 }
 
 string path_join(vector<string> items) {

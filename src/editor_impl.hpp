@@ -1,3 +1,13 @@
+void Entity_Info::init() {
+	auto entities_table = tds_table(ENTITY_KEY);
+	for (auto node : entities_table->assignments) {
+		KVPNode* kvp = (KVPNode*)node;
+		this->entities.push_back(kvp->key);
+		this->file_map[kvp->file].push_back(kvp->key);
+		this->entity_to_file[kvp->key] = kvp->file;
+		tdns_log.write(relative_path(kvp->file));
+	}
+}
 Entity_Tree* Entity_Tree::create(string dir) {
 	Entity_Tree* tree = new Entity_Tree;
 	tree->dir = name_from_full_path(dir);
@@ -40,12 +50,7 @@ void Editor::init() {
 		tds_float(EDITOR_KEY, POS_KEY, "y")
 	};
 	tile_tree = Entity_Tree::create(absolute_path("textures/tiles"));
-	
-	auto entities = tds_table(ENTITY_KEY);
-	for (auto node : entities->assignments) {
-		KVPNode* kvp = (KVPNode*)node;
-		tdns_log.write(kvp->file);
-	}
+	entity_info.init();
 }
 void Editor::translate() {
 	get_cmp(selected, Position_Component)->world_pos =
@@ -327,35 +332,28 @@ void Editor::update(float dt) {
 	
 	if (show_script_selector) {
 		ImGui::Begin("Entities", 0, flags);
-		static ImGuiTextFilter script_filter;
-		
-		static string script_current = script_to_entity.begin()->first;
-		
-		// Note: I'm not entirely sure why this name has to include ##
-		// It certainly has something to do with the ImGui stack, but I thought
-		// that only mattered in the case of duplicate names in the same window
-		if (ImGui::BeginCombo("##choose_script", script_current.c_str(), 0)) {
-			for (auto& kvp : script_to_entity) {
-				auto& script = kvp.first;
-				if (script_filter.PassFilter(script.c_str())) {
-					bool is_selected = (script == script_current);
-					if (ImGui::Selectable(script.c_str(), is_selected)) {
-						script_current = script;
-					}
-					if (is_selected) ImGui::SetItemDefaultFocus();
-				}
-			}
-			ImGui::EndCombo();
-		}
-		
-		script_filter.Draw("Filter Scripts");
+
+		// File chooser + filter
+		static ImGuiTextFilter file_filter;
+		file_filter.Draw("Filter by Scripts");
+
+		// Entity chooser + filter
 		static ImGuiTextFilter entity_filter;
-		entity_filter.Draw("Filter Entities");
+		entity_filter.Draw("Filter by Entity");
 		
 		// Populate a list of selectables that, when clicked, create the corresponding entity
 		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 		ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
-		for (auto& entity : script_to_entity[script_current]) {
+
+		vector<string> entities_to_display; // @copy
+		for (auto& entity : entity_info.entities) {
+			bool pass_entity_filter = entity_filter.PassFilter(entity.c_str());
+			bool pass_file_filter = file_filter.PassFilter(entity_info.entity_to_file[entity].c_str());
+			if (pass_entity_filter && pass_file_filter)
+				entities_to_display.push_back(entity);
+		}
+		
+		for (auto& entity : entities_to_display) {
 			if (!entity_filter.PassFilter(entity.c_str())) continue;
 			if (ImGui::Selectable(entity.c_str())) {
 				// If we were selecting a tile, reset our grid settings
@@ -368,8 +366,6 @@ void Editor::update(float dt) {
 				selected = Entity::create(entity);
 				this->kind = ENTITY;
 				this->state = INSERT;
-				
-				
 			}
 		}
 		ImGui::PopStyleVar();

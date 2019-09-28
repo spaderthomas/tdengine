@@ -6,7 +6,15 @@ struct Entity_Tree {
 	
 	static Entity_Tree* create(string dir);
 	pool_handle<Entity> find(string name);
-}; 
+};
+
+struct Entity_Info {
+	vector<string> entities;
+	map<string, vector<string>> file_map;
+	map<string, string> entity_to_file;
+
+	void init();
+};
 
 enum Editor_State {
 	IDLE,
@@ -21,7 +29,7 @@ enum Selection_Kind {
 	ENTITY
 };
 struct Editor : Layer {
-	// Stores tiles in a tree structure for good display purposes.
+	Entity_Info entity_info;
 	Entity_Tree* tile_tree;
 	void draw_tile_tree(Entity_Tree* root);
 	int draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index);
@@ -50,7 +58,6 @@ struct Editor : Layer {
 	void undo_action();
 	vector<function<void()>> mark_stack;
 	void undo_mark();
-	
 	
 	// Big stuff
 	void reload_assets();
