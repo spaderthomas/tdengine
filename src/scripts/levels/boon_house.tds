@@ -3,6 +3,9 @@ levels.boon_house = {
 		{
 			name = "boonhouse_door"
 			components = {
+				Door_Component = {
+					level = "overworld"
+				}
 				Position_Component = {
 					pos = {
 						x = 0.232000
@@ -17,6 +20,17 @@ levels.boon_house = {
 		{
 			name = "CT_test"
 			components = {
+			}
+		}
+		{
+			name = "upstairs"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.601172
+						y = 0.611111
+					}
+				}
 			}
 		}
 	}

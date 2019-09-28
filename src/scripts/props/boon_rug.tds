@@ -1,0 +1,12 @@
+entity.boon_rug = {}
+entity.boon_rug.components = {}
+entity.boon_rug.components.Graphic_Component = {
+   Animations = {
+      boon_rug = {
+         "boon_rug.png",
+      }
+   },
+   default_animation = "boon_rug",
+   z = 1,
+}
+entity.boon_rug.components.Position_Component = {}

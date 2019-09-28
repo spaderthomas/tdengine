@@ -1,0 +1,25 @@
+entity.boon_bed = {}
+entity.boon_bed.components = {}
+entity.boon_bed.components.Graphic_Component = {
+   Animations = {
+      boon_bed = {
+         "boon_bed.png",
+      }
+   },
+   default_animation = "boon_bed",
+   z = 1,
+}
+entity.boon_bed.components.Collision_Component = {
+   kind = Collider_Kind.STATIC,
+   bounding_box = {
+	  center = {
+		 x = 0.0,
+		 y = 0.0
+	  },
+	  extents = {
+		 x = ScreenTileSizeX.half,
+		 y = ScreenTileSizeY.one
+	  }
+   },
+}
+entity.boon_bed.components.Position_Component = {}

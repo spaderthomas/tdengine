@@ -1,0 +1,25 @@
+entity.boon_nightstand = {}
+entity.boon_nightstand.components = {}
+entity.boon_nightstand.components.Graphic_Component = {
+   Animations = {
+      boon_nightstand = {
+         "boon_nightstand.png",
+      }
+   },
+   default_animation = "boon_nightstand",
+   z = 1,
+}
+entity.boon_nightstand.components.Collision_Component = {
+   kind = Collider_Kind.STATIC,
+   bounding_box = {
+	  center = {
+		 x = 0.0,
+		 y = 0.0
+	  },
+	  extents = {
+		 x = ScreenTileSizeX.half,
+		 y = ScreenTileSizeY.half
+	  }
+   },
+}
+entity.boon_nightstand.components.Position_Component = {}
