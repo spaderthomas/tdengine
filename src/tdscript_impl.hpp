@@ -857,6 +857,8 @@ void TDScript::script_dir(string dir_path) {
 	
 	for (auto it = directory_iterator(dir_path); it != directory_iterator(); it++) {
 		string path = it->path().string();
+		normalize_path(path);
+
 
 		// Make sure the path is a TDS file that has not been run
 		if (is_regular_file(it->status())) {

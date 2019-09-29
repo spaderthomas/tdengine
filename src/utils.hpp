@@ -1212,7 +1212,7 @@ vector<string> all_component_names() {
 	
 	auto component_dir = path_join({root_dir, "src", "components"});
 	for (const auto& entry : directory_iterator(component_dir)) {
-		string filename = entry.path().filename().replace_extension().c_str();
+		string filename = entry.path().filename().replace_extension().string();
 		if (tdns_find(ignore, filename)) continue;
 		if (does_string_contain_substr(filename, impl)) continue;
 		
