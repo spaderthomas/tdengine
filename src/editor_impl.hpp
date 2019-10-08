@@ -50,11 +50,12 @@ void Entity_Wizard::draw() {
 	ImGui::InputText("Name", name, 256);
 	ImGui::InputText("File", path, 256);
 
+	ImGui::Columns(2, "columns", false);
 	auto all_components = all_component_names();
 	fox_for(i, all_components.size()) {
 		auto name = all_components[i];
 		ImGui::Checkbox(name.c_str(), &components[name]);
-		if (i % 2) ImGui::SameLine();
+		ImGui::NextColumn();
 	}
 }
 

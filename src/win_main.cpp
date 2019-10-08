@@ -85,7 +85,6 @@ using namespace std::filesystem;
 #include "task_impl.hpp"
 #include "sprite_impl.hpp"
 #include "mesh.hpp"
-#include "component_impl.hpp"
 #include "components/component_impl_includes.hpp"
 #include "draw.hpp"
 #include "entity_impl.hpp"
