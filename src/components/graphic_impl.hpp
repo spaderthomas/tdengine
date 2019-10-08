@@ -10,9 +10,11 @@ void Graphic_Component::begin_animation(string wish) {
 	string msg = "Tried to set active animation to " + wish + " but it was not registered in the component!";
 	tdns_log.write(msg);
 }
+
 void Graphic_Component::add_animation(Animation* anim) {
 	animations.push_back(anim);
 }
+
 Sprite* Graphic_Component::get_current_frame() {
 	if (!active_animation) {
 		tdns_log.write("Component asked for current frame but no active animation was set!");
@@ -26,9 +28,10 @@ Sprite* Graphic_Component::get_current_frame() {
 	
 	return active_animation->frames[active_animation->icur_frame];
 }
-void Graphic_Component::init(TableNode* gc) {
-	this->z = tds_int2(gc, "z");
-	TableNode* animations = tds_table2(gc, "Animations");
+
+void Graphic_Component::init(TableNode* table) {
+	this->z = tds_int2(table, "z");
+	TableNode* animations = tds_table2(table, "Animations");
 	this->animations.clear();
 	
 	for (auto& def : animations->assignments) {
@@ -45,6 +48,15 @@ void Graphic_Component::init(TableNode* gc) {
 		
 		this->add_animation(animation);
 	}
+
+	this->begin_animation(tds_string2(table, DEFAULT_ANIMATION_KEY));
+	
+	// Set the scaling of this based on the first sprite we see. Right now, no objects resize
+	// Also, use 640x360 because the raw dimensions are based on this
+	Sprite* default_sprite = this->get_current_frame();
+	scale = glm::vec2((float)default_sprite->width / (float)640,
+					  (float)default_sprite->height / (float)360);
+
 }
 string Graphic_Component::name() { return "Graphic_Component"; }
 void Graphic_Component::imgui_visualizer() {

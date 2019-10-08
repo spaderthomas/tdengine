@@ -911,15 +911,15 @@ void test_tdscript() {
 	
 	TableNode* gc = tds_table2(ScriptManager.global_scope, "entity", "wilson", "components", "Graphic_Component");
 	auto graphic = new Graphic_Component;
-	graphic->init_from_table(gc);
+	graphic->init(gc);
 	
 	TableNode* movement_table = tds_table2(ScriptManager.global_scope, "entity", "wilson", "components", "Movement_Component");
 	auto mc = new Movement_Component;
-	mc->init_from_table(movement_table);
+	mc->init(movement_table);
 	
 	TableNode* collision_table = tds_table2(ScriptManager.global_scope, "entity", "wilson", "components", "Collision_Component");
 	auto cc = new Collision_Component;
-	cc->init_from_table(collision_table);
+	cc->init(collision_table);
 	
 	TableNode* task_table = tds_table2(ScriptManager.global_scope, "entity", "wilson", "scripts", "intro");
 	auto task = new Task;

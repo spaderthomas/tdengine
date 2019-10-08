@@ -481,33 +481,34 @@ bool show_state_tweaker = true;
 bool show_task_editor = false;
 bool send_kill_signal = false;
 
-const string ACTIONS_KEY     = "actions";
-const string CH_STATE_KEY    = "character_state";
-const string COMPONENTS_KEY  = "components";
-const string CONFIG_KEY      = "config";
-const string CUTSCENES_KEY   = "cutscenes";
-const string DIALOGUE_KEY    = "dialogue";
-const string EDITOR_KEY      = "editor";
-const string ENTITY_KEY      = "entity";
-const string ENTITIES_KEY    = "entities";
-const string FONTS_KEY       = "fonts";
-const string GAME_STATE_KEY  = "game_state";
-const string HERO_KEY        = "boon";
-const string LEVEL_KEY       = "level";
-const string LEVELS_KEY      = "levels";
-const string NAME_KEY        = "name";
-const string NAMES_KEY       = "names";
-const string NEXT_STATE_KEY  = "next_state";
-const string PAN_KEY         = "pan";
-const string POS_KEY         = "pos";
-const string SCALE_KEY       = "scale";
-const string SCRIPTS_KEY     = "scripts";
-const string STATE_KEY       = "State_Machine";
-const string TEXT_KEY        = "text";
-const string TILES_KEY       = "tiles";
-const string TRANSITIONS_KEY = "transitions";
-const string VARS_KEY        = "vars";
-const string WHICH_KEY       = "which";
+const string ACTIONS_KEY              = "actions";
+const string CH_STATE_KEY             = "character_state";
+const string COMPONENTS_KEY           = "components";
+const string CONFIG_KEY               = "config";
+const string CUTSCENES_KEY            = "cutscenes";
+const string DEFAULT_ANIMATION_KEY    = "default_animation";
+const string DIALOGUE_KEY             = "dialogue";
+const string EDITOR_KEY               = "editor";
+const string ENTITY_KEY               = "entity";
+const string ENTITIES_KEY             = "entities";
+const string FONTS_KEY                = "fonts";
+const string GAME_STATE_KEY           = "game_state";
+const string HERO_KEY                 = "boon";
+const string LEVEL_KEY                = "level";
+const string LEVELS_KEY               = "levels";
+const string NAME_KEY                 = "name";
+const string NAMES_KEY                = "names";
+const string NEXT_STATE_KEY           = "next_state";
+const string PAN_KEY                  = "pan";
+const string POS_KEY                  = "pos";
+const string SCALE_KEY                = "scale";
+const string SCRIPTS_KEY              = "scripts";
+const string STATE_KEY                = "State_Machine";
+const string TEXT_KEY                 = "text";
+const string TILES_KEY                = "tiles";
+const string TRANSITIONS_KEY          = "transitions";
+const string VARS_KEY                 = "vars";
+const string WHICH_KEY                = "which";
 
 
 /* Random shit */
@@ -746,6 +747,7 @@ struct pool_handle {
 
 struct Entity;
 typedef pool_handle<Entity> EntityHandle;
+
 
 //@slow
 template<typename Data_Type, int num_elements>

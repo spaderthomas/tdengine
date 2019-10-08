@@ -1,27 +1,21 @@
-template<typename Component_Type>
-pool_handle<any_component> Entity::add_component() {
-	// Grab a handle to a chunk of memory in the pool, initialize it with inplace new, and then mark it in the mapping for this entity
-	pool_handle<any_component> handle = component_pool.next_available();
-	any_component* any = handle();
-	new(any) Component_Type;
-	components[&typeid(Component_Type)] = handle;
-	return handle;
-}
 template <typename Component_Type>
 void Entity::remove_component() {
-	pool_handle handle = components[&typeid(Component_Type)];
+	auto handle = components[&typeid(Component_Type)];
 	component_pool.mark_available(handle);
+	components.erase(&typeid(Component_Type));
 }
 void Entity::clear_components() {
 	for (auto kvp : components) {
 		pool_handle handle = kvp.second;
 		component_pool.mark_available(handle);
 	}
+
+	this->components.clear();
 }
 
 template <typename Component_Type>
 Component_Type* Entity::get_component() {
-	pool_handle<any_component> handle = components[&typeid(Component_Type)];
+	auto handle = components[&typeid(Component_Type)];
 	
 	// If it returns a zeroed out entry, then the component doesn't exist
 	if (!handle.pool) {
@@ -29,14 +23,16 @@ Component_Type* Entity::get_component() {
 	}
 	
 	// Otherwise, try to grab the component associated with the handle (performing all the safety checks of the handle)
-	any_component* any = handle();
-	return (Component_Type*)any;
+	return (Component_Type*)handle();
 }
-any_component* Entity::get_component(string kind) {
+
+Component* Entity::get_component(string kind) {
 	const type_info* info = component_map[kind];
-	pool_handle<any_component> handle = components[info];
-	any_component* thing = handle();
-	return thing;
+	auto handle = components[info];
+	
+	// @spader 10/7/2019 Unsafe, probably, I just want a pointer to the union. Since every class in the union derives from
+	// Component, it's all good. 
+	return (Component*)handle(); 
 }
 
 EntityHandle Entity::create(string entity_name) {
@@ -51,8 +47,21 @@ EntityHandle Entity::create(string entity_name) {
 		auto type = kvp->key;
 		auto table = (TableNode*)(kvp->value);
 
-		auto component = Component::create(type, table);
+		auto component = create_component(type, table);
+		entity->components[component_map[type]] = component;
+	}
 
+	// @spader 10/7/2019: Would be nice if this were "pure" or generic, but I'm not sure where else to do component setup
+	// that requires an entity to be around. It's for the component, not really the entity, so I don't want it in Component::create.
+	// But I don't like it here because it feels hacky. 
+	if_component(task_component, entity, Task_Component) {
+		// Get the entity's current state and initialize the corresponding task
+		string entity_state = tds_string(CH_STATE_KEY, entity_name);
+		TableNode* task_table = tds_table(ENTITY_KEY, entity_name, SCRIPTS_KEY, entity_state);
+			
+		Task* task = new Task;
+		task->init_from_table(task_table, entity);
+		task_component->task = task;
 	}
 	
 	return entity;
@@ -93,8 +102,7 @@ void Entity::destroy(pool_handle<Entity> handle) {
 
 void Entity::imgui_visualizer() {
 	// Iterate through components, displaying whatever you need
-	for (auto& kvp : components) {
-		pool_handle<any_component> handle = kvp.second;
+	for (auto& [type, handle] : components) {
 		Component* component = (Component*)handle();
 		if (component) component->imgui_visualizer();
 	}
