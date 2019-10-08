@@ -7,7 +7,8 @@ struct Graphic_Component : Component {
 	void begin_animation(string wish);
 	void add_animation(Animation* anim);
 	Sprite* get_current_frame();
-	void init_from_table(TableNode* table);
+	
+	void init(TableNode* table) override;
 	string name() override;
 	void imgui_visualizer() override;
 };

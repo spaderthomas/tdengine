@@ -1,4 +1,4 @@
-void Vision_Component::init_from_table(TableNode* table) {
+void Vision_Component::init(TableNode* table) {
 	width = tds_float2(table, "extents", "width");
 	depth = tds_float2(table, "extents", "depth");
 }

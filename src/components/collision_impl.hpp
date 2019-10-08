@@ -1,5 +1,6 @@
 string Collision_Component::name() { return "Collision_Component"; }
-void Collision_Component::init_from_table(TableNode* table) {
+
+void Collision_Component::init(TableNode* table) {
 	kind = (Collider_Kind)tds_int2(table, "kind");
 	bounding_box.screen_center.x = tds_float2(table, "bounding_box", "center", "x"); 
 	bounding_box.screen_center.y = tds_float2(table, "bounding_box", "center", "y");

@@ -6,7 +6,7 @@ struct Collision_Component : Component {
 	} bounding_box;
 	Collider_Kind kind;
 	
-	void init_from_table(TableNode* table);
+	void init(TableNode* table) override;
 	string name() override;
 	void imgui_visualizer() override;
 };

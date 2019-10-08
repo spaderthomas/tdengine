@@ -1,4 +1,4 @@
-void Door_Component::init_from_table(TableNode* table) {
+void Door_Component::init(TableNode* table) {
 	level = tds_string2(table, LEVEL_KEY);
 }
 

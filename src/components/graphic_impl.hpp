@@ -26,7 +26,7 @@ Sprite* Graphic_Component::get_current_frame() {
 	
 	return active_animation->frames[active_animation->icur_frame];
 }
-void Graphic_Component::init_from_table(TableNode* gc) {
+void Graphic_Component::init(TableNode* gc) {
 	this->z = tds_int2(gc, "z");
 	TableNode* animations = tds_table2(gc, "Animations");
 	this->animations.clear();

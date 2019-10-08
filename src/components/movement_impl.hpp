@@ -1,4 +1,4 @@
-void Movement_Component::init_from_table(TableNode* table) {
+void Movement_Component::init(TableNode* table) {
 	speed.x = tds_float2(table, "speed", "x");
 	speed.y = tds_float2(table, "speed", "y");
 }
