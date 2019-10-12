@@ -1,5 +1,20 @@
 string Battle_Component::name() { return "Battle_Component"; }
 
+TableNode* Battle_Component::make_template() const {
+	TableNode* self = new TableNode;
+
+	tds_set2(self, health, HEALTH_KEY);
+
+	TableNode* moves_table = new TableNode;
+	tds_set2(self, moves_table, MOVES_KEY);
+
+	fox_for(i, moves.size()) {
+		tds_set2(moves_table, to_string(1), moves[i]->name);
+	}
+
+	return self;
+}
+
 void Battle_Component::init(TableNode* table) {
 	this->health = tds_int2(table, "health");
 

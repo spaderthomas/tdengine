@@ -112,6 +112,7 @@ struct TableWriter {
 	uint indent = 0;
 	bool same_line_internal = false; // Users just call same_line() to manipulate this
 	vector<string> lines;
+	ios_base::openmode stream_flag = ofstream::trunc;
 
 	TableNode* table = nullptr;
 	string table_name;
@@ -169,10 +170,12 @@ struct TableWriter {
 
 			// Write the table itself
 			table->dump(*this);
-			ofstream stream(path, ofstream::out | ofstream::trunc);
+			ofstream stream(path, ofstream::out | stream_flag);
 			for (auto& line : lines) {
 				stream << line << endl;
 			}
+
+			this->lines.clear();
 		} else {
 			tdns_log.write("Tried to dump a table to " + path + ", but the table was nullptr");
 		}

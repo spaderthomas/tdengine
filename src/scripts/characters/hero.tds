@@ -36,7 +36,7 @@ entity.boon.components.Collision_Component = {
 
 entity.boon.components.Movement_Component = Default_Components.Human_Movement_Component
 
-entity.boon.components.Vision = {
+entity.boon.components.Vision_Component = {
    extents = {
 	  width = ScreenTileSizeX.one,
 	  depth = ScreenTileSizeY.two

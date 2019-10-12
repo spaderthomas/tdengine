@@ -4,7 +4,7 @@ void Vision_Component::init(TableNode* table) {
 }
 
 string Vision_Component::name() {
-	return "Vision";
+	return "Vision_Component";
 }
 
 void Vision_Component::imgui_visualizer() {

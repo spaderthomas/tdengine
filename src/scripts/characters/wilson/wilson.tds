@@ -25,7 +25,7 @@ entity.wilson.components.Collision_Component = {
 
 entity.wilson.components.Movement_Component = Default_Components.Human_Movement_Component
 
-entity.wilson.components.Vision = {
+entity.wilson.components.Vision_Component = {
    extents = {
 	  width = ScreenTileSizeX.one,
 	  depth = ScreenTileSizeY.two

@@ -1,0 +1,13 @@
+templates.Collision_Component = {
+   kind = Collider_Kind.STATIC,
+   bounding_box = {
+	  center = {
+		 x = 0,
+		 y = 0
+	  },
+	  extents = {
+		 x = ScreenTileSizeX.one,
+		 y = ScreenTileSizeY.one
+	  }
+   }
+}

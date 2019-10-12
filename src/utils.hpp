@@ -158,7 +158,8 @@ glm::vec4 black = glm::vec4(0.f, 0.f, 0.f, 1.f);
 glm::vec4 white4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
 glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
 
-
+#define ImGuiColor_Red ImVec4(1.f, 0.f, 0.f, 1.f)
+	
 // Shape primitives
 vector<float> triangle_verts = {
 	-0.5f, -0.5f, 0.0f,
@@ -300,6 +301,16 @@ void use_1440p() {
 	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
 	glfwSetWindowSize(g_window, 2560, 1440);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+}
+void use_arbitrary_screen_size(int height, int width) {
+	SCREEN_X = (subpixel_unit)width;
+	SCREEN_Y = (subpixel_unit)height;
+	CELL_SIZE = (subpixel_unit)64.f;
+	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
+	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
+	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
+	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
+	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);	
 }
 void change_window_size(string size) {
 	if (size == "640") { use_640_360(); }
@@ -493,9 +504,11 @@ const string ENTITY_KEY               = "entity";
 const string ENTITIES_KEY             = "entities";
 const string FONTS_KEY                = "fonts";
 const string GAME_STATE_KEY           = "game_state";
+const string HEALTH_KEY               = "health";
 const string HERO_KEY                 = "boon";
 const string LEVEL_KEY                = "level";
 const string LEVELS_KEY               = "levels";
+const string MOVES_KEY                = "moves";
 const string NAME_KEY                 = "name";
 const string NAMES_KEY                = "names";
 const string NEXT_STATE_KEY           = "next_state";
@@ -747,7 +760,6 @@ struct pool_handle {
 
 struct Entity;
 typedef pool_handle<Entity> EntityHandle;
-
 
 //@slow
 template<typename Data_Type, int num_elements>
@@ -1203,7 +1215,7 @@ string capitalize_component_name(string name_from_path) {
 	return name_from_path;
 }
 
-vector<string> all_component_names() {
+vector<string> all_component_types() {
 	vector<string> ignore = {
         "component_includes",
 		"component_impl_includes"
@@ -1219,6 +1231,7 @@ vector<string> all_component_names() {
 		if (does_string_contain_substr(filename, impl)) continue;
 		
 		auto component_name = capitalize_component_name(filename);
+		component_name += "_Component";
 		names.push_back(component_name);
 	}
 	

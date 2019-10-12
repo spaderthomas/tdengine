@@ -1,0 +1,4 @@
+templates.Battle_Component = {
+    health = 0,
+	moves = {}
+}

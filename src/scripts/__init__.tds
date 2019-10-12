@@ -2,6 +2,7 @@ meta = {}
 meta.script_dirs = {
    # Utils has to be first so entities can use them 
     "utils",
+	"templates",
 	"battle",
 	"buildings",
 	"characters",

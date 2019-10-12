@@ -45,18 +45,84 @@ pool_handle<Entity> Entity_Tree::find(string name) {
 
 void Entity_Wizard::init() {
 }
+
 void Entity_Wizard::draw() {
 	ImGui::Text("Entity Wizard!");
 	ImGui::InputText("Name", name, 256);
-	ImGui::InputText("File", path, 256);
+	ImGui::InputText("Folder", path, 256);
+
+	static vector<string> file_mode_descriptions = {"Erase the file.", "Append to the file"};
+	static vector<ios_base::openmode> file_modes = {ofstream::trunc, ofstream::app};
+	static int index_file_mode_current = 1;
+	if (ImGui::BeginCombo("##choose_file_mode", file_mode_descriptions[index_file_mode_current].c_str(), 0)) {
+		fox_for(i, file_mode_descriptions.size()) {
+			bool is_selected = index_file_mode_current == i;
+			if (ImGui::Selectable(file_mode_descriptions[i].c_str(), is_selected)) {
+				index_file_mode_current = i;
+			}
+		}
+
+		ImGui::EndCombo();
+	}
 
 	ImGui::Columns(2, "columns", false);
-	auto all_components = all_component_names();
-	fox_for(i, all_components.size()) {
-		auto name = all_components[i];
-		ImGui::Checkbox(name.c_str(), &components[name]);
+	auto types = all_component_types();
+	for(auto& type : types) {
+		ImGui::Checkbox(type.c_str(), &component_checked[type]);
 		ImGui::NextColumn();
 	}
+	
+	for(auto& type : types) {
+		if (!component_checked[type]) continue;
+
+		template_components[type]->imgui_visualizer();
+	}
+	ImGui::Columns(1);
+
+	bool show_name_error = !strlen(name);
+	bool show_path_error = !strlen(path);
+	if (ImGui::Button("Create!")) {
+		string absolute = absolute_path(path);
+		normalize_path(absolute);
+
+		// Forward declare the entity's main table, respecting the user's file mode
+		TableWriter writer;
+		writer.table = new TableNode;
+		writer.stream_flag = file_modes[index_file_mode_current];
+		writer.table_name = "entity." + string(name) + " = ";
+		writer.dump(absolute);
+		
+		// After we start writing it, truncating would just overwrite what we did. 
+		writer.stream_flag = ofstream::app;
+
+		writer.table_name = "entity." + string(name) + ".components = ";
+		writer.dump(absolute);
+		
+		// Write out all the components
+		for (auto& type : types) {
+			if (!component_checked[type]) continue;
+			Component* component = template_components[type];
+
+			writer.table_name = "entity." + string(name) + ".components." + type + " = ";
+			writer.table = component->make_template();
+			writer.dump(absolute);
+		}
+
+		template_components.init();
+
+	}
+	
+	if (show_name_error) {
+		ImGui::PushStyleColor(ImGuiCol_Text, ImGuiColor_Red);
+		ImGui::Text("You need to have a name for your entity.");
+		ImGui::PopStyleColor();
+	}
+	if (show_path_error) {
+		ImGui::PushStyleColor(ImGuiCol_Text, ImGuiColor_Red);
+		ImGui::Text("You need to have a path for your entity.");
+		ImGui::PopStyleColor();
+	}
+
 }
 
 void Editor::init() {

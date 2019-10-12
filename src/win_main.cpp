@@ -100,8 +100,6 @@ using namespace std::filesystem;
 int main() {	
 	tdns_log.init();
 
-	all_component_names();
-
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
 	
@@ -124,6 +122,7 @@ int main() {
 	init_fonts();
 	init_cutscenes();
 	init_hero();
+	template_components.init();
 	
 	game.init();
 	editor.init();

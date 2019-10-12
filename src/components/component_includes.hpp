@@ -41,14 +41,16 @@ unordered_map<string, const type_info*> component_map = {
 	{ "Movement_Component", &typeid(Movement_Component) },
 	{ "Task_Component", &typeid(Task_Component) },
 	{ "Tile_Component", &typeid(Tile_Component) },
-	{ "Vision", &typeid(Vision_Component) },
+	{ "Vision_Component", &typeid(Vision_Component) },
 	// @NEXT_TYPE_INFO
 };
+
 
 #define def_get_cmp(var, entity, type) type* var = (entity)->get_component<type>()
 #define get_cmp(entity, type) (entity)->get_component<type>()
 #define def_cast_cmp(varname, cmp, type) type* varname = dynamic_cast<type*>((cmp))
 #define if_component(var, entity, type) type* var = (entity)->get_component<type>(); if ((var))
+
 
 ComponentHandle create_component(string name, TableNode* table) {
 	auto handle = component_pool.next_available();
@@ -67,7 +69,7 @@ ComponentHandle create_component(string name, TableNode* table) {
 		Movement_Component* component = (Movement_Component*)handle();
 		component->init(table);
 	}
-	else if (name == "Vision") {
+	else if (name == "Vision_Component") {
 		new(handle()) Vision_Component;
 		Vision_Component* component = (Vision_Component*)handle();
 		component->init(table);
@@ -106,3 +108,35 @@ ComponentHandle create_component(string name, TableNode* table) {
 
 	return handle;
 }
+
+template<typename ComponentType>
+ComponentType* component_cast(ComponentHandle handle) {
+	static_assert(std::is_base_of_v<Component, Component_Type>,
+				  "You tried to cast a component handle into a type that's not derived from a component.");
+	return (ComponentType*)handle();
+}
+
+struct TemplateComponents {
+	map<string, ComponentHandle> templates;
+
+	Component* operator[](string which) {
+		return (Component*)templates[which]();
+	}
+	
+	void init() {
+		// Clear out the old ones we had
+		for (auto& [type, handle] : templates) {
+			if (handle) {
+				component_pool.mark_available(handle);
+			}
+		}
+
+		// Make new ones
+		auto types = all_component_types();
+		for(auto& type : types) {
+			TableNode* template_table = tds_table("templates", type);
+			templates[type] = create_component(type, template_table);
+		}
+	}
+};
+TemplateComponents template_components;

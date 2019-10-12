@@ -1,0 +1,6 @@
+templates.Movement_Component = {
+    speed = {
+	    x = .0025,
+	    y = .0025
+    }
+}

@@ -56,9 +56,13 @@ void Renderer::render_for_frame() {
 			}
 
 			Sprite* sprite = render_element.gc->get_current_frame();
+			if (!sprite) {
+				tdns_log.write("Trying to render, but sprite returned was invalid (nullptr). Sprite was: " + sprite->name);
+				continue;
+			}
 			if (!sprite->is_initialized()) {
 				tdns_log.write("Trying to render, but the sprite was uninitialized. Sprite was: " + sprite->name);
-				fox_assert(false);
+				continue;
 			}
 			
 			sprite->atlas->bind();

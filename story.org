@@ -63,7 +63,7 @@ until the right moment.
 * miscellamania
 see it everywhere. could see them in how people talked. the people only talked
 to serve the symbols, though they didn't know it. could see it in their eyes,
-glints, projecting, copper gleaming like a devil. began to see the patterns
+glints, projecting, copper gleaming like the devil. began to see the patterns
 everywhere. the universe unfolded itself for me, i was cursed, i could see the
 slow loping patterns down to tight recursive curls in the symbols. all was
 revealed. except what the fucking scrolls meant. 
@@ -2094,7 +2094,7 @@ breaks the silence.
 
 thesus, ignoring him, speaks to boon and evans: "well, it would seem that we
 have some more to catch up on. shall we return?"
-** 
+** a man named harkon
 back at the camp, they're sitting inside theseus' and tess' room. they're
 telling boon and evans more about what they've gleaned from the prophecies and
 how it fits in with what they just saw.
@@ -2112,7 +2112,7 @@ how it fits in with what they just saw.
 they've got a guy who is a fair expert on this part of the prophecies. he stays
 in the capital. whereabouts unknown -- he was sent in a few years ago to
 infiltrate the government, but he's only sent back signals of life, not status
-updates. went by the name of harkon organa. it'd be good for you to go in and
+updates. went by the name of harkon. it'd be good for you to go in and
 try to find him. with the ward and your lack of attachment to the revolution,
 you're far less conspicuous than any of us. could also be a good chance to get a
 feel for some other secret members we have around the city. 
@@ -2155,8 +2155,6 @@ like i'm gonna lose"
 just have to walk through that door"
 
 "..."
-
-
 ** CITY 1 SIDEQUESTS
 *** the crier
 you stumble into a pedestrian. he seems almost raving mad. he is onto the
@@ -2166,7 +2164,7 @@ to his house where he shows you wild notes strewn everywhere. he seems on the
 brink of some great discovery and some great publication. you must choose
 whether to let him live and perhaps blow everything up or to take an otherwise
 innocent life.
-** finding harkon
+** finding hardon
 so the idea here is that each of the three give you some kind of information
 about where to find harkon. and once you have all three pieces, you can go to
 him. some kind of secret messages left to them? encryption? the three-fold
@@ -2174,5 +2172,123 @@ message is an SOS. he's trapped. shit's gone south. the message says what
 facility he's being held in, but it's not timestamped, and there's no
 instructions for what to do once you get there. 
 
+i'm not sure how these clues should play out. i don't want it to be a crossword
+puzzle. and i don't want it to be mere fetch. and i don't want it to be point a
+to point b to point c. 
 
+maybe there's a special place in the overworld. at first, it's unassuming. you
+could walk by it a hundred times without noticing anything. but with the clues,
+it starts to come alive. you can see patterns in the floors. the signs on the
+walls take on new meaning. the people there seem preordained. and somehow, it
+points you to where harkon is being held. 
 
+the deal is that harkon is too far gone. he's been overwhelmed by dogmatic
+power. there is perhaps one clinging scrap of humanity left in him. the only way
+he can communicate is through these gestures that warp the fabric of time and
+life. it's not even conscious communication. it's the backpropagation of an idea
+through time, animal fear and need. 
+
+make the references veiled but not too veiled. obvious but not too obvious. 
+*** ilyena! oh ilyena!
+-
+this one's meant to give you a little more information on theseus and tess from
+someone who isn't at the camp. where there are surely no prying ears. you'll
+also get some nice loot from here. 
+-
+
+the door is deep inside a small warehouse. when you enter the warehouse, you can
+tell something is off about it. all that space, and nothing inside. the cobwebs
+hang gray from the corners. they told you that it was here, though, and this
+seems a good a place as any. you catch light creeping out from a single door on
+the far side of the hangar. 
+
+you knock gently. anyone who's set up a secret lab in the back of a warehouse
+probably doesn't take too kindly to chickenshit strangers like you poking
+around. you feel a cold rush run up from the base of your spine to the nape of
+your neck, like menthol and cool breath. dogmatic scanning. you felt it once
+before, before you got pulled into the hideout in-city. you're in the right
+place. 
+
+The door opened sharply. A woman was standing in the frame, slender but
+intimidating. Her face was darkened by the backlight, and Boon couldn't make out
+any of her features -- but he knew it was her. Natalia Ilyena. 
+
+"Come," she says roughly. She leads Boon over to a pop-up table and sits him
+down at a foldable chair. The ashtray is half-full of half-smoked cigarettes. It
+smells like the pleasant sticky residual of a casual smoker. The room is clearly
+a amateur's laboratory, but it feels more productive and alive than a sterile
+government gig. All of the equipment is shabby but immaculately maintained.  
+
+"I suppose you already know who I am." Her voice has the accent of someone who
+learned English late in life, but she speaks with the precision of someone for
+whom it didn't matter. "I don't know you. I haven't heard of you among the
+resistance."
+
+"Didn't they give you the whole filing cabinet on me before I came?" Boon asked.
+
+"You really are new. Dogmatic messages don't work like that. They don't map to
+language. It's like sending pure ideas. Makes it pretty hard to be on time. All
+I got was the sense of information transfer, a mindshare with a newborn baby. I
+guess that is you."
+
+"Well, yeah, I guess that's me." Boon laughs nervously. Ilyena doesn't return
+the favor. "I'm looking for information on a guy called Harkon." At this, her
+ears perk up. 
+
+"How do you know that name? Harkon was not one to be known to the lowest tier of
+the resistance."
+
+"I never met him personally. I've just got orders from brass that we need to
+talk with him."
+
+Ilyena barely lets the last word out of her mouth before saying "Bullshit. I
+don't know the details, but I do know what Harkon was working on. It was
+heavy. Why would they send a peon like you to come check in on him? You have
+skin in this game."
+
+"Have you ever met a man named Theseus?" If Ilyena's ears perked up before, they
+are now at full mast. A wary look shoots across her face.
+
+"So Theseus sent you. That answers one question, but creates many more. I think
+we need to have a chat."
+
+An hour passes quickly as Boon and Ilyena chat. Ilyena reveals the origins of
+Theseus and Tess. They're leaders of a splintered sect of the resistance, a sect
+with a far more radical and dire bent. They read Revelations and liked it a bit
+too much. Their group has a particular obsession with a set of ancient, alien
+scrolls that seem to depict a civilization long gone, a civilization in the
+future, here and not. They've also made some of the most important advancements
+in dogma in the last millenium. They're kooks, but they're kooks with an
+unseemly grasp on dogma. 
+
+She thinks that Theseus is a dangerous man. Something in the way he talks, in
+the way he acts, in the glances that escape his eye. But she fears Tess
+more. Something in those lake deep eyes belies deep power and control. 
+
+Boon, though nobody told him not to, feels anxious about telling anyone what
+happened to him. But he feels her nature as ultimately good, and so he divulges
+a fair portion of what he knows. She nods along with him. It makes sense why he
+would be looking for Harkon, she says, but she's afraid that she doesn't have as
+much information as she would hope.
+
+In fact, the other reason that she was nervous at the mention of Harkon is,
+well, what she knows about him. Her, along with the other agent, got sent out
+with him as a loose group. But the messages dwindled from him. Eventually the
+physical messages stopped, and she started receiving dogmatic messages. Frantic,
+garbled, manic visions flashing, at times overwhelming her and threatening to
+burn her out. But there was nothing she could do about it. She hadn't taken any
+of the preparations to make it back to camp, and summoning enough power to send
+a long-distance message would have surely tipped her off to anyone within the
+city. Opsec was more important than whatever jam Harkon had gotten himself
+into. 
+
+But, the most important thing: I got one last message. A slip of paper. And,
+no shit, it was on my desk one morning. There's no way anyone could know about
+this place, and no way for them to get in if they did. It freaked me the fuck
+out. 
+*** (si) pei de
+** defeating harkon
+he's being held in some government basement somewhere, the bottom of an
+unassuming office. he was caught. the room is lined with blue fluorescent tubes,
+men floating in them as unaware as fetuses. it's a mind link. harkon is the
+center of the link. 

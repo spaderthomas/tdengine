@@ -1,0 +1,6 @@
+templates.Vision_Component = {
+   extents = {
+	  width = ScreenTileSizeX.one,
+	  depth = ScreenTileSizeY.two
+   } 
+}

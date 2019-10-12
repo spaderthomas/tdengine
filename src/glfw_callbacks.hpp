@@ -42,6 +42,10 @@ void GLFW_Error_Callback(int err, const char* msg) {
 	cout << msg;
 }
 
+void GLFW_Window_Size_Callback(GLFWwindow* window, int width, int height) {
+	use_arbitrary_screen_size(height, width);
+}
+
 int init_glfw() {
 		auto result = glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
@@ -63,11 +67,12 @@ int init_glfw() {
 		return -1;
 	}
 	
+	glfwSetErrorCallback(GLFW_Error_Callback);
 	glfwSetCursorPosCallback(g_window, GLFW_Cursor_Pos_Callback);
 	glfwSetMouseButtonCallback(g_window, GLFW_Mouse_Button_Callback);
 	glfwSetKeyCallback(g_window, GLFW_Key_Callback);
 	glfwSetScrollCallback(g_window, GLFW_Scroll_Callback);
-	glfwSetErrorCallback(GLFW_Error_Callback);
+	glfwSetWindowSizeCallback(g_window, GLFW_Window_Size_Callback);
 	
 	glfwSwapInterval(0);
 

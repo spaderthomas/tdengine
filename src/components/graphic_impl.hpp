@@ -54,8 +54,17 @@ void Graphic_Component::init(TableNode* table) {
 	// Set the scaling of this based on the first sprite we see. Right now, no objects resize
 	// Also, use 640x360 because the raw dimensions are based on this
 	Sprite* default_sprite = this->get_current_frame();
-	scale = glm::vec2((float)default_sprite->width / (float)640,
-					  (float)default_sprite->height / (float)360);
+	if (default_sprite) {
+		scale = glm::vec2((float)default_sprite->width / (float)640,
+						  (float)default_sprite->height / (float)360);
+	} else {
+		scale = glm::vec2(1.f, 1.f);
+
+		// @spader 10/11/2019: Wish we had some context as to who this GC belonged to so as to have a helpful error message.
+		string msg = "[GRAPHIC COMPONENT INIT]\n";
+		msg += "Tried to initialize dimensions using its default sprite, but there wasn't one. Used (1.f, 1.f) instead.";
+		tdns_log.write(msg);
+	}
 
 }
 string Graphic_Component::name() { return "Graphic_Component"; }

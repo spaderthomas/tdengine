@@ -309,23 +309,24 @@ generates a new header into that folder. win_main can just #include
 @spader 9/22/2019: Also, have the engine watch this file for updated timestamp
 and automatically reload it. 
 
-@spader 9/22/2019: Format arguments for log writing. 
-
 @spader 9/22/2019: Move globals into a big struct, mostly for ease of
 readability. 
 
-@spader 9/10/2019: Do something better than a fat union and a mapping of
-string::type_id for handling components. Maybe use base pointers like a real
-boy. 
+@spader 10/11/2019: Enums for TDS
+
+@spader 9/22/2019: Format arguments for log writing. 
 
 @spader 9/8/2019: Rename State_Machine key to state.
 
 @spader 9/8/2019: Make it so that you can automatically create a sub-table
 without forward declaring it
 
+@spader 10/11/2019: The way your pool works, you're leaking memory if anything
+stored in it isn't POD. Not really a problem right now (like all leaks), but
+either make everything POD or do RAII stuff. 
+
 @spader 9/10/2019: Make an emacs extension for tds
 
-@spader 9/10/2019: Move more stuff over from This_Case to ThisCase
 * polish
 @spader 9/8/2019: Fade-out/Fade-in for doors
 * switching layers
