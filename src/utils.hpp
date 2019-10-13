@@ -523,6 +523,7 @@ const string PAN_KEY                  = "pan";
 const string POS_KEY                  = "pos";
 const string SCALE_KEY                = "scale";
 const string SCRIPTS_KEY              = "scripts";
+const string SPEED_KEY                = "speed";
 const string STATE_KEY                = "State_Machine";
 const string TEXT_KEY                 = "text";
 const string TILES_KEY                = "tiles";

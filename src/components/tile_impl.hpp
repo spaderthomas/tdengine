@@ -13,9 +13,6 @@ void Tile_Component::load(TableNode* self) {
 }
 void Tile_Component::imgui_visualizer() {
 	if (ImGui::TreeNode("Tile Component")) {
-		int min = x - 20;
-		int max = x + 20;
-		ImGui::SliderInt("Position", &x, min, max);
-		ImGui::TreePop();
+		defer { ImGui::TreePop(); };
 	}
 }

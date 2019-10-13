@@ -1,0 +1,10 @@
+entity.d = {
+}
+entity.d.components = {
+}
+entity.d.components.Movement_Component = {
+	speed = {
+		x = 0.002500
+		y = 0.002500
+	}
+}

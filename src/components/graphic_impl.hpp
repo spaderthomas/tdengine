@@ -102,6 +102,7 @@ void Graphic_Component::imgui_visualizer() {
 			static auto close_modal = []() {
 				memset(name_buf, 0, 256);
 				memset(frame_buf, 0, 256);
+				frames.clear();
 				ImGui::CloseCurrentPopup();
 			};
 			
