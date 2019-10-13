@@ -82,6 +82,7 @@ void create_texture_atlas(string assets_dir) {
 						string asset_name = name_from_full_path(asset_path);
 						Sprite* sprite = asset_table.get_asset<Sprite>(asset_name);
 						sprite->atlas = atlas;
+						sprite->name = asset_name;
 
 						// Load the image data, create a rectangle for it
 						unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);

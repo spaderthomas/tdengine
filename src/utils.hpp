@@ -159,6 +159,7 @@ glm::vec4 white4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
 glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
 
 #define ImGuiColor_Red ImVec4(1.f, 0.f, 0.f, 1.f)
+#define ImGuiColor_Green ImVec4(0.f, 1.f, 0.f, 1.f)
 	
 // Shape primitives
 vector<float> triangle_verts = {
@@ -493,6 +494,7 @@ bool show_task_editor = false;
 bool send_kill_signal = false;
 
 const string ACTIONS_KEY              = "actions";
+const string ANIMATIONS_KEY           = "Animations";
 const string BOUNDING_BOX_KEY         = "bounding_box";
 const string CENTER_KEY               = "center";
 const string CH_STATE_KEY             = "character_state";
@@ -530,6 +532,7 @@ const string WIDTH_KEY                = "width";
 const string WHICH_KEY                = "which";
 const string X_KEY                    = "x";
 const string Y_KEY                    = "y";
+const string Z_KEY                    = "z";
 
 
 /* Random shit */
@@ -1245,3 +1248,61 @@ vector<string> all_component_types() {
 	
 	return names;
 }
+
+vector<string> tile_size_descriptions = {
+	"-1.5 tiles",
+	"-1.25 tiles",
+	"-1 tiles",
+	"-.5 tiles",
+	"0 tiles",
+	".5 tiles",
+	"1 tile",
+	"1.25 tiles",
+	"1.5 tiles",
+	"2 tiles",
+	"3 tiles",
+	"4 tiles",
+	"5 tiles",
+	"6 tiles",
+};
+
+vector<double> tile_sizes = {
+	-0.0666,
+	-0.0555,
+	-0.0444,
+	-0.0222,
+	0, 
+	0.0222,
+	0.0444,
+	0.0555,
+	0.0666,
+	0.0888,
+	0.1333,
+	0.1777,
+	0.2222,
+	0.2666,
+};
+
+template <typename F>
+struct Defer {
+    Defer( F f ) : f( f ) {}
+    ~Defer( ) { f( ); }
+    F f;
+};
+
+template <typename F>
+Defer<F> makeDefer( F f ) {
+    return Defer<F>( f );
+};
+
+#define __defer( line ) defer_ ## line
+#define _defer( line ) __defer( line )
+
+struct defer_dummy { };
+template<typename F>
+Defer<F> operator+( defer_dummy, F&& f )
+{
+    return makeDefer<F>( std::forward<F>( f ) );
+}
+
+#define defer auto _defer( __LINE__ ) = defer_dummy( ) + [ & ]( )

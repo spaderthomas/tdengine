@@ -37,6 +37,7 @@ Physics_System physics_system;
 bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration);
 bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration);
 
+// @spader 10/13/2019: Use better enum for this...?
 enum Collider_Kind : int {
 	NO_COLLIDER,
 	STATIC,
@@ -47,6 +48,13 @@ enum Collider_Kind : int {
 	COUNT_COLLIDERS
 };
 
+vector<string> collider_kind_descriptions = {
+	"No Collider",
+	"Static",
+	"Dynamic",
+	"Hero",
+	"Door"
+};
 
 bool collider_matrix[Collider_Kind::COUNT_COLLIDERS][Collider_Kind::COUNT_COLLIDERS];
 void collider_matrix_add(Collider_Kind me, Collider_Kind other, bool should_test);
