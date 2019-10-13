@@ -493,6 +493,8 @@ bool show_task_editor = false;
 bool send_kill_signal = false;
 
 const string ACTIONS_KEY              = "actions";
+const string BOUNDING_BOX_KEY         = "bounding_box";
+const string CENTER_KEY               = "center";
 const string CH_STATE_KEY             = "character_state";
 const string COMPONENTS_KEY           = "components";
 const string CONFIG_KEY               = "config";
@@ -502,10 +504,13 @@ const string DIALOGUE_KEY             = "dialogue";
 const string EDITOR_KEY               = "editor";
 const string ENTITY_KEY               = "entity";
 const string ENTITIES_KEY             = "entities";
+const string EXTENTS_KEY              = "extents";
 const string FONTS_KEY                = "fonts";
 const string GAME_STATE_KEY           = "game_state";
 const string HEALTH_KEY               = "health";
+const string HEIGHT_KEY               = "height";
 const string HERO_KEY                 = "boon";
+const string KIND_KEY                 = "kind";
 const string LEVEL_KEY                = "level";
 const string LEVELS_KEY               = "levels";
 const string MOVES_KEY                = "moves";
@@ -521,7 +526,10 @@ const string TEXT_KEY                 = "text";
 const string TILES_KEY                = "tiles";
 const string TRANSITIONS_KEY          = "transitions";
 const string VARS_KEY                 = "vars";
+const string WIDTH_KEY                = "width";
 const string WHICH_KEY                = "which";
+const string X_KEY                    = "x";
+const string Y_KEY                    = "y";
 
 
 /* Random shit */

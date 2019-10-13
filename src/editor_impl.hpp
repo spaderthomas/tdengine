@@ -51,7 +51,7 @@ void Entity_Wizard::draw() {
 	ImGui::InputText("Name", name, 256);
 	ImGui::InputText("Folder", path, 256);
 
-	static vector<string> file_mode_descriptions = {"Erase the file.", "Append to the file"};
+	static vector<string> file_mode_descriptions = {"Erase the file", "Append to the file"};
 	static vector<ios_base::openmode> file_modes = {ofstream::trunc, ofstream::app};
 	static int index_file_mode_current = 1;
 	if (ImGui::BeginCombo("##choose_file_mode", file_mode_descriptions[index_file_mode_current].c_str(), 0)) {
@@ -71,53 +71,54 @@ void Entity_Wizard::draw() {
 		ImGui::Checkbox(type.c_str(), &component_checked[type]);
 		ImGui::NextColumn();
 	}
+	ImGui::Columns(1);
 	
 	for(auto& type : types) {
 		if (!component_checked[type]) continue;
 
 		template_components[type]->imgui_visualizer();
 	}
-	ImGui::Columns(1);
 
-	bool show_name_error = !strlen(name);
-	bool show_path_error = !strlen(path);
+	bool invalid_name = !strlen(name);
+	bool invalid_path = !strlen(path);
 	if (ImGui::Button("Create!")) {
-		string absolute = absolute_path(path);
-		normalize_path(absolute);
+		if (!invalid_name && !invalid_path) {
+			string absolute = absolute_path(path);
+			normalize_path(absolute);
 
-		// Forward declare the entity's main table, respecting the user's file mode
-		TableWriter writer;
-		writer.table = new TableNode;
-		writer.stream_flag = file_modes[index_file_mode_current];
-		writer.table_name = "entity." + string(name) + " = ";
-		writer.dump(absolute);
-		
-		// After we start writing it, truncating would just overwrite what we did. 
-		writer.stream_flag = ofstream::app;
-
-		writer.table_name = "entity." + string(name) + ".components = ";
-		writer.dump(absolute);
-		
-		// Write out all the components
-		for (auto& type : types) {
-			if (!component_checked[type]) continue;
-			Component* component = template_components[type];
-
-			writer.table_name = "entity." + string(name) + ".components." + type + " = ";
-			writer.table = component->make_template();
+			// Forward declare the entity's main table, respecting the user's file mode
+			TableWriter writer;
+			writer.table = new TableNode;
+			writer.stream_flag = file_modes[index_file_mode_current];
+			writer.table_name = "entity." + string(name) + " = ";
 			writer.dump(absolute);
+		
+			// After we start writing it, truncating would just overwrite what we did. 
+			writer.stream_flag = ofstream::app;
+
+			writer.table_name = "entity." + string(name) + ".components = ";
+			writer.dump(absolute);
+		
+			// Write out all the components
+			for (auto& type : types) {
+				if (!component_checked[type]) continue;
+				Component* component = template_components[type];
+
+				writer.table_name = "entity." + string(name) + ".components." + type + " = ";
+				writer.table = component->make_template();
+				writer.dump(absolute);
+			}
+
+			template_components.init();
 		}
-
-		template_components.init();
-
 	}
 	
-	if (show_name_error) {
+	if (invalid_name) {
 		ImGui::PushStyleColor(ImGuiCol_Text, ImGuiColor_Red);
 		ImGui::Text("You need to have a name for your entity.");
 		ImGui::PopStyleColor();
 	}
-	if (show_path_error) {
+	if (invalid_path) {
 		ImGui::PushStyleColor(ImGuiCol_Text, ImGuiColor_Red);
 		ImGui::Text("You need to have a path for your entity.");
 		ImGui::PopStyleColor();
@@ -418,47 +419,53 @@ void Editor::update(float dt) {
 	
 	if (show_script_selector) {
 		ImGui::Begin("Entities", 0, flags);
+		if (ImGui::TreeNode("Add Entity to Level")) {
 
-		// File chooser + filter
-		static ImGuiTextFilter file_filter;
-		file_filter.Draw("Filter by Scripts");
+			// File chooser + filter
+			static ImGuiTextFilter file_filter;
+			file_filter.Draw("Filter by Scripts");
 
-		// Entity chooser + filter
-		static ImGuiTextFilter entity_filter;
-		entity_filter.Draw("Filter by Entity");
+			// Entity chooser + filter
+			static ImGuiTextFilter entity_filter;
+			entity_filter.Draw("Filter by Entity");
 		
-		// Populate a list of selectables that, when clicked, create the corresponding entity
-		ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
-		ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
+			// Populate a list of selectables that, when clicked, create the corresponding entity
+			ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
+			ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
 
-		vector<string> entities_to_display; // @copy
-		for (auto& entity : entity_info.entities) {
-			bool pass_entity_filter = entity_filter.PassFilter(entity.c_str());
-			bool pass_file_filter = file_filter.PassFilter(entity_info.entity_to_file[entity].c_str());
-			if (pass_entity_filter && pass_file_filter)
-				entities_to_display.push_back(entity);
-		}
-		
-		for (auto& entity : entities_to_display) {
-			if (!entity_filter.PassFilter(entity.c_str())) continue;
-			if (ImGui::Selectable(entity.c_str())) {
-				// If we were selecting a tile, reset our grid settings
-				if (this->kind == TILE) {
-					snap_to_grid = last_snap_to_grid;
-					show_grid = last_show_grid;
-				}
-				
-				// Create the entity and go to the new editor state
-				selected = Entity::create(entity);
-				this->kind = ENTITY;
-				this->state = INSERT;
+			vector<string> entities_to_display; // @copy
+			for (auto& entity : entity_info.entities) {
+				bool pass_entity_filter = entity_filter.PassFilter(entity.c_str());
+				bool pass_file_filter = file_filter.PassFilter(entity_info.entity_to_file[entity].c_str());
+				if (pass_entity_filter && pass_file_filter)
+					entities_to_display.push_back(entity);
 			}
+		
+			for (auto& entity : entities_to_display) {
+				if (!entity_filter.PassFilter(entity.c_str())) continue;
+				if (ImGui::Selectable(entity.c_str())) {
+					// If we were selecting a tile, reset our grid settings
+					if (this->kind == TILE) {
+						snap_to_grid = last_snap_to_grid;
+						show_grid = last_show_grid;
+					}
+				
+					// Create the entity and go to the new editor state
+					selected = Entity::create(entity);
+					this->kind = ENTITY;
+					this->state = INSERT;
+				}
+			}
+		
+			ImGui::PopStyleVar();
+			ImGui::EndChild();
+			ImGui::TreePop();
 		}
 		
-		ImGui::PopStyleVar();
-		ImGui::EndChild();
-
-		entity_wizard.draw();
+		if (ImGui::TreeNode("Define a New Entity")) {
+			entity_wizard.draw();
+			ImGui::TreePop();
+		}
 		ImGui::End();
 	}
 	

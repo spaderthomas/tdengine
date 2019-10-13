@@ -9,6 +9,13 @@ TableNode* Door_Component::save() const {
 	return self;
 }
 
+TableNode* Door_Component::make_template() const {
+	TableNode* self = new TableNode;
+	tds_set2(self, level, LEVEL_KEY);
+	
+	return self;
+}
+
 void Door_Component::load(TableNode* self) {
 	level = tds_string2(self, LEVEL_KEY);
 }

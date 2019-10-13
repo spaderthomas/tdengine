@@ -5,7 +5,8 @@ struct Collision_Component : Component {
 		glm::vec2 screen_extents;
 	} bounding_box;
 	Collider_Kind kind;
-	
+
+	TableNode* make_template() const override;
 	void init(TableNode* table) override;
 	string name() override;
 	void imgui_visualizer() override;

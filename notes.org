@@ -309,10 +309,12 @@ generates a new header into that folder. win_main can just #include
 @spader 9/22/2019: Also, have the engine watch this file for updated timestamp
 and automatically reload it. 
 
+@spader 10/11/2019: Enums for TDS
+
+@spader 10/11/2019: tds_append
+
 @spader 9/22/2019: Move globals into a big struct, mostly for ease of
 readability. 
-
-@spader 10/11/2019: Enums for TDS
 
 @spader 9/22/2019: Format arguments for log writing. 
 
