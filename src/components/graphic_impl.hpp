@@ -85,10 +85,9 @@ void Graphic_Component::imgui_visualizer() {
 						}
 					}
 					ImGui::EndCombo();
-				
-					for (auto frame : active_animation->frames) {
-						ImGui::Text(frame->name.c_str());
-					}
+				}
+				for (auto frame : active_animation->frames) {
+					ImGui::Text(frame->name.c_str());
 				}
 			}
 
@@ -161,5 +160,13 @@ TableNode* Graphic_Component::make_template() const {
 	TableNode* animations_table = new TableNode;
 	tds_set2(self, animations_table, ANIMATIONS_KEY);
 
+	for (auto animation : this->animations) {
+		TableNode* frames_table = new TableNode;
+		fox_for(i, animation->frames.size()) {
+			tds_set2(frames_table, animation->frames[i]->name, to_string(i));
+		}
+
+		tds_set2(self, frames_table, ANIMATIONS_KEY, animation->name);
+	}
 	return self;
 }
