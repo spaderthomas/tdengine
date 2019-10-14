@@ -22,7 +22,7 @@ struct Entity_Wizard {
 	map<string, bool> component_checked;
 
 	void init();
-	void draw();
+	bool draw();
 };
 
 enum Editor_State {

@@ -13,9 +13,9 @@ TableNode* Collision_Component::make_template() const {
 	tds_set2(self, extents_table, BOUNDING_BOX_KEY, EXTENTS_KEY);
 
 	tds_set2(self, bounding_box.screen_center.x, BOUNDING_BOX_KEY, CENTER_KEY, X_KEY);
-	tds_set2(self, bounding_box.screen_center.y, BOUNDING_BOX_KEY, CENTER_KEY, X_KEY);
+	tds_set2(self, bounding_box.screen_center.y, BOUNDING_BOX_KEY, CENTER_KEY, Y_KEY);
 	tds_set2(self, bounding_box.screen_extents.x, BOUNDING_BOX_KEY, EXTENTS_KEY, X_KEY);
-	tds_set2(self, bounding_box.screen_extents.y, BOUNDING_BOX_KEY, EXTENTS_KEY, X_KEY);
+	tds_set2(self, bounding_box.screen_extents.y, BOUNDING_BOX_KEY, EXTENTS_KEY, Y_KEY);
 
 	tds_set2(self, (int)kind, KIND_KEY);
 

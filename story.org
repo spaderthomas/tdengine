@@ -1760,12 +1760,193 @@ giving a long heartfelt speech.
 ** Harkon Organa
 ** natalia ilyena
 ** pei de
+* places
+** Terminus
+The place of many crossroads. Terminus is a huge town with a population of about
+750,000 people. It's reminscent of Los Angeles in that it is compact and
+spread out at the same time. Locals might think of it as comprised of a couple
+different towns glued together, but within those sections it's as dense as any
+city you'll find stateside.
+
+It's a synthetic town -- the government put it up thirty years ago as
+their base of operations on the West coast. Where the government is, the money
+goes, and where the money goes, the people follow. 
+
+Thirty years later, it's a fine town. It's got a heavy government presence, and
+most people there are involved with them in some way, but it's managed to avoid
+the hustle and hubbub of Washington D.C. The government has a better pulse on
+local issues and culture, and the people out West have somewhere they can
+congregate for all matters political in their great nation...
+
+...is what they said. But it's bullshit -- every last word of it. They produce
+something far more powerful than legislation. That being dogma, of
+course. Dogma's not something that's easy to get a grasp on. You gotta have the
+dogmatics around, sure, but you also need a lot of people around for it to
+really work. Not only the physical goods they produce, but their energy. Dogma
+is very sensitive to conditions and environment. They can even serve as triggers
+for its production, its release. The thought of a lover in December. Two people
+picking up their forks at the exact same instant in time. A message left
+unsent. Dogma works on a high level of abstraction, so things like these can tap
+into it in an unknown way. The point being that any flourishing dogmatic R&D
+facility isn't complete unless it's smack in the middle of people living their
+lives. 
+
+Another benefit of starting fresh is that you've got plenty of space to
+roam. Good luck finding somewhere within a hundred miles of New York City where
+you can test a new dogmatic nuke without killing half a million people. The
+desert, though? Be our guest. There's plenty of warehouses, lab space, and
+bunkers -- and if you ever run out, just build more. 
+
+Anyway, back to the city itself. It's split up into three main areas: 
+1. The government's district, which is called 
+2. 
+3. 
+
+(need some ideas for the vibe of these parts of the city). one idea i like is a
+hacker central. somewhere that the freaks go to be themselves. like where the
+panther moderns would link up to drink cheese tea and listen to lil peep. 
+
+if this city is the main setting, the tone of the city will drive the tone of
+the game. kind of a big question to just answer, but it's gotta be done
+eventually. 
+
+up until now, i've been thinking of the inhabitants of the city as nameless,
+faceless coffee shop goers. not possessing any real personality. legitimately as
+joe average. i should stop doing this. 
+
+what are some cool settings that i have read about?
+cairhien, the city of stiff-backed hyper formal lords and ladies. highly adroit
+at the game of houses. come carnival time, they let all of that pent up energy
+loose. 
+
+chiba city, skeeves and thugs and dealers and narcs. flat gray, neon blue, it's
+always dark and raining, cheap hotels. 
+
+LA, vampire. seedy, gothic. drab brown everywhere, vampires shimmering through
+the night, strip clubs. pimps and bitches. 
+
+blade runner. neon bustling shanghai, packed with chinese, dark. technologic
+evil bubbling below the surface. androids not quite human serving your noodles. 
+
+snow crash. weird punks running around with their matrix mods, gargoyles,
+harpooning across the freeway. franchises. 
+
+final fantasy 6. dark, ancient magic bubbling to the surface. pastoral towns
+swept away in the flood. deep browns, grays, navy blues, muted. 
+
+planescape. old-school magic, a city ingrained in its ways. hustle and bustle
+all around you, street urchins hawking goods, thugs ready to kill, the old, the
+poor. desparate and sad. everyone is hustling you. 
+
+I think the setup prevents the city from being too outlandish. Well, one idea is
+that the city is new, so it could be formed in any image. New York City, yeah,
+that one's going to be how it is until the day it crumbles. But a brand new
+metropolis? Any number of weird subcultures could pack it up and make their new
+base of operations there. Rent a city block, everyone's getting their 40 acres
+anyway. Make it a new-age mixing ground. It's a party, and everyone's invited. 
+
+the new age resistance as cypherpunks. they don't fit in with the main
+characters. lan, hard edged battle torn man. theseus and tess, they're from
+elsewhere. ike, old town boy. ilyena, pei de, none of them fit the bill. 
+
+maybe making the resistance more varied is the answer to this. just like how
+theseus and tess are from a different clan. you could have a whole family of
+these things, complex inner workings and relationships. as many or as few as you
+wanted, really. 
+
+so then the resistance is kind of like the old heads. 
+
+(oh, before i go on. there's no one person that all these groups report to. they
+might could take a run at the government if they had some cohesion. if only they
+had some powerful figure to bind them together.......)
+
+old heads. yeah. but then there are other groups doing their own thing. 
+- for one, group of cypherpunks. they're all about how to augment themselves and
+  the world around them with dogma. they know networks, they know implants, they
+  are goofy and teenaged but very good at what they do.
+- theseus' and tess' group. weirdos. like religious ascetics. highly dedicated
+  to their craft in the most meticulous ways. long tradition, followed
+  heartfully. 
+- antifa kind of punks? no regard for the law, wants to affect change by
+  aggression and destruction. malcolm X over mlk. shaved heads, tattoos, gages,
+  black combat boots. weird mohawks, pierced eyebrows. long trenchcoats. is it
+  interesting if they operate just like today, but instead of molotov cocktails
+  their weapon is dogma? 
+- normals. people who managed to escape being detected at a young age, but have
+  managed to lead a normal life. they're nominally part of the resistance, but
+  their help is limited to reporting on daily comings and goings. not sure if i
+  like this one because there is nothing to bind them together. 
+- the ultra-wealthy? a small group of dogmatics who have made it in the 'real
+  world', and live lavish lifestyles together. 
+
+definitely a cool idea. so we can temper the vibe of the city a bit and have a
+lot of the character get pushed into these locales. imagine a huge underground
+warehouse-cum-city kind of deal where all of the shithead hyper_political kids
+figure out how they're gonna beat up cops next. that's cool. 
+
+BACK TO the city itself. it's mostly a clean, high tech future city. there's a
+big, utterly sterile center hub where the government is. it's heavily 'modern'
+aka brooklynized. high rises abound, 'hip' coffee shops and fusion
+restaurants. the player's not going to really have any business here,
+though. it's like being in the un-sexy parts of DC. yeah, tourists want to see
+the white house, but do they want to see the scraper where two thousand
+bureaucrats, accountants, campaign managers, and minor officials go to make the
+sausage day in and day out? no reason to be here unless you need to be. however,
+this is where a bunch of dogmatic labs etc are. lots of underground places. lots
+of high-secrecy development labs. places obscured from the public eye.
+ 
+*** MILESTOWN
+**** The Wild Dogs
+Instead of doing heroin and inventing bebop, imagine that Miles Davis was
+decking himself out in 'trodes and melting your mind with an analogue
+synthesizer. Now, imagine that 50s Miles blended with 70s Miles, and that he was
+also out with whores, staying inside for weeks at a time, pimping, and shacking
+up in cheap hotels. Milestown is probably where he'd hang out. 
+
+Although there are no gangs in Terminus, the closest thing they have is the Wild
+Dogs. They're a group of dogmatics who work on three main principles:
+1. Nonviolence is for pussies
+2. You are what you believe in
+3. Get in or get the fuck out
+
+If Antifa had access to mind whammies and powerful spiritual energy instead of
+spray paint and molotov cocktails, this is probably how they'd end up. And
+Milestown is their home. 
+
+The center of Milestown is their turf, and their beacon is the giant warehouse
+smack in the center of it. It's where they hang out, it's where they plan, it's
+where they fuck. There are a couple of houses in the surrounding area where some
+people stay. The other central point of their goings on is the Fast Schism, a
+beat up cafe that serves it cheap and hot. 
+**** Guang's Pawn
+Go a little ways south of the Wild Dogs, and you hit Little Shenzhen. Not that
+many Chinese people live here, but the laissez-faire spirit of the namesake town
+when it comes to technology has, ahem, rubbed off on the citizens of this
+place. All the quasi-legal (and downright illegal) tech that your heart could
+desire lives here. Implants, trodes, synths, VR -- whatever you want, they got
+it here. 
+
+Because of the nature of their dealings, there aren't many places that are
+broadcasting their existence to the public here. Guang's Pawn is a mainstay
+where installers hang out, run by half electrical engineer, half electronics
+cartel, half entrepreneur Don Guang himself. 
+
+*** ???
+**** Boon's Apartment
+Boon's apartment is modest, and you won't be spending much time here if
+any. It's a studio, shaped like an L rotated 90 degrees and flipped. The
+kitchen's straight ahead when you walk in, inside the small part of the L. His
+bed's in the far corner. There's a nightstand beside it. In the center, there's
+a television and a couch. 
+
+His room is messy, with plates and cans of cheap beer left on the
+counters. Theres an old guitar in his laundry basket. The room is plain as
+someone who doesn't have people over often. 
 * story
 ** intro
-boon is sitting in his living room. his phone rings. it's his dad, and he asks
-him if boon can go to ike's the hardware store a bit across town before he comes
-home. he needs a few special screwdrivers so he can fix boon's computer when he
-gets home. boon sets out.
+boon is sitting in his living room. he's flipping through the channels, doing
+nothing. he sighs. he wonders if anybody would want to see him tonight. he
+decides not, and he goes to walk to the gas station to buy some beer. 
 
 after a while, a man comes and taps boon on the shoulder. he whispers in his
 ear that he is in incredible danger, and that he must come with him if he wants
@@ -1784,7 +1965,7 @@ have lived this long undetected while being so innately powerful.
 they explain about the revolution.
 the schism, three groups, their aims (see: backstory).
 
-they explain about the _government_.
+they explain about the government.
 their fascist streak runs back to when LRB first took serious power in the
 government, around 40 years ago. LRB is not officially the president, and in
 fact people who are not interested in politics may not even know his name. their

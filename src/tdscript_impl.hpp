@@ -851,6 +851,13 @@ vector<string> TDScript::keys_from_string(string key_str) {
 	
 	return keys;
 }
+
+// @spader 10/14/2019: why 
+void TDScript::script_file(string dir_path) {
+	parse(dir_path);
+}
+
+
 void TDScript::script_dir(string dir_path) {
 	// Always check for the directory's init file first
 	script_init_if_exists(dir_path);

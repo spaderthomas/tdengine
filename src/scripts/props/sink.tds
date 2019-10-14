@@ -1,0 +1,28 @@
+entity.sink = {
+}
+entity.sink.components = {
+}
+entity.sink.components.Collision_Component = {
+	bounding_box = {
+		center = {
+			x = 0.000000
+			y = 0.000000
+		}
+		extents = {
+			x = 0.025000
+			y = 0.044400
+		}
+	}
+	kind = 1
+}
+entity.sink.components.Graphic_Component = {
+	z = 1
+	default_animation = "sink"
+	Animations = {
+		sink = {
+			"sink.png"
+		}
+	}
+}
+entity.sink.components.Position_Component = {
+}

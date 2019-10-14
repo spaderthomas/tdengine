@@ -1,4 +1,8 @@
 void Entity_Info::init() {
+	this->entities.clear();
+	this->file_map.clear();
+	this->entity_to_file.clear();
+	
 	auto entities_table = tds_table(ENTITY_KEY);
 	for (auto node : entities_table->assignments) {
 		KVPNode* kvp = (KVPNode*)node;
@@ -46,9 +50,12 @@ pool_handle<Entity> Entity_Tree::find(string name) {
 void Entity_Wizard::init() {
 }
 
-void Entity_Wizard::draw() {
-	ImGui::Text("Entity Wizard!");
+bool Entity_Wizard::draw() {
+	ImGui::Text("Choose Name");
 	ImGui::InputText("Name", name, 256);
+	ImGui::Separator();
+	
+	ImGui::Text("Choose File");
 	ImGui::InputText("Folder", path, 256);
 
 	static vector<string> file_mode_descriptions = {"Erase the file", "Append to the file"};
@@ -64,7 +71,9 @@ void Entity_Wizard::draw() {
 
 		ImGui::EndCombo();
 	}
+	ImGui::Separator();
 
+	ImGui::Text("Choose Components");
 	ImGui::Columns(2, "columns", false);
 	auto types = all_component_types();
 	for(auto& type : types) {
@@ -72,12 +81,15 @@ void Entity_Wizard::draw() {
 		ImGui::NextColumn();
 	}
 	ImGui::Columns(1);
-	
+	ImGui::Separator();
+
+	ImGui::Text("Customize Components");
 	for(auto& type : types) {
 		if (!component_checked[type]) continue;
 
 		template_components[type]->imgui_visualizer();
 	}
+	ImGui::Separator();
 
 	bool invalid_name = !strlen(name);
 	bool invalid_path = !strlen(path);
@@ -109,6 +121,10 @@ void Entity_Wizard::draw() {
 				writer.dump(absolute);
 			}
 
+			// Script it!
+			ScriptManager.script_file(absolute);
+
+			return true;
 			template_components.init();
 		}
 	}
@@ -124,6 +140,7 @@ void Entity_Wizard::draw() {
 		ImGui::PopStyleColor();
 	}
 
+	return false;
 }
 
 void Editor::init() {
@@ -462,9 +479,12 @@ void Editor::update(float dt) {
 			ImGui::TreePop();
 		}
 		
-		if (ImGui::TreeNode("Define a New Entity")) {
-			entity_wizard.draw();
-			ImGui::TreePop();
+		if (ImGui::TreeNode("Entity Wizard")) {
+			defer { ImGui::TreePop(); };
+			
+			if (entity_wizard.draw()) {
+				entity_info.init();
+			}
 		}
 		ImGui::End();
 	}
