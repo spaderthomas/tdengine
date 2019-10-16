@@ -1760,6 +1760,36 @@ giving a long heartfelt speech.
 ** Harkon Organa
 ** natalia ilyena
 ** pei de
+** The Government
+You know, while I'm on this thread: What is the government like? I'm ignoring
+one of the most interesting aspects of future living -- the alien,
+20-degree-tilted forms of government that are sure to crop up. Like the ancaps
+in Snow Crash. That's cool. So here, we've got this government that's got such a
+ridiculous leg up on any opposition that it's not even fair to call them
+opposition. How do they operate given a total monopoly on power? 
+
+For one, they could be good. They could keep the people at a reasonable level of
+health and prosperity. The ultimate welfare state. It helps to keep your people
+content when the only threat to your existence is a revolution. But if the
+government is more or less fine, why does the Resistance exist? Well, that's
+explained in the backstory. They aren't resistance in the sense of freedom
+fighters or people who are resisting current events. They're just the leaf of a
+long tree of dissenters going back to the first schism. It doesn't really matter
+what the government does externally -- the fact that they aren't deciphering the
+prophecies is enough. 
+
+I like a government that's analagous to modern governments in one particular
+way: Everyone has their nasty secrets. Sure, you spend billions of dollars
+giving people health care and giving scholarships to the underprivileged. But
+what about the defense industry? What about all those nasty little drones and
+the civilians they killed? Set that up as a moral idea the player has to
+face. To continue living your lifestyle, all of these putrid industries and acts
+have to continue existing. For someone to win, someone else has to
+lose. Politicking isn't a zero-sum game, but certain subsets of it are. 
+
+So, for now: A very nice, shiny shell. Clean, prim. Dig a little deeper and
+you'll find that the chocolate has spoiled. But what was the shell without the
+chocolate inside to begin with...? Anyway. 
 * places
 ** Terminus
 The place of many crossroads. Terminus is a huge town with a population of about
@@ -1932,6 +1962,44 @@ where installers hang out, run by half electrical engineer, half electronics
 cartel, half entrepreneur Don Guang himself. 
 
 *** ???
+The area that Boon lives in. Well, it's gotta be futuristic. But what does that
+mean? Let's just jot down some ideas...
+
+Everything is clean, because with advances in computer vision and onboard
+processing power, cleaning robots are /totally/ a thing. Cute droids beeping
+around and picking up trash. 
+
+There are not homeless people, because the welfare state is too strong. But
+there are places where those who would be homeless congregate. 
+
+There aren't brick or wood houses. The ones put up in the fifties and sixties
+are as old as homes put up in the start of the 20th century are now. Especially
+with the mass-produced shitshacks that started getting cranked out mid-late
+century. Plus the fact that this city is new. A lot of the housing is still mass
+produced shitshacks, just modern ones. They're all very samey. The residential
+areas of the city are not the ones that have personality. 
+
+The dream of fully autonomous taxis is real, and you bet it's here. 
+
+Advertisements. Surely the city must be plastered in advertisements. But how do
+I make them creepy and off-kilter? Targeted advertisements are surely the
+creepiest. 
+
+Do people use body mods? Retinal implants? Superhuman joints? Trodes? I think
+it'd be cool if a lot of people had small but visible mods. And then you get up
+to the hip Antifa group and they're decked out in the 2060 equivalent of face
+tattoos. How far can you take mind and machine melding? That's where it's all
+gonna go. The more we understand the physical impulses of the mind, and the more
+precise computers get at triggering those impulses, the closer we will
+become. Until they converge, and are one. Thought experiment: You can control
+the brain completely. You have an infinite supply of neurotransmitters, and you
+are omniscient w.r.t the effect any subset of dose with any subset of locations
+will have. What would you sell to people? What would make you the god-emperor?
+And if we can't get there, how close can we get? 
+
+Lots of gray-blue. 
+
+
 **** Boon's Apartment
 Boon's apartment is modest, and you won't be spending much time here if
 any. It's a studio, shaped like an L rotated 90 degrees and flipped. The
