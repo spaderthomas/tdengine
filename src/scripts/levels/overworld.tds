@@ -1,39 +1,8149 @@
 levels.overworld = {
 	entities = {
 		{
-			name = "cactus"
-			components = {
-				Position_Component = {
-					scale = {
-						x = 1.000000
-						y = 1.000000
-					}
-					pos = {
-						x = 0.254297
-						y = 0.627083
-					}
-				}
-			}
-		}
-		{
 			name = "door_overworld_boon"
 			components = {
 				Door_Component = {
 					level = "boon_house"
 				}
 				Position_Component = {
-					scale = {
-						x = 1.000000
-						y = 1.000000
-					}
 					pos = {
-						x = 0.593594
-						y = 0.611806
+						x = 0.595157
+						y = 0.618750
+					}
+				}
+			}
+		}
+		{
+			name = "jidoor_house"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.621094
+						y = 0.762500
+					}
+				}
+			}
+		}
+		{
+			name = "jidoor_house_mirror"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.497266
+						y = 0.762500
+					}
+				}
+			}
+		}
+		{
+			name = "babylon_bodega"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.188195
+					}
+				}
+			}
+		}
+		{
+			name = "babylon_base"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.075000
+						y = -0.656250
 					}
 				}
 			}
 		}
 	}
-	tiles = {}
-
+	tiles = {
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.587500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 23
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.587500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 23
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.587500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 23
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.612500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 24
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.637500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 25
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.662500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 26
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.687500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 27
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.637500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 25
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.612500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 24
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.687500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 27
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.587500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 23
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.637500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 25
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.662500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 26
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.687500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 27
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.687500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 27
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.662500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 26
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.637500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 25
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.587500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 23
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.612500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 24
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.662500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 26
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.612500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 24
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.587500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 23
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.662500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 26
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.637500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 25
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.637500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 25
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone3"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.587500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 23
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.612500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 24
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.612500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 24
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.662500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 26
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.687500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 27
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.687500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 27
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.866667
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.866667
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.866667
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.866667
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.866667
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.866667
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.866667
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.200000
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone1"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.822222
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.337500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 13
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.362500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 14
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.312500
+						y = 0.244444
+					}
+				}
+				Tile_Component = {
+					x = 12
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.688889
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.288889
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.733333
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.387500
+						y = 0.777778
+					}
+				}
+				Tile_Component = {
+					x = 15
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.412500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 16
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.437500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 17
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.462500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 18
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.487500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 19
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.512500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 20
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.537500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 21
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.562500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 22
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.587500
+						y = 0.333333
+					}
+				}
+				Tile_Component = {
+					x = 23
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = 0.155556
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = 0.155556
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.155556
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.155556
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.155556
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.155556
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.155556
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.262500
+						y = 0.155556
+					}
+				}
+				Tile_Component = {
+					x = 10
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.287500
+						y = 0.155556
+					}
+				}
+				Tile_Component = {
+					x = 11
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.037500
+						y = 0.644444
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.037500
+						y = 0.600000
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.037500
+						y = 0.555556
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.037500
+						y = 0.511111
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.037500
+						y = 0.466667
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.037500
+						y = 0.422222
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.037500
+						y = 0.377778
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.111111
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.111111
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.111111
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.111111
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.111111
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.066667
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.066667
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.066667
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.066667
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.066667
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = 0.022222
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 0
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = 0.022222
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 0
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = 0.022222
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 0
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = 0.022222
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 0
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = 0.022222
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 0
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.022222
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.022222
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.066667
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.066667
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.111111
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.155556
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.200000
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.200000
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.155556
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.111111
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.022222
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.022222
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.066667
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.111111
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.111111
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.155556
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.200000
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.066667
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.022222
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 1
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.066667
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 2
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.111111
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 3
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.155556
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.155556
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 4
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.200000
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.200000
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 5
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.244444
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.288889
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.288889
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.244444
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.244444
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.244444
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.244444
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 6
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.288889
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.288889
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.288889
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 7
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 10
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 11
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 12
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 13
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.600000
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.644444
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.644444
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.600000
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.600000
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.600000
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.600000
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 14
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.644444
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.644444
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.644444
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 15
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.688889
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.688889
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.688889
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.688889
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.688889
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 16
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.733333
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.733333
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.733333
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.733333
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone4"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.733333
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 17
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = -0.333333
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 8
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = -0.377778
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = 9
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.777778
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = 20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.237500
+						y = -0.777778
+					}
+				}
+				Tile_Component = {
+					x = 9
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.777778
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.777778
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.777778
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 18
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.162500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 6
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.187500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 7
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.212500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 8
+					y = 19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = -10
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = -10
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = -10
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = -10
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = -10
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.422222
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = -10
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.137500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 5
+					y = -11
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = -11
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = -11
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = -11
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = -11
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = -0.466667
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = -11
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = -12
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = -12
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = -12
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = -12
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = -0.511111
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = -12
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = -13
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = -13
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = -13
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = -13
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = -0.555556
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = -13
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = -0.777778
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = -18
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = -0.777778
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = -18
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.777778
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = -18
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = -0.777778
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = -18
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.112500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 4
+					y = -20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.087500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 3
+					y = -20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.062500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 2
+					y = -20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.037500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 1
+					y = -20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = -1
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.037500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = -2
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.062500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = -3
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.087500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = -4
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.112500
+						y = -0.822222
+					}
+				}
+				Tile_Component = {
+					x = -5
+					y = -19
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.112500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = -5
+					y = -20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.087500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = -4
+					y = -20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.062500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = -3
+					y = -20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.037500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = -2
+					y = -20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = -0.012500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = -1
+					y = -20
+				}
+			}
+		}
+		{
+			name = "cobblestone2"
+			components = {
+				Position_Component = {
+					pos = {
+						x = 0.012500
+						y = -0.866667
+					}
+				}
+				Tile_Component = {
+					x = 0
+					y = -20
+				}
+			}
+		}
+	}
 }

@@ -23,7 +23,7 @@ config.fonts = {
 		imgui_font_size = 16.0
 	}
 	GOUKI = {
-		imgui_font_size = 32.0
+		imgui_font_size = 24.0
 	}
 }
 

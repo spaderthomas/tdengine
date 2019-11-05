@@ -700,7 +700,7 @@ struct {
 struct pool_entry_info {
 	bool available : 1;
 };
-#define DEFAULT_POOL_SIZE 10000
+#define DEFAULT_POOL_SIZE 100000
 
 template<typename Data_Type>
 struct pool_handle;

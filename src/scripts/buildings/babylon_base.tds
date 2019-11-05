@@ -1,0 +1,28 @@
+entity.babylon_base = {
+}
+entity.babylon_base.components = {
+}
+entity.babylon_base.components.Collision_Component = {
+	bounding_box = {
+		center = {
+			x = 0.000000
+			y = 0.000000
+		}
+		extents = {
+			x = 0.025000
+			y = 0.133300
+		}
+	}
+	kind = 1
+}
+entity.babylon_base.components.Graphic_Component = {
+	z = 1
+	default_animation = "babylon_base"
+	Animations = {
+		babylon_base = {
+			"babylon_base.png"
+		}
+	}
+}
+entity.babylon_base.components.Position_Component = {
+}

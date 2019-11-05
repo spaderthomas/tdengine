@@ -281,6 +281,11 @@ a new task.
 	- The Shed
 - Music
 * bugs
+@spader 11/4/2019: Make an entity with the wizard. Use a PNG that is in the
+assets folder, but wasn't when the editor was loaded. It won't load in the PNG
+until the game is restarted. If 'reload assets', it'll show the whole god damn
+texture.
+
 @spader 9/7/2019: The install script doesn't work on windows because the
 backslash escapes the closing quotation mark. 
 

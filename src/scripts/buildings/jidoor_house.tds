@@ -1,0 +1,28 @@
+entity.jidoor_house = {
+}
+entity.jidoor_house.components = {
+}
+entity.jidoor_house.components.Collision_Component = {
+	bounding_box = {
+		center = {
+			x = 0.000000
+			y = 0.000000
+		}
+		extents = {
+			x = 0.025000
+			y = 0.044400
+		}
+	}
+	kind = 1
+}
+entity.jidoor_house.components.Graphic_Component = {
+	z = 1
+	default_animation = "jidoor_house"
+	Animations = {
+		jidoor_house = {
+			"jidoor_house.png"
+		}
+	}
+}
+entity.jidoor_house.components.Position_Component = {
+}
