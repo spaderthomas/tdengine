@@ -188,6 +188,10 @@ void Game::update(float dt) {
 		}
 	} else if (state == GameState::Game) {		
 		move_entity(g_hero, input.is_down[GLFW_KEY_W], input.is_down[GLFW_KEY_S], input.is_down[GLFW_KEY_A], input.is_down[GLFW_KEY_D]);
+
+		for(auto entity : active_level->entities) {
+			update_animation(entity, dt);
+		}
 		
 		for (auto entity : active_level->entities) {
 			update_task(entity, dt);

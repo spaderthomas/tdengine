@@ -281,11 +281,6 @@ a new task.
 	- The Shed
 - Music
 * bugs
-@spader 11/4/2019: Make an entity with the wizard. Use a PNG that is in the
-assets folder, but wasn't when the editor was loaded. It won't load in the PNG
-until the game is restarted. If 'reload assets', it'll show the whole god damn
-texture.
-
 @spader 9/7/2019: The install script doesn't work on windows because the
 backslash escapes the closing quotation mark. 
 
@@ -299,6 +294,10 @@ floats.
 to get it to show up in the chooser. It's probably better to generate that file
 as TDS or something else that C++ can read and parse into a native structure,
 rather than a native C++ map. 
+
+@spader 11/6/2019: Sometimes I just can't paint over a goddamn tile. Kind of
+appears in alternating rows, but not a hundred percent. Might be an issue with
+the Z axis. 
 * qol
 @spader 9/20/2019: A more automated way to make entities. 
 A Python script?

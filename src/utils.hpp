@@ -455,6 +455,20 @@ string path_join(vector<string> items) {
 	return path.substr(0, path.size() - 1);
 }
 
+// Are these good to have?
+struct Paths {
+	string tile_texture_path;
+	string character_texture_path;
+	string other_texture_path;
+};
+Paths g_paths;
+
+void init_path_constants() {
+	g_paths.tile_texture_path = absolute_path(path_join({"textures", "src", "tiles"}));
+	g_paths.character_texture_path = absolute_path(path_join({"textures", "src", "characters"}));
+	g_paths.other_texture_path = absolute_path(path_join({"textures", "src", "other"}));
+}
+
 // @hack I'm sure there are PNG headers I could try parsing, but this works!
 bool is_png(string& asset_path) {
 	if (asset_path.size() < 5) { return false; } // "x.png" is the shortest name

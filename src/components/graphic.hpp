@@ -4,8 +4,8 @@ struct Graphic_Component : Component {
 	glm::vec2 scale;
 	int z;
 
-	void begin_animation(string wish);
 	void add_animation(Animation* anim);
+	void begin_animation(string wish);
 	Sprite* get_current_frame();
 	
 	TableNode* make_template() const override;

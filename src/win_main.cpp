@@ -97,8 +97,9 @@ using namespace std::filesystem;
 #include "tdapi_impl.hpp"
 
 
-int main() {	
+int main() {
 	tdns_log.init();
+	init_path_constants();
 
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
@@ -109,7 +110,7 @@ int main() {
 	init_shaders();
 	init_mesh();
 	create_all_texture_atlas();
-	create_texture("textures/src/text_box.png");
+	create_texture("textures/src/other/text_box.png");
 	
 	init_tdscript();
 	test_tdscript();

@@ -149,7 +149,7 @@ void Editor::init() {
 		tds_float(EDITOR_KEY, POS_KEY, "x"),
 		tds_float(EDITOR_KEY, POS_KEY, "y")
 	};
-	tile_tree = Entity_Tree::create(absolute_path("textures/tiles"));
+	tile_tree = Entity_Tree::create(g_paths.tile_texture_path);
 	entity_info.init();
 	entity_wizard.init();
 }
@@ -293,7 +293,7 @@ void Editor::exec_console_cmd(char* command_line) {
 void Editor::reload_assets() {
 	// @leak
 	create_all_texture_atlas();
-	tile_tree = Entity_Tree::create(absolute_path("textures/tiles"));
+	tile_tree = Entity_Tree::create(g_paths.tile_texture_path);
 	active_level->load();
 }
 void Editor::reload() {
@@ -342,6 +342,10 @@ void Editor::update(float dt) {
 	tds_set(camera.offset.x, EDITOR_KEY, POS_KEY, "x");
 	tds_set(camera.offset.y, EDITOR_KEY, POS_KEY, "y");
 	tds_set(active_level->name, EDITOR_KEY, LEVEL_KEY);
+
+	for(auto entity : active_level->entities) {
+		update_animation(entity, dt);
+	}
 	
 	// Global ESC -- puts you back in idle
 	if (input.was_pressed(GLFW_KEY_ESCAPE)) {

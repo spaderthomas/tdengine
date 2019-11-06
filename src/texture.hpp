@@ -57,6 +57,7 @@ void create_texture_atlas(string assets_dir) {
 		stbi_set_flip_vertically_on_load(false);
 		int count_atlas_bytes = sizeof(int32) * REGULAR_ATLAS_SIZE * REGULAR_ATLAS_SIZE;
 		int32* atlas_data = (int32*)malloc(count_atlas_bytes);
+		defer { free(atlas_data); };
 		memset(atlas_data, 0x0, count_atlas_bytes);
 
 		// Init some data for stb_rectpack
@@ -107,8 +108,8 @@ void create_texture_atlas(string assets_dir) {
 		recursive_add_from_dir(assets_dir);
 
 		// Pack the rectangles
-		stbrp_context* context = (stbrp_context*)calloc(1, sizeof(stbrp_context));
-		stbrp_node* nodes = (stbrp_node*)calloc(REGULAR_ATLAS_SIZE, sizeof(stbrp_node));
+		stbrp_context* context = (stbrp_context*)calloc(1, sizeof(stbrp_context)); defer { free(context); };
+		stbrp_node* nodes = (stbrp_node*)calloc(REGULAR_ATLAS_SIZE, sizeof(stbrp_node)); defer { free(nodes); };
 		stbrp_init_target(context, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, nodes, REGULAR_ATLAS_SIZE);
 		stbrp_pack_rects(context, rects.data(), rects.size());
 
@@ -167,7 +168,6 @@ void create_texture_atlas(string assets_dir) {
 		atlas->width = REGULAR_ATLAS_SIZE;
 		atlas->height = REGULAR_ATLAS_SIZE;
 		atlas->num_channels = 4;
-		free(atlas_data);
 	} else {
 		string msg = "Invalid texture atlas name. Expected alpanumeric, but got: " + atlas_name;
 		tdns_log.write(msg);
@@ -176,9 +176,9 @@ void create_texture_atlas(string assets_dir) {
 
 void create_all_texture_atlas() {
 	string atlas_dirs[] = {
-		absolute_path("textures/src/characters"),
-		absolute_path("textures/src/tiles"),
-		absolute_path("textures/src/other"),
+		g_paths.character_texture_path,
+		g_paths.other_texture_path,
+		g_paths.tile_texture_path
 	};
 
 	for (auto& dir : atlas_dirs) {

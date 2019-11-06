@@ -4,10 +4,8 @@ meta.script_dirs = {
     "utils",
 	"templates",
 	"battle",
-	"buildings",
-	"characters",
+	"entities",
 	"levels",
-	"props",
 	"state",
 	"cutscenes"
 }

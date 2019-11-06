@@ -455,7 +455,7 @@ class TDEngineBuilder(tdbuild):
         
         print_prebuild("generate_tiles: Generating tile tdscript definitions")
 
-        tiles_dir = os.path.join(PROJECT_ROOT, 'textures', 'tiles')
+        tiles_dir = os.path.join(PROJECT_ROOT, 'textures', 'src', 'tiles')
 
         tiles = []
         for root, dirs, files in os.walk(tiles_dir):
@@ -487,6 +487,7 @@ entity.%(tile_name)s.components.Tile_Component = {}
 ''' % {'tile_name' : tile}
             
                 f.write(tds)
+                
     def generate_entity_tree(self):
         print_prebuild("generate_entity_tree(): Generating entity tree")
 
