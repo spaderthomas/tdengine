@@ -17,6 +17,7 @@ struct Name_And_ID {
 };
 
 //@leak never free stbi memory
+// @spader This is only used for the text box....kill it!
 void create_texture(string path) {
 	string texture_name = name_from_full_path(path);
 	if (is_valid_filename(texture_name)) {
@@ -145,10 +146,8 @@ void create_texture_atlas(string assets_dir) {
 		}
 
 		// Write the atlas itself, with the same name as the folder it was created from	
-
 		string atlas_path = absolute_path("textures/atlases/") + atlas->name;
 		stbi_write_png(atlas_path.c_str(), REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 4, atlas_data, 0);
-
 
 		// Now, create all the OpenGL internals and point it to the newly created atlas
 		glGenTextures(1, &atlas->handle);
@@ -177,9 +176,9 @@ void create_texture_atlas(string assets_dir) {
 
 void create_all_texture_atlas() {
 	string atlas_dirs[] = {
-		absolute_path("textures/characters"),
-		absolute_path("textures/entities"),
-		absolute_path("textures/tiles"),
+		absolute_path("textures/src/characters"),
+		absolute_path("textures/src/tiles"),
+		absolute_path("textures/src/other"),
 	};
 
 	for (auto& dir : atlas_dirs) {
