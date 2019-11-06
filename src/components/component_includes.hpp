@@ -111,7 +111,7 @@ ComponentHandle create_component(string name, TableNode* table) {
 
 template<typename ComponentType>
 ComponentType* component_cast(ComponentHandle handle) {
-	static_assert(std::is_base_of_v<Component, Component_Type>,
+	static_assert(std::is_base_of_v<Component, ComponentType>,
 				  "You tried to cast a component handle into a type that's not derived from a component.");
 	return (ComponentType*)handle();
 }

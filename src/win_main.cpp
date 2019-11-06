@@ -109,7 +109,7 @@ int main() {
 	init_shaders();
 	init_mesh();
 	create_all_texture_atlas();
-	create_texture("textures/misc/text_box.png");
+	create_texture("textures/src/text_box.png");
 	
 	init_tdscript();
 	test_tdscript();
