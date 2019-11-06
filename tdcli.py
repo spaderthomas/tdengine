@@ -37,10 +37,13 @@ if __name__ == '__main__':
         header_path = os.path.join(PROJECT_ROOT, 'src', 'actions', lower_name + '.hpp')
         with open(header_path, 'w+') as header:
             header.write(HEADER_TEMPLATE % { 'action_name' : name })
+        print("Generated a header file at {}".format(header_path))
+        
 
         impl_path = os.path.join(PROJECT_ROOT, 'src', 'actions', lower_name + '_impl.hpp')
         with open(impl_path, 'w+') as impl:
             impl.write(IMPL_TEMPLATE % { 'action_name' : name })
+        print("Generated an implementation file at {}".format(impl_path))
 
         FACTORY_CANARY = '@NEXT@'
         factory_path = os.path.join(PROJECT_ROOT, 'src', 'task_impl.hpp')
@@ -56,8 +59,4 @@ if __name__ == '__main__':
 
         with open(factory_path, 'w') as factory:
             factory.write(''.join(contents))
-            
-    print("Generated header, impl, and factory for {}".format(class_name))
-        
-        
-            
+        print("Added action to the factory method in {}".format(factory_path))

@@ -281,6 +281,8 @@ a new task.
 	- The Shed
 - Music
 * bugs
+@spader 11/6/2019: Once an animation is added to a GC, you can't edit it. 
+
 @spader 9/7/2019: The install script doesn't work on windows because the
 backslash escapes the closing quotation mark. 
 
@@ -298,43 +300,22 @@ rather than a native C++ map.
 @spader 11/6/2019: Sometimes I just can't paint over a goddamn tile. Kind of
 appears in alternating rows, but not a hundred percent. Might be an issue with
 the Z axis. 
-* qol
-@spader 9/20/2019: A more automated way to make entities. 
-A Python script?
-An interactive Python script?
-Something built into the engine?
-
-@spader 9/22/2019: Use tdengine as a command line program. First thing: Add an
-action from the command line. Action headers go in a folder, and the CLI
-generates a new header into that folder. win_main can just #include
-"actions/action_includes.hpp". Would save me from writing a lot of boilerplate. 
-
-@spader 9/20/2019: Move all the flags in utils.hpp into a TDS file. 
-@spader 9/22/2019: Also, have the engine watch this file for updated timestamp
-and automatically reload it. 
-
-@spader 10/11/2019: Enums for TDS
-
-@spader 10/11/2019: tds_append
-
-@spader 9/22/2019: Move globals into a big struct, mostly for ease of
-readability. 
-
-@spader 9/22/2019: Format arguments for log writing. 
-
-@spader 9/8/2019: Rename State_Machine key to state.
-
-@spader 9/8/2019: Make it so that you can automatically create a sub-table
-without forward declaring it
-
-@spader 10/11/2019: The way your pool works, you're leaking memory if anything
-stored in it isn't POD. Not really a problem right now (like all leaks), but
-either make everything POD or do RAII stuff. 
-
-@spader 9/10/2019: Make an emacs extension for tds
 
 * polish
 @spader 9/8/2019: Fade-out/Fade-in for doors
+
+@spader 11/6/2019: Put some more thought into the API, and the separation of the
+engine from the game. Do I want to make the engine as a DLL? Is that going to
+supremely fuck all of my precious debuggability? As an alternative, I could
+leave the game and the engine as one binary, but separate the code out such that
+it would be really easy to snip them apart when the time comes. Binaries and
+consumption aside, the real reason I want to do this is to get a better handle
+on the responsibilities of each part. What is the core engine actually doing,
+and what parts of the code truly belong to my game? Still in the back of my mind
+have the idea of someone else using this engine. Wouldn't it be cool if this
+engine was a super lightweight one that you modified by (gasp) actually touching
+the source code? Actions and components are packaged up with it, but you can
+easily mod it to allow user ones, too. 
 * switching layers
 objective one: i want changes in the editor to effect the other layers. if i add
 some entity in the editor, i want it to be there when i tab over to the
