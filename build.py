@@ -7,7 +7,8 @@ colorama.init()
 build_options = {
     'source_dir': os.path.join('..', 'src'),
     'include_dirs': [
-        os.path.join('..', 'include')
+        os.path.join('..', 'include'),
+        os.path.join('..', 'include', 'lua')
     ],
     'lib_dir': os.path.join('..', 'lib'),
     'build_dir': 'build',
@@ -32,7 +33,11 @@ build_options = {
         ],
         'user_libs': [
             'freetyped.lib',
-            'glfw3.lib'
+            'glfw3.lib',
+            'lua51.lib'
+        ],
+        'dlls': [
+            'lua51.dll'
         ],
         'ignore': [
             '4099',
@@ -347,8 +352,13 @@ class tdbuild():
 
         self.push("/out:" + build_options['Windows']['out'])
 
-
         make_cd_build_dir()
+
+        # Copy DLLs
+        for dll in build_options['Windows']['dlls']:
+            dll_path = os.path.abspath(os.path.join(build_options['lib_dir'], dll))
+            shutil.copy(dll_path, os.getcwd())
+            print_info("Copied DLL {} to {}".format(dll_path, os.getcwd()))
         
         print_info("Generated compiler command:")
         print_info(self.build_cmd)

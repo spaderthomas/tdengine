@@ -3,7 +3,7 @@
 #define fox_min(a, b) (a) > (b) ? (b) : (a)
 #define fox_for(iterName, iterCount) for (unsigned int iterName = 0; iterName < (iterCount); ++iterName)
 #define fox_iter(iter_name, container) for (auto iter_name = (container).begin(); (iter_name) != (container).end(); (iter_name)++)
-#define EXIT_IF_ERROR(expr) if ((expr)) { return -1; }
+#define EXIT_IF_ERROR(return_code) if ((return_code)) { return -1; }
 #define rand_float(max) (static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (max)))
 
 #define is_newline(c) ((c) == '\n' || (c) == '\r')

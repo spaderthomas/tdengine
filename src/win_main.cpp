@@ -22,6 +22,8 @@ extern "C" {
 #include FT_FREETYPE_H  
 }
 
+#include "lua_includes.hpp"
+
 #include "imgui/imgui.h"
 #include "imgui_impl_glfw_gl3.hpp"
 
@@ -48,6 +50,7 @@ using namespace std::filesystem;
 #include "log.hpp"
 #include "db.hpp"
 #include "utils.hpp"
+#include "lua.hpp"
 #include "tdscript.hpp"
 #include "text.hpp"
 #include "sprite.hpp"
@@ -96,10 +99,10 @@ using namespace std::filesystem;
 #include "game_impl.hpp"
 #include "tdapi_impl.hpp"
 
-
 int main() {
 	tdns_log.init();
 	init_path_constants();
+
 
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
@@ -111,7 +114,8 @@ int main() {
 	init_mesh();
 	create_all_texture_atlas();
 	create_texture("textures/src/other/text_box.png");
-	
+
+	init_lua();
 	init_tdscript();
 	test_tdscript();
 	change_window_size(tds_string("config", "screen", "default"));
