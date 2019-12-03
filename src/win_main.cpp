@@ -80,6 +80,7 @@ using namespace std::filesystem;
 #include "camera_impl.hpp"
 #include "battle_impl.hpp"
 #include "state_impl.hpp"
+#include "lua_impl.hpp"
 #include "tdscript_impl.hpp"
 #include "dialogue_impl.hpp"
 #include "shader.hpp"
@@ -109,13 +110,16 @@ int main() {
 	
 	component_pool.init();
 	entity_pool.init();
-	
+
+	auto component = create_component_from_string("Tile_Component", nullptr);
+
 	init_shaders();
 	init_mesh();
 	create_all_texture_atlas();
 	create_texture("textures/src/other/text_box.png");
 
-	init_lua();
+	Lua.init();
+	Lua.test();
 	init_tdscript();
 	test_tdscript();
 	change_window_size(tds_string("config", "screen", "default"));

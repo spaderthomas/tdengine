@@ -406,3 +406,27 @@ then script that file -- i mean, i already have the table, so it would be smart
 to insert that table into the script tree. 
 
 customize the components
+* fuck
+all of the actions turn into components ("SCRIPTS")
+
+all the current components are default components that are a part of the engine
+binary. 
+
+expose API to user code by shipping with a header. it's all free functions. 
+
+base component and entity classes have
+#+BEGIN_SRC cpp
+virtual void update(float dt);
+#+END_SRC
+
+something like
+#+BEGIN_SRC cpp
+#define REGISTER_COMPONENT(type) blah()
+REGISTER_COMPONENT(Graphic);
+#+END_SRC
+
+everything still basically uses tdscript to serialize and deserialize. templates
+are defined in tdscript. so is saved data. the main difference is that you ALSO
+implement update(). 
+
+components get owning entity
