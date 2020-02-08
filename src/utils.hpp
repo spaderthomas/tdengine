@@ -460,6 +460,7 @@ struct Paths {
 	string tile_texture_path;
 	string character_texture_path;
 	string other_texture_path;
+	string script_path;
 };
 Paths g_paths;
 
@@ -467,6 +468,13 @@ void init_path_constants() {
 	g_paths.tile_texture_path = absolute_path(path_join({"textures", "src", "tiles"}));
 	g_paths.character_texture_path = absolute_path(path_join({"textures", "src", "characters"}));
 	g_paths.other_texture_path = absolute_path(path_join({"textures", "src", "other"}));
+	g_paths.script_path = absolute_path(path_join({"src", "scripts", "lua"}));
+}
+
+string script_path(string script) {
+	auto path = path_join({ g_paths.script_path, script });
+	normalize_path(path);
+	return path;
 }
 
 // @hack I'm sure there are PNG headers I could try parsing, but this works!

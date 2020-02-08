@@ -24,6 +24,8 @@ extern "C" {
 
 #include "lua_includes.hpp"
 
+#include "sol.hpp"
+
 #include "imgui/imgui.h"
 #include "imgui_impl_glfw_gl3.hpp"
 
@@ -76,6 +78,7 @@ using namespace std::filesystem;
 #include "tdapi.hpp"
 #include "glfw_callbacks.hpp"
 
+#include "new_components.hpp"
 #include "console_impl.hpp"
 #include "camera_impl.hpp"
 #include "battle_impl.hpp"
@@ -100,10 +103,10 @@ using namespace std::filesystem;
 #include "game_impl.hpp"
 #include "tdapi_impl.hpp"
 
+
 int main() {
 	tdns_log.init();
 	init_path_constants();
-
 
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
