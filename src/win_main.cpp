@@ -45,7 +45,6 @@ extern "C" {
 #include <iomanip>
 #include <limits>
 #include <filesystem>
-using namespace std;
 using namespace std::filesystem;
 
 #include "machine_conf.hpp"
@@ -165,8 +164,8 @@ int main() {
 	
 	// Fill GPU sprite buffers
 	glBindVertexArray(Sprite::vao);
-	vector<float> vert_data;
-	vector<float> tex_coords;
+	std::vector<float> vert_data;
+	std::vector<float> tex_coords;
 	
 	concat(vert_data, square_verts);
 	
@@ -192,9 +191,9 @@ int main() {
 	
 	// Fill GPU mesh buffers
 	glBindVertexArray(Mesh::vao);
-	vector<Mesh*> all_meshes = asset_table.get_all<Mesh>();
-	vector<float> vert_buffer;
-	vector<uint> indx_buffer;
+	std::vector<Mesh*> all_meshes = asset_table.get_all<Mesh>();
+	std::vector<float> vert_buffer;
+	std::vector<uint> indx_buffer;
 	
 	// Collect all vertices and indices
 	fox_for(imesh, all_meshes.size()) {
@@ -269,7 +268,7 @@ int main() {
 		
 		// Wait until we hit the next frame time
 		if (print_framerate) {
-			cout << (1 / (glfwGetTime() - frame_start_time)) << " fps\n";
+			std::cout << (1 / (glfwGetTime() - frame_start_time)) << " fps\n";
 		}
 		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
 	}

@@ -26,7 +26,7 @@ Component_Type* Entity::get_component() {
 	return (Component_Type*)handle();
 }
 
-Component* Entity::get_component(string kind) {
+Component* Entity::get_component(std::string kind) {
 	const type_info* info = component_map[kind];
 	auto handle = components[info];
 	
@@ -35,7 +35,7 @@ Component* Entity::get_component(string kind) {
 	return (Component*)handle(); 
 }
 
-EntityHandle Entity::create(string entity_name) {
+EntityHandle Entity::create(std::string entity_name) {
 	// Creates a template entity from the given Lua ID
 	EntityHandle entity = entity_pool.next_available();
 	entity->id = next_id++;
@@ -56,7 +56,7 @@ EntityHandle Entity::create(string entity_name) {
 	// But I don't like it here because it feels hacky. 
 	if_component(task_component, entity, Task_Component) {
 		// Get the entity's current state and initialize the corresponding task
-		string entity_state = tds_string(CH_STATE_KEY, entity_name);
+		std::string entity_state = tds_string(CH_STATE_KEY, entity_name);
 		TableNode* task_table = tds_table(ENTITY_KEY, entity_name, SCRIPTS_KEY, entity_state);
 			
 		Task* task = new Task;

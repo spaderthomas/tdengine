@@ -1,7 +1,7 @@
 Line_Set& Text_Box::current_set() {
 	return sets[index_current_line_set];
 }
-void Text_Box::begin(string text) {
+void Text_Box::begin(std::string text) {
 	this->text = text;
 	index_current_line_set = 0;
 	waiting = false;
@@ -18,8 +18,8 @@ void Text_Box::begin(string text) {
 	
 	// Break that bad boy up into lines
 	Line_Set set;
-	string word;
-	string cur_line;
+	std::string word;
+	std::string cur_line;
 	subpixel_unit this_word_x = 0;
 	subpixel_unit this_line_x = 0;
 	Character space = characters[' '];

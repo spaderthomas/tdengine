@@ -6,7 +6,7 @@ void init_state() {
 	// Load the game state table from TDS and put it into a C++ map
 	TableNode* game_state_table = tds_table(GAME_STATE_KEY);
 	for (KVPNode* kvp : game_state_table->assignments) {
-		string key = kvp->key;
+		std::string key = kvp->key;
 		bool value = tds_bool2(game_state_table, key);
 		game_state[key] = value;
 	}
@@ -16,27 +16,27 @@ void init_state() {
 
 	for (auto& kvp : stateful_entities->assignments) {
 		// Find the entity's current state
-		string entity_name = kvp->key;
-		string entity_state = tds_string(CH_STATE_KEY, entity_name);
+		std::string entity_name = kvp->key;
+		std::string entity_state = tds_string(CH_STATE_KEY, entity_name);
 
 		// Grab the variables it cares about to transition to a new state from its current one
 		TableNode* transitions = tds_table(ENTITY_KEY, entity_name, STATE_KEY, entity_state, TRANSITIONS_KEY);
 
 		// Mark this entity down in the map entry for each of those variables
 		fox_for(idx, transitions->assignments.size()) {
-			TableNode* vars = tds_table2(transitions, to_string(idx), VARS_KEY);
+			TableNode* vars = tds_table2(transitions, std::to_string(idx), VARS_KEY);
 
 			for (auto& kvp : vars->assignments) {
-				vector<string>& map_for_this_var = state_map[kvp->key];
+				std::vector<std::string> map_for_this_var = state_map[kvp->key];
 				map_for_this_var.push_back(entity_name);
 			}
 		}
 	}
 }
 
-void update_state(string state_name, bool value) {
+void update_state(std::string state_name, bool value) {
 	// Set it directly in the script tree so if we save it later, it's up to date
-	tds_set2(ScriptManager.global_scope, value, string("game_state"), state_name);
+	tds_set2(ScriptManager.global_scope, value, std::string("game_state"), state_name);
 
 	// Set it in our in-memory CPP friendly structure
 	game_state[state_name] = value;
@@ -45,15 +45,15 @@ void update_state(string state_name, bool value) {
 	auto& entities_to_check = state_map[state_name];
 	for (auto& entity_name : entities_to_check) {
 		// Grab the entity's current state
-		const string& current_state = tds_string2(ScriptManager.global_scope, CH_STATE_KEY, entity_name);
+		const std::string current_state = tds_string2(ScriptManager.global_scope, CH_STATE_KEY, entity_name);
 		TableNode* transitions = tds_table(ENTITY_KEY, entity_name, STATE_KEY, current_state, TRANSITIONS_KEY);
 
 		fox_for(idx, transitions->assignments.size()) {
-			TableNode* vars = tds_table2(transitions, to_string(idx), VARS_KEY);
+			TableNode* vars = tds_table2(transitions, std::to_string(idx), VARS_KEY);
 
 			bool should_transition = true;
 			for (KVPNode* kvp : vars->assignments) {
-				const string& state_name = kvp->key;
+				const std::string state_name = kvp->key;
 				bool state_val_needed = tds_bool2(vars, state_name);
 				bool actual_state_val = tds_bool(GAME_STATE_KEY, state_name);
 
@@ -65,7 +65,7 @@ void update_state(string state_name, bool value) {
 
 			if (should_transition) {
 				// Update the character state table
-				string next_state = tds_string2(transitions, to_string(idx), NEXT_STATE_KEY);
+				std::string next_state = tds_string2(transitions, std::to_string(idx), NEXT_STATE_KEY);
 				tds_set(next_state, CH_STATE_KEY, entity_name);
 
 				// Update entities that've been instantiated

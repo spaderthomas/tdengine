@@ -7,20 +7,20 @@ namespace Log_Flags {
 };
 
 struct Log {
-	ofstream log_stream;
+	std::ofstream log_stream;
 	
 	void init();
-	void write(string message, uint8_t flags = Log_Flags::Default);
+	void write(std::string message, uint8_t flags = Log_Flags::Default);
 	
 };
 Log tdns_log;
 
 void Log::init() {
-	log_stream.open(root_dir + "log.txt", ofstream::out | ofstream::trunc);
+	log_stream.open(root_dir + "log.txt", std::ofstream::out | std::ofstream::trunc);
 }
-void Log::write(string message, uint8_t flags) {
+void Log::write(std::string message, uint8_t flags) {
 	if (flags & Log_Flags::Console)
-		cout << message << endl;
+		std::cout << message << std::endl;
 	if (flags & Log_Flags::File)
-		log_stream << message << endl;
+		log_stream << message << std::endl;
 }

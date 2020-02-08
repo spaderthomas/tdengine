@@ -5,7 +5,7 @@ void Movement_Component::init(TableNode* table) {
 	wish = glm::vec2(0.f);
 }
 
-string Movement_Component::name(){
+std::string Movement_Component::name(){
 	return "Movement_Component";
 }
 

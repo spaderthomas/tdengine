@@ -12,14 +12,14 @@ void Entity_Info::init() {
 		//tdns_log.write(relative_path(kvp->file));
 	}
 }
-Entity_Tree* Entity_Tree::create(string dir) {
+Entity_Tree* Entity_Tree::create(std::string dir) {
 	Entity_Tree* tree = new Entity_Tree;
 	tree->dir = name_from_full_path(dir);
 	for (auto it = directory_iterator(dir); it != directory_iterator(); ++it) {
-		string path = it->path().string();
+		std::string path = it->path().string();
 		if (is_regular_file(it->status())) {
 			if (is_png(path)) {
-				string name = strip_extension(name_from_full_path(path));
+				std::string name = strip_extension(name_from_full_path(path));
 				tree->entities.push_back(Entity::create(name));
 				tree->size++;
 			}
@@ -31,7 +31,7 @@ Entity_Tree* Entity_Tree::create(string dir) {
 	
 	return tree;
 }
-pool_handle<Entity> Entity_Tree::find(string name) {
+pool_handle<Entity> Entity_Tree::find(std::string name) {
 	for (auto& handle : entities) {
 		if (handle()->name == name) {
 			return handle;
@@ -58,8 +58,8 @@ bool Entity_Wizard::draw() {
 	ImGui::Text("Choose File");
 	ImGui::InputText("Folder", path, 256);
 
-	static vector<string> file_mode_descriptions = {"Erase the file", "Append to the file"};
-	static vector<ios_base::openmode> file_modes = {ofstream::trunc, ofstream::app};
+	static std::vector<std::string> file_mode_descriptions = {"Erase the file", "Append to the file"};
+	static std::vector<std::ios_base::openmode> file_modes = {std::ofstream::trunc, std::ofstream::app};
 	static int index_file_mode_current = 1;
 	if (ImGui::BeginCombo("##choose_file_mode", file_mode_descriptions[index_file_mode_current].c_str(), 0)) {
 		fox_for(i, file_mode_descriptions.size()) {
@@ -95,20 +95,20 @@ bool Entity_Wizard::draw() {
 	bool invalid_path = !strlen(path);
 	if (ImGui::Button("Create!")) {
 		if (!invalid_name && !invalid_path) {
-			string absolute = absolute_path(path);
+			std::string absolute = absolute_path(path);
 			normalize_path(absolute);
 
 			// Forward declare the entity's main table, respecting the user's file mode
 			TableWriter writer;
 			writer.table = new TableNode;
 			writer.stream_flag = file_modes[index_file_mode_current];
-			writer.table_name = "entity." + string(name) + " = ";
+			writer.table_name = "entity." + std::string(name) + " = ";
 			writer.dump(absolute);
 		
 			// After we start writing it, truncating would just overwrite what we did. 
-			writer.stream_flag = ofstream::app;
+			writer.stream_flag = std::ofstream::app;
 
-			writer.table_name = "entity." + string(name) + ".components = ";
+			writer.table_name = "entity." + std::string(name) + ".components = ";
 			writer.dump(absolute);
 		
 			// Write out all the components
@@ -116,7 +116,7 @@ bool Entity_Wizard::draw() {
 				if (!component_checked[type]) continue;
 				Component* component = template_components[type];
 
-				writer.table_name = "entity." + string(name) + ".components." + type + " = ";
+				writer.table_name = "entity." + std::string(name) + ".components." + type + " = ";
 				writer.table = component->make_template();
 				writer.dump(absolute);
 			}
@@ -228,10 +228,10 @@ int Editor::draw_tile_tree_recursive(Entity_Tree* root, int unique_btn_index) {
 	return unique_btn_index;
 }
 void Editor::exec_console_cmd(char* command_line) {
-	string copy = string(command_line);
+	std::string copy = std::string(command_line);
 	auto tokens = split(copy, ' ');
 	if (tokens.empty()) {
-		string message = "Ran into an error parsing command. ";
+		std::string message = "Ran into an error parsing command. ";
 		message += "Command was: " + copy;
 		console.AddLog(message.c_str());
 	}
@@ -240,19 +240,19 @@ void Editor::exec_console_cmd(char* command_line) {
 		active_level->save();
 	}
 	else if (tokens[0] == "go") {
-		string usage = "format: go [x: float] [y: float]";
+		std::string usage = "format: go [x: float] [y: float]";
 		if (tokens.size() != 3) {
 			console.AddLog(usage);
 			return;
 		}
 
-		string x = tokens[1];
+		std::string x = tokens[1];
 		if (x.empty()) {
 			console.AddLog(usage);
 			return;
 		}
 		
-		string y = tokens[2];
+		std::string y = tokens[2];
 		if (y.empty()) {
 			console.AddLog(usage);
 			return;
@@ -313,14 +313,14 @@ void Editor::reload() {
 }
 void Editor::undo_action() {
 	if (action_stack.size()) {
-		function<void()> fn = action_stack.back();
+		std::function<void()> fn = action_stack.back();
 		action_stack.pop_back();
 		fn();
 	}
 }
 void Editor::undo_mark() {
 	if (mark_stack.size()) {
-		function<void()> fn = mark_stack.back();
+		std::function<void()> fn = mark_stack.back();
 		mark_stack.pop_back();
 		fn();
 	}
@@ -454,7 +454,7 @@ void Editor::update(float dt) {
 			ImGui::PushStyleVar(ImGuiStyleVar_ChildRounding, 5.0f);
 			ImGui::BeginChild("", ImVec2(0, 300), true, ImGuiWindowFlags_AlwaysAutoResize);
 
-			vector<string> entities_to_display; // @copy
+			std::vector<std::string> entities_to_display; // @copy
 			for (auto& entity : entity_info.entities) {
 				bool pass_entity_filter = entity_filter.PassFilter(entity.c_str());
 				bool pass_file_filter = file_filter.PassFilter(entity_info.entity_to_file[entity].c_str());
@@ -495,10 +495,10 @@ void Editor::update(float dt) {
 	
 	if (show_level_selector) {
 		ImGui::Begin("Levels", 0, flags);
-		static string level_current = active_level->name;
+		static std::string level_current = active_level->name;
 		if (ImGui::BeginCombo("##chooselevel", level_current.c_str(), 0)) {
 			fox_iter(it, levels) {
-				string level_name = it->first;
+				std::string level_name = it->first;
 				bool is_selected = level_name == level_current;
 				if (ImGui::Selectable(level_name.c_str(), is_selected)) {
 					level_current = level_name;

@@ -12,14 +12,14 @@ struct Texture : Asset {
 
 // We need this struct so we can identify which rectangle goes to which sprite when we pack them
 struct Name_And_ID {
-	string name;
+	std::string name;
 	int id;
 };
 
 //@leak never free stbi memory
 // @spader This is only used for the text box....kill it!
-void create_texture(string path) {
-	string texture_name = name_from_full_path(path);
+void create_texture(std::string path) {
+	std::string texture_name = name_from_full_path(path);
 	if (is_valid_filename(texture_name)) {
 		Texture* new_texture = asset_table.get_asset<Texture>(texture_name);
 
@@ -40,15 +40,15 @@ void create_texture(string path) {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, new_texture->width, new_texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 		} else {
-			string msg = "stb_image failed to load an image. Path was: " + path;
+			std::string msg = "stb_image failed to load an image. Path was: " + path;
 			tdns_log.write(msg);
 		}
 	}
 }
 
-void create_texture_atlas(string assets_dir) {
+void create_texture_atlas(std::string assets_dir) {
 	// Extract name of the atlas png from the dir name (e.g. /environment will output an atlas to /atlases/environment.png)
-	string atlas_name = name_from_full_path(assets_dir);
+	std::string atlas_name = name_from_full_path(assets_dir);
 	if (is_alphanumeric(atlas_name)) {
 		atlas_name += ".png";
 		Texture* atlas = asset_table.get_asset<Texture>(atlas_name);
@@ -61,17 +61,17 @@ void create_texture_atlas(string assets_dir) {
 		memset(atlas_data, 0x0, count_atlas_bytes);
 
 		// Init some data for stb_rectpack
-		vector<stbrp_rect> rects;
-		vector<Name_And_ID> sprite_ids;
-		vector<unsigned char*> image_data;
+		std::vector<stbrp_rect> rects;
+		std::vector<Name_And_ID> sprite_ids;
+		std::vector<unsigned char*> image_data;
 
 		// Go through each sprite, register it in the asset table, and collect its rect data
 		int rect_id = 0;
-		auto recursive_add_from_dir = [&](string root_dir) -> void{
+		auto recursive_add_from_dir = [&](std::string root_dir) -> void{
 			// The meat; given a directory, recursively add all PNGs
-			auto lambda = [&](string dir, const auto& lambda) -> void {
+			auto lambda = [&](std::string dir, const auto& lambda) -> void {
 				for (directory_iterator iter(dir); iter != directory_iterator(); ++iter) {
-					string asset_path = iter->path().string();
+					std::string asset_path = iter->path().string();
 
 					// Recurse to find assets in subdirectories
 					if (is_directory(iter->status())) { 
@@ -81,7 +81,7 @@ void create_texture_atlas(string assets_dir) {
 					else if (is_regular_file(iter->status())) {
 						if (!is_png(asset_path)) { continue; }
 
-						string asset_name = name_from_full_path(asset_path);
+						std::string asset_name = name_from_full_path(asset_path);
 						Sprite* sprite = asset_table.get_asset<Sprite>(asset_name);
 						sprite->atlas = atlas;
 						sprite->name = asset_name;
@@ -147,7 +147,7 @@ void create_texture_atlas(string assets_dir) {
 		}
 
 		// Write the atlas itself, with the same name as the folder it was created from	
-		string atlas_path = absolute_path("textures/atlases/") + atlas->name;
+		std::string atlas_path = absolute_path("textures/atlases/") + atlas->name;
 		stbi_write_png(atlas_path.c_str(), REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 4, atlas_data, 0);
 
 		// Now, create all the OpenGL internals and point it to the newly created atlas
@@ -169,13 +169,13 @@ void create_texture_atlas(string assets_dir) {
 		atlas->height = REGULAR_ATLAS_SIZE;
 		atlas->num_channels = 4;
 	} else {
-		string msg = "Invalid texture atlas name. Expected alpanumeric, but got: " + atlas_name;
+		std::string msg = "Invalid texture atlas name. Expected alpanumeric, but got: " + atlas_name;
 		tdns_log.write(msg);
 	}
 }
 
 void create_all_texture_atlas() {
-	string atlas_dirs[] = {
+	std::string atlas_dirs[] = {
 		g_paths.character_texture_path,
 		g_paths.other_texture_path,
 		g_paths.tile_texture_path

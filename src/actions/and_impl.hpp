@@ -1,7 +1,7 @@
 void And_Action::init(TableNode* table) {
 	TableNode* actions = tds_table2(table, "actions");
 	fox_for(action_idx, actions->assignments.size()) {
-		TableNode* action_table = tds_table2(table, "actions", to_string(action_idx));
+		TableNode* action_table = tds_table2(table, "actions", std::to_string(action_idx));
 		this->actions.push_back(action_from_table(action_table, actor));
 	}
 }

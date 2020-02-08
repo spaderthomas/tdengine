@@ -35,7 +35,7 @@ bool Dialogue_Action::update(float dt) {
 				}
 				// Show responses if it is not
 				else {
-					string all_response_text;
+					std::string all_response_text;
 					for (auto& response : node->responses) {
 						all_response_text += response + "\r";
 					}

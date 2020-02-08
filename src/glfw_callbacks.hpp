@@ -1,6 +1,6 @@
 // GLFW Callbacks
 static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypos) {
-	xpos = max<double>(xpos, 0); ypos = max<double>(ypos, 0);
+	xpos = std::max<double>(xpos, 0); ypos = std::max<double>(ypos, 0);
 	global_input.px_pos = glm::vec2(xpos, SCREEN_Y - ypos);
 	global_input.screen_pos = glm::vec2(xpos / SCREEN_X, (SCREEN_Y - ypos) / SCREEN_Y);
 	global_input.world_pos = global_input.screen_pos + active_layer->camera.offset;
@@ -38,8 +38,8 @@ void GLFW_Scroll_Callback(GLFWwindow* window, double xoffset, double yoffset) {
 }
 
 void GLFW_Error_Callback(int err, const char* msg) {
-	cout << err;
-	cout << msg;
+	std::cout << err;
+	std::cout << msg;
 }
 
 void GLFW_Window_Size_Callback(GLFWwindow* window, int width, int height) {

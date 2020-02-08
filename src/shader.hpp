@@ -1,14 +1,14 @@
 struct Shader {
-	string name;
+	std::string name;
 	uint id;
 	uint num_uniforms;
-	vector<string> uniforms_set_this_call;
+	std::vector<std::string> uniforms_set_this_call;
 	
 	static int active;
 
-	void init(string vs_path, string fs_path, string name) {
+	void init(std::string vs_path, std::string fs_path, std::string name) {
 
-		string paths[] = {
+		std::string paths[] = {
 			vs_path,
 			fs_path
 		};
@@ -18,7 +18,7 @@ struct Shader {
 
 		fox_for(ishader, 2) {
 			// Read in shader data
-			string path = paths[ishader];
+			std::string path = paths[ishader];
 			FILE *shader_source_file = fopen(path.c_str(), "rb");
 			fseek(shader_source_file, 0, SEEK_END);
 			unsigned int fsize = ftell(shader_source_file);
@@ -46,7 +46,7 @@ struct Shader {
 		// Link into a shader program
 		glLinkProgram(shader_program);
 		if (glGetError()) {
-			tdns_log.write("Error linking shader: " + string(vs_path));
+			tdns_log.write("Error linking shader: " + std::string(vs_path));
 		}
 		id = shader_program;
 		glGetProgramiv(shader_program, GL_ACTIVE_UNIFORMS, (int*)&num_uniforms);
@@ -56,7 +56,7 @@ struct Shader {
 	unsigned int get_uniform_loc(const char* name) {
 		auto loc = glGetUniformLocation(id, name);
 		if (loc == -1) {
-			tdns_log.write("Tried to get uniform location, but it didn't exist. Uniform name: " + string(name) + ", Shader name: " + string(this->name));
+			tdns_log.write("Tried to get uniform location, but it didn't exist. Uniform name: " + std::string(name) + ", Shader name: " + std::string(this->name));
 			exit(1);
 		}
 		return loc;
@@ -117,12 +117,12 @@ struct Shader {
 
 	void check() {
 		if (uniforms_set_this_call.size() != num_uniforms) {
-			string msg = "You didn't fill in all of the uniforms! Shader was: " + string(name);
+			std::string msg = "You didn't fill in all of the uniforms! Shader was: " + std::string(name);
 			tdns_log.write(msg);
 			exit(1);
 		}
 		if (Shader::active != (int)id) {
-			string msg = "Checked shader before draw, but it was not set. Did you forget to call begin()? Shader: " + name;
+			std::string msg = "Checked shader before draw, but it was not set. Did you forget to call begin()? Shader: " + name;
 			tdns_log.write(msg);
 			exit(1);
 		}

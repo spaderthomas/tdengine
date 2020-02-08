@@ -60,7 +60,7 @@ void Physics_System::process(float dt) {
 		if (me && other) {
 			glm::vec2 penetration;
 			if (are_boxes_colliding(*me, *other, penetration)) {
-				cout << "Collision found between " << element.me->name << ", " << element.other->name <<  endl;
+				std::cout << "Collision found between " << element.me->name << ", " << element.other->name <<  std::endl;
 				def_get_cmp(mypos, element.me.deref(), Position_Component);
 				mypos->world_pos -= penetration;
 
@@ -131,7 +131,7 @@ Center_Box Center_Box::from_points(Points_Box& points) {
 	box.extents = glm::vec2(points.right - points.left, points.top - points.bottom);
 	return box;
 }
-optional<Center_Box> Center_Box::from_entity(EntityHandle handle) {
+std::optional<Center_Box> Center_Box::from_entity(EntityHandle handle) {
 	Entity* entity = handle();
 	Center_Box box;
 	def_get_cmp(pc, entity, Position_Component);

@@ -3,14 +3,14 @@ struct Action {
 	bool is_blocking = false;
 	virtual bool update(float dt) = 0;
 	virtual void init(TableNode* table) {};
-	virtual string kind() = 0;
+	virtual std::string kind() = 0;
 	virtual void imgui_visualizer() = 0;
 };
 Action* action_from_table(TableNode* table, EntityHandle actor);
 void init_is_blocking_tds(Action* action, TableNode* table);
 
 struct Action_Queue {
-	vector<Action*> actions;
+	std::vector<Action*> actions;
 	int index = 0;
 
 	Action* operator[](int i) {
@@ -73,13 +73,13 @@ struct TaskEditorNode {
 	int id;
 }; 
 
-vector<TaskEditorNode*> make_task_graph(Task* task, ImVec2 base);
-vector<TaskEditorNode*> make_task_graph(string entity, string scene, ImVec2 base);
+std::vector<TaskEditorNode*> make_task_graph(Task* task, ImVec2 base);
+std::vector<TaskEditorNode*> make_task_graph(std::string entity, std::string scene, ImVec2 base);
 struct TaskEditor {
 	const float NODE_SLOT_RADIUS = 4.0f;
 	const ImVec2 NODE_WINDOW_PADDING = ImVec2(8.0f, 8.0f);
 	ImVec2 scrolling = ImVec2(0.f, 0.f);
-	vector<TaskEditorNode*> task_graph;
+	std::vector<TaskEditorNode*> task_graph;
 	TaskEditorNode* node_selected;
 	
 	void show();

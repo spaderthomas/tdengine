@@ -3,6 +3,6 @@ struct Position_Component : Component {
 	
 	TableNode* save() const override;
 	void load(TableNode* self) override;
-	string name() override;
+	std::string name() override;
 	void imgui_visualizer() override;
 };

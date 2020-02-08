@@ -1,4 +1,4 @@
-string Battle_Component::name() { return "Battle_Component"; }
+std::string Battle_Component::name() { return "Battle_Component"; }
 
 TableNode* Battle_Component::make_template() const {
 	TableNode* self = new TableNode;
@@ -9,7 +9,7 @@ TableNode* Battle_Component::make_template() const {
 	tds_set2(self, moves_table, MOVES_KEY);
 
 	fox_for(i, moves.size()) {
-		tds_set2(moves_table, moves[i]->name, to_string(i));
+		tds_set2(moves_table, moves[i]->name, std::to_string(i));
 	}
 
 	return self;
@@ -22,7 +22,7 @@ void Battle_Component::init(TableNode* table) {
 	// into the component's list of moves
 	TableNode* moves_table = tds_table2(table, "moves");
 	for (int idx = 0; idx < moves_table->assignments.size(); idx++) {
-		string move_name = tds_string2(moves_table, to_string(idx));
+		std::string move_name = tds_string2(moves_table, std::to_string(idx));
 		moves.push_back(move_data[move_name]);
 	}
 }

@@ -1,7 +1,7 @@
 // Surely there is a better way to not re-write all this code, but, hey, it works
-void TableNode::set(vector<string> keys, int value) {
+void TableNode::set(std::vector<std::string> keys, int value) {
 	// Get the table that we want to write to
-	string value_key = keys.back();
+	std::string value_key = keys.back();
 	keys.erase(keys.end() - 1);
 	TableNode* containing_table = get_table(keys);
 	fox_assert(containing_table);
@@ -33,9 +33,9 @@ void TableNode::set(vector<string> keys, int value) {
 		containing_table->assignments.push_back(new_node);
 	}
 }
-void TableNode::set(vector<string> keys, string value) {
+void TableNode::set(std::vector<std::string> keys, std::string value) {
 	// Get the table that we want to write to
-	string value_key = keys.back();
+	std::string value_key = keys.back();
 	keys.erase(keys.end() - 1);
 	TableNode* containing_table = get_table(keys);
 	fox_assert(containing_table);
@@ -67,9 +67,9 @@ void TableNode::set(vector<string> keys, string value) {
 		containing_table->assignments.push_back(new_node);
 	}
 }
-void TableNode::set(vector<string> keys, float value) {
+void TableNode::set(std::vector<std::string> keys, float value) {
 	// Get the table that we want to write to
-	string value_key = keys.back();
+	std::string value_key = keys.back();
 	keys.erase(keys.end() - 1);
 	TableNode* containing_table = get_table(keys);
 	fox_assert(containing_table);
@@ -101,9 +101,9 @@ void TableNode::set(vector<string> keys, float value) {
 		containing_table->assignments.push_back(new_node);
 	}
 }
-void TableNode::set(vector<string> keys, bool value) {
+void TableNode::set(std::vector<std::string> keys, bool value) {
 	// Get the table that we want to write to
-	string value_key = keys.back();
+	std::string value_key = keys.back();
 	keys.erase(keys.end() - 1);
 	TableNode* containing_table = get_table(keys);
 	fox_assert(containing_table);
@@ -135,9 +135,9 @@ void TableNode::set(vector<string> keys, bool value) {
 		containing_table->assignments.push_back(new_node);
 	}
 }
-void TableNode::set(vector<string> keys, TableNode* value) {
+void TableNode::set(std::vector<std::string> keys, TableNode* value) {
 	// Get the table that we want to write to
-	string value_key = keys.back();
+	std::string value_key = keys.back();
 	keys.erase(keys.end() - 1);
 	TableNode* containing_table = get_table(keys);
 	fox_assert(containing_table);
@@ -166,11 +166,11 @@ void TableNode::set(vector<string> keys, TableNode* value) {
 	}
 }
 
-void TableNode::del(vector<string> keys) {
-	string final_key = keys.back();
+void TableNode::del(std::vector<std::string> keys) {
+	std::string final_key = keys.back();
 	keys.erase(keys.end() - 1);
 	auto not_found_error = [final_key, keys]() mutable -> void {
-		string error_msg = "Tried to delete ";
+		std::string error_msg = "Tried to delete ";
 		error_msg += keys.front();
 		keys.erase(keys.begin());
 		for (auto& key : keys) {
@@ -200,13 +200,13 @@ void TableNode::del(vector<string> keys) {
 
 template<typename T>      
 void TableNode::push_back(T value) {
-	vector<string> keys = { to_string(assignments.size()) };
+	std::vector<std::string> keys = { std::to_string(assignments.size()) };
 	this->set(keys, value);
 }
 
 template<typename T>
-Primitive TableNode::get(vector<string>& keys) {
-	string value_key = keys.back();
+Primitive TableNode::get(std::vector<std::string>& keys) {
+	std::string value_key = keys.back();
 	keys.erase(keys.end() - 1);
 	TableNode* containing_table = get_table(keys);
 	fox_assert(containing_table);
@@ -222,7 +222,7 @@ Primitive TableNode::get(vector<string>& keys) {
 			prim.type = Primitive::Type::INTEGER;
 			prim.values.intval = ((IntegerNode*)payload)->value;
 		}
-		else if (typeid(T) == typeid(string)) {
+		else if (typeid(T) == typeid(std::string)) {
 			fox_assert(payload->type == ASTNodeType::ANK_StringLiteralNode);
 			prim.type = Primitive::Type::STRING;
 			prim.values.strval = ((StringLiteralNode*)payload)->value.c_str();
@@ -251,31 +251,31 @@ Primitive TableNode::get(vector<string>& keys) {
 	error.type = Primitive::Type::PRIM_ERROR;
 	return error;
 }
-int TableNode::get_int(vector<string> keys) {
+int TableNode::get_int(std::vector<std::string> keys) {
 	Primitive prim = get<int>(keys);
 	fox_assert(prim.type == Primitive::Type::INTEGER);
 	return prim.values.intval;
 }
-string TableNode::get_string(vector<string> keys) {
-	Primitive prim = get<string>(keys);
+std::string TableNode::get_string(std::vector<std::string> keys) {
+	Primitive prim = get<std::string>(keys);
 	fox_assert(prim.type == Primitive::Type::STRING);
 	return prim.values.strval;
 }
-float TableNode::get_float(vector<string> keys) {
+float TableNode::get_float(std::vector<std::string> keys) {
 	Primitive prim = get<float>(keys);
 	fox_assert(prim.type == Primitive::Type::FLOAT);
 	return prim.values.floatval;
 }
-bool TableNode::get_bool(vector<string> keys) {
+bool TableNode::get_bool(std::vector<std::string> keys) {
 	Primitive prim = get<bool>(keys);
 	fox_assert(prim.type == Primitive::Type::BOOL);
 	return prim.values.boolval;
 }
-TableNode* TableNode::get_table(vector<string> keys) {
+TableNode* TableNode::get_table(std::vector<std::string> keys) {
     if (!keys.size()) return this;
 	
 	TableNode* current_scope = this;
-	string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
+	std::string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
 	for (uint key_idx = 0; key_idx < keys.size(); key_idx++) {
 		auto& key = keys[key_idx];
 		
@@ -310,11 +310,11 @@ TableNode* TableNode::get_table(vector<string> keys) {
 	
 	return nullptr;
 }
-ASTNode* TableNode::get_raw(vector<string> keys) {
+ASTNode* TableNode::get_raw(std::vector<std::string> keys) {
 	if (!keys.size()) return this;
 	
 	TableNode* current_scope = this;
-	string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
+	std::string error_msg = "KeyError: global_scope"; // Write this here so that we know exactly what key we failed at
 	for (uint key_idx = 0; key_idx < keys.size(); key_idx++) {
 		auto& key = keys[key_idx];
 		
@@ -350,7 +350,7 @@ ASTNode* TableNode::get_raw(vector<string> keys) {
 	
 	return nullptr;
 }
-ASTNode* TableNode::maybe_key(string key) {
+ASTNode* TableNode::maybe_key(std::string key) {
 	for (auto node : assignments) {
 		KVPNode* kvp = (KVPNode*)node;
 		if (kvp->key == key) return kvp;
@@ -358,7 +358,7 @@ ASTNode* TableNode::maybe_key(string key) {
 	
 	return nullptr;
 }
-bool TableNode::has_key(string key) {
+bool TableNode::has_key(std::string key) {
 	return maybe_key(key);
 }
 
@@ -381,7 +381,7 @@ void KVPNode::dump(TableWriter& output) {
 	}
 	
 	if (!is_numeral) {
-		string defn = key + " = ";
+		std::string defn = key + " = ";
 		output.write_line(defn);
 		output.same_line();
 	}
@@ -390,36 +390,36 @@ void KVPNode::dump(TableWriter& output) {
 }
 
 void IntegerNode::dump(TableWriter& output) {
-	output.write_line(to_string(value));
+	output.write_line(std::to_string(value));
 }
 void FloatNode::dump(TableWriter& output) {
-	output.write_line(to_string(value));
+	output.write_line(std::to_string(value));
 }
 void BoolNode::dump(TableWriter& output) {
-	output.write_line(to_string(value));
+	output.write_line(std::to_string(value));
 }
 void StringLiteralNode::dump(TableWriter& output) {
-	string as_literal = "\"" + value + "\"";
+	std::string as_literal = "\"" + value + "\"";
 	output.write_line(as_literal);
 }
 
-bool Lexer::init(string script_path) {
-	file = ifstream(script_path);
+bool Lexer::init(std::string script_path) {
+	file = std::ifstream(script_path);
 	file_path = script_path;
 	if (!file.good()) {
 		tdns_log.write("File was not good: " + script_path);
 		fox_assert(file.good());
 	}
-	file.seekg(0, ios_base::end);
+	file.seekg(0, std::ios_base::end);
 	auto file_size = file.tellg();
-	file.seekg(0, ios_base::beg);
+	file.seekg(0, std::ios_base::beg);
 	
 	tokens.clear();
 	line_number = 1;
 	token_idx = 0;
 	
 	if (!file_size) {
-		tdns_log.write(string("Script_path ") + script_path + " is empty.");
+		tdns_log.write(std::string("Script_path ") + script_path + " is empty.");
 		return false;
 	}
 	
@@ -494,8 +494,8 @@ Token Lexer::next_token_internal() {
 				file.get(c);
 			}
 			bool is_float = is_dot(c);
-			string whole;
-			string decimal;
+			std::string whole;
+			std::string decimal;
 			whole.push_back(c);
 			while (true) {
 				// If we reach an invalid character for an int/float, collect what we have and return it
@@ -545,7 +545,7 @@ Token Lexer::next_token_internal() {
 						decimal.push_back(c);
 					}
 					else if (is_dot(c)) {
-						string error_msg = "Bad floating point number at line " + to_string(line_number) + " of file " + file_path;
+						std::string error_msg = "Bad floating point number at line " + std::to_string(line_number) + " of file " + file_path;
 						tdns_log.write(error_msg);
 						fox_assert(0);
 					}
@@ -577,10 +577,10 @@ Token Lexer::next_token_internal() {
 			return token;
 		}
 		else {
-			string i_hate_cpp;
+			std::string i_hate_cpp;
 			i_hate_cpp += c;
-			string error_msg = "Found unrecognized token: " + i_hate_cpp;
-			error_msg += "\nLine number: " + to_string(line_number) + " of file " + file_path;;
+			std::string error_msg = "Found unrecognized token: " + i_hate_cpp;
+			error_msg += "\nLine number: " + std::to_string(line_number) + " of file " + file_path;;
 			tdns_log.write(error_msg);
 			fox_assert(0);
 			Token dummy_for_compiler;
@@ -627,14 +627,14 @@ bool Lexer::is_whitespace(char c) {
 	return c == ' ' || c == '\t' || c == '\n';
 }
 
-bool TDScript::is_nested_identifier(string& key) {
+bool TDScript::is_nested_identifier(std::string& key) {
 	for (auto& c : key) {
 		if (c == '.') return true;
 	}
 	
 	return false;
 }
-ASTNode* TDScript::parse(string script_path) {
+ASTNode* TDScript::parse(std::string script_path) {
 	normalize_path(script_path);
 	tdns_log.write("Scripted file: " + script_path, Log_Flags::File);
 	
@@ -646,22 +646,22 @@ ASTNode* TDScript::parse(string script_path) {
 	KVPNode* kvp;
 	while ((kvp = parse_assign())) {
 		kvp->file = script_path;
-		string old = kvp->key;
-		string key = kvp->key;
+		std::string old = kvp->key;
+		std::string key = kvp->key;
 		TableNode* containing_table = global_scope;
 		
 		// If we're adding to a table which already exists, find that table
 		if (is_nested_identifier(key)) {
-			string key_copy = key;
+			std::string key_copy = key;
 			char* c_key = (char*)key_copy.c_str();
 			char* table_id = strtok(c_key, ".");
-			vector<string> keys;
+			std::vector<std::string> keys;
 			while (table_id) {
 				keys.push_back(table_id);
 				table_id = strtok(NULL, ".");
 			}
 			
-			string value_key = keys.back();
+			std::string value_key = keys.back();
 			keys.erase(keys.end() - 1);
 			
 			containing_table = global_scope->get_table(keys);
@@ -695,7 +695,7 @@ ASTNode* TDScript::parse_table() {
 	KVPNode* kvp = new KVPNode;
 	while ((kvp = parse_assign())) {
 		if (kvp->key == "") {
-			kvp->key = to_string(arr_len++);
+			kvp->key = std::to_string(arr_len++);
 		}
 		table_node->assignments.push_back(kvp);
 		cur_token = lexer.peek_token();
@@ -736,7 +736,7 @@ KVPNode* TDScript::parse_assign() {
 		auto table_node = parse_table();
 		cur_token = lexer.next_token();
 		if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
-			string error_msg = "Unfinished table at line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
+			std::string error_msg = "Unfinished table at line " + std::to_string(lexer.line_number) + " of file " + lexer.file_path;;
 			tdns_log.write(error_msg);
 			fox_assert(0);
 		}
@@ -764,7 +764,7 @@ KVPNode* TDScript::parse_assign() {
 			auto table_node = parse_table(); val_node = table_node;
 			cur_token = lexer.next_token();
 			if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
-				string error_msg = "Unfinished table at line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
+				std::string error_msg = "Unfinished table at line " + std::to_string(lexer.line_number) + " of file " + lexer.file_path;;
 				tdns_log.write(error_msg);
 				fox_assert(0);
 			}
@@ -799,7 +799,7 @@ KVPNode* TDScript::parse_assign() {
 				bool_node->value = cur_token.bool_val;
 			}
 			else if (cur_token.type == Token::Type::IDENTIFIER) {
-				vector<string> keys;
+				std::vector<std::string> keys;
 				char* key = strtok((char*)cur_token.str_val.c_str(), ".");
 				while (key) {
 					keys.push_back(key);
@@ -812,14 +812,14 @@ KVPNode* TDScript::parse_assign() {
 					auto table_node = parse_table(); val_node = table_node;
 					cur_token = lexer.next_token();
 					if (cur_token.symbol != Symbol::RIGHT_BRACKET) {
-						string error_msg = "Unfinished table at line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
+						std::string error_msg = "Unfinished table at line " + std::to_string(lexer.line_number) + " of file " + lexer.file_path;;
 						tdns_log.write(error_msg);
 						fox_assert(0);
 					}
 				}
 			}
 			else {
-				string error_msg = "Malformed assignment on line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
+				std::string error_msg = "Malformed assignment on line " + std::to_string(lexer.line_number) + " of file " + lexer.file_path;;
 				tdns_log.write(error_msg);
 				fox_assert(0);
 			}
@@ -832,7 +832,7 @@ KVPNode* TDScript::parse_assign() {
 		}
 	}
 	else {
-		string error_msg = "Expected identifier at line " + to_string(lexer.line_number) + " of file " + lexer.file_path;;
+		std::string error_msg = "Expected identifier at line " + std::to_string(lexer.line_number) + " of file " + lexer.file_path;;
 		tdns_log.write(error_msg);
 		fox_assert(0);
 		return nullptr;
@@ -841,9 +841,9 @@ KVPNode* TDScript::parse_assign() {
 	assign_node->value = val_node;
 	return assign_node;
 }
-vector<string> TDScript::keys_from_string(string key_str) {
+std::vector<std::string> TDScript::keys_from_string(std::string key_str) {
 	char* key = strtok((char*)key_str.c_str(), ".");
-	vector<string> keys;
+	std::vector<std::string> keys;
 	while (key) {
 		keys.push_back(key);
 		key = strtok(NULL, ".");
@@ -853,17 +853,17 @@ vector<string> TDScript::keys_from_string(string key_str) {
 }
 
 // @spader 10/14/2019: why 
-void TDScript::script_file(string dir_path) {
+void TDScript::script_file(std::string dir_path) {
 	parse(dir_path);
 }
 
 
-void TDScript::script_dir(string dir_path) {
+void TDScript::script_dir(std::string dir_path) {
 	// Always check for the directory's init file first
 	script_init_if_exists(dir_path);
 	
 	for (auto it = directory_iterator(dir_path); it != directory_iterator(); it++) {
-		string path = it->path().string();
+		std::string path = it->path().string();
 		normalize_path(path);
 
 
@@ -871,7 +871,7 @@ void TDScript::script_dir(string dir_path) {
 		if (is_regular_file(it->status())) {
 			if (is_tds(path)) {
 				// Don't double run the init file 
-				string maybe_init_file = dir_path + "/__init__.tds";
+				std::string maybe_init_file = dir_path + "/__init__.tds";
 				normalize_path(maybe_init_file);
 				if (are_strings_equal(path, maybe_init_file)) {
 					continue;
@@ -887,9 +887,9 @@ void TDScript::script_dir(string dir_path) {
 	}
 }
 
-void TDScript::script_init_if_exists(string dir_path) {
-	string maybe_init_file = dir_path + "/__init__.tds";
-	ifstream f(maybe_init_file.c_str());
+void TDScript::script_init_if_exists(std::string dir_path) {
+	std::string maybe_init_file = dir_path + "/__init__.tds";
+	std::ifstream f(maybe_init_file.c_str());
 	if (f.good()) {
 		parse(maybe_init_file);
 	}	
@@ -901,7 +901,7 @@ void init_tdscript() {
 	
 	TableNode* files = tds_table("meta", "script_dirs");
 	for (uint i = 0; i < files->assignments.size(); i++) {
-		string script_dir = tds_string("meta", "script_dirs", to_string(i));
+		std::string script_dir = tds_string("meta", "script_dirs", std::to_string(i));
 		ScriptManager.script_dir(absolute_path("src/scripts/") + script_dir);
 	}
 }
@@ -911,10 +911,10 @@ void test_tdscript() {
     #pragma GCC diagnostic ignored "-Wunused-variable"
     #endif
 
-	string boonhouse_test = tds_string2(ScriptManager.global_scope, "entity", "boonhouse_door", "components", "Graphic_Component", "Animations", "boonhouse_door", "0");
-	string cantina_test = tds_string2(ScriptManager.global_scope, "entity", "picture", "components", "Graphic_Component", "Animations", "picture", "0");
-	string intro_police_test = tds_string2(ScriptManager.global_scope, "entity", "intro_police", "scripts", "spin", "0", "kind");
-	string wilson_test = tds_string2(ScriptManager.global_scope, "entity", "wilson", "State_Machine", "main1", "task", "0", "kind");
+	std::string boonhouse_test = tds_string2(ScriptManager.global_scope, "entity", "boonhouse_door", "components", "Graphic_Component", "Animations", "boonhouse_door", "0");
+	std::string cantina_test = tds_string2(ScriptManager.global_scope, "entity", "picture", "components", "Graphic_Component", "Animations", "picture", "0");
+	std::string intro_police_test = tds_string2(ScriptManager.global_scope, "entity", "intro_police", "scripts", "spin", "0", "kind");
+	std::string wilson_test = tds_string2(ScriptManager.global_scope, "entity", "wilson", "State_Machine", "main1", "task", "0", "kind");
 	
 	TableNode* gc = tds_table2(ScriptManager.global_scope, "entity", "wilson", "components", "Graphic_Component");
 	auto graphic = new Graphic_Component;
@@ -933,19 +933,19 @@ void test_tdscript() {
 	task->init_from_table(task_table, { -1, nullptr });
 	
 	ScriptManager.script_dir(absolute_path("src/scripts/tds_test"));
-	string strval = tds_string2(ScriptManager.global_scope, "strval");
+	std::string strval = tds_string2(ScriptManager.global_scope, "strval");
 	int intval = tds_int2(ScriptManager.global_scope, "intval");
 	float fval = tds_float2(ScriptManager.global_scope, "fval");
 	bool bval = tds_bool2(ScriptManager.global_scope, "bval");
-	string table2_strval = tds_string2(ScriptManager.global_scope, "table2", "strval");
+	std::string table2_strval = tds_string2(ScriptManager.global_scope, "table2", "strval");
 	int table2_intval = tds_int2(ScriptManager.global_scope, "table2", "intval");
 	float table2_fval = tds_float2(ScriptManager.global_scope, "table2", "fval");
 	bool table2_bval = tds_bool2(ScriptManager.global_scope, "table2", "bval");
-	string table2_nestedstr = tds_string2(ScriptManager.global_scope, "table2", "nested_str");
+	std::string table2_nestedstr = tds_string2(ScriptManager.global_scope, "table2", "nested_str");
 	int table2_nestedtbl_val = tds_int2(ScriptManager.global_scope, "table2", "nested_tbl", "intval");
 	bool table2_nestedbval = tds_bool2(ScriptManager.global_scope, "table2", "nested_bval");
-	string array_0 = tds_string2(ScriptManager.global_scope, "array", "0");
-	string array_1 = tds_string2(ScriptManager.global_scope, "array", "1");
+	std::string array_0 = tds_string2(ScriptManager.global_scope, "array", "0");
+	std::string array_1 = tds_string2(ScriptManager.global_scope, "array", "1");
 	int array_2 = tds_int2(ScriptManager.global_scope, "array", "2");
 	
 	TableNode* some_table = new TableNode;

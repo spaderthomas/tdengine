@@ -15,7 +15,7 @@ TableNode* Vision_Component::make_template() const {
 	return self;
 }
 
-string Vision_Component::name() {
+std::string Vision_Component::name() {
 	return "Vision_Component";
 }
 

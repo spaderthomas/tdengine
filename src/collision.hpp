@@ -3,7 +3,7 @@ struct Center_Box {
 	glm::vec2 origin;
 	glm::vec2 extents;
 	
-	static optional<Center_Box> from_entity(EntityHandle handle);
+	static std::optional<Center_Box> from_entity(EntityHandle handle);
 	static Center_Box from_points(Points_Box& points);
 	Points_Box as_points();
 };
@@ -26,8 +26,8 @@ struct Collision_Element {
 };
 
 struct Physics_System {
-	vector<Collision_Element> collisions;
-	vector<EntityHandle> movers;
+	std::vector<Collision_Element> collisions;
+	std::vector<EntityHandle> movers;
 	
 	void debug_draw_bounding_box(EntityHandle handle, glm::vec4 color);
 	void process(float dt);
@@ -48,7 +48,7 @@ enum Collider_Kind : int {
 	COUNT_COLLIDERS
 };
 
-vector<string> collider_kind_descriptions = {
+std::vector<std::string> collider_kind_descriptions = {
 	"No Collider",
 	"Static",
 	"Dynamic",

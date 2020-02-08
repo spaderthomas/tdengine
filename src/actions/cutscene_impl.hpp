@@ -7,7 +7,7 @@ bool Cutscene_Action::update(float dt) {
 }
 void Cutscene_Action::imgui_visualizer() {
 	if (ImGui::TreeNode("Cutscene Action")) {
-		string message = "Cutscene: " + which;
+		std::string message = "Cutscene: " + which;
 		ImGui::Text(message.c_str());
 		ImGui::TreePop();
 	}

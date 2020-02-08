@@ -31,7 +31,7 @@ typedef pool_handle<Component_Union> ComponentHandle;
 Pool<Component_Union, DEFAULT_POOL_SIZE> component_pool;
 
 
-unordered_map<string, const type_info*> component_map = {
+std::unordered_map<std::string, const type_info*> component_map = {
 	{ "Battle_Component", &typeid(Battle_Component) },
 	{ "Collision_Component", &typeid(Collision_Component) },
 	{ "Door_Component", &typeid(Door_Component) },
@@ -52,17 +52,17 @@ unordered_map<string, const type_info*> component_map = {
 #define if_component(var, entity, type) type* var = (entity)->get_component<type>(); if ((var))
 
 typedef Component* (*ComponentCreator)(TableNode*);
-typedef map<string, ComponentCreator> ComponentRegistry;
+typedef std::map<std::string, ComponentCreator> ComponentRegistry;
 ComponentRegistry component_registry;
 
 template<typename ComponentType>
 struct ComponentRegistryEntry {
-	static const ComponentRegistryEntry<ComponentType>& instance(string type) {
+	static const ComponentRegistryEntry<ComponentType>& instance(std::string type) {
 		static const ComponentRegistryEntry<ComponentType>& the_instance(type);
 		return the_instance;
 	}
 
-	ComponentRegistryEntry(string type) {
+	ComponentRegistryEntry(std::string type) {
 		component_registry[type] = create_component2<ComponentType>;
 	}
 };
@@ -90,7 +90,7 @@ Component* create_component2(TableNode* table) {
 	return component;
 }
 
-Component* create_component_from_string(string type, TableNode* table) {
+Component* create_component_from_string(std::string type, TableNode* table) {
 	auto creator = component_registry[type];
 	return creator(table);
 }
@@ -101,7 +101,7 @@ REGISTER_COMPONENT(Position_Component);
 REGISTER_COMPONENT(Movement_Component);
 REGISTER_COMPONENT(Vision_Component);
 
-ComponentHandle create_component(string name, TableNode* table) {
+ComponentHandle create_component(std::string name, TableNode* table) {
 	auto handle = component_pool.next_available();
 	if (name == "Graphic_Component") {
 		new(handle()) Graphic_Component;
@@ -166,9 +166,9 @@ ComponentType* component_cast(ComponentHandle handle) {
 }
 
 struct TemplateComponents {
-	map<string, ComponentHandle> templates;
+	std::map<std::string, ComponentHandle> templates;
 
-	Component* operator[](string which) {
+	Component* operator[](std::string which) {
 		return (Component*)templates[which]();
 	}
 	

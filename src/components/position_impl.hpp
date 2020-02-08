@@ -15,7 +15,7 @@ void Position_Component::load(TableNode* self) {
 	world_pos.x = tds_float2(self, POS_KEY, "x");
 	world_pos.y = tds_float2(self, POS_KEY, "y");
 }
-string Position_Component::name() { return "Position_Component"; }
+std::string Position_Component::name() { return "Position_Component"; }
 void Position_Component::imgui_visualizer() {
 	if (ImGui::TreeNode("Position Component")) {
 		ImGui::SliderFloat2("Position", glm::value_ptr(world_pos), 0.f, 2.f);

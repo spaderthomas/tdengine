@@ -1,14 +1,14 @@
-LuaComponent LuaComponent::create(string name, int entity) {
+LuaComponent LuaComponent::create(std::string name, int entity) {
 	LuaComponent component;
 	component.name = name;
 	component.entity = entity;
-	string script = name + ":new()";
+	std::string script = name + ":new()";
 	Lua.state.script(script);
 	return component;
 }
 
 void LuaComponent::update(float dt) {
-	string script = "local dt = ... \n" +  name + ":update(dt)";
+	std::string script = "local dt = ... \n" +  name + ":update(dt)";
 	auto update_function = Lua.state.load(script);
 	update_function(dt);
 }
@@ -18,7 +18,7 @@ struct SpaderComponent : LuaComponent {
 	int fun = 1; 
 };
 
-LuaEntity::LuaEntity(string name, int id) {
+LuaEntity::LuaEntity(std::string name, int id) {
 	this->name = name;
 	this->id = id;
 }
@@ -28,7 +28,7 @@ int LuaEntity::get_id() {
 }
 
 void LuaEntity::update(float dt) {
-	string script = "local dt = ... \n" +  name + ":update(dt)";
+	std::string script = "local dt = ... \n" +  name + ":update(dt)";
 	auto update_function = Lua.state.load(script);
 	update_function(dt);
 		
@@ -37,7 +37,7 @@ void LuaEntity::update(float dt) {
 	}
 }
 
-void LuaEntity::add_component(string name) {
+void LuaEntity::add_component(std::string name) {
 	components[name] = LuaComponent::create(name, id);
 }
 
@@ -50,9 +50,9 @@ bool EntityManager::has_entity(int id) {
 	return entities.find(id) != entities.end();
 }
 
-LuaEntityHandle EntityManager::create_entity(string name) {
+LuaEntityHandle EntityManager::create_entity(std::string name) {
 	// Construct the entity
-	auto inserted = entities.emplace(LuaEntity::next_id, make_unique<LuaEntity>(name, LuaEntity::next_id));
+	auto inserted = entities.emplace(LuaEntity::next_id, std::make_unique<LuaEntity>(name, LuaEntity::next_id));
 	auto it = inserted.first;
 	LuaEntity& entity = *it->second;
 

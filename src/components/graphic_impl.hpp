@@ -1,4 +1,4 @@
-void Graphic_Component::begin_animation(string wish) {
+void Graphic_Component::begin_animation(std::string wish) {
 	for (auto& animation : animations) {
 		if (animation->name == wish) {
 			active_animation = animation;
@@ -7,7 +7,7 @@ void Graphic_Component::begin_animation(string wish) {
 		}
 	}
 
-	string msg = "Tried to set active animation to " + wish + " but it was not registered in the component!";
+	std::string msg = "Tried to set active animation to " + wish + " but it was not registered in the component!";
 	tdns_log.write(msg);
 }
 
@@ -21,7 +21,7 @@ Sprite* Graphic_Component::get_current_frame() {
 		return (Sprite*)nullptr;
 	}
 	if (active_animation->icur_frame == -1) {
-		string msg = "Active animation (" + active_animation->name + ") had invalid current frame";
+		std::string msg = "Active animation (" + active_animation->name + ") had invalid current frame";
 		tdns_log.write(msg);
 		return (Sprite*)nullptr;
 	}
@@ -56,13 +56,13 @@ void Graphic_Component::init(TableNode* table) {
 		scale = glm::vec2(1.f, 1.f);
 
 		// @spader 10/11/2019: Wish we had some context as to who this GC belonged to so as to have a helpful error message.
-		string msg = "[GRAPHIC COMPONENT INIT]\n";
+		std::string msg = "[GRAPHIC COMPONENT INIT]\n";
 		msg += "Tried to initialize dimensions using its default sprite, but there wasn't one. Used (1.f, 1.f) instead.";
 		tdns_log.write(msg);
 	}
 
 }
-string Graphic_Component::name() { return "Graphic_Component"; }
+std::string Graphic_Component::name() { return "Graphic_Component"; }
 void Graphic_Component::imgui_visualizer() {
 	if (ImGui::TreeNode("Graphic Component")) {
 		defer {ImGui::TreePop(); };
@@ -98,7 +98,7 @@ void Graphic_Component::imgui_visualizer() {
 
 			static char name_buf[256];
 			static char frame_buf[256];
-			static vector<string> frames;
+			static std::vector<std::string> frames;
 			static auto close_modal = []() {
 				memset(name_buf, 0, 256);
 				memset(frame_buf, 0, 256);
@@ -164,7 +164,7 @@ TableNode* Graphic_Component::make_template() const {
 	for (auto animation : this->animations) {
 		TableNode* frames_table = new TableNode;
 		fox_for(i, animation->frames.size()) {
-			tds_set2(frames_table, animation->frames[i]->name, to_string(i));
+			tds_set2(frames_table, animation->frames[i]->name, std::to_string(i));
 		}
 
 		tds_set2(self, frames_table, ANIMATIONS_KEY, animation->name);

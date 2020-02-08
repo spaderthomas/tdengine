@@ -1,6 +1,6 @@
 int iactive_layer = 0;
-vector<Layer*> all_layers = { &editor, &game, &battle };
-map<string, Layer*> layer_map = {
+std::vector<Layer*> all_layers = { &editor, &game, &battle };
+std::map<std::string, Layer*> layer_map = {
 	{ "editor", &editor },
 	{ "game", &game },
 	{ "battle", &battle },

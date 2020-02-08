@@ -1,12 +1,12 @@
-void LuaState::prepend_to_search_path(string directory) {
+void LuaState::prepend_to_search_path(std::string directory) {
 	directory = absolute_path(directory);
 	directory += "/?.lua";
 	normalize_path(directory);
 	tdns_log.write("Adding directory to Lua include path: " + directory);
 		
 	// NEW_ITEM;old_path
-	string old_path = Lua.state["package"]["path"];
-	string new_path = directory + ";" + old_path;
+	std::string old_path = Lua.state["package"]["path"];
+	std::string new_path = directory + ";" + old_path;
 	state["package"]["path"] = new_path;
 }
 
@@ -18,7 +18,7 @@ int LuaState::init() {
 	return 0;
 }
 
-void LuaState::script_file(string relative_file_path) {
+void LuaState::script_file(std::string relative_file_path) {
 	auto result = state.script_file(script_path(relative_file_path), [](auto, auto pfr) {
 		return pfr;
 	});
@@ -31,7 +31,7 @@ void LuaState::script_file(string relative_file_path) {
 
 void LuaState::test() {
 	sol::usertype<LuaEntity> entity_type = state.new_usertype<LuaEntity>("Entity");
-	entity_type.set("id", &LuaEntity::id);
+	entity_type["id"] = &LuaEntity::id;
 	//entity_type["name"] = &LuaEntity::name;
 	//entity_type["update"] = &LuaEntity::update;
 	//entity_type["add_component"] = &LuaEntity::add_component;
@@ -39,6 +39,6 @@ void LuaState::test() {
 
 	script_file("tdengine.lua");
 
-	shared_ptr<EntityManager> manager = make_shared<EntityManager>();
+	std::shared_ptr<EntityManager> manager = std::make_shared<EntityManager>();
 	auto entity = manager->create_entity("Spader");
 }

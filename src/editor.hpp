@@ -1,17 +1,17 @@
 struct Entity_Tree {
-	string dir;
-	vector<pool_handle<Entity>> entities;
-	vector<Entity_Tree*> children;
+	std::string dir;
+	std::vector<pool_handle<Entity>> entities;
+	std::vector<Entity_Tree*> children;
 	int size = 0;
 	
-	static Entity_Tree* create(string dir);
-	pool_handle<Entity> find(string name);
+	static Entity_Tree* create(std::string dir);
+	pool_handle<Entity> find(std::string name);
 };
 
 struct Entity_Info {
-	vector<string> entities;
-	map<string, vector<string>> file_map;
-	map<string, string> entity_to_file;
+	std::vector<std::string> entities;
+	std::map<std::string, std::vector<std::string>> file_map;
+	std::map<std::string, std::string> entity_to_file;
 
 	void init();
 };
@@ -19,7 +19,7 @@ struct Entity_Info {
 struct Entity_Wizard {
 	char name[256];
 	char path[256];
-	map<string, bool> component_checked;
+	std::map<std::string, bool> component_checked;
 
 	void init();
 	bool draw();
@@ -65,9 +65,9 @@ struct Editor : Layer {
 	void delete_selected();
 	
 	// Undo 
-	vector<function<void()>> action_stack;
+	std::vector<std::function<void()>> action_stack;
 	void undo_action();
-	vector<function<void()>> mark_stack;
+	std::vector<std::function<void()>> mark_stack;
 	void undo_mark();
 	
 	// Big stuff

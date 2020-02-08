@@ -13,8 +13,8 @@ struct Render_Element {
 };
 
 struct Renderer {
-	vector<function<void()>> primitives;
-	vector<Render_Element> render_list;
+	std::vector<std::function<void()>> primitives;
+	std::vector<Render_Element> render_list;
 	void draw(Graphic_Component* gc, Position_Component* pc, EntityHandle e, Render_Flags flags);
 	void render_for_frame();
 } renderer;

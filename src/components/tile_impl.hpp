@@ -1,4 +1,4 @@
-string Tile_Component::name() { return "Tile_Component"; }
+std::string Tile_Component::name() { return "Tile_Component"; }
 TableNode* Tile_Component::save() const {
 	TableNode* self = new TableNode;
 

@@ -1,9 +1,9 @@
 struct Move {
-	string name;
+	std::string name;
 	int power;
 
 	void init_from_table(TableNode* table);
 };
 
-unordered_map<string, Move*> move_data;
+std::unordered_map<std::string, Move*> move_data;
 void init_moves();

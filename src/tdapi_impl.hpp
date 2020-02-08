@@ -55,11 +55,11 @@ tdapi void move_entity(EntityHandle me, bool up, bool down, bool left, bool righ
 	// Tell the Physics system to check + resolve if this movement causes collisions
 	physics_system.movers.push_back(me);
 }
-tdapi void set_animation(EntityHandle me, string wish_name) {
+tdapi void set_animation(EntityHandle me, std::string wish_name) {
 	def_get_cmp(gc, me.deref(), Graphic_Component);
 	gc->begin_animation(wish_name);
 }
-tdapi void set_animation_no_reset(EntityHandle me, string wish_name) {
+tdapi void set_animation_no_reset(EntityHandle me, std::string wish_name) {
 	def_get_cmp(gc, me.deref(), Graphic_Component);
 	if (gc->active_animation) {
 		if (gc->active_animation->name == wish_name) {
@@ -124,8 +124,8 @@ tdapi void update_task(EntityHandle entity, float dt) {
 
 // Collision
 tdapi bool are_entities_colliding(EntityHandle a, EntityHandle b) {
-	optional<Center_Box> a_box = Center_Box::from_entity(a);
-	optional<Center_Box> b_box = Center_Box::from_entity(b);
+	std::optional<Center_Box> a_box = Center_Box::from_entity(a);
+	std::optional<Center_Box> b_box = Center_Box::from_entity(b);
 	glm::vec2 penetration;
 
 	if (!a_box || !b_box) {
@@ -147,7 +147,7 @@ tdapi void register_potential_collision(EntityHandle me, EntityHandle other) {
 
 
 // State
-tdapi void set_state(string var, bool val) {
+tdapi void set_state(std::string var, bool val) {
 	update_state(var, val);
 }
 

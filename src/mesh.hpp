@@ -1,7 +1,7 @@
 struct Mesh : Asset {
-	vector<float> verts;
-	vector<uint> indices;
-	vector<float> tex_coords;
+	std::vector<float> verts;
+	std::vector<uint> indices;
+	std::vector<float> tex_coords;
 
 	GLvoid* vert_offset;
 	GLvoid* indices_offset;

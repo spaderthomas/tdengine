@@ -20,7 +20,7 @@ void Door_Component::load(TableNode* self) {
 	level = tds_string2(self, LEVEL_KEY);
 }
 
-string Door_Component::name() {
+std::string Door_Component::name() {
 	return "Door_Component";
 }
 
@@ -28,7 +28,7 @@ void Door_Component::imgui_visualizer() {
 	if (ImGui::TreeNode("Door Component")) {
 		if (ImGui::BeginCombo("##setdoor", level.c_str(), 0)) {
 			for (auto& kvp : levels) {
-				const string& name = kvp.first;
+				const std::string& name = kvp.first;
 				bool is_selected = level.c_str() == name;
 				if (ImGui::Selectable(name.c_str(), &is_selected)) {
 					level = name;

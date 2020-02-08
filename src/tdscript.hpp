@@ -64,44 +64,44 @@ struct BoolNode : ASTNode {
 	void dump(TableWriter& output) override;
 };
 struct StringLiteralNode : ASTNode {
-	string value;
+	std::string value;
 	StringLiteralNode() { type = ANK_StringLiteralNode; }
 	void dump(TableWriter& output) override;
 };
 struct KVPNode : ASTNode {
-	string key;
+	std::string key;
 	ASTNode* value;
-	string file;
+	std::string file;
 	KVPNode() { type = ANK_AssignNode; key = ""; }
 	void dump(TableWriter& output) override;
 };
 struct TableNode : ASTNode {
-	vector<KVPNode*> assignments;
+	std::vector<KVPNode*> assignments;
 	TableNode() { type = ANK_TableNode; }
 	void dump(TableWriter& output) override;
 	
 	template<typename T>
-	Primitive  get(vector<string>& keys);
-	int        get_int(vector<string> keys);
-	string     get_string(vector<string> keys);
-	float      get_float(vector<string> keys);
-	bool       get_bool(vector<string> keys);
-	TableNode* get_table(vector<string> keys);
-	ASTNode*   get_raw(vector<string> keys);
-	ASTNode*   maybe_key(string key);
-	bool       has_key(string key);
+	Primitive  get(std::vector<std::string>& keys);
+	int        get_int(std::vector<std::string> keys);
+	std::string     get_string(std::vector<std::string> keys);
+	float      get_float(std::vector<std::string> keys);
+	bool       get_bool(std::vector<std::string> keys);
+	TableNode* get_table(std::vector<std::string> keys);
+	ASTNode*   get_raw(std::vector<std::string> keys);
+	ASTNode*   maybe_key(std::string key);
+	bool       has_key(std::string key);
 	
-	void       set(vector<string> keys, int value);
-	void       set(vector<string> keys, string value);
-	void       set(vector<string> keys, float value);
-	void       set(vector<string> keys, bool value);
-	void       set(vector<string> keys, TableNode* value);
-	void       del(vector<string> keys);
+	void       set(std::vector<std::string> keys, int value);
+	void       set(std::vector<std::string> keys, std::string value);
+	void       set(std::vector<std::string> keys, float value);
+	void       set(std::vector<std::string> keys, bool value);
+	void       set(std::vector<std::string> keys, TableNode* value);
+	void       del(std::vector<std::string> keys);
 	
 	template<typename T>                                // Note: Only use this if you know you're actually pushing
 	void       push_back(T value);                      // to an array. 
 	
-	void       dump(string path);
+	void       dump(std::string path);
 
 	KVPNode** begin() { return &assignments.front(); };
 	KVPNode** end() { return &assignments.back(); };
@@ -111,33 +111,33 @@ struct TableNode : ASTNode {
 struct TableWriter {
 	uint indent = 0;
 	bool same_line_internal = false; // Users just call same_line() to manipulate this
-	vector<string> lines;
-	ios_base::openmode stream_flag = ofstream::trunc;
+	std::vector<std::string> lines;
+	std::ios_base::openmode stream_flag = std::ofstream::trunc;
 
 	TableNode* table = nullptr;
-	string table_name;
+	std::string table_name;
 	
-	string& indent_line(string& line) {
+	std::string& indent_line(std::string& line) {
 		fox_for(idx, indent) {
 			line = "\t" + line;
 		}
 		
 		return line;
 	}
-	void write_line(string& line) {
+	void write_line(std::string& line) {
 		if (!same_line_internal) {
 			lines.push_back(indent_line(line));
 		} else {
-			string& last_line = lines.back();
+			std::string& last_line = lines.back();
 			last_line += line;
 			same_line_internal = false;
 		}
 	}
-	void write_line(string&& line) {
+	void write_line(std::string&& line) {
 		if (!same_line_internal) {
 			lines.push_back(std::move(indent_line(line)));
 		} else {
-			string& last_line = lines.back();
+			std::string& last_line = lines.back();
 			last_line += line;
 			same_line_internal = false;
 		}
@@ -147,22 +147,22 @@ struct TableWriter {
 	}
 	
 	void begin_table() {
-		string line = "{";
+		std::string line = "{";
 		write_line(line);
 		indent++;
 	}
 	void end_table() {
 		indent--;
-		string line = "}";
+		std::string line = "}";
 		write_line(line);
 	}
 	
 	void write_int(int i) {
-		string line = to_string(i);
+		std::string line = std::to_string(i);
 		write_line(line);
 	}
 	
-	void dump(string path) {
+	void dump(std::string path) {
 		if (table) {
 			// Put the key for the table first
 			write_line(table_name);
@@ -170,9 +170,9 @@ struct TableWriter {
 
 			// Write the table itself
 			table->dump(*this);
-			ofstream stream(path, ofstream::out | stream_flag);
+			std::ofstream stream(path, std::ofstream::out | stream_flag);
 			for (auto& line : lines) {
-				stream << line << endl;
+				stream << line << std::endl;
 			}
 
 			this->lines.clear();
@@ -201,20 +201,20 @@ struct Token {
 		_EOF
 	} type;
 	
-	string str_val;
+	std::string str_val;
 	int int_val;
 	float float_val;
 	bool bool_val;
 	Symbol symbol = Symbol::SYM_NONE;
 };
 struct Lexer {
-	ifstream file;
-	string file_path;
+	std::ifstream file;
+	std::string file_path;
 	int line_number = 1;
-	vector<Token> tokens;
+	std::vector<Token> tokens;
 	uint token_idx;
 	
-	bool init(string script_path);
+	bool init(std::string script_path);
 	void lex();
 	Token next_token_internal();
 	
@@ -235,19 +235,19 @@ struct TDScript {
 	TableNode* global_scope = nullptr;
 
 	// Parsing functions
-	ASTNode* parse(string script_path);
+	ASTNode* parse(std::string script_path);
 	ASTNode* parse_table();
 	KVPNode* parse_assign();
 
 	// Scripting functions
-	void script_file(string script_path);
-	void script_dir(string dir_path);
-	void script_init_if_exists(string dir_path);
+	void script_file(std::string script_path);
+	void script_dir(std::string dir_path);
+	void script_init_if_exists(std::string dir_path);
 
 	// Utility functions
-	bool is_nested_identifier(string& key);
-	vector<string> keys_from_string(string key_str);
+	bool is_nested_identifier(std::string& key);
+	std::vector<std::string> keys_from_string(std::string key_str);
 };
 TDScript ScriptManager;
 
-string get_default_font_path();
+std::string get_default_font_path();

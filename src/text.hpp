@@ -10,7 +10,7 @@ struct Character {
 	static glm::ivec2 px_largest; // Useful to guarantee characters stay inside an area. 
 };
 glm::ivec2 Character::px_largest;
-map<GLchar, Character> characters;
+std::map<GLchar, Character> characters;
 
 FT_Library freetype;
 FT_Face face;
@@ -35,7 +35,7 @@ void init_fonts() {
 	for (GLubyte c = 0; c < 128; c++) {
 		if (FT_Load_Char(face, c, FT_LOAD_RENDER)) {
 			tdns_log.write("FreeType failed to load character");
-			tdns_log.write(string("Character was: %c", c));
+			tdns_log.write(std::string("Character was: %c", c));
 			exit(0);
 		}
 		
@@ -98,7 +98,7 @@ void init_fonts() {
 }
 
 struct Line_Set {
-	vector<string> lines;
+	std::vector<std::string> lines;
 	int point = 0;
 	int max_point = 0;
 	
@@ -113,27 +113,27 @@ struct Line_Set {
 		return (int)lines.size();
 	}
 	
-	void add(string line) {
+	void add(std::string line) {
 		lines.push_back(line);
 	}
 	
-	string& operator[](int i) {
+	std::string& operator[](int i) {
 		fox_assert(i < (int)lines.size());
 		return lines[i];
 	}
 };
 
 struct Text_Box {
-	string text;
+	std::string text;
 	bool waiting = false;
 	bool active = false;
 	float scale = 1.f;
 	float time_since_last_update = 0.0f;
 	
-	vector<Line_Set> sets;
+	std::vector<Line_Set> sets;
 	uint index_current_line_set;
 	
-	void begin(string text);
+	void begin(std::string text);
 	void update(float dt);
 	void resume();
 	void render();

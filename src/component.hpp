@@ -3,29 +3,29 @@ struct Component {
 	virtual TableNode* make_template() const { return new TableNode; }
 	
 	virtual void init(TableNode* table) {};
-	virtual void load(TableNode* table) { cout << "Tried to call virtual load() on base Component"; };
-	virtual string name() { return "Component"; };
+	virtual void load(TableNode* table) { std::cout << "Tried to call virtual load() on base Component"; };
+	virtual std::string name() { return "Component"; };
 	virtual void imgui_visualizer() = 0;
 };
 
 
 struct LuaComponent {
-	string name;
+	std::string name;
 	int entity;
 	
-	static LuaComponent create(string name, int entity);
+	static LuaComponent create(std::string name, int entity);
 	virtual void update(float dt);	
 };
 
 struct LuaEntity {
 	static int next_id;
 	int id;
-	string name;
-	map<string, LuaComponent> components;
+	std::string name;
+	std::map<std::string, LuaComponent> components;
 
-	LuaEntity(string name, int id);
+	LuaEntity(std::string name, int id);
 	void update(float dt);
-	void add_component(string name);
+	void add_component(std::string name);
 	int get_id();
 };
 int LuaEntity::next_id = 0;
@@ -42,9 +42,9 @@ struct LuaEntityHandle {
 struct EntityManager {
 	LuaEntity* get_entity(int id);
 	bool has_entity(int id);
-	LuaEntityHandle create_entity(string name);
+	LuaEntityHandle create_entity(std::string name);
 
-	map<int, unique_ptr<LuaEntity>> entities;
+	std::map<int, std::unique_ptr<LuaEntity>> entities;
 };
 
 

@@ -41,21 +41,21 @@ typedef unsigned char tdbyte;
 
 // STL extensions 
 template<typename vec_type>
-void concat(vector<vec_type>& append_to, vector<vec_type>& append_from) {
+void concat(std::vector<vec_type>& append_to, std::vector<vec_type>& append_from) {
 	append_to.insert(append_to.end(), append_from.begin(), append_from.end());
 }
 
-vector<string> split(const string &str, char delim) {
-	stringstream stream(str);
-	string item;
-	vector<string> tokens;
+std::vector<std::string> split(const std::string &str, char delim) {
+	std::stringstream stream(str);
+	std::string item;
+	std::vector<std::string> tokens;
 	while (getline(stream, item, delim)) {
 		tokens.push_back(item);
 	}
 	return tokens;
 }
 
-void string_replace(string& str, string from, string to) {
+void string_replace(std::string& str, std::string from, std::string to) {
     size_t start_pos = 0;
     while((start_pos = str.find(from, start_pos)) != std::string::npos) {
         str.replace(start_pos, from.length(), to);
@@ -63,8 +63,8 @@ void string_replace(string& str, string from, string to) {
     }
 }
 
-bool does_string_contain_substr(string& str, string& substr) {
-	return str.find(substr) != string::npos;
+bool does_string_contain_substr(std::string& str, std::string& substr) {
+	return str.find(substr) != std::string::npos;
 }
 
 #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
@@ -72,11 +72,11 @@ bool does_string_contain_substr(string& str, string& substr) {
 
 // @note @spader 9/4/2019 Realllllllyyyyyyy need a better way of making paths good
 #ifdef WIN32
-void normalize_path(string& str) {
+void normalize_path(std::string& str) {
 	string_replace(str, "/", "\\");
 }
 #else
-void normalize_path(string& str) {
+void normalize_path(std::string& str) {
 	return;
 }
 #endif
@@ -84,11 +84,11 @@ void normalize_path(string& str) {
 // shamelessly copped from
 // https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
 // also this doesn't work lol
-bool are_paths_equal(string a, string b) {
+bool are_paths_equal(std::string a, std::string b) {
 	auto tokenize = [](auto& str) {
 		size_t pos = 0;
-		string delimiter = "\\";
-		vector<string> out;
+		std::string delimiter = "\\";
+		std::vector<std::string> out;
 		while ((pos = str.find(delimiter)) != std::string::npos) {
 			out.push_back(str.substr(0, pos));
 			str.erase(0, pos + delimiter.length());
@@ -111,12 +111,12 @@ bool are_paths_equal(string a, string b) {
 
 // shamelessly copped fromi
 // https://stackoverflow.com/questions/447206/c-isfloat-function
-bool is_float( string myString ) {
-    std::istringstream iss(myString);
+bool is_float(std::string mystring ) {
+    std::istringstream iss(mystring);
     float f;
-    iss >> noskipws >> f; // noskipws considers leading whitespace invalid
+    iss >> std::noskipws >> f; // noskipws considers leading whitespace invalid
 	
-    // Check the entire string was consumed and if either failbit or badbit is set
+    // Check the entire std::string was consumed and if either failbit or badbit is set
     return iss.eof() && !iss.fail(); 
 }
 
@@ -162,21 +162,21 @@ glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
 #define ImGuiColor_Green ImVec4(0.f, 1.f, 0.f, 1.f)
 	
 // Shape primitives
-vector<float> triangle_verts = {
+std::vector<float> triangle_verts = {
 	-0.5f, -0.5f, 0.0f,
 	0.5f, -0.5f, 0.0f,
 	0.0f,  0.5f, 0.0f
 };
-vector<uint> triangle_indices = {
+std::vector<uint> triangle_indices = {
 	0, 1, 2,
 };
-vector<float> triangle_tex_coords = {
+std::vector<float> triangle_tex_coords = {
 	0.0f, 0.0f,
 	1.f, 0.0f,
 	0.5f, 1.0f,
 };
 
-vector<float> square_verts = {
+std::vector<float> square_verts = {
 	1.f,  1.f,
 	1.f, -1.f,
 	-1.f, -1.f,
@@ -187,22 +187,22 @@ glm::vec3 screen_top_right = glm::vec3(1.f, -1.f, 1.f);
 glm::vec3 screen_top_left = glm::vec3(-1.f, -1.f, 1.f);
 glm::vec3 screen_bottom_left = glm::vec3(-1.f, 1.f, 1.f);
 
-vector<uint> square_indices = {
+std::vector<uint> square_indices = {
 	0, 1, 2,
 	2, 0, 3
 };
-vector<float> square_tex_coords = {
+std::vector<float> square_tex_coords = {
 	1.f, 1.f,
 	1.f, 0.0f,
 	0.f, 0.f,
 	0.f, 1.f,
 };
 GLvoid* square_tex_coords_offset;
-vector<float> line_verts = {
+std::vector<float> line_verts = {
 	0.f, 0.f, 1.f,
 	1.f, 1.f, 1.f,
 };
-vector<uint> line_indices = {
+std::vector<uint> line_indices = {
 	0, 1,
 };
 
@@ -313,7 +313,7 @@ void use_arbitrary_screen_size(int height, int width) {
 	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);	
 }
-void change_window_size(string size) {
+void change_window_size(std::string size) {
 	if (size == "640") { use_640_360(); }
 	else if (size == "720") { use_720p(); }
 	else if (size == "1080") { use_1080p(); }
@@ -378,8 +378,8 @@ glm::ivec2 px_coords_from_gl_coords(glm::vec2 gl_coords) {
 
 /* Some utilities for dealing with files, directories, and paths */
 // Takes in a directory or file -- returns everything after the first slash
-string name_from_full_path(string path) {
-	string asset_name;
+std::string name_from_full_path(std::string path) {
+	std::string asset_name;
 	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
 		if (path.at(ichar) == '/' || path.at(ichar) == '\\') { break; }
 		asset_name.insert(asset_name.begin(), path.at(ichar));
@@ -389,8 +389,8 @@ string name_from_full_path(string path) {
 }
 
 // Accepts a filename, not a path. Returns all the characters before the first period.
-string strip_extension(string filename) {
-	string stripped;
+std::string strip_extension(std::string filename) {
+	std::string stripped;
 	for (unsigned int ichar = 0; ichar < filename.size(); ichar++) {
 		if (filename.at(ichar) == '.') {
 			return stripped;
@@ -401,7 +401,7 @@ string strip_extension(string filename) {
 	return stripped;
 }
 
-bool is_alphanumeric(string& str) {
+bool is_alphanumeric(std::string& str) {
 	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
 	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
 	
@@ -416,7 +416,7 @@ bool is_alphanumeric(string& str) {
 }
 
 // Allowing alphanumerics, underscores, and periods
-bool is_valid_filename(string& str) {
+bool is_valid_filename(std::string& str) {
 	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
 	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
 	auto is_misc_valid = [](char c) -> bool { return (c == '_') || c == '.'; };
@@ -432,7 +432,7 @@ bool is_valid_filename(string& str) {
 }
 
 // Don't use a leading slash
-string absolute_path(string dir_from_project_root) {
+std::string absolute_path(std::string dir_from_project_root) {
 	// Check that we didn't pass this function an absolute path already
 	if (dir_from_project_root.find(root_dir) != std::string::npos) {
 		return dir_from_project_root;
@@ -440,13 +440,13 @@ string absolute_path(string dir_from_project_root) {
 	return root_dir + dir_from_project_root;
 }
 
-string relative_path(string absolute) {
+std::string relative_path(std::string absolute) {
 	string_replace(absolute, root_dir, "");
 	return absolute;
 }
 
-string path_join(vector<string> items) {
-	string path = "";
+std::string path_join(std::vector<std::string> items) {
+	std::string path = "";
 	for (auto& item : items) {
 		path += item + "/";
 	}
@@ -457,10 +457,10 @@ string path_join(vector<string> items) {
 
 // Are these good to have?
 struct Paths {
-	string tile_texture_path;
-	string character_texture_path;
-	string other_texture_path;
-	string script_path;
+	std::string tile_texture_path;
+	std::string character_texture_path;
+	std::string other_texture_path;
+	std::string script_path;
 };
 Paths g_paths;
 
@@ -471,28 +471,28 @@ void init_path_constants() {
 	g_paths.script_path = absolute_path(path_join({"src", "scripts", "lua"}));
 }
 
-string script_path(string script) {
+std::string script_path(std::string script) {
 	auto path = path_join({ g_paths.script_path, script });
 	normalize_path(path);
 	return path;
 }
 
 // @hack I'm sure there are PNG headers I could try parsing, but this works!
-bool is_png(string& asset_path) {
+bool is_png(std::string& asset_path) {
 	if (asset_path.size() < 5) { return false; } // "x.png" is the shortest name
-	string should_be_png_extension = asset_path.substr(asset_path.size() - 4, 4);
+	std::string should_be_png_extension = asset_path.substr(asset_path.size() - 4, 4);
 	if (should_be_png_extension.compare(".png")) return false;
 	return true;
 }
 
-bool is_tds(string& path) {
+bool is_tds(std::string& path) {
 	if (path.size() < 5) { return false; } // "x.tds" is the shortest name
-	string should_be_tds_extension = path.substr(path.size() - 4, 4);
+	std::string should_be_tds_extension = path.substr(path.size() - 4, 4);
 	if (should_be_tds_extension.compare(".tds")) return false;
 	return true;
 }
 
-string get_default_font_path() {
+std::string get_default_font_path() {
 	// @hack use pathjoin
 	return absolute_path("fonts/Inconsolata-Regular.ttf");
 }
@@ -515,47 +515,47 @@ bool show_state_tweaker = true;
 bool show_task_editor = false;
 bool send_kill_signal = false;
 
-const string ACTIONS_KEY              = "actions";
-const string ANIMATIONS_KEY           = "Animations";
-const string BOUNDING_BOX_KEY         = "bounding_box";
-const string CENTER_KEY               = "center";
-const string CH_STATE_KEY             = "character_state";
-const string COMPONENTS_KEY           = "components";
-const string CONFIG_KEY               = "config";
-const string CUTSCENES_KEY            = "cutscenes";
-const string DEFAULT_ANIMATION_KEY    = "default_animation";
-const string DIALOGUE_KEY             = "dialogue";
-const string EDITOR_KEY               = "editor";
-const string ENTITY_KEY               = "entity";
-const string ENTITIES_KEY             = "entities";
-const string EXTENTS_KEY              = "extents";
-const string FONTS_KEY                = "fonts";
-const string GAME_STATE_KEY           = "game_state";
-const string HEALTH_KEY               = "health";
-const string HEIGHT_KEY               = "height";
-const string HERO_KEY                 = "boon";
-const string KIND_KEY                 = "kind";
-const string LEVEL_KEY                = "level";
-const string LEVELS_KEY               = "levels";
-const string MOVES_KEY                = "moves";
-const string NAME_KEY                 = "name";
-const string NAMES_KEY                = "names";
-const string NEXT_STATE_KEY           = "next_state";
-const string PAN_KEY                  = "pan";
-const string POS_KEY                  = "pos";
-const string SCALE_KEY                = "scale";
-const string SCRIPTS_KEY              = "scripts";
-const string SPEED_KEY                = "speed";
-const string STATE_KEY                = "State_Machine";
-const string TEXT_KEY                 = "text";
-const string TILES_KEY                = "tiles";
-const string TRANSITIONS_KEY          = "transitions";
-const string VARS_KEY                 = "vars";
-const string WIDTH_KEY                = "width";
-const string WHICH_KEY                = "which";
-const string X_KEY                    = "x";
-const string Y_KEY                    = "y";
-const string Z_KEY                    = "z";
+const std::string ACTIONS_KEY              = "actions";
+const std::string ANIMATIONS_KEY           = "Animations";
+const std::string BOUNDING_BOX_KEY         = "bounding_box";
+const std::string CENTER_KEY               = "center";
+const std::string CH_STATE_KEY             = "character_state";
+const std::string COMPONENTS_KEY           = "components";
+const std::string CONFIG_KEY               = "config";
+const std::string CUTSCENES_KEY            = "cutscenes";
+const std::string DEFAULT_ANIMATION_KEY    = "default_animation";
+const std::string DIALOGUE_KEY             = "dialogue";
+const std::string EDITOR_KEY               = "editor";
+const std::string ENTITY_KEY               = "entity";
+const std::string ENTITIES_KEY             = "entities";
+const std::string EXTENTS_KEY              = "extents";
+const std::string FONTS_KEY                = "fonts";
+const std::string GAME_STATE_KEY           = "game_state";
+const std::string HEALTH_KEY               = "health";
+const std::string HEIGHT_KEY               = "height";
+const std::string HERO_KEY                 = "boon";
+const std::string KIND_KEY                 = "kind";
+const std::string LEVEL_KEY                = "level";
+const std::string LEVELS_KEY               = "levels";
+const std::string MOVES_KEY                = "moves";
+const std::string NAME_KEY                 = "name";
+const std::string NAMES_KEY                = "names";
+const std::string NEXT_STATE_KEY           = "next_state";
+const std::string PAN_KEY                  = "pan";
+const std::string POS_KEY                  = "pos";
+const std::string SCALE_KEY                = "scale";
+const std::string SCRIPTS_KEY              = "scripts";
+const std::string SPEED_KEY                = "speed";
+const std::string STATE_KEY                = "State_Machine";
+const std::string TEXT_KEY                 = "text";
+const std::string TILES_KEY                = "tiles";
+const std::string TRANSITIONS_KEY          = "transitions";
+const std::string VARS_KEY                 = "vars";
+const std::string WIDTH_KEY                = "width";
+const std::string WHICH_KEY                = "which";
+const std::string X_KEY                    = "x";
+const std::string Y_KEY                    = "y";
+const std::string Z_KEY                    = "z";
 
 
 /* Random shit */
@@ -575,7 +575,7 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 		return;
 	}
 	
-	string debug_msg;
+	std::string debug_msg;
 	debug_msg += "OpenGL Debug Message: ";
 	debug_msg += "\nSource: ";
 	switch (source) {
@@ -631,7 +631,7 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 	}
 	
 	debug_msg += "\nID: ";
-	debug_msg += to_string(id);
+	debug_msg += std::to_string(id);
 	
 	debug_msg += "\nSeverity: ";
 	switch (severity) {
@@ -649,7 +649,7 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 		break;
 	}
 	
-	debug_msg += "\nGL message: " + string(message);
+	debug_msg += "\nGL message: " + std::string(message);
 	debug_msg += "\n\n";
 	tdns_log.write(debug_msg);
 }
@@ -679,16 +679,16 @@ float Sine_Func::eval_at(float point) {
 
 
 struct Asset {
-	string name;
+	std::string name;
 	
 	virtual void stub() {};
 };
 
 struct {
-	vector<Asset*> assets;
+	std::vector<Asset*> assets;
 	
 	template <typename Asset_Type>
-		Asset_Type* get_asset(string name) {
+		Asset_Type* get_asset(std::string name) {
 		for (auto asset : assets) {
 			Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
 			if (asset_as_type) {
@@ -705,8 +705,8 @@ struct {
 	}
 	
 	template <typename Asset_Type>
-		vector<Asset_Type*> get_all() {
-		vector<Asset_Type*> all;
+		std::vector<Asset_Type*> get_all() {
+		std::vector<Asset_Type*> all;
 		for (auto asset : assets) {
 			Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
 			if (asset_as_type) {
@@ -840,7 +840,7 @@ struct Circle_Buffer {
 	int len = 0;
 	
 	void push_back(int elem);
-	optional<int> pop_front();
+	std::optional<int> pop_front();
 	void clear();
 };
 
@@ -851,7 +851,7 @@ void Circle_Buffer::push_back(int elem) {
 	data[(head + len) % capacity] = elem;
 	len++;
 }
-optional<int> Circle_Buffer::pop_front() {
+std::optional<int> Circle_Buffer::pop_front() {
 	fox_assert(len <= capacity);
 	fox_assert(head >= 0 && head < capacity);
 	if (len) {
@@ -1227,7 +1227,7 @@ void init_imgui() {
 	ImGui::StyleColorsDark();
 }
 
-string capitalize_component_name(string name_from_path) {
+std::string capitalize_component_name(std::string name_from_path) {
 	// Always capitalize the first character
 	name_from_path[0] = toupper(name_from_path[0]);
 	
@@ -1249,18 +1249,18 @@ string capitalize_component_name(string name_from_path) {
 	return name_from_path;
 }
 
-vector<string> all_component_types() {
-	vector<string> ignore = {
+std::vector<std::string> all_component_types() {
+	std::vector<std::string> ignore = {
         "component_includes",
 		"component_impl_includes"
 	};
-	string impl = "_impl";
+	std::string impl = "_impl";
 
-	vector<string> names;
+	std::vector<std::string> names;
 	
 	auto component_dir = path_join({root_dir, "src", "components"});
 	for (const auto& entry : directory_iterator(component_dir)) {
-		string filename = entry.path().filename().replace_extension().string();
+		std::string filename = entry.path().filename().replace_extension().string();
 		if (tdns_find(ignore, filename)) continue;
 		if (does_string_contain_substr(filename, impl)) continue;
 		
@@ -1272,7 +1272,7 @@ vector<string> all_component_types() {
 	return names;
 }
 
-vector<string> tile_size_descriptions = {
+std::vector<std::string> tile_size_descriptions = {
 	"-1.5 tiles",
 	"-1.25 tiles",
 	"-1 tiles",
@@ -1289,7 +1289,7 @@ vector<string> tile_size_descriptions = {
 	"6 tiles",
 };
 
-vector<double> tile_sizes = {
+std::vector<double> tile_sizes = {
 	-0.0666,
 	-0.0555,
 	-0.0444,

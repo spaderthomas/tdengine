@@ -94,7 +94,7 @@ void Battle::update(float dt) {
 		
 		ImGui::Text("Moves:");
 		for (auto move : bc->moves) {
-			string unique_move_id = move->name + to_string(unique_btn_index);
+			std::string unique_move_id = move->name + std::to_string(unique_btn_index);
 			unique_btn_index++;
 			if (ImGui::Button(unique_move_id.c_str())) {
 				EntityHandle other = idx ? battlers[0] : battlers[1];
@@ -107,7 +107,7 @@ void Battle::update(float dt) {
 	
 }
 
-void Cutscene::init(string name, TableNode* table) {
+void Cutscene::init(std::string name, TableNode* table) {
 	this->name = name;
 	this->level = levels[tds_string2(table, LEVEL_KEY)];
 
@@ -116,7 +116,7 @@ void Cutscene::init(string name, TableNode* table) {
 		TableNode* action_table = (TableNode*)kvp->value;
 
 		// Some actions have no attached entity.
-		string entity_name = "";
+		std::string entity_name = "";
 		if (action_table->has_key(ENTITY_KEY)) {
 			entity_name = tds_string2(action_table, ENTITY_KEY);
 		}
@@ -132,7 +132,7 @@ bool Cutscene::update(float dt) {
 	return task.update(dt);
 }
 
-bool does_cutscene_exist(const string& which) {
+bool does_cutscene_exist(const std::string& which) {
 	for (auto& [name, cutscene] : cutscenes) {
 		if (name == which) return true;
 	}
@@ -221,9 +221,9 @@ void Game::render() {
 	text_box.render();
 }
 
-void Game::do_cutscene(string which) {
+void Game::do_cutscene(std::string which) {
 	if (!does_cutscene_exist(which)) {
-		string message = "Called do_cutscene with [" + which + "], but couldn't find it";
+		std::string message = "Called do_cutscene with [" + which + "], but couldn't find it";
 		tdns_log.write(message);
 		return;
 	}
@@ -234,8 +234,8 @@ void Game::do_cutscene(string which) {
 
 	auto cutscene_actions = tds_table(CUTSCENES_KEY, which, ACTIONS_KEY);
 	fox_for(i, cutscene->task.action_queue.size()) {
-		TableNode* action_table = tds_table2(cutscene_actions, to_string(i));
-		string entity_name = "";
+		TableNode* action_table = tds_table2(cutscene_actions, std::to_string(i));
+		std::string entity_name = "";
 		if (action_table->has_key(ENTITY_KEY)) {
 			entity_name = tds_string2(action_table, ENTITY_KEY);
 		}

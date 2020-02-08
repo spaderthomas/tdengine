@@ -1,4 +1,4 @@
-string Collision_Component::name() { return "Collision_Component"; }
+std::string Collision_Component::name() { return "Collision_Component"; }
 
 TableNode* Collision_Component::make_template() const {
 	TableNode* self = new TableNode;
@@ -33,7 +33,7 @@ void Collision_Component::init(TableNode* table) {
 void Collision_Component::imgui_visualizer() {
 	if (ImGui::TreeNode("Collision Component")) {
 
-		static auto imgui_combo_wrapper = [](const char* label, int& selected, vector<string>& choices) {
+		static auto imgui_combo_wrapper = [](const char* label, int& selected, std::vector<std::string>& choices) {
 			if (ImGui::BeginCombo(label, choices[selected].c_str(), 0)) {
 				fox_for(i, choices.size()) {
 					bool is_selected = selected == i;

@@ -1,4 +1,4 @@
-string Interaction_Component::name() {
+std::string Interaction_Component::name() {
 	return "Interaction_Component";
 }
 

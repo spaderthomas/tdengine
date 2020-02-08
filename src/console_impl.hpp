@@ -28,7 +28,7 @@ void  Console::ClearLog()
 	Items.clear();
 	ScrollToBottom = true;
 }
-void Console::AddLog(string message) {
+void Console::AddLog(std::string message) {
 	AddLog(message.c_str());
 }
 void  Console::AddLog(const char* fmt, ...) IM_FMTARGS(2)
@@ -245,10 +245,10 @@ void  Console::ExecCommand(char* command_line)
 	// If this gets set, we know not to pipe the command down to the layer-specific handler
 	bool ran_generic_command = false;
 
-	string copy = string(command_line);
+	std::string copy = std::string(command_line);
 	auto tokens = split(copy, ' ');
 	if (tokens.empty()) {
-		string message = "Ran into an error parsing command. ";
+		std::string message = "Ran into an error parsing command. ";
 		message += "Command was: " + copy;
 		AddLog(message.c_str());
 	}
@@ -277,13 +277,13 @@ void  Console::ExecCommand(char* command_line)
 	} else if (tokens[0] == "screen") {
 		ran_generic_command = true;
 
-		string usage = "format: screen {640, 720, 1080, 1440}";
+		std::string usage = "format: screen {640, 720, 1080, 1440}";
 		if (tokens.size() != 2) {
 			AddLog(usage);
 			return;
 		}
 		
-		string res = tokens[1];
+		std::string res = tokens[1];
 		if (res.empty()) {
 			AddLog(usage);
 			return;
@@ -298,13 +298,13 @@ void  Console::ExecCommand(char* command_line)
 	else if (tokens[0] == "level") {
 		ran_generic_command = true;
 
-		string usage = "format: level {which}";
+		std::string usage = "format: level {which}";
 		if (tokens.size() != 2) {
 			AddLog(usage);
 			return;
 		}
 		
-		string which = tokens[1];
+		std::string which = tokens[1];
 
 		// Just because you always want the game and editor to be synced for sure
 		if (active_layer == &game) {
@@ -318,33 +318,33 @@ void  Console::ExecCommand(char* command_line)
 	} else if (tokens[0] == "state") {
 		ran_generic_command = true;
 		
-		string usage = "format: state {which} {true | false}";
+		std::string usage = "format: state {which} {true | false}";
 		if (tokens.size() != 3) {
 			AddLog(usage);
 			return;
 		}
 		
-		string which = tokens[1];
+		std::string which = tokens[1];
 
 		bool value;
-		istringstream(tokens[2]) >> std::boolalpha >> value;
+		std::istringstream(tokens[2]) >> std::boolalpha >> value;
 		update_state(which, value);
 	} else if (tokens[0] == "state?") {
 		ran_generic_command = true;
 		
-		string usage = "format: state? {which}";
+		std::string usage = "format: state? {which}";
 		if (tokens.size() != 2) {
 			AddLog(usage);
 			return;
 		}
 		
-		string which = tokens[1];
+		std::string which = tokens[1];
 		
 		bool found = false;
 		for (auto& [state_name, value] : game_state) {
 			if (state_name == which) {
 				found = true;
-				string message = game_state[which] ?
+				std::string message = game_state[which] ?
 					which + " = true" :
 					which + " = false";
 				AddLog(message.c_str());
@@ -352,19 +352,19 @@ void  Console::ExecCommand(char* command_line)
 		}
 
 		if (!found) {
-			string message = "Sorry, couldn't find the state named [" + which + "]";
+			std::string message = "Sorry, couldn't find the state named [" + which + "]";
 			AddLog(message.c_str());
 		}
 	} else if (tokens[0] == "cutscene") {
 		ran_generic_command = true;
 
-		string usage = "format: cutscene {which}";
+		std::string usage = "format: cutscene {which}";
 		if (tokens.size() != 2) {
 			AddLog(usage);
 			return;
 		}
 		
-		string which = tokens[1];
+		std::string which = tokens[1];
 		if (!does_cutscene_exist(which)) {
 			AddLog("Asked to start cutscene [%s], but couldn't find it.", which);
 		}

@@ -16,7 +16,7 @@ struct Console {
 	
 	void ClearLog();
 	void AddLog(const char* fmt, ...) IM_FMTARGS(2);
-	void AddLog(string message);
+	void AddLog(std::string message);
 	void Draw(const char* title);
 	void ExecCommand(char* command_line);
 	

@@ -1,7 +1,7 @@
 struct Dialogue_Node {
-	vector<string> all_text;
-	vector<string> responses;
-	vector<Dialogue_Node*> children;
+	std::vector<std::string> all_text;
+	std::vector<std::string> responses;
+	std::vector<Dialogue_Node*> children;
 	int response = -1;
 	int text_idx = 0;
 
@@ -17,8 +17,8 @@ struct Dialogue_Node {
 };
 struct Dialogue_Tree {
 	Dialogue_Node* root;
-	string npc;
-	string scene;
+	std::string npc;
+	std::string scene;
 
 	Dialogue_Node* traverse();
 	void save();

@@ -2,7 +2,7 @@
 Action* action_from_table(TableNode* table, EntityHandle actor) {
 	Action* action;
 	
-	string kind = tds_string2(table, "kind"); 
+	std::string kind = tds_string2(table, "kind"); 
 	if (kind == "Wait_For_Interaction_Action") {
 		action = new Wait_For_Interaction_Action;
 	}
@@ -75,7 +75,7 @@ void Task::add_action(Action* action) {
 void Task::init_from_table(TableNode* table, EntityHandle actor) {
 	this->actor = actor;
 	fox_for(action_idx, table->assignments.size()) {
-		TableNode* action_table = tds_table2(table, to_string(action_idx));
+		TableNode* action_table = tds_table2(table, std::to_string(action_idx));
 		Action* action = action_from_table(action_table, actor);
 		this->add_action(action);
 	}
@@ -87,9 +87,9 @@ void Task::imgui_visualizer() {
 };
 
 // Pushes out a list of connected nodes that ImGui uses to render tasks
-vector<TaskEditorNode*> make_task_graph(Task* task, ImVec2 base) {
+std::vector<TaskEditorNode*> make_task_graph(Task* task, ImVec2 base) {
 	static int id = 0;
-	vector<TaskEditorNode*> graph;
+	std::vector<TaskEditorNode*> graph;
 	for (auto& action : task->action_queue.actions) {
 		TaskEditorNode* node = new TaskEditorNode;
 		node->action = action;
@@ -102,7 +102,7 @@ vector<TaskEditorNode*> make_task_graph(Task* task, ImVec2 base) {
 	
 	return graph;
 }
-vector<TaskEditorNode*> make_task_graph(string entity, string scene, ImVec2 base) {
+std::vector<TaskEditorNode*> make_task_graph(std::string entity, std::string scene, ImVec2 base) {
 	TableNode* task_table = tds_table2(ScriptManager.global_scope, "entity", entity, "scripts", scene);
 	EntityHandle dummy = { -1, nullptr };
 	Task* task = new Task;
@@ -149,7 +149,7 @@ void TaskEditor::show() {
 		draw_list->ChannelsSetCurrent(1);
 		bool old_any_active = ImGui::IsAnyItemActive();
 		ImGui::BeginGroup(); // Lock horizontal position
-		string kind = node->action->kind();
+		std::string kind = node->action->kind();
 		ImGui::Text(kind.c_str());
 		
 		// Switch based on what kind of action we're dealing with -- each has custom GUI

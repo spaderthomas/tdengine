@@ -31,17 +31,17 @@ void Dialogue_Node::init_from_table(TableNode* table) {
 	
 	TableNode* texts = tds_table2(table, TEXT_KEY);
 	fox_for(i, texts->assignments.size()) {
-		this->all_text.push_back(tds_string2(texts, to_string(i)));
+		this->all_text.push_back(tds_string2(texts, std::to_string(i)));
 	}
 	
 	TableNode* responses = tds_table2(table, "responses");
 	fox_for(resp_idx, responses->assignments.size()) {
-		this->responses.push_back(tds_string2(responses, to_string(resp_idx)));
+		this->responses.push_back(tds_string2(responses, std::to_string(resp_idx)));
 	}
 
 	TableNode* children = tds_table2(table, "children");
 	fox_for(child_idx, children->assignments.size()) {
-		TableNode* child_table = tds_table2(children, to_string(child_idx));
+		TableNode* child_table = tds_table2(children, std::to_string(child_idx));
 		Dialogue_Node* child = new Dialogue_Node;
 		child->init_from_table(child_table);
 		this->children.push_back(child);
@@ -62,8 +62,8 @@ void Dialogue_Tree::save() {
 	fox_assert(npc != "");
 	fox_assert(scene != "");
 	// Load in all of the saved dialogue
-	string path = absolute_path("save/dialogue.json");
-	ifstream save_file(path);
+	std::string path = absolute_path("save/dialogue.json");
+	std::ifstream save_file(path);
 	json dialogue;
 	save_file >> dialogue;
 
@@ -90,7 +90,7 @@ void Dialogue_Tree::save() {
 
 	// Save it
 	dialogue[npc][scene] = this_scene_dialogue;
-	ofstream save_file_out(path);
+	std::ofstream save_file_out(path);
 	save_file_out << std::setw(4) << dialogue << std::endl;
 }
 
@@ -99,8 +99,8 @@ void Dialogue_Tree::load() {
 	fox_assert(scene != "");
 
 	// Load in the JSON from dialogue.json
-	string path = absolute_path("save/dialogue.json");
-	ifstream save_file(path);
+	std::string path = absolute_path("save/dialogue.json");
+	std::ifstream save_file(path);
 	json dialogue;
 	save_file >> dialogue;
 

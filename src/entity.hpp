@@ -1,8 +1,8 @@
 struct Entity {
 	static int next_id;
 	int id;
-	string name;
-	map<const type_info*, ComponentHandle> components;
+	std::string name;
+	std::map<const type_info*, ComponentHandle> components;
 	
 	// Component functions	
 	template <typename Component_Type>
@@ -11,11 +11,11 @@ struct Entity {
 	template <typename Component_Type>
 	Component_Type* get_component();
 	
-	Component* get_component(string kind);
+	Component* get_component(std::string kind);
 	
 	void clear_components();
 	
-	static EntityHandle create(string name);
+	static EntityHandle create(std::string name);
 	static void destroy(EntityHandle handle);
 	
 	TableNode* save();

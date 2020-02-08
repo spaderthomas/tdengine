@@ -10,21 +10,21 @@ void Animation::next_frame() {
 }
 
 void Animation::add_frames(TableNode* frames_table) {
-	vector<string> frames_to_add;
+	std::vector<std::string> frames_to_add;
 	for (uint frame_idx = 0; frame_idx < frames_table->assignments.size(); frame_idx++) {
-		frames_to_add.push_back(tds_string2(frames_table, to_string(frame_idx)));
+		frames_to_add.push_back(tds_string2(frames_table, std::to_string(frame_idx)));
 	}
 
 	add_frames(frames_to_add);
 }
 
-void Animation::add_frames(vector<string>& frames_to_add) {
+void Animation::add_frames(std::vector<std::string>& frames_to_add) {
 	for (auto& sprite_name : frames_to_add) {
 		add_frame(sprite_name);
 	}
 }
 
-void Animation::add_frame(string& sprite_name) {
+void Animation::add_frame(std::string& sprite_name) {
 	Sprite* frame = asset_table.get_asset<Sprite>(sprite_name);
 	frames.push_back(frame);
 }

@@ -8,8 +8,8 @@ bool Set_State_Action::update(float dt) {
 }
 void Set_State_Action::imgui_visualizer() {
 	if (ImGui::TreeNode("Set State Action")) {
-		string which = "State: " + this->var;
-		string val = this->value ? "Value: true" : "Value: false";
+		std::string which = "State: " + this->var;
+		std::string val = this->value ? "Value: true" : "Value: false";
 		ImGui::Text(which.c_str());
 		ImGui::Text(val.c_str());
 		ImGui::TreePop();

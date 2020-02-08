@@ -16,11 +16,11 @@ void Renderer::render_for_frame() {
 	// Z positions are integral (since 2D), so just collect elements of each Z-type into collections
 	// Sort these collections by Y-axis (so overlap works properly)
 	sort(render_list.begin(), render_list.end(), [](const Render_Element& a, const Render_Element& b) {return a.gc->z < b.gc->z; });
-	int z = numeric_limits<int>::min();
-	vector<vector<Render_Element>> depth_sorted_render_elements;
+	int z = std::numeric_limits<int>::min();
+	std::vector<std::vector<Render_Element>> depth_sorted_render_elements;
 	for (auto& render_element : render_list) {
 		if (render_element.gc->z > z) {
-			vector<Render_Element> new_depth_level;
+			std::vector<Render_Element> new_depth_level;
 			depth_sorted_render_elements.push_back(new_depth_level);
 			z = render_element.gc->z;
 		}
