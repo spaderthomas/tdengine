@@ -1,6 +1,7 @@
 namespace NewStuff {
 	Component* Component::create(std::string name, int entity) {
 		Component* component = new Component;
+		component->id = Component::next_id++;
 		component->name = name;
 		component->entity = entity;
 
@@ -28,6 +29,10 @@ namespace NewStuff {
 	
 	int Component::get_entity() {
 		return entity;
+	}
+
+	int Component::get_id() {
+		return id;
 	}
 
 	Entity::Entity(std::string name, int id) {

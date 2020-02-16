@@ -12,12 +12,17 @@ namespace NewStuff {
 	struct Component {
 		std::string name;
 		int entity;
+		int id;
+		
+		static int next_id;
 	
 		static Component* create(std::string name, int entity);
 		virtual void update(float dt);
 		std::string get_name();
+		int get_id();
 		int get_entity();
 	};
+	int Component::next_id = 0;
 
 	struct Entity {
 		static int next_id;

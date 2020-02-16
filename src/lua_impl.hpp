@@ -41,6 +41,7 @@ void LuaState::test() {
 	sol::usertype<NewStuff::Component> component_type = state.new_usertype<NewStuff::Component>("Component");
 	component_type["update"] = &NewStuff::Component::update;
 	component_type["get_name"] = &NewStuff::Component::get_name;
+	component_type["get_id"] = &NewStuff::Component::get_id;
 	component_type["get_entity"] = &NewStuff::Component::get_entity;
 
 	script_file("tdengine.lua");

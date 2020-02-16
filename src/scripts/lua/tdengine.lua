@@ -31,12 +31,17 @@ entity_mt.__index = function(entity, function_name)
    end
 end
 
+function get_component(entity, kind)
+   component = Entity["get_component"](entity.cpp_ref, kind)
+   return Components[component:get_id()]
+end
+
 function on_entity_created(cpp_ref)
    -- Inject the class with a reference back to the C++ entity
    entity = {
 	  cpp_ref = cpp_ref,
 	  alive = true,
-	  handle = handle
+	  get_component = get_component
    }
    setmetatable(entity, entity_mt)
 
@@ -48,7 +53,16 @@ function on_entity_created(cpp_ref)
 end
 
 function on_component_created(cpp_ref)
-   print(cpp_ref:get_name())
+   component = {
+	  cpp_ref = cpp_ref,
+	  alive = true
+   }
+
+   ComponentType = _G[cpp_ref:get_name()]
+   ComponentType.initialize(component)
+   
+   Components[cpp_ref:get_id()] = component
+   print(inspect(component))
 end
 
 Position = class('Position')
@@ -60,11 +74,12 @@ end
 Spader = class('Spader')
 function Spader:initialize()
    print('Calling entity Lua initializer')
-   self:add_component("Position")
    print(self:get_id())
    print(self:get_name())
-   --local position = self:get_component("Position")
-   print("Position: " .. position.x) 
+
+   self:add_component("Position")
+   local position = self:get_component("Position")
+   print(position)
 end
 
 function Spader:update(dt)
