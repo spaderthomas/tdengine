@@ -8,43 +8,46 @@ struct Component {
 	virtual void imgui_visualizer() = 0;
 };
 
-
-struct LuaComponent {
-	std::string name;
-	int entity;
+namespace NewStuff {
+	struct Component {
+		std::string name;
+		int entity;
 	
-	static LuaComponent create(std::string name, int entity);
-	virtual void update(float dt);	
-};
+		static Component* create(std::string name, int entity);
+		virtual void update(float dt);
+		std::string get_name();
+		int get_entity();
+	};
 
-struct LuaEntity {
-	static int next_id;
-	int id;
-	std::string name;
-	std::map<std::string, LuaComponent> components;
+	struct Entity {
+		static int next_id;
+		int id;
+		std::string name;
+		std::map<std::string, Component*> components;
 
-	LuaEntity(std::string name, int id);
-	void update(float dt);
-	void add_component(std::string name);
-	int get_id();
-};
-int LuaEntity::next_id = 0;
+		Entity(std::string name, int id);
+		void update(float dt);
+		void add_component(std::string name);
+		Component* get_component(std::string name);
+		int get_id();
+		std::string get_name();
+	};
+	int Entity::next_id = 0;
 
-struct EntityManager;
-struct LuaEntityHandle {
-	int id;
-	EntityManager* manager;
+	struct EntityManager;
+	struct EntityHandle {
+		int id;
+		EntityManager* manager;
 
-	LuaEntity* operator->() const;
-	LuaEntity* get() const;
-};
+		Entity* operator->() const;
+		Entity* get() const;
+	};
 
-struct EntityManager {
-	LuaEntity* get_entity(int id);
-	bool has_entity(int id);
-	LuaEntityHandle create_entity(std::string name);
+	struct EntityManager {
+		Entity* get_entity(int id);
+		bool has_entity(int id);
+		EntityHandle create_entity(std::string name);
 
-	std::map<int, std::unique_ptr<LuaEntity>> entities;
-};
-
-
+		std::map<int, std::unique_ptr<Entity>> entities;
+	};
+}

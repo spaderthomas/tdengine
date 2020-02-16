@@ -25,20 +25,26 @@ void LuaState::script_file(std::string relative_file_path) {
 
 	if (!result.valid()) {
 		sol::error error = result;
+		tdns_log.write("Failed to script file: " + script_path(relative_file_path));
 		tdns_log.write(error.what());
 	}
 }
 
 void LuaState::test() {
-	sol::usertype<LuaEntity> entity_type = state.new_usertype<LuaEntity>("Entity");
-	entity_type["id"] = &LuaEntity::id;
-	//entity_type["name"] = &LuaEntity::name;
-	//entity_type["update"] = &LuaEntity::update;
-	//entity_type["add_component"] = &LuaEntity::add_component;
-	//entity_type["get_id"] = &LuaEntity::get_id;
+	sol::usertype<NewStuff::Entity> entity_type = state.new_usertype<NewStuff::Entity>("Entity");
+	entity_type["update"] = &NewStuff::Entity::update;
+	entity_type["add_component"] = &NewStuff::Entity::add_component;
+	entity_type["get_component"] = &NewStuff::Entity::get_component;
+	entity_type["get_name"] = &NewStuff::Entity::get_name;
+	entity_type["get_id"] = &NewStuff::Entity::get_id;
+
+	sol::usertype<NewStuff::Component> component_type = state.new_usertype<NewStuff::Component>("Component");
+	component_type["update"] = &NewStuff::Component::update;
+	component_type["get_name"] = &NewStuff::Component::get_name;
+	component_type["get_entity"] = &NewStuff::Component::get_entity;
 
 	script_file("tdengine.lua");
 
-	std::shared_ptr<EntityManager> manager = std::make_shared<EntityManager>();
+	std::shared_ptr<NewStuff::EntityManager> manager = std::make_shared<NewStuff::EntityManager>();
 	auto entity = manager->create_entity("Spader");
 }
