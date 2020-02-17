@@ -46,6 +46,11 @@ void LuaState::test() {
 
 	script_file("tdengine.lua");
 
-	std::shared_ptr<NewStuff::EntityManager> manager = std::make_shared<NewStuff::EntityManager>();
-	auto entity = manager->create_entity("Spader");
+	std::shared_ptr<NewStuff::EntityManager> entity_manager = std::make_shared<NewStuff::EntityManager>();
+	auto entity = entity_manager->create_entity("Spader");
+
+	std::shared_ptr<NewStuff::SceneManager> scene_manager = std::make_shared<NewStuff::SceneManager>();
+	auto scene = scene_manager->create_scene("FirstScene");
+	scene->add_entity(entity);
+	scene->update(1);
 }

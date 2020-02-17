@@ -76,8 +76,9 @@ using namespace std::filesystem;
 #include "collision.hpp"
 #include "tdapi.hpp"
 #include "glfw_callbacks.hpp"
+#include "new_stuff.hpp"
 
-#include "new_components.hpp"
+#include "new_stuff_impl.hpp"
 #include "console_impl.hpp"
 #include "camera_impl.hpp"
 #include "battle_impl.hpp"

@@ -12,6 +12,41 @@ end
 
 Entities = {}
 Components = {}
+
+
+
+function get_component(entity, kind)
+   local component = Entity["get_component"](entity.cpp_ref, kind)
+   return Components[component:get_id()]
+end
+
+function add_component(entity, kind)
+   local component = Entity["add_component"](entity.cpp_ref, kind)
+   return Components[component:get_id()]
+end
+
+function get_entity_name(entity)
+   return Entity["get_name"](entity.cpp_ref)
+end
+
+function get_entity_id(entity)
+   return Entity["get_id"](entity.cpp_ref)
+end
+
+function get_component_name(component)
+   return Component["get_name"](component.cpp_ref)
+end
+
+function get_component_id(component)
+   return Component["get_id"](component.cpp_ref)
+end
+
+function get_parent(component)
+   local id = Component["get_entity"](component.cpp_ref)
+   return Entities[id]
+end
+
+
 -- This gets injected into user entity classes so that they have the methods of the C++ Entity class on them natively
 local entity_mt = {}
 entity_mt.__index = function(entity, function_name)
@@ -31,72 +66,92 @@ entity_mt.__index = function(entity, function_name)
    end
 end
 
-function get_component(entity, kind)
-   component = Entity["get_component"](entity.cpp_ref, kind)
-   return Components[component:get_id()]
+function update_entity(id, dt)
+   print("update_entity()")
+   local entity = Entities[id]
+   entity:update(dt)
+end
+
+function update_component(id, dt)
+   print("update_component()")
+   local component = Components[id]
+   component:update()
 end
 
 function on_entity_created(cpp_ref)
-   -- Inject the class with a reference back to the C++ entity
-   entity = {
-	  cpp_ref = cpp_ref,
-	  alive = true,
-	  get_component = get_component
-   }
-   setmetatable(entity, entity_mt)
-
-   -- Construct the entity
+   -- Construct the entity with a do-nothing constructor
    EntityType = _G[cpp_ref:get_name()]
-   EntityType.initialize(entity)
+   entity = EntityType:new()
    
+   -- Inject the table with a reference back to the C++ entity
+   entity.cpp_ref = cpp_ref
+   entity.alive = true
+   entity.get_component = get_component
+   entity.add_component = add_component
+   entity.get_name = get_entity_name
+   entity.get_id = get_entity_id
+   
+   -- Call user-defined constructor
+   entity:init()
+
+   -- Store it in the global list
    Entities[cpp_ref:get_id()] = entity
 end
 
 function on_component_created(cpp_ref)
-   component = {
-	  cpp_ref = cpp_ref,
-	  alive = true
-   }
-
    ComponentType = _G[cpp_ref:get_name()]
-   ComponentType.initialize(component)
+   component = ComponentType:new()
    
+   component.cpp_ref = cpp_ref
+   component.alive = true
+   component.get_component_name = get_component_name
+   component.get_component_id = get_component_id
+   component.get_parent = get_parent
+
+   component:init()
+
    Components[cpp_ref:get_id()] = component
-   print(inspect(component))
 end
 
+
 Position = class('Position')
-function Position:initialize()
+function Position:init()
+   print('Position:init()')
    self.x = 0
    self.y = 0
 end
 
-Spader = class('Spader')
-function Spader:initialize()
-   print('Calling entity Lua initializer')
-   print(self:get_id())
-   print(self:get_name())
+function Position:update()
+   print('Position:update()')
+end
 
-   self:add_component("Position")
-   local position = self:get_component("Position")
-   print(position)
+Spader = class('Spader')
+function Spader:init()
+   print('Calling Spader constructor')
+   print('ID: ' .. self:get_id())
+   print('Name: ' .. self:get_name())
+
+   local position = self:add_component("Position")
+   print('Position: ' .. position.x .. ', ' .. position.y)
 end
 
 function Spader:update(dt)
-   print('updated entity, got ' .. dt .. 'for dt!')
-   print(self.name)
+   print('Spader:update()')
+   self:do_stuff()
+end
+
+function Spader:do_stuff()
+   print('Spader::do_stuff()')
 end
 
 SpaderComponent = class('SpaderComponent')
-function SpaderComponent:initialize()
+function SpaderComponent:init()
    self.cool = 400
-   print('initialized spaderc with coolness=' .. self.cool)
+   print("SpaderComponent:init()")
 end
 
 function SpaderComponent:update(dt)
-   print('updating spaderc, got ' .. dt .. ' for dt')
-   print(self)
-   print(self.fun)
+   print("SpaderComponent:update()")
 end
 
 

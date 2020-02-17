@@ -18,9 +18,15 @@ namespace NewStuff {
 	}
 
 	void Component::update(float dt) {
-		std::string script = "local dt = ... \n" +  name + ":update(dt)";
-		auto update_function = Lua.state.load(script);
-		update_function(dt);
+		sol::protected_function update_component = Lua.state["update_component"];
+		auto result = update_component(id, dt);
+		if (!result.valid()) {
+			sol::error error = result;
+			tdns_log.write("Component update failed!");
+			tdns_log.write("Component name: " + name);
+			tdns_log.write("Entity ID: " + std::to_string(entity));
+			tdns_log.write(error.what());
+		}
 	}
 
 	std::string Component::get_name() {
@@ -49,18 +55,23 @@ namespace NewStuff {
 	}
 
 	void Entity::update(float dt) {
-		std::string script = "local dt = ... \n" +  name + ":update(dt)";
-		auto update_function = Lua.state.load(script);
-		update_function(dt);
-		
+		sol::protected_function update_entity = Lua.state["update_entity"];
+		auto result = update_entity(id, dt);
+		if (!result.valid()) {
+			sol::error error = result;
+			tdns_log.write("Entity update failed. Entity name: " + name + "Entity ID: " + std::to_string(id) + ". Lua error:");
+			tdns_log.write(error.what());
+		}
+
 		for (auto& [kind, component] : components) {
 			component->update(dt);
 		}
 	}
 
-	void Entity::add_component(std::string name) {
-		tdns_log.write("Called AC!" + name);
-		components[name] = Component::create(name, id);
+	Component* Entity::add_component(std::string name) {
+		auto c = Component::create(name, id);
+		components[name] = c;
+		return c;
 	}
 
 	Component* Entity::get_component(std::string name) {
@@ -107,5 +118,24 @@ namespace NewStuff {
 	Entity* EntityHandle::get() const {
 		fox_assert(manager->has_entity(id));
 		return manager->get_entity(id);
+	}
+
+	void Scene::add_entity(EntityHandle entity) {
+		entities.push_back(entity);
+	}
+
+	void Scene::update(float dt)
+	{
+		for (auto entity : entities) {
+			entity->update(dt);
+		}
+	}
+	
+	Scene* SceneManager::create_scene(std::string name)
+	{
+		auto scene = new Scene;
+		scene->name = name;
+		scenes[name] = scene;
+		return scene;
 	}
 }
