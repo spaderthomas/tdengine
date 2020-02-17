@@ -2,7 +2,7 @@ void LuaState::prepend_to_search_path(std::string directory) {
 	directory = absolute_path(directory);
 	directory += "/?.lua";
 	normalize_path(directory);
-	tdns_log.write("Adding directory to Lua include path: " + directory);
+	tdns_log.write("Adding directory to Lua include path: " + directory, Log_Flags::File);
 		
 	// NEW_ITEM;old_path
 	std::string old_path = Lua.state["package"]["path"];
@@ -14,6 +14,7 @@ int LuaState::init() {
 	state.open_libraries(sol::lib::base, sol::lib::package, sol::lib::debug, sol::lib::string, sol::lib::math, sol::lib::table);
 	
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "lua"})));
+	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "lua", "libs"})));
 
 	return 0;
 }
@@ -61,15 +62,20 @@ void LuaState::test() {
 	component_type["get_id"] = &NewStuff::Component::get_id;
 	component_type["get_entity"] = &NewStuff::Component::get_entity;
 
+    state["tdapi"] = state.create_table();
+	state["tdapi"]["draw_entity"] = &draw_entity;
+
 	script_file(RelativePath("tdengine.lua"));
 	script_dir(RelativePath("entities"));
 	script_dir(RelativePath("components"));
 
 	std::shared_ptr<NewStuff::EntityManager> entity_manager = std::make_shared<NewStuff::EntityManager>();
-	auto entity = entity_manager->create_entity("Spader");
+	auto spader = entity_manager->create_entity("Spader");
+	auto tom = entity_manager->create_entity("Tom");
 
 	std::shared_ptr<NewStuff::SceneManager> scene_manager = std::make_shared<NewStuff::SceneManager>();
 	auto scene = scene_manager->create_scene("FirstScene");
-	scene->add_entity(entity);
+	scene->add_entity(spader);
+	scene->add_entity(tom);
 	scene->update(1);
 }

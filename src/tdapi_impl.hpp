@@ -31,13 +31,13 @@ tdapi int collider_kind(EntityHandle me) {
 		cc->kind :
 		Collider_Kind::NO_COLLIDER;
 }
-tdapi void draw_entity(EntityHandle me, Render_Flags flags) {
-	if (!me) return;
+tdapi void draw_entity(EntityHandle entity, Render_Flags flags) {
+	if (!entity) return;
 
-	def_get_cmp(gc, me.deref(), Graphic_Component);
-	def_get_cmp(pc, me.deref(), Position_Component);
+	def_get_cmp(gc, entity.deref(), Graphic_Component);
+	def_get_cmp(pc, entity.deref(), Position_Component);
 	if (gc && pc) {
-		renderer.draw(gc, pc, me, flags);
+		renderer.draw(gc, pc, entity, flags);
 	}
 }
 tdapi void teleport_entity(EntityHandle me, float x, float y) {

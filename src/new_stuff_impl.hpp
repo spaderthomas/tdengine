@@ -92,6 +92,7 @@ namespace NewStuff {
 	EntityHandle EntityManager::create_entity(std::string name) {
 		// Construct the entity
 		auto inserted = entities.emplace(Entity::next_id, std::make_unique<Entity>(name, Entity::next_id));
+		Entity::next_id++;
 		auto it = inserted.first;
 		Entity& entity = *it->second;
 
@@ -124,18 +125,33 @@ namespace NewStuff {
 		entities.push_back(entity);
 	}
 
-	void Scene::update(float dt)
-	{
+	void Scene::update(float dt) {
 		for (auto entity : entities) {
 			entity->update(dt);
 		}
 	}
 	
-	Scene* SceneManager::create_scene(std::string name)
-	{
+	Scene* SceneManager::create_scene(std::string name) {
 		auto scene = new Scene;
 		scene->name = name;
 		scenes[name] = scene;
 		return scene;
+	}
+}
+
+namespace API {
+	void draw_entity(EntityHandle entity, Render_Flags flags) {
+		if (!entity) return;
+		
+		auto graphic = entity->get_component("GraphicComponent");
+		auto position = entity->get_component("PositionComponent");
+		if (!graphic || !position) {
+			tdns_log.write("Called draw_entity(), but entity was lacking component.");
+			tdns_log.write("Entity name: " + entity->get_name());
+			tdns_log.write("Entity ID: " + entity->get_id());
+			return;
+		}
+
+		renderer.draw(graphic, position, entity, flags);
 	}
 }

@@ -1,5 +1,6 @@
 // @note @spader 9/3/2019: Fucking unhygienic enums. Can't use Console in an enum because I have a class
-// that is also named Console. 
+// that is also named Console.
+// @note @spader 2/17/2020: use enum class bro
 namespace Log_Flags {
 	uint8_t Console = 1;
 	uint8_t File    = 2;

@@ -61,3 +61,7 @@ namespace NewStuff {
 	};
 
 }
+
+namespace API {
+	void draw_entity(EntityHandle me, Render_Flags flags);
+}

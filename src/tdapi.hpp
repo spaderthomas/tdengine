@@ -5,7 +5,6 @@
 // to do with it 
 tdapi void update_animation(EntityHandle me, float dt);
 tdapi int collider_kind(EntityHandle me);
-tdapi void draw_entity(EntityHandle me, Render_Flags flags);
 tdapi void teleport_entity(EntityHandle me, float x, float y);
 tdapi void move_entity(EntityHandle me, bool up, bool down, bool left, bool right);
 tdapi void set_animation(EntityHandle me, std::string wish_name);
@@ -18,3 +17,5 @@ tdapi bool are_entities_colliding(EntityHandle a, EntityHandle b);
 tdapi void register_potential_collision(EntityHandle me, EntityHandle other);
 tdapi void set_state(std::string var, bool val);
 tdapi void camera_follow(EntityHandle entity);
+
+tdapi void draw_entity(EntityHandle me, Render_Flags flags);

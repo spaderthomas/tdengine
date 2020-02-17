@@ -2,7 +2,7 @@ local class = require('middleclass')
 
 Spader = class('Spader')
 function Spader:init()
-   print('Calling Spader constructor')
+   print('Spader:init()')
    print('ID: ' .. self:get_id())
    print('Name: ' .. self:get_name())
 
