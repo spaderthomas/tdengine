@@ -109,7 +109,8 @@ bool are_paths_equal(std::string a, std::string b) {
 	return true;
 }
 
-// shamelessly copped fromi
+
+// shamelessly copped from
 // https://stackoverflow.com/questions/447206/c-isfloat-function
 bool is_float(std::string mystring ) {
     std::istringstream iss(mystring);
@@ -477,6 +478,45 @@ std::string script_path(std::string script) {
 	return path;
 }
 
+struct RelativePath {
+	RelativePath(std::string path) {
+		normalize_path(path);
+		this->path = path;
+	}
+	
+	std::string path;
+};
+	
+struct ScriptPath {
+	ScriptPath(std::string raw) {
+		normalize_path(raw);
+		this->path = raw;
+	}
+	ScriptPath(RelativePath relative) {
+		std::string absolute = script_path(relative.path);
+		normalize_path(absolute);
+		this->path = absolute;
+	}
+
+	std::string path;
+};
+
+struct AbsolutePath {
+	AbsolutePath(std::string raw) {
+		normalize_path(raw);
+		this->path = raw;
+	}
+	AbsolutePath(RelativePath relative) {
+		std::string absolute = absolute_path(relative.path);
+		normalize_path(absolute);
+		this->path = absolute;
+	}
+	
+	std::string path;
+};
+	
+
+
 // @hack I'm sure there are PNG headers I could try parsing, but this works!
 bool is_png(std::string& asset_path) {
 	if (asset_path.size() < 5) { return false; } // "x.png" is the shortest name
@@ -489,6 +529,13 @@ bool is_tds(std::string& path) {
 	if (path.size() < 5) { return false; } // "x.tds" is the shortest name
 	std::string should_be_tds_extension = path.substr(path.size() - 4, 4);
 	if (should_be_tds_extension.compare(".tds")) return false;
+	return true;
+}
+
+bool is_lua(std::string& path) {
+	if (path.size() < 5) { return false; } // "x.tds" is the shortest name
+	std::string should_be_tds_extension = path.substr(path.size() - 4, 4);
+	if (should_be_tds_extension.compare(".lua")) return false;
 	return true;
 }
 

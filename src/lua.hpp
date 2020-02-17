@@ -7,7 +7,8 @@ struct LuaState {
 	void test();
 	int reload(std::string script_name);
 	void prepend_to_search_path(std::string directory);
-	void script_file(std::string relative_file_path);
+	void script_dir(ScriptPath path);
+	void script_file(ScriptPath path);
 } Lua;
 
 

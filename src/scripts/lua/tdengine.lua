@@ -1,19 +1,11 @@
-print('loaded tdengine.lua!')
+print('Loaded tdengine.lua')
 
 local class = require('middleclass')
 local inspect = require('inspect')
 
-function table.pack(...)
-   return {
-	  ...,
-	  n = select("#", ...)
-   }
-end
 
 Entities = {}
 Components = {}
-
-
 
 function get_component(entity, kind)
    local component = Entity["get_component"](entity.cpp_ref, kind)
@@ -124,35 +116,3 @@ end
 function Position:update()
    print('Position:update()')
 end
-
-Spader = class('Spader')
-function Spader:init()
-   print('Calling Spader constructor')
-   print('ID: ' .. self:get_id())
-   print('Name: ' .. self:get_name())
-
-   local position = self:add_component("Position")
-   print('Position: ' .. position.x .. ', ' .. position.y)
-end
-
-function Spader:update(dt)
-   print('Spader:update()')
-   self:do_stuff()
-end
-
-function Spader:do_stuff()
-   print('Spader::do_stuff()')
-end
-
-SpaderComponent = class('SpaderComponent')
-function SpaderComponent:init()
-   self.cool = 400
-   print("SpaderComponent:init()")
-end
-
-function SpaderComponent:update(dt)
-   print("SpaderComponent:update()")
-end
-
-
-
