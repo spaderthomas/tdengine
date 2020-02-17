@@ -3,7 +3,6 @@ print('Loaded tdengine.lua')
 local class = require('middleclass')
 local inspect = require('inspect')
 
-
 Entities = {}
 Components = {}
 
@@ -105,14 +104,3 @@ function on_component_created(cpp_ref)
    Components[cpp_ref:get_id()] = component
 end
 
-
-Position = class('Position')
-function Position:init()
-   print('Position:init()')
-   self.x = 0
-   self.y = 0
-end
-
-function Position:update()
-   print('Position:update()')
-end

@@ -19,8 +19,6 @@ int LuaState::init() {
 }
 
 void LuaState::script_dir(ScriptPath path) {
-	tdns_log.write("SCRIPTING LUA PATH:");
-	tdns_log.write(path.path);
 	for (auto it = directory_iterator(path.path); it != directory_iterator(); it++) {
 		std::string next_path = it->path().string();
 		normalize_path(next_path);
@@ -37,7 +35,7 @@ void LuaState::script_dir(ScriptPath path) {
 }
 
 void LuaState::script_file(ScriptPath path) {
-	tdns_log.write("SCRIPTING LUA FILE: " + path.path);
+	tdns_log.write("Loaded script: " + path.path, Log_Flags::File);
 	auto result = state.script_file(path.path, [](auto, auto pfr) {
 		return pfr;
 	});
@@ -63,8 +61,9 @@ void LuaState::test() {
 	component_type["get_id"] = &NewStuff::Component::get_id;
 	component_type["get_entity"] = &NewStuff::Component::get_entity;
 
+	script_file(RelativePath("tdengine.lua"));
 	script_dir(RelativePath("entities"));
-	script_file(ScriptPath(RelativePath("tdengine.lua")));
+	script_dir(RelativePath("components"));
 
 	std::shared_ptr<NewStuff::EntityManager> entity_manager = std::make_shared<NewStuff::EntityManager>();
 	auto entity = entity_manager->create_entity("Spader");
