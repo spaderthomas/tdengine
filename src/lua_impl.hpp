@@ -71,12 +71,12 @@ void LuaState::test() {
 
 	std::shared_ptr<NewStuff::EntityManager> entity_manager = std::make_shared<NewStuff::EntityManager>();
 	auto spader = entity_manager->create_entity("Spader");
-	auto tom = entity_manager->create_entity("Tom");
+	//auto tom = entity_manager->create_entity("Tom");
 
 	std::shared_ptr<NewStuff::SceneManager> scene_manager = std::make_shared<NewStuff::SceneManager>();
 	auto scene = scene_manager->create_scene("FirstScene");
 	scene->add_entity(spader);
-	scene->add_entity(tom);
+	//scene->add_entity(tom);
 	scene->update(1);
 }
 

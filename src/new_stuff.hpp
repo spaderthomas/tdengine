@@ -69,14 +69,14 @@ namespace NewStuff {
 	struct Render_Element {
 		Component* graphic;
 		Component* position;
-		EntityHandle entity;
+		Component* animation;
 		Render_Flags flags;
 	};
 
 	struct _RenderEngine {
 		std::vector<std::function<void()>> primitives;
 		std::vector<Render_Element> render_list;
-		void draw(Component* graphic, Component* position, ::NewStuff::EntityHandle entity, Render_Flags flags);
+		void draw(EntityHandle entity, Render_Flags flags);
 		void render_for_frame();
 	} RenderEngine;
 	

@@ -727,8 +727,8 @@ float Sine_Func::eval_at(float point) {
 
 struct Asset {
 	std::string name;
-	
-	virtual void stub() {};
+
+	virtual void make_this_type_polymorphic() {}
 };
 
 struct {

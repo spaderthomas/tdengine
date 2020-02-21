@@ -81,12 +81,12 @@ function on_entity_created(cpp_ref)
    entity.add_component = add_component
    entity.get_name = get_entity_name
    entity.get_id = get_entity_id
-   
-   -- Call user-defined constructor
-   entity:init()
 
    -- Store it in the global list
    Entities[cpp_ref:get_id()] = entity
+
+   -- Call user-defined constructor
+   entity:init()
 end
 
 function on_component_created(cpp_ref)
@@ -95,12 +95,12 @@ function on_component_created(cpp_ref)
    
    component.cpp_ref = cpp_ref
    component.alive = true
+   component.parent = Entities[cpp_ref:get_entity()]
    component.get_component_name = get_component_name
    component.get_component_id = get_component_id
-   component.get_parent = get_parent
-
-   component:init()
 
    Components[cpp_ref:get_id()] = component
+
+   component:init()
 end
 

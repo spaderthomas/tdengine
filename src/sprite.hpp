@@ -1,10 +1,9 @@
 struct Texture;
 struct Sprite : Asset {
-	std::string name;
-	
 	int height = 0;
 	int width = 0;
 	int num_channels = 0;
+	
 	Texture* atlas = nullptr;
 	std::vector<float> tex_coords;
 	GLvoid* tex_coord_offset = nullptr;
@@ -23,8 +22,7 @@ GLuint Sprite::vao;
 
 void bind_sprite_buffers();
 
-struct Animation {
-	std::string name;
+struct Animation : Asset {
 	std::vector<Sprite*> frames;
 	int icur_frame = -1;
 	float time_to_next_frame = 8.f / 60.f;

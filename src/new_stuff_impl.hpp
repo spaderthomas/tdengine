@@ -143,8 +143,29 @@ namespace NewStuff {
 		return scene;
 	}
 
-	void _RenderEngine::draw(Component* graphic, Component* position, EntityHandle entity, Render_Flags flags) {
-		Render_Element info = { graphic, position, entity, flags };
+	void _RenderEngine::draw(EntityHandle entity, Render_Flags flags) {
+		auto check_component_exists = [entity](auto component, std::string component_type) -> bool {
+			if (component) return true;
+			
+			tdns_log.write("Called draw_entity(), but entity had no" + component_type + " component");
+			tdns_log.write("Entity name: " + entity->get_name());
+			tdns_log.write("Entity ID: " + entity->get_id());
+			return false;
+		};
+		
+		auto graphic = entity->get_component("Graphic");
+		if (!check_component_exists(graphic, "Graphic")) return;
+		auto position = entity->get_component("Position");
+		if (!check_component_exists(position, "Position")) return;
+		auto animation = entity->get_component("Animation");
+		if (!check_component_exists(animation, "Animation")) return;
+
+		Render_Element info = {
+			graphic,
+			position,
+			animation,
+			flags
+		};
 		render_list.push_back(info);
 	}
 	
@@ -193,7 +214,7 @@ namespace NewStuff {
 			stable_sort(depth_level_render_elements.begin(), depth_level_render_elements.end(), sort_by_world_pos);
 		
 			// Draw the correctly sorted elements for a depth level
-			for (auto& [graphic, position, entity, flags] : depth_level_render_elements) {
+			for (auto& [graphic, position, animation, flags] : depth_level_render_elements) {
 				// Swap shader based on flags
 				if (flags & Render_Flags::Highlighted) {
 					if (shader != &highlighted_shader) {
@@ -212,8 +233,9 @@ namespace NewStuff {
 					}
 				}
 
-				std::string animation = Lua.get_component(graphic->get_id())["animation"];
-				Sprite* sprite = nullptr;//render_element.gc->get_current_frame();
+				//std::string animation = Lua.get_component(graphic->get_id())["animation"];
+				//int frame = Lua.get_component(graphic->get_id())["frame"];
+				Sprite* sprite = nullptr;//get_current_frame(animation, frame);
 				if (!sprite) {
 					tdns_log.write("Trying to render, but sprite returned was invalid (nullptr). Sprite was: " + sprite->name);
 					continue;
@@ -258,31 +280,28 @@ namespace NewStuff {
 
 	void draw_entity(EntityHandle entity, Render_Flags flags) {
 		if (!entity) return;
-		
-		auto graphic = entity->get_component("Graphic");
-		auto position = entity->get_component("Position");
-		if (!graphic || !position) {
-			tdns_log.write("Called draw_entity(), but entity was lacking component.");
-			tdns_log.write("Entity name: " + entity->get_name());
-			tdns_log.write("Entity ID: " + entity->get_id());
-			return;
-		}
-
-		RenderEngine.draw(graphic, position, entity, flags);
+		RenderEngine.draw(entity, flags);
 	}
-
+	
 	/*
-	Sprite* get_current_frame(std::string animation) {
-		if (!active_animation) {
+	Sprite* get_current_frame(std::string animation, int frame) {
+		if (animation.empty()) {
 			tdns_log.write("Component asked for current frame but no active animation was set!");
 			return (Sprite*)nullptr;
 		}
-		if (active_animation->icur_frame == -1) {
-			std::string msg = "Active animation (" + active_animation->name + ") had invalid current frame";
+		if (frame < 0) {
+			std::string msg = "Frame index less than 0 for animation " + active_animation->name;
 			tdns_log.write(msg);
 			return (Sprite*)nullptr;
 		}
-		
+
+		Animation* animation_p = asset_table.get_asset<Animation>(animation);
+		if (!animation_p) {
+			tdns_log.write("Could not find animation: " + animation);
+			return nullptr;
+		}
+
+		return animation_p
 		return active_animation->frames[active_animation->icur_frame];
 	}
 	*/

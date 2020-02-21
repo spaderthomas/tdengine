@@ -1,14 +1,16 @@
 local class = require('middleclass')
+local inspect = require('inspect')
 
-GraphicComponent = class('GraphicComponent')
-function GraphicComponent:init()
+Graphic = class('Graphic')
+function Graphic:init()
+   print("Graphic:init()")
    self.scale = { x = 0, y = 0 }
    self.layer = 0
    self.animations = {}
-   self.animation = ""
 
+   self.parent:add_component("Animation")
 end
 
-function GraphicComponent:update()
+function Graphic:update()
    
 end
