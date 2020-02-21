@@ -21,7 +21,7 @@ struct Name_And_ID {
 void create_texture(std::string path) {
 	std::string texture_name = name_from_full_path(path);
 	if (is_valid_filename(texture_name)) {
-		Texture* new_texture = asset_table.get_asset<Texture>(texture_name);
+		Texture* new_texture = new Texture;
 
 		stbi_set_flip_vertically_on_load(true);
 		unsigned char* data = stbi_load(absolute_path(path).c_str(), &new_texture->width, &new_texture->height, &new_texture->num_channels, 0);
@@ -39,6 +39,7 @@ void create_texture(std::string path) {
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, new_texture->width, new_texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
+			asset_table.add_asset<Texture>(texture_name, new_texture);
 		} else {
 			std::string msg = "stb_image failed to load an image. Path was: " + path;
 			tdns_log.write(msg);
@@ -51,7 +52,7 @@ void create_texture_atlas(std::string assets_dir) {
 	std::string atlas_name = name_from_full_path(assets_dir);
 	if (is_alphanumeric(atlas_name)) {
 		atlas_name += ".png";
-		Texture* atlas = asset_table.get_asset<Texture>(atlas_name);
+		Texture* atlas = new Texture;
 
 		// Create some memory for our atlas
 		stbi_set_flip_vertically_on_load(false);
@@ -82,10 +83,11 @@ void create_texture_atlas(std::string assets_dir) {
 						if (!is_png(asset_path)) { continue; }
 
 						std::string asset_name = name_from_full_path(asset_path);
-						Sprite* sprite = asset_table.get_asset<Sprite>(asset_name);
+						Sprite* sprite = new Sprite;
 						sprite->atlas = atlas;
 						sprite->name = asset_name;
-
+						asset_table.add_asset<Sprite>(asset_name, sprite);
+						
 						// Load the image data, create a rectangle for it
 						unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
 						if (data) {
@@ -168,6 +170,8 @@ void create_texture_atlas(std::string assets_dir) {
 		atlas->width = REGULAR_ATLAS_SIZE;
 		atlas->height = REGULAR_ATLAS_SIZE;
 		atlas->num_channels = 4;
+
+		asset_table.add_asset<Texture>(atlas_name, atlas);
 	} else {
 		std::string msg = "Invalid texture atlas name. Expected alpanumeric, but got: " + atlas_name;
 		tdns_log.write(msg);

@@ -7,7 +7,7 @@ function Spader:init()
    print('Name: ' .. self:get_name())
 
    local position = self:add_component("Position")
-   print('Position: ' .. position.x .. ', ' .. position.y)
+   print('Position: ' .. position.world.x .. ', ' .. position.world.y)
 end
 
 function Spader:update(dt)

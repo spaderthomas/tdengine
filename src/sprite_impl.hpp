@@ -26,6 +26,13 @@ void Animation::add_frames(std::vector<std::string>& frames_to_add) {
 
 void Animation::add_frame(std::string& sprite_name) {
 	Sprite* frame = asset_table.get_asset<Sprite>(sprite_name);
+	if (!frame) {
+		tdns_log.write("Tried to add a frame to an animation, but couldn't find the sprite.");
+		tdns_log.write("Requested sprite: " + sprite_name);
+		tdns_log.write("Animation name" + this->name);
+		return;
+	}
+	
 	frames.push_back(frame);
 }
 

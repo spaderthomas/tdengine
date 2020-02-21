@@ -733,17 +733,24 @@ struct Asset {
 
 struct {
 	std::map<std::string, Asset*> assets;
+
+	template <typename Asset_Type>
+	void add_asset(std::string name, Asset_Type* asset) {
+		static_assert(std::is_base_of_v<Asset, Asset_Type>, "To add an asset to the asset table, its type must derive from Asset.");
+		assets[name] = asset;
+	}
 	
 	template <typename Asset_Type>
-	Asset_Type* get_asset(std::string name) {
-		Asset* asset = assets[name];
+	Asset_Type* get_asset(std::string name) const {
+		auto it = assets.find(name);
+		if (it == assets.end()) return nullptr;
+
+		Asset* asset = it->second;
 		Asset_Type* typed_asset = dynamic_cast<Asset_Type*>(asset);
 		if (typed_asset) return typed_asset;
-		
-		Asset_Type* new_asset = new Asset_Type;
-		new_asset->name = name;
-		assets[name] = new_asset;
-		return new_asset;
+
+		tdns_log.write("Tried to get asset of name " + name + ". Found it, but requested it as the wrong type.");
+		return nullptr;
 	}
 	
 	template <typename Asset_Type>

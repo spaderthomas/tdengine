@@ -42,12 +42,15 @@ Mesh* line;
 Mesh* square;
 
 void init_mesh() {
-	line = asset_table.get_asset<Mesh>("line");
+	Mesh* line = new Mesh;
 	line->verts = line_verts;
 	line->indices = line_indices;
-	square = asset_table.get_asset<Mesh>("square");
+	asset_table.add_asset<Mesh>("line", line);
+
+	Mesh* square = new Mesh;
 	square->verts = square_verts;
 	square->indices = square_indices;
+	asset_table.add_asset<Mesh>("square", square);
 }
 
 // Fill all_meshes with all game meshes, then call this
