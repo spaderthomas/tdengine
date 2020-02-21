@@ -173,12 +173,10 @@ int main() {
 	concat(vert_data, square_verts);
 	
 	// Fill tex coordinate buffer
-	for (auto asset : asset_table.assets) {
-		Sprite* sprite = dynamic_cast<Sprite*>(asset);
-		if (sprite) {
-			sprite->tex_coord_offset = (GLvoid*)(sizeof(float) * vert_data.size());
-			concat(vert_data, sprite->tex_coords);
-		}
+	auto sprites = asset_table.get_all<Sprite>();
+	for (auto sprite : sprites) {
+		sprite->tex_coord_offset = (GLvoid*)(sizeof(float) * vert_data.size());
+		concat(vert_data, sprite->tex_coords);
 	}
 	
 	square_tex_coords_offset = (GLvoid*)(sizeof(float) * vert_data.size());

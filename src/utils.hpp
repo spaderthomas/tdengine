@@ -732,29 +732,24 @@ struct Asset {
 };
 
 struct {
-	std::vector<Asset*> assets;
+	std::map<std::string, Asset*> assets;
 	
 	template <typename Asset_Type>
-		Asset_Type* get_asset(std::string name) {
-		for (auto asset : assets) {
-			Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
-			if (asset_as_type) {
-				if (asset_as_type->name == name) {
-					return asset_as_type;
-				}
-			}
-		}
+	Asset_Type* get_asset(std::string name) {
+		Asset* asset = assets[name];
+		Asset_Type* typed_asset = dynamic_cast<Asset_Type*>(asset);
+		if (typed_asset) return typed_asset;
 		
 		Asset_Type* new_asset = new Asset_Type;
 		new_asset->name = name;
-		assets.push_back(new_asset);
+		assets[name] = new_asset;
 		return new_asset;
 	}
 	
 	template <typename Asset_Type>
-		std::vector<Asset_Type*> get_all() {
+	std::vector<Asset_Type*> get_all() {
 		std::vector<Asset_Type*> all;
-		for (auto asset : assets) {
+		for (auto& [name, asset] : assets) {
 			Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
 			if (asset_as_type) {
 				all.push_back(asset_as_type);

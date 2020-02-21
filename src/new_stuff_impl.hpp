@@ -173,7 +173,7 @@ namespace NewStuff {
 		std::vector<std::vector<Render_Element>> depth_sorted_render_elements;
 		for (auto& render_element : render_list) {
 			auto& [graphic, position, entity, flags] = render_element;
-			int z = Lua.get_component(graphic->get_id())["z"];
+			int z = Lua.get_component(graphic->get_id())["layer"];
 			if (z > zmax) {
 				std::vector<Render_Element> new_depth_level;
 				depth_sorted_render_elements.push_back(new_depth_level);
@@ -212,6 +212,7 @@ namespace NewStuff {
 					}
 				}
 
+				std::string animation = Lua.get_component(graphic->get_id())["animation"];
 				Sprite* sprite = nullptr;//render_element.gc->get_current_frame();
 				if (!sprite) {
 					tdns_log.write("Trying to render, but sprite returned was invalid (nullptr). Sprite was: " + sprite->name);
@@ -269,4 +270,20 @@ namespace NewStuff {
 
 		RenderEngine.draw(graphic, position, entity, flags);
 	}
+
+	/*
+	Sprite* get_current_frame(std::string animation) {
+		if (!active_animation) {
+			tdns_log.write("Component asked for current frame but no active animation was set!");
+			return (Sprite*)nullptr;
+		}
+		if (active_animation->icur_frame == -1) {
+			std::string msg = "Active animation (" + active_animation->name + ") had invalid current frame";
+			tdns_log.write(msg);
+			return (Sprite*)nullptr;
+		}
+		
+		return active_animation->frames[active_animation->icur_frame];
+	}
+	*/
 }
