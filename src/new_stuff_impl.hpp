@@ -112,6 +112,11 @@ namespace NewStuff {
 		return handle;
 	}
 
+	EntityHandle::operator bool() const {
+		if (manager->has_entity(id)) return manager->get_entity(id);
+		return false;
+	}
+
 	Entity* EntityHandle::operator->() const {
 		return get();
 	}
@@ -137,14 +142,124 @@ namespace NewStuff {
 		scenes[name] = scene;
 		return scene;
 	}
-}
 
-namespace API {
+	void _RenderEngine::draw(Component* graphic, Component* position, EntityHandle entity, Render_Flags flags) {
+		Render_Element info = { graphic, position, entity, flags };
+		render_list.push_back(info);
+	}
+	
+	void _RenderEngine::render_for_frame() {
+		bind_sprite_buffers();
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
+		glEnableVertexAttribArray(0);
+
+		Shader* shader = &textured_shader;
+		shader->begin();
+		shader->set_int("sampler", 0);
+
+		// Algorithm:
+		// Sort by Z-position (as if you were going to do the Painter's algorithm
+		// Z positions are integral (since 2D), so just collect elements of each Z-type into collections
+		// Sort these collections by Y-axis (so overlap works properly)
+		auto sort_by_z = [](const Render_Element& a, const Render_Element& b) {
+			float za = Lua.get_component(a.graphic->get_id())["z"];
+			float zb = Lua.get_component(b.graphic->get_id())["z"];
+			return za < zb;
+		};
+		sort(render_list.begin(), render_list.end(), sort_by_z);
+
+	
+		int zmax = std::numeric_limits<int>::min();
+		std::vector<std::vector<Render_Element>> depth_sorted_render_elements;
+		for (auto& render_element : render_list) {
+			auto& [graphic, position, entity, flags] = render_element;
+			int z = Lua.get_component(graphic->get_id())["z"];
+			if (z > zmax) {
+				std::vector<Render_Element> new_depth_level;
+				depth_sorted_render_elements.push_back(new_depth_level);
+				zmax = z;
+			}
+			depth_sorted_render_elements.back().push_back(render_element);
+		}
+
+		// Main render loop
+		glm::vec2 camera_translation = magnitude_gl_from_screen(active_layer->camera.offset);
+		for (auto& depth_level_render_elements : depth_sorted_render_elements) {
+			auto sort_by_world_pos = [](const Render_Element& a, const Render_Element& b) {
+				float wpa = Lua.get_component(a.position->get_id())["world"]["y"];
+				float wpb = Lua.get_component(b.position->get_id())["world"]["y"];
+				return wpa > wpb; 
+			};
+			stable_sort(depth_level_render_elements.begin(), depth_level_render_elements.end(), sort_by_world_pos);
+		
+			// Draw the correctly sorted elements for a depth level
+			for (auto& [graphic, position, entity, flags] : depth_level_render_elements) {
+				// Swap shader based on flags
+				if (flags & Render_Flags::Highlighted) {
+					if (shader != &highlighted_shader) {
+						shader->end();
+						shader = &highlighted_shader;
+						shader->begin();
+						shader->set_int("sampler", 0);
+					}
+				}
+				else {
+					if (shader != &textured_shader) {
+						shader->end();
+						shader = &textured_shader;
+						shader->begin();
+						shader->set_int("sampler", 0);
+					}
+				}
+
+				Sprite* sprite = nullptr;//render_element.gc->get_current_frame();
+				if (!sprite) {
+					tdns_log.write("Trying to render, but sprite returned was invalid (nullptr). Sprite was: " + sprite->name);
+					continue;
+				}
+				if (!sprite->is_initialized()) {
+					tdns_log.write("Trying to render, but the sprite was uninitialized. Sprite was: " + sprite->name);
+					continue;
+				}
+			
+				sprite->atlas->bind();
+
+				// Point the texture coordinates to this sprite's texcoords
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), sprite->tex_coord_offset);
+				glEnableVertexAttribArray(1);
+			
+				SRT transform = SRT::no_transform();
+				transform.scale = {
+					Lua.get_component(graphic->get_id())["scale"]["x"],
+					Lua.get_component(graphic->get_id())["scale"]["y"] };
+				transform.translate = gl_from_screen({
+						Lua.get_component(position->get_id())["world"]["x"],
+						Lua.get_component(position->get_id())["world"]["y"] });
+				transform.translate -= camera_translation;
+				auto transform_mat = mat3_from_transform(transform);
+				shader->set_mat3("transform", transform_mat);
+
+				shader->check();
+				glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			}
+		}
+
+		shader->end();
+		render_list.clear();
+
+
+		// Finally, render all the primitives on top of the screen in the order they were queued.
+		for (auto& draw_func : primitives) {
+			draw_func();
+		}
+		primitives.clear();
+	}
+
 	void draw_entity(EntityHandle entity, Render_Flags flags) {
 		if (!entity) return;
 		
-		auto graphic = entity->get_component("GraphicComponent");
-		auto position = entity->get_component("PositionComponent");
+		auto graphic = entity->get_component("Graphic");
+		auto position = entity->get_component("Position");
 		if (!graphic || !position) {
 			tdns_log.write("Called draw_entity(), but entity was lacking component.");
 			tdns_log.write("Entity name: " + entity->get_name());
@@ -152,6 +267,6 @@ namespace API {
 			return;
 		}
 
-		renderer.draw(graphic, position, entity, flags);
+		RenderEngine.draw(graphic, position, entity, flags);
 	}
 }

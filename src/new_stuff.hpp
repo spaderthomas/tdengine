@@ -34,6 +34,7 @@ namespace NewStuff {
 		int id;
 		EntityManager* manager;
 
+		operator bool() const;
 		Entity* operator->() const;
 		Entity* get() const;
 	};
@@ -60,8 +61,24 @@ namespace NewStuff {
 		Scene* create_scene(std::string name);
 	};
 
-}
+	
+	enum Render_Flags {
+		None = 0,
+		Highlighted = 1 << 0,
+	};
+	struct Render_Element {
+		Component* graphic;
+		Component* position;
+		EntityHandle entity;
+		Render_Flags flags;
+	};
 
-namespace API {
+	struct _RenderEngine {
+		std::vector<std::function<void()>> primitives;
+		std::vector<Render_Element> render_list;
+		void draw(Component* graphic, Component* position, ::NewStuff::EntityHandle entity, Render_Flags flags);
+		void render_for_frame();
+	} RenderEngine;
+	
 	void draw_entity(EntityHandle me, Render_Flags flags);
 }

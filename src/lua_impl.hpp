@@ -79,3 +79,10 @@ void LuaState::test() {
 	scene->add_entity(tom);
 	scene->update(1);
 }
+
+sol::table LuaState::get_entity(int id) {
+	return state["Entities"][id];
+}
+sol::table LuaState::get_component(int id) {
+	return state["Components"][id];
+}

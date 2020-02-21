@@ -18,3 +18,4 @@ struct Renderer {
 	void draw(Graphic_Component* gc, Position_Component* pc, EntityHandle e, Render_Flags flags);
 	void render_for_frame();
 } renderer;
+

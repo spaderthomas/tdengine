@@ -21,6 +21,7 @@ GLuint Sprite::vert_buffer;
 GLuint Sprite::elem_buffer;
 GLuint Sprite::vao;
 
+void bind_sprite_buffers();
 
 struct Animation {
 	std::string name;
@@ -32,3 +33,4 @@ struct Animation {
 	void add_frames(std::vector<std::string>& frames_to_add);
 	void add_frame(std::string& sprite_name);
 };
+
