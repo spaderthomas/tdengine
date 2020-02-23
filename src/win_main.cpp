@@ -35,6 +35,7 @@ extern "C" {
 #include <fstream>
 #include <vector>
 #include <unordered_map>
+#include <map>
 #include <queue>
 #include <string>
 #include <sstream>
@@ -44,6 +45,7 @@ extern "C" {
 #include <optional>
 #include <iomanip>
 #include <limits>
+#include <typeinfo>
 #include <filesystem>
 using namespace std::filesystem;
 
@@ -52,7 +54,7 @@ using namespace std::filesystem;
 #include "db.hpp"
 #include "utils.hpp"
 #include "transform.hpp"
-#include "lua.hpp"
+#include "tdlua.hpp"
 #include "tdscript.hpp"
 #include "text.hpp"
 #include "sprite.hpp"

@@ -2,7 +2,7 @@ struct Entity {
 	static int next_id;
 	int id;
 	std::string name;
-	std::map<const type_info*, ComponentHandle> components;
+	std::map<const std::type_info*, ComponentHandle> components;
 	
 	// Component functions	
 	template <typename Component_Type>

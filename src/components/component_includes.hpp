@@ -30,8 +30,7 @@ union Component_Union {
 typedef pool_handle<Component_Union> ComponentHandle;
 Pool<Component_Union, DEFAULT_POOL_SIZE> component_pool;
 
-
-std::unordered_map<std::string, const type_info*> component_map = {
+std::unordered_map<std::string, const std::type_info*> component_map = {
 	{ "Battle_Component", &typeid(Battle_Component) },
 	{ "Collision_Component", &typeid(Collision_Component) },
 	{ "Door_Component", &typeid(Door_Component) },
@@ -50,6 +49,17 @@ std::unordered_map<std::string, const type_info*> component_map = {
 #define get_cmp(entity, type) (entity)->get_component<type>()
 #define def_cast_cmp(varname, cmp, type) type* varname = dynamic_cast<type*>((cmp))
 #define if_component(var, entity, type) type* var = (entity)->get_component<type>(); if ((var))
+
+template<typename ComponentType>
+Component* create_component2(TableNode* table) {
+	static_assert(std::is_base_of_v<Component, ComponentType>);
+	
+	auto handle = component_pool.next_available();
+	new(handle()) ComponentType;
+	ComponentType* component = (ComponentType*)handle();
+	component->init(table);
+	return component;
+}
 
 typedef Component* (*ComponentCreator)(TableNode*);
 typedef std::map<std::string, ComponentCreator> ComponentRegistry;
@@ -78,28 +88,16 @@ struct ComponentRegistrar<ComponentType> {                     \
                                                                \
 const ComponentRegistryEntry<ComponentType>& ComponentRegistrar<ComponentType>::entry = ComponentRegistryEntry<ComponentType>::instance(#ComponentType); 
 
-
-template<typename ComponentType>
-Component* create_component2(TableNode* table) {
-	static_assert(std::is_base_of_v<Component, ComponentType>);
-	
-	auto handle = component_pool.next_available();
-	new(handle()) ComponentType;
-	ComponentType* component = (ComponentType*)handle();
-	component->init(table);
-	return component;
-}
-
-Component* create_component_from_string(std::string type, TableNode* table) {
-	auto creator = component_registry[type];
-	return creator(table);
-}
-
 REGISTER_COMPONENT(Tile_Component);
 REGISTER_COMPONENT(Graphic_Component);
 REGISTER_COMPONENT(Position_Component);
 REGISTER_COMPONENT(Movement_Component);
 REGISTER_COMPONENT(Vision_Component);
+
+Component* create_component_from_string(std::string type, TableNode* table) {
+	auto creator = component_registry[type];
+	return creator(table);
+}
 
 ComponentHandle create_component(std::string name, TableNode* table) {
 	auto handle = component_pool.next_available();

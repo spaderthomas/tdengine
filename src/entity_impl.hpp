@@ -27,7 +27,7 @@ Component_Type* Entity::get_component() {
 }
 
 Component* Entity::get_component(std::string kind) {
-	const type_info* info = component_map[kind];
+	const std::type_info* info = component_map[kind];
 	auto handle = components[info];
 	
 	// @spader 10/7/2019 Unsafe, probably, I just want a pointer to the union. Since every class in the union derives from

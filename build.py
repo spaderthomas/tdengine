@@ -86,7 +86,8 @@ build_options = {
         'compiler': 'g++',
         'user_libs': [
             'freetype',
-            'glfw3'
+            'glfw3',
+            'lua51'
         ],
         'system_libs':[
             'z',

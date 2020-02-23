@@ -24,9 +24,11 @@ config.fonts = {
 	GOUKI = {
 		imgui_font_size = 32.0
 	}
-	# NEW_FONT_CONFIG
+	AKUMA = {
+		imgui_font_size = "12"
 }
 
+	# NEW_FONT_CONFIG
 
 config.screen = {
     default = "1080"
