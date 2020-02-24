@@ -1,12 +1,10 @@
 meta = {}
 meta.script_dirs = {
-   # Utils has to be first so entities can use them 
     "utils",
+	"templates",
 	"battle",
-	"buildings",
-	"characters",
+	"entities",
 	"levels",
-	"props",
 	"state",
 	"cutscenes"
 }
@@ -24,11 +22,9 @@ config.fonts = {
 	GOUKI = {
 		imgui_font_size = 32.0
 	}
-	AKUMA = {
-		imgui_font_size = "12"
 }
 
 
 config.screen = {
-    default = "1080"
+    default = "1440"
 }
