@@ -69,6 +69,11 @@ namespace NewStuff {
 	}
 
 	Component* Entity::add_component(std::string name) {
+		// Don't double add components
+		if (components.find(name) != components.end()) {
+			return components[name];
+		}
+		
 		auto c = Component::create(name, id);
 		components[name] = c;
 		return c;
@@ -126,6 +131,29 @@ namespace NewStuff {
 		return manager->get_entity(id);
 	}
 
+	void Animation::add_frames(std::vector<std::string>& frames_to_add) {
+		for (auto& frame : frames_to_add) {
+			this->add_frame(frame);
+		}
+	}
+	
+	void Animation::add_frame(std::string& frame) {
+		Sprite* sprite = asset_table.get_asset<Sprite>(frame);
+		if (!sprite) {
+			tdns_log.write("Tried to add a frame to an animation, but couldn't find the sprite.");
+			tdns_log.write("Requested sprite: " + frame);
+			tdns_log.write("Animation name" + this->name);
+			return;
+		}
+	
+		frames.push_back(frame);
+	}
+
+	std::string Animation::get_frame(int frame) {
+		return this->frames[frame];
+	}
+
+	
 	void Scene::add_entity(EntityHandle entity) {
 		entities.push_back(entity);
 	}
@@ -142,6 +170,17 @@ namespace NewStuff {
 		scenes[name] = scene;
 		return scene;
 	}
+
+	Scene* SceneManager::get_scene(std::string name) {
+		auto it = scenes.find(name);
+		if (it == scenes.end()) {
+			tdns_log.write("Tried to get scene: " + name + ", but it didn't exist.");
+			return (Scene*)nullptr;
+		}
+
+		return it->second;
+	}
+
 
 	void _RenderEngine::draw(EntityHandle entity, Render_Flags flags) {
 		auto check_component_exists = [entity](auto component, std::string component_type) -> bool {
@@ -233,11 +272,13 @@ namespace NewStuff {
 					}
 				}
 
-				//std::string animation = Lua.get_component(graphic->get_id())["animation"];
-				//int frame = Lua.get_component(graphic->get_id())["frame"];
-				Sprite* sprite = nullptr;//get_current_frame(animation, frame);
+				std::string animation_name = Lua.get_component(animation->get_id())["current"];
+				int frame = Lua.get_component(animation->get_id())["frame"];
+				Sprite* sprite = get_frame(animation_name, frame);
 				if (!sprite) {
-					tdns_log.write("Trying to render, but sprite returned was invalid (nullptr). Sprite was: " + sprite->name);
+					tdns_log.write("Trying to render, but sprite returned was invalid (nullptr).");
+					tdns_log.write("Animation was: " + animation_name);
+					tdns_log.write("Frame was: " + std::to_string(frame));
 					continue;
 				}
 				if (!sprite->is_initialized()) {
@@ -283,14 +324,13 @@ namespace NewStuff {
 		RenderEngine.draw(entity, flags);
 	}
 	
-	/*
-	Sprite* get_current_frame(std::string animation, int frame) {
+	Sprite* get_frame(std::string animation, int frame) {
 		if (animation.empty()) {
 			tdns_log.write("Component asked for current frame but no active animation was set!");
 			return (Sprite*)nullptr;
 		}
 		if (frame < 0) {
-			std::string msg = "Frame index less than 0 for animation " + active_animation->name;
+			std::string msg = "Frame index less than 0 for animation " + animation;
 			tdns_log.write(msg);
 			return (Sprite*)nullptr;
 		}
@@ -298,11 +338,32 @@ namespace NewStuff {
 		Animation* animation_p = asset_table.get_asset<Animation>(animation);
 		if (!animation_p) {
 			tdns_log.write("Could not find animation: " + animation);
-			return nullptr;
+			return (Sprite*)nullptr;
 		}
 
-		return animation_p
-		return active_animation->frames[active_animation->icur_frame];
+		auto sprite_name = animation_p->get_frame(frame);
+		auto frame_p = asset_table.get_asset<Sprite>(sprite_name);
+		if (!frame_p) {
+			tdns_log.write("Could not find sprite: " + sprite_name);
+			return (Sprite*)nullptr;
+		}
+
+		return frame_p;
 	}
-	*/
+
+	void register_animation(std::string name, std::vector<std::string> frames) {
+		tdns_log.write("Registering animation: " + name, Log_Flags::File);
+		
+		Animation* animation = new Animation;
+		for (auto& frame : frames) {
+			animation->add_frame(frame);
+		}
+
+		asset_table.add_asset<Animation>(name, animation);
+
+		auto a = asset_table.get_asset<Animation>(name);
+		for (auto f : a->frames) {
+			tdns_log.write(f);
+		}
+	}
 }

@@ -7,8 +7,13 @@ function Spader:init()
    print('Name: ' .. self:get_name())
 
    local graphic = self:add_component("Graphic")
+   graphic.scale = { x = .1, y = .1 }
+   
+   local animation = self:add_component("Animation")
+   animation:add("SpaderStand", { "spader_stand_1.png" })
+   animation:begin("SpaderStand")
+   
    local position = self:add_component("Position")
-   print('Position: ' .. position.world.x .. ', ' .. position.world.y)
 end
 
 function Spader:update(dt)

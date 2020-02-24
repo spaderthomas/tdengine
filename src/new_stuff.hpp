@@ -46,6 +46,14 @@ namespace NewStuff {
 
 		std::map<int, std::unique_ptr<Entity>> entities;
 	};
+
+	struct Animation : Asset {
+		std::vector<std::string> frames;
+		void add_frames(std::vector<std::string>& frames_to_add);
+		void add_frame(std::string& sprite_name);
+		std::string get_frame(int frame);
+	};
+
 		
 	struct Scene {
 		std::string name;
@@ -54,11 +62,11 @@ namespace NewStuff {
 		void add_entity(EntityHandle entity);
 		void update(float dt);
 	};
-	
 	struct SceneManager {
 		std::map<std::string, Scene*> scenes;
 		
 		Scene* create_scene(std::string name);
+		Scene* get_scene(std::string name);
 	};
 
 	
@@ -79,6 +87,9 @@ namespace NewStuff {
 		void draw(EntityHandle entity, Render_Flags flags);
 		void render_for_frame();
 	} RenderEngine;
-	
-	void draw_entity(EntityHandle me, Render_Flags flags);
+
+	// API
+	void draw_entity(EntityHandle me, Render_Flags flags = Render_Flags::None);
+	Sprite* get_frame(std::string animation, int frame);
+	void register_animation(std::string name, std::vector<std::string> frames);
 }

@@ -30,5 +30,6 @@ struct Animation : Asset {
 	void add_frames(TableNode* frames_table);
 	void add_frames(std::vector<std::string>& frames_to_add);
 	void add_frame(std::string& sprite_name);
+	Sprite* get_frame(int frame);
 };
 

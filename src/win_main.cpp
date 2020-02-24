@@ -258,8 +258,9 @@ int main() {
 		
 		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();
-		active_layer->update(seconds_per_update);
-		active_layer->render();
+		Lua.update(seconds_per_update);
+		//active_layer->update(seconds_per_update);
+		//active_layer->render();
 
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
 		ImGui::Render();

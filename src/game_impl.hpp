@@ -216,7 +216,7 @@ void Game::update(float dt) {
 }
 
 void Game::render() {
-	active_level->draw();
+	//active_level->draw();
 	renderer.render_for_frame();
 	text_box.render();
 }

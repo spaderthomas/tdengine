@@ -63,21 +63,27 @@ void LuaState::test() {
 	component_type["get_entity"] = &NewStuff::Component::get_entity;
 
     state["tdapi"] = state.create_table();
-	state["tdapi"]["draw_entity"] = &draw_entity;
+	state["tdapi"]["draw_entity"] = &NewStuff::draw_entity;
+	state["tdapi"]["register_animation"] = &NewStuff::register_animation;
 
 	script_file(RelativePath("tdengine.lua"));
 	script_dir(RelativePath("entities"));
 	script_dir(RelativePath("components"));
+}
 
-	std::shared_ptr<NewStuff::EntityManager> entity_manager = std::make_shared<NewStuff::EntityManager>();
-	auto spader = entity_manager->create_entity("Spader");
-	//auto tom = entity_manager->create_entity("Tom");
-
-	std::shared_ptr<NewStuff::SceneManager> scene_manager = std::make_shared<NewStuff::SceneManager>();
-	auto scene = scene_manager->create_scene("FirstScene");
+void LuaState::update(float dt) {
+	static std::shared_ptr<NewStuff::EntityManager> entity_manager = std::make_shared<NewStuff::EntityManager>();
+	static std::shared_ptr<NewStuff::SceneManager> scene_manager = std::make_shared<NewStuff::SceneManager>();
+	
+	static auto spader = entity_manager->create_entity("Spader");
+	static auto scene = scene_manager->create_scene("FirstScene");
+	
 	scene->add_entity(spader);
-	//scene->add_entity(tom);
-	scene->update(1);
+	scene->update(dt);
+
+	draw_entity(spader);
+
+	NewStuff::RenderEngine.render_for_frame();
 }
 
 sol::table LuaState::get_entity(int id) {

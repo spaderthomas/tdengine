@@ -36,6 +36,11 @@ void Animation::add_frame(std::string& sprite_name) {
 	frames.push_back(frame);
 }
 
+Sprite* Animation::get_frame(int frame) {
+	return frames[frame];
+}
+
+
 bool Sprite::is_initialized() const{
 	return (nullptr != this->atlas);
 }
