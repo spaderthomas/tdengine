@@ -3,7 +3,6 @@ local inspect = require('inspect')
 
 Graphic = class('Graphic')
 function Graphic:init()
-   print("Graphic:init()")
    self.scale = { x = 0, y = 0 }
    self.layer = 0
    self.animations = {}

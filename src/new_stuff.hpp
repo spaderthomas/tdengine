@@ -92,4 +92,5 @@ namespace NewStuff {
 	void draw_entity(EntityHandle me, Render_Flags flags = Render_Flags::None);
 	Sprite* get_frame(std::string animation, int frame);
 	void register_animation(std::string name, std::vector<std::string> frames);
+	std::vector<std::string> get_frames(std::string animation_name);
 }

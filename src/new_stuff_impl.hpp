@@ -366,4 +366,15 @@ namespace NewStuff {
 			tdns_log.write(f);
 		}
 	}
+	
+	std::vector<std::string> get_frames(std::string animation_name) {
+		Animation* animation = asset_table.get_asset<Animation>(animation_name);
+		if (!animation) {
+			tdns_log.write("Asked for animation's frames, but could not find that animation");
+			tdns_log.write("Animation name: " + animation_name);
+			return {};
+		}
+		
+		return animation->frames;
+	}
 }

@@ -58,20 +58,24 @@ entity_mt.__index = function(entity, function_name)
 end
 
 function update_entity(id, dt)
-   print("update_entity()")
    local entity = Entities[id]
    entity:update(dt)
 end
 
 function update_component(id, dt)
-   print("update_component()")
    local component = Components[id]
-   component:update()
+   component:update(dt)
 end
 
 function on_entity_created(cpp_ref)
-   -- Construct the entity with a do-nothing constructor
+   -- Find the matching type in Lua
    EntityType = _G[cpp_ref:get_name()]
+   if not EntityType then
+	  print('Tried to create an entity of type' .. cpp_ref:get_name() .. ', but no such entity exists')
+	  return
+   end
+   
+   -- Construct the entity with a do-nothing constructor
    entity = EntityType:new()
    
    -- Inject the table with a reference back to the C++ entity
@@ -91,6 +95,11 @@ end
 
 function on_component_created(cpp_ref)
    ComponentType = _G[cpp_ref:get_name()]
+   if not ComponentType then
+	  print('Tried to create an component of type' .. cpp_ref:get_name() .. ', but no such component exists')
+	  return
+   end
+
    component = ComponentType:new()
    
    component.cpp_ref = cpp_ref

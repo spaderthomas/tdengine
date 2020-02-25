@@ -65,6 +65,7 @@ void LuaState::test() {
     state["tdapi"] = state.create_table();
 	state["tdapi"]["draw_entity"] = &NewStuff::draw_entity;
 	state["tdapi"]["register_animation"] = &NewStuff::register_animation;
+	state["tdapi"]["get_frames"] = &NewStuff::get_frames;
 
 	script_file(RelativePath("tdengine.lua"));
 	script_dir(RelativePath("entities"));
