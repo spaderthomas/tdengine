@@ -502,7 +502,7 @@ struct ScriptPath {
 };
 
 struct AbsolutePath {
-	AbsolutePath(std::string raw) {
+	explicit AbsolutePath(std::string raw) {
 		normalize_path(raw);
 		this->path = raw;
 	}
@@ -511,6 +511,12 @@ struct AbsolutePath {
 		normalize_path(absolute);
 		this->path = absolute;
 	}
+
+	// Script paths are stored absolutely, so we can convert for free
+	AbsolutePath(ScriptPath absolute) {
+		this->path = absolute.path;
+	}
+
 	
 	std::string path;
 };
@@ -1383,3 +1389,27 @@ Defer<F> operator+( defer_dummy, F&& f )
 }
 
 #define defer auto _defer( __LINE__ ) = defer_dummy( ) + [ & ]( )
+
+using FileChangedCallback = std::function<void()>;
+struct FileWatcher {
+	std::map<std::string, std::filesystem::file_time_type> time_map;
+	std::map<std::string, FileChangedCallback> action_map;
+
+	void watch(AbsolutePath file, FileChangedCallback on_change) {
+		time_map[file.path] = std::filesystem::last_write_time(file.path);
+		action_map[file.path] = on_change;
+	}
+
+	void update() {
+		for (auto& [path, last_known_write_time] : time_map) {
+			auto last_write_time = std::filesystem::last_write_time(path);
+			if (last_known_write_time < last_write_time) {
+				tdns_log.write("Reloaded file " + path);
+				time_map[path] = last_write_time;
+				action_map[path]();
+			}
+		}
+	}
+	
+};
+FileWatcher file_watcher;

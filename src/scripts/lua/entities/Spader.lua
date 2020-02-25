@@ -26,7 +26,12 @@ function Spader:init()
    local position = self:add_component("Position")
 end
 
+function do_stuff()
+   print('dfasdfadsfadsfdasfasdfdasfadsfdasf')
+end
+
 function Spader:update(dt)
+   do_stuff()
 end
 
 

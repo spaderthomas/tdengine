@@ -46,6 +46,11 @@ void LuaState::script_file(ScriptPath path) {
 		tdns_log.write("Failed to script file: " + path.path);
 		tdns_log.write(error.what());
 	}
+
+	file_watcher.watch(path, [this, path](){
+		tdns_log.write("Reloaded Lua script: " + path.path);
+		this->script_file(path);
+	});
 }
 
 void LuaState::test() {

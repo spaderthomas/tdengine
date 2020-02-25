@@ -227,6 +227,8 @@ int main() {
 	while(!glfwWindowShouldClose(g_window)) {
 		double frame_start_time = glfwGetTime();
 
+		file_watcher.update();
+
 		if (send_kill_signal) return 0;
 		
 		// SETUP
