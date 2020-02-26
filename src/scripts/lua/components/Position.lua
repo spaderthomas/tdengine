@@ -1,6 +1,4 @@
-local class = require('middleclass')
-
-Position = class('Position')
+Position = tdapi.component('Position')
 function Position:init()
    self.world = { x = 0, y = 0 }
 end

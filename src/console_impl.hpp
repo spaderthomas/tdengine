@@ -242,6 +242,7 @@ void  Console::ExecCommand(char* command_line)
 	}
 	History.push_back(Strdup(command_line));
 
+	
 	// If this gets set, we know not to pipe the command down to the layer-specific handler
 	bool ran_generic_command = false;
 
@@ -251,6 +252,24 @@ void  Console::ExecCommand(char* command_line)
 		std::string message = "Ran into an error parsing command. ";
 		message += "Command was: " + copy;
 		AddLog(message.c_str());
+	}
+
+	// Swap modes
+	if (tokens[0] == "lua") {
+		if (this->mode == Mode::Lua) {
+			AddLog("Exiting the Lua interpreter");
+			this->mode = Mode::Engine;
+		}
+		else {
+			this->mode = Mode::Lua;
+		}
+		return;
+	}
+
+	// Feed the input into the interpreter if we're in Lua mode
+	if (this->mode == Mode::Lua) {
+		Lua.state.script(command_line);
+		return;
 	}
 	
 	if (tokens[0] == "editor") {
@@ -372,7 +391,7 @@ void  Console::ExecCommand(char* command_line)
 		game.do_cutscene(which);
 	} else if (tokens[0] == "exit") {
 		send_kill_signal = true;
-	}
+	} 
 	
 	
 	if (!ran_generic_command) active_layer->exec_console_cmd(command_line);

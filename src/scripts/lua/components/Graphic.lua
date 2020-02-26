@@ -1,7 +1,4 @@
-local class = require('middleclass')
-local inspect = require('inspect')
-
-Graphic = class('Graphic')
+Graphic = tdapi.component('Graphic')
 function Graphic:init()
    self.scale = { x = 0, y = 0 }
    self.layer = 0
@@ -11,5 +8,4 @@ end
 
 
 function Graphic:update()
-   print('hej!')
 end

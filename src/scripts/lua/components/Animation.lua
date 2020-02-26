@@ -1,9 +1,6 @@
-local class = require('middleclass')
-local inspect = require('inspect')
-
 local DEFAULT_FRAME_TIME = 8 / 60
 
-Animation = class('Animation')
+Animation = tdapi.component('Animation')
 function Animation:init()
    self.animations = {}
    self.current = ""

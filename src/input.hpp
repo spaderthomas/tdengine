@@ -3,6 +3,8 @@ typedef int GLFW_KEY_TYPE;
 #define GLFW_KEY_SUPER 350
 #define GLFW_KEY_SHIFT 351
 
+#define ASCII_OPAREN     40
+#define ASCII_CPAREN     41
 #define ASCII_QMARK      63
 #define ASCII_UNDERSCORE 95
 
@@ -75,6 +77,14 @@ void fill_imgui_input() {
 		}
 		if (key == GLFW_KEY_SLASH && global_input.chord(GLFW_KEY_SHIFT, GLFW_KEY_SLASH)) {
 			io.AddInputCharacter(ASCII_QMARK);
+			used_shift = true;
+		}
+		if (key == GLFW_KEY_9 && global_input.chord(GLFW_KEY_SHIFT, GLFW_KEY_9)) {
+			io.AddInputCharacter(ASCII_OPAREN);
+			used_shift = true;
+		}
+		if (key == GLFW_KEY_0 && global_input.chord(GLFW_KEY_SHIFT, GLFW_KEY_0)) {
+			io.AddInputCharacter(ASCII_CPAREN);
 			used_shift = true;
 		}
 		
