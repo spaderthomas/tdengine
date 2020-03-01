@@ -16,6 +16,30 @@ int LuaState::init() {
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "lua"})));
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "lua", "libs"})));
 
+	sol::usertype<NewStuff::Entity> entity_type = state.new_usertype<NewStuff::Entity>("Entity");
+	entity_type["update"] = &NewStuff::Entity::update;
+	entity_type["add_component"] = &NewStuff::Entity::add_component;
+	entity_type["get_component"] = &NewStuff::Entity::get_component;
+	entity_type["get_name"] = &NewStuff::Entity::get_name;
+	entity_type["get_id"] = &NewStuff::Entity::get_id;
+
+	sol::usertype<NewStuff::Component> component_type = state.new_usertype<NewStuff::Component>("Component");
+	component_type["update"] = &NewStuff::Component::update;
+	component_type["get_name"] = &NewStuff::Component::get_name;
+	component_type["get_id"] = &NewStuff::Component::get_id;
+	component_type["get_entity"] = &NewStuff::Component::get_entity;
+
+    state["tdapi"] = state.create_table();
+	state["tdapi"]["add_entity_to_scene"] = &NewStuff::add_entity_to_scene;
+	state["tdapi"]["draw_entity"] = &NewStuff::draw_entity;
+	state["tdapi"]["register_animation"] = &NewStuff::register_animation;
+	state["tdapi"]["get_frames"] = &NewStuff::get_frames;
+
+	script_file(RelativePath("tdengine.lua"));
+	script_dir(RelativePath("entities"));
+	script_dir(RelativePath("components"));
+	script_dir(RelativePath("scenes"));
+
 	return 0;
 }
 
@@ -54,42 +78,20 @@ void LuaState::script_file(ScriptPath path) {
 }
 
 void LuaState::test() {
-	sol::usertype<NewStuff::Entity> entity_type = state.new_usertype<NewStuff::Entity>("Entity");
-	entity_type["update"] = &NewStuff::Entity::update;
-	entity_type["add_component"] = &NewStuff::Entity::add_component;
-	entity_type["get_component"] = &NewStuff::Entity::get_component;
-	entity_type["get_name"] = &NewStuff::Entity::get_name;
-	entity_type["get_id"] = &NewStuff::Entity::get_id;
+	auto& scene_manager = NewStuff::get_scene_manager();
+	scene_manager.create_scene("Overworld");
 
-	sol::usertype<NewStuff::Component> component_type = state.new_usertype<NewStuff::Component>("Component");
-	component_type["update"] = &NewStuff::Component::update;
-	component_type["get_name"] = &NewStuff::Component::get_name;
-	component_type["get_id"] = &NewStuff::Component::get_id;
-	component_type["get_entity"] = &NewStuff::Component::get_entity;
-
-    state["tdapi"] = state.create_table();
-	state["tdapi"]["draw_entity"] = &NewStuff::draw_entity;
-	state["tdapi"]["register_animation"] = &NewStuff::register_animation;
-	state["tdapi"]["get_frames"] = &NewStuff::get_frames;
-
-	script_file(RelativePath("tdengine.lua"));
-	script_dir(RelativePath("entities"));
-	script_dir(RelativePath("components"));
+	auto& entity_manager = NewStuff::get_entity_manager();
+	entity_manager.create_entity("Spader");
 }
 
 void LuaState::update(float dt) {
-	static std::shared_ptr<NewStuff::EntityManager> entity_manager = std::make_shared<NewStuff::EntityManager>();
-	static std::shared_ptr<NewStuff::SceneManager> scene_manager = std::make_shared<NewStuff::SceneManager>();
+	auto& render_engine = NewStuff::GetRenderEngine();
+	auto& entity_manager = NewStuff::get_entity_manager();
 	
-	static auto spader = entity_manager->create_entity("Spader");
-	static auto scene = scene_manager->create_scene("FirstScene");
-	
-	scene->add_entity(spader);
-	scene->update(dt);
-
-	draw_entity(spader);
-
-	NewStuff::RenderEngine.render_for_frame();
+	//draw_entity(spader);
+	entity_manager.update(dt);
+	render_engine.render();
 }
 
 sol::table LuaState::get_entity(int id) {

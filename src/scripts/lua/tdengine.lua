@@ -1,10 +1,10 @@
 local inspect = require('inspect')
 
-
-
+-- Globals
 Entities = {}
 Components = {}
 
+-- API
 function get_component(entity, kind)
    local component = Entity["get_component"](entity.cpp_ref, kind)
    return Components[component:get_id()]
@@ -47,70 +47,37 @@ function update_component(id, dt)
 end
 
 
-local function _createIndexWrapper(aClass, f)
-  if f == nil then
-    return aClass.__instanceDict
-  else
-    return function(self, name)
-      local value = aClass.__instanceDict[name]
-
-      if value ~= nil then
-        return value
-      elseif type(f) == "function" then
-        return (f(self, name))
-      else
-        return f[name]
-      end
-    end
-  end
-end
-
-local function _declareInstanceMethod(aClass, name, f)
-  aClass.__declaredMethods[name] = f
-  
-  f = name == "__index" and _createIndexWrapper(aClass, f) or f
-  aClass.__instanceDict[name] = f
-end
-
-local function _tostring(self) return inspect(self) end
-local function _call(self, ...) return self:new(...) end
-
-local function _createClass(name)
-  local dict = {}
-  dict.__index = dict
-
-  local aClass = {
+local function _create_class(name)
+  local class = {
 	 name = name,
 	 static = {},
-	 __instanceDict = dict,
-	 __declaredMethods = {},
+	 __methods = {},
   }
 
-
-  -- If the method isn't static, check in the instance methods
+  -- Set up the class to look in its methods if it calls something that isn't a static method
   on_static_method_not_found = function(_, key)
-	return rawget(dict,key)
+	return rawget(class.__methods,key)
   end
   
-  setmetatable(aClass.static, {
+  setmetatable(class.static, {
     __index = on_static_method_not_found
   })
 
+  -- Set the class to add new fields to methods, and to check static methods before instance methods
   local metatable = {
-	__index = aClass.static, -- First, check in the class' static methods
-	__tostring = _tostring,
-	__call = _call,
-	__newindex = _declareInstanceMethod
+	__index = class.static,
+	__tostring = function(self) return self.name end,
+	__newindex = function(class, method_name, method) class.__methods[method_name] = method end
   }
-  setmetatable(aClass, metatable)
+  setmetatable(class, metatable)
 
-  return aClass
+  return class
 end
 
 local function _includeMixin(aClass, mixin)
   assert(type(mixin) == 'table', "mixin must be a table")
 
-  for name,method in pairs(mixin) do
+  for name, method in pairs(mixin) do
     if name ~= "included" and name ~= "static" then
 	  aClass[name] = method
 	end
@@ -126,99 +93,80 @@ local function _includeMixin(aClass, mixin)
   return aClass
 end
 
+local class_mixin = {
+  __tostring   = function(self) return 'Entity Name: ' .. tostring(self.class) end,
+  
+  static = {
+    new = function(self, ...)
+	  -- Inject the instance with basic data needed to exist as a class
+	  local instance = { class = self }
+
+	  -- Give it a 
+	  local metatable = self.__methods
+	  metatable.__index = function(tbl, key)
+		return _G[self.name].__methods[key]
+	  end
+      setmetatable(instance, metatable)
+	  
+      return instance
+    end,
+
+    include = function(self, ...)
+      for _, mixin in ipairs({...}) do _includeMixin(self, mixin) end
+      return self
+    end
+  }
+  
+}
+
+
+-- TDAPI functions we're injecting in for sugar
+
 local entity_mixin = {
-  __tostring   = function(self) return "instance of " .. tostring(self.class) end,
-
-  isInstanceOf = function(self, aClass)
-    return type(aClass) == 'table'
-       and type(self) == 'table'
-       and (self.class == aClass
-            or type(self.class) == 'table'
-            and type(self.class.isSubclassOf) == 'function'
-            and self.class:isSubclassOf(aClass))
-  end,
-
-  -- TDAPI functions we're injecting in for sugar
   get_component = get_component,
   add_component = add_component,
   get_name = get_entity_name,
-  get_id = get_entity_id,
-
-
-  static = {
-    allocate = function(self)
-	  local metatable = self.__instanceDict
-	  metatable.__index = function(tbl, key)
-		return _G[self.name].__instanceDict[key]
-	  end
-      return setmetatable({ class = self }, metatable)
-    end,
-
-    new = function(self, ...)
-      local instance = self:allocate()
-      return instance
-    end,
-
-    include = function(self, ...)
-      assert(type(self) == 'table', "Make sure you that you are using 'Class:include' instead of 'Class.include'")
-      for _,mixin in ipairs({...}) do _includeMixin(self, mixin) end
-      return self
-    end
-  }
-}
-
-local component_mixin = {
-  __tostring   = function(self) return "instance of " .. tostring(self.class) end,
-
-  isInstanceOf = function(self, aClass)
-    return type(aClass) == 'table'
-       and type(self) == 'table'
-       and (self.class == aClass
-            or type(self.class) == 'table'
-            and type(self.class.isSubclassOf) == 'function'
-            and self.class:isSubclassOf(aClass))
-  end,
-
-  -- TDAPI functions we're injecting in for sugar
-  get_component_name = get_component_name,
-  get_component_id = get_component_id,
-
-  static = {
-    allocate = function(self)
-	  local metatable = self.__instanceDict
-	  metatable.__index = function(tbl, key)
-		return _G[self.name].__instanceDict[key]
-	  end
-      return setmetatable({ class = self }, metatable)
-    end,
-
-    new = function(self, ...)
-      local instance = self:allocate()
-      return instance
-    end,
-
-    include = function(self, ...)
-      assert(type(self) == 'table', "Make sure you that you are using 'Class:include' instead of 'Class.include'")
-      for _,mixin in ipairs({...}) do _includeMixin(self, mixin) end
-      return self
-    end
-  }
+  get_id = get_entity_id
 }
 
 function tdapi.entity(name)
-  return _includeMixin(_createClass(name), entity_mixin)
+  local class = _create_class(name)
+  _includeMixin(class, class_mixin)
+  class:include(entity_mixin)
+  return class
 end
+
+local component_mixin = {
+  get_name = get_component_name,
+  get_id = get_component_id
+}
 
 function tdapi.component(name)
-  return _includeMixin(_createClass(name), component_mixin)
+  local class = _create_class(name)
+  _includeMixin(class, class_mixin)
+  class:include(component_mixin)
+  return class
 end
 
+local scene_mixin = {
+  add_entity = function(self, entity)
+	tdapi.add_entity_to_scene(self:get_name(), entity)
+  end
+}
+
+function tdapi.scene(name)
+  local class = _create_class(name)
+  _includeMixin(class, class_mixin)
+  class:include(entity_mixin)
+  class:include(scene_mixin)
+  return class
+end
 
 function on_entity_created(cpp_ref)
    -- Find the matching type in Lua
    EntityType = _G[cpp_ref:get_name()]
    if not EntityType then
-	  print('Tried to create an entity of type' .. cpp_ref:get_name() .. ', but no such entity exists')
+	  print('Tried to create an entity of type ' .. cpp_ref:get_name() .. ', but no such entity exists')
 	  return
    end
    
@@ -237,10 +185,9 @@ function on_entity_created(cpp_ref)
 end
 
 function on_component_created(cpp_ref)
-  print('component created' .. cpp_ref:get_name())
    ComponentType = _G[cpp_ref:get_name()]
    if not ComponentType then
-	  print('Tried to create an component of type' .. cpp_ref:get_name() .. ', but no such component exists')
+	  print('Tried to create an component of type ' .. cpp_ref:get_name() .. ', but no such component exists')
 	  return
    end
 
@@ -255,10 +202,7 @@ function on_component_created(cpp_ref)
    component:init()
 end
 
-
-TestClass = tdapi.entity('TestClass')
-function TestClass:init()
-  print('TestClass:initialize(): I made it!')
-end
-function TestClass:test()
+function on_scene_created(cpp_ref)
+  print('on_scene_created()')
+  print(cpp_ref:get_name())
 end

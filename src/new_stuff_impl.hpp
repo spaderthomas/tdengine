@@ -86,6 +86,17 @@ namespace NewStuff {
 		return components[name];
 	}
 
+	EntityManager& get_entity_manager() {
+		static EntityManager manager;
+		return manager;
+	}
+
+	void EntityManager::update(float dt) {
+		for (auto& [id, entity] : entities) {
+			entity->update(dt);
+		}
+	}
+
 	Entity* EntityManager::get_entity(int id) {
 		return entities[id].get();
 	}
@@ -113,12 +124,12 @@ namespace NewStuff {
 		// Return a handle
 		EntityHandle handle;
 		handle.id = entity.id;
-		handle.manager = this;
 		return handle;
 	}
 
 	EntityHandle::operator bool() const {
-		if (manager->has_entity(id)) return manager->get_entity(id);
+		auto& manager = get_entity_manager();
+		if (manager.has_entity(id)) return manager.get_entity(id);
 		return false;
 	}
 
@@ -127,8 +138,9 @@ namespace NewStuff {
 	}
 
 	Entity* EntityHandle::get() const {
-		fox_assert(manager->has_entity(id));
-		return manager->get_entity(id);
+		auto& manager = get_entity_manager();
+		fox_assert(manager.has_entity(id));
+		return manager.get_entity(id);
 	}
 
 	void Animation::add_frames(std::vector<std::string>& frames_to_add) {
@@ -152,37 +164,50 @@ namespace NewStuff {
 	std::string Animation::get_frame(int frame) {
 		return this->frames[frame];
 	}
-
 	
-	void Scene::add_entity(EntityHandle entity) {
-		entities.push_back(entity);
+	SceneManager& get_scene_manager() {
+		static SceneManager manager;
+		return manager;
 	}
-
-	void Scene::update(float dt) {
-		for (auto entity : entities) {
-			entity->update(dt);
+	
+	EntityHandle SceneManager::create_scene(std::string name) {
+		auto& entity_manager = get_entity_manager();
+		auto scene = entity_manager.create_entity(name);
+		auto& scene_ref = *entity_manager.get_entity(scene.id);
+			
+		// Add it to Lua
+		sol::protected_function on_scene_created = Lua.state["on_scene_created"];
+		auto result = on_scene_created(scene_ref);
+		if (!result.valid()) {
+			sol::error error = result;
+			tdns_log.write("Failed to create scene. Name was: " + name);
+			tdns_log.write(error.what());
 		}
-	}
 	
-	Scene* SceneManager::create_scene(std::string name) {
-		auto scene = new Scene;
-		scene->name = name;
-		scenes[name] = scene;
 		return scene;
 	}
 
-	Scene* SceneManager::get_scene(std::string name) {
+	EntityHandle SceneManager::get_scene(std::string name) {
 		auto it = scenes.find(name);
 		if (it == scenes.end()) {
 			tdns_log.write("Tried to get scene: " + name + ", but it didn't exist.");
-			return (Scene*)nullptr;
+			return EntityHandle{-1};
 		}
 
 		return it->second;
 	}
-
-
-	void _RenderEngine::draw(EntityHandle entity, Render_Flags flags) {
+	EntityHandle SceneManager::add_entity(std::string scene, std::string entity) {
+		// @spader 3/1/20: This function is worthless right now, but you're definitely going to want to do some
+		// bookkeeping to map entities to scenes. So you'd do that here.
+		auto& entity_manager = get_entity_manager();
+		return entity_manager.create_entity(entity);
+	}
+	
+	RenderEngine& GetRenderEngine() {
+		static RenderEngine engine;
+		return engine;
+	}
+	void RenderEngine::draw(EntityHandle entity, Render_Flags flags) {
 		auto check_component_exists = [entity](auto component, std::string component_type) -> bool {
 			if (component) return true;
 			
@@ -208,7 +233,7 @@ namespace NewStuff {
 		render_list.push_back(info);
 	}
 	
-	void _RenderEngine::render_for_frame() {
+	void RenderEngine::render() {
 		bind_sprite_buffers();
 		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
 		glEnableVertexAttribArray(0);
@@ -319,9 +344,16 @@ namespace NewStuff {
 		primitives.clear();
 	}
 
+	void add_entity_to_scene(std::string scene, std::string entity) {
+		auto& scene_manager = get_scene_manager();
+		scene_manager.add_entity(scene, entity);
+	}
+
 	void draw_entity(EntityHandle entity, Render_Flags flags) {
 		if (!entity) return;
-		RenderEngine.draw(entity, flags);
+
+		auto& render_engine = GetRenderEngine();
+		render_engine.draw(entity, flags);
 	}
 	
 	Sprite* get_frame(std::string animation, int frame) {

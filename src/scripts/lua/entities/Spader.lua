@@ -15,7 +15,7 @@ local animations = {
 
 Spader = tdapi.entity('Spader')
 function Spader:init()
-  print(inspect(self))
+  print(self:__tostring())
   local graphic = self:add_component("Graphic")
   graphic.scale = { x = .1, y = .1 }
   
@@ -23,17 +23,16 @@ function Spader:init()
   animation:batch_add(animations)
   animation:begin("spader_walk_down")
   
-  local position_c = self:add_component("Position")
-  local position = self:get_component("Position")
-  print('My position is: ' .. position.world.x)
+  local position = self:add_component("Position")
+
+  self.value = "i'm a value"
 end
 
 function Spader:do_stuff()
-  print('doing stuff')
+  print('do_stuff')
+  --print(self.value)
 end
 
 function Spader:update(dt)
-  local position = self:get_component("Position")
-  print('My position is: ' .. position.world.x)
   --self:do_stuff()
 end

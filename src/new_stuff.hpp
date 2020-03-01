@@ -28,11 +28,10 @@ namespace NewStuff {
 		std::string get_name();
 	};
 	int Entity::next_id = 0;
-
+	
 	struct EntityManager;
 	struct EntityHandle {
 		int id;
-		EntityManager* manager;
 
 		operator bool() const;
 		Entity* operator->() const;
@@ -40,12 +39,14 @@ namespace NewStuff {
 	};
 
 	struct EntityManager {
+		std::map<int, std::unique_ptr<Entity>> entities;
+		
 		Entity* get_entity(int id);
 		bool has_entity(int id);
 		EntityHandle create_entity(std::string name);
-
-		std::map<int, std::unique_ptr<Entity>> entities;
+		void update(float dt);
 	};
+	EntityManager& get_entity_manager();
 
 	struct Animation : Asset {
 		std::vector<std::string> frames;
@@ -54,21 +55,15 @@ namespace NewStuff {
 		std::string get_frame(int frame);
 	};
 
-		
-	struct Scene {
-		std::string name;
-		std::vector<EntityHandle> entities;
-
-		void add_entity(EntityHandle entity);
-		void update(float dt);
-	};
 	struct SceneManager {
-		std::map<std::string, Scene*> scenes;
+		std::map<std::string, EntityHandle> scenes;
 		
-		Scene* create_scene(std::string name);
-		Scene* get_scene(std::string name);
+		EntityHandle create_scene(std::string name);
+		EntityHandle get_scene(std::string name);
+		EntityHandle add_entity(std::string scene, std::string entity);
 	};
-
+	
+	SceneManager& get_scene_manager();
 	
 	enum Render_Flags {
 		None = 0,
@@ -81,16 +76,20 @@ namespace NewStuff {
 		Render_Flags flags;
 	};
 
-	struct _RenderEngine {
+	struct RenderEngine {
 		std::vector<std::function<void()>> primitives;
 		std::vector<Render_Element> render_list;
 		void draw(EntityHandle entity, Render_Flags flags);
-		void render_for_frame();
-	} RenderEngine;
+		void render();
+	};
+
+	RenderEngine& GetRenderEngine();
 
 	// API
 	void draw_entity(EntityHandle me, Render_Flags flags = Render_Flags::None);
-	Sprite* get_frame(std::string animation, int frame);
+	void add_entity_to_scene(std::string scene, std::string entity);
 	void register_animation(std::string name, std::vector<std::string> frames);
 	std::vector<std::string> get_frames(std::string animation_name);
+	
+	Sprite* get_frame(std::string animation, int frame);
 }
