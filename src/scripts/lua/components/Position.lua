@@ -1,4 +1,4 @@
-Position = tdapi.component('Position')
+Position = tdengine.component('Position')
 function Position:init()
    self.world = { x = 0, y = 0 }
 end

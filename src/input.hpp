@@ -1,24 +1,16 @@
-typedef int GLFW_KEY_TYPE;
-#define GLFW_KEY_CONTROL 349
-#define GLFW_KEY_SUPER 350
-#define GLFW_KEY_SHIFT 351
-
-#define ASCII_OPAREN     40
-#define ASCII_CPAREN     41
-#define ASCII_QMARK      63
-#define ASCII_UNDERSCORE 95
-
-struct Input {
+struct InputManager {
 	bool should_update;
 	glm::vec2 px_pos;
 	glm::vec2 screen_pos;
 	glm::vec2 world_pos;
 	glm::vec2 scroll;
+	int8 mask = INPUT_MASK_ALL;
 
 	bool is_down[GLFW_KEY_LAST];
 	bool was_down[GLFW_KEY_LAST];
 
-	bool was_pressed(GLFW_KEY_TYPE id) {
+	bool was_pressed(GLFW_KEY_TYPE id, int mask = INPUT_MASK_NONE) {
+		if (!(this->mask & mask)) return false;
 		return is_down[id] && !was_down[id];
 	}
 
@@ -40,15 +32,20 @@ struct Input {
 		return mod_is_down && was_pressed(cmd_key);
 	}
 
-	void reset_for_next_frame() {
+	void end_frame() {
 		fox_for(input_id, GLFW_KEY_LAST) {
 			was_down[input_id] = is_down[input_id];
 		}
 	}
-
-	
 };
-Input global_input;
+
+// new
+InputManager& get_input_manager() {
+	static InputManager manager;
+	return manager;
+}
+
+InputManager global_input;
 bool game_input_active = true;
 
 // ImGui gets the mouse coordinates every frame, so it knows if we're hovering it

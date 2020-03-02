@@ -220,103 +220,7 @@ When you figure that an entity has to go to a new state, you go to the big list
 of instantiated entities (right now, stored in the Level). You loop through it
 until you find the one that matches. You tell it to move to a new state and load
 a new task. 
-* The Big List
-- Finish the story
-  - Flesh out all of the characters
-  - Write sidequests
-  - Fine-tune pacing
-- Balance the in-game
-  - What creatures are in the game?
-  - What moves are in the game?
-  - What items are in the game?
-  - What abilities are in the game?
-  - How and at what rate do creatures become more powerful?
-  - When do you have access to certain creatures?
-- Balance the out of game
-  - What does the metagame look like?
-  - What macro strategies are available? 
-- Design dungeons
-  - Puzzles
-  - Difficulty
-- Art
-  - Characters
-	- Sprites
-	- Heads
-  - Battle Stuff
-	- Creatures
-	- Attacks
-	- Items
-  - Flashes
-	- Pastoral Society
-	- Smoldering Ruins
-	- Mountain Pass
-	- Frightened Deer
-  - Levels
-	- Boon's House
-	- The City
-	  - Boon's Neighborhood
-	  - The Poor Area
-	  - Ike's Hardware
-	  - The Basement
-	  - The Bar
-	  - Announcement Podium
-	  - The Restaurant
-	- The Forest
-	  - Camp
-	  - Cream Palace
-	- The Desert
-	  - Barr's Outpost
-	  - Landscape
-	- Theseus' Lair
-  - Dungeons
-	- The Warehouse
-	- The Slave Factory
-	- The Police Station
-	- The Capturehouse
-	- The Forest (Boon)
-	- The Forest (Sewell + Evans)
-	- The Tunnel
-	- The Mirage + The House
-	- The Encampment
-	- The Shed
-- Music
-* bugs
-@spader 11/6/2019: Once an animation is added to a GC, you can't edit it. 
-
-@spader 9/7/2019: The install script doesn't work on windows because the
-backslash escapes the closing quotation mark. 
-
-@spader 9/20/2019: You can't select a cactus
-
-@spader 9/20/2019: You can't remove tiles unless you're using undo
-
-@spader 9/22/2019: TDS should do some kind of conversions for integers and
-floats. 
-@spader 9/26/2019: When you add an entity, you have to run the prebuild script
-to get it to show up in the chooser. It's probably better to generate that file
-as TDS or something else that C++ can read and parse into a native structure,
-rather than a native C++ map. 
-
-@spader 11/6/2019: Sometimes I just can't paint over a goddamn tile. Kind of
-appears in alternating rows, but not a hundred percent. Might be an issue with
-the Z axis. 
-
-* polish
-@spader 9/8/2019: Fade-out/Fade-in for doors
-
-@spader 11/6/2019: Put some more thought into the API, and the separation of the
-engine from the game. Do I want to make the engine as a DLL? Is that going to
-supremely fuck all of my precious debuggability? As an alternative, I could
-leave the game and the engine as one binary, but separate the code out such that
-it would be really easy to snip them apart when the time comes. Binaries and
-consumption aside, the real reason I want to do this is to get a better handle
-on the responsibilities of each part. What is the core engine actually doing,
-and what parts of the code truly belong to my game? Still in the back of my mind
-have the idea of someone else using this engine. Wouldn't it be cool if this
-engine was a super lightweight one that you modified by (gasp) actually touching
-the source code? Actions and components are packaged up with it, but you can
-easily mod it to allow user ones, too. 
-* switching layers
+** switching layers
 objective one: i want changes in the editor to effect the other layers. if i add
 some entity in the editor, i want it to be there when i tab over to the
 game. i want it to be there when i tab over to the cutscene tester. but this
@@ -383,7 +287,7 @@ work? as in, should a cutscene only trigger if some certain flags are properly
 set? i don't think so...this game is supposed to be linear. so if that is the
 case, then i can just trigger a cutscene from literally anywhere and it will
 work. 
-* automation
+** automation
 I think that the automation/CLI should be written in C++, so I don't have to
 write a parser for TDS in Python. 
 
@@ -406,7 +310,7 @@ then script that file -- i mean, i already have the table, so it would be smart
 to insert that table into the script tree. 
 
 customize the components
-* fuck
+** fuck
 all of the actions turn into components ("SCRIPTS")
 
 all the current components are default components that are a part of the engine
@@ -430,3 +334,120 @@ are defined in tdscript. so is saved data. the main difference is that you ALSO
 implement update(). 
 
 components get owning entity
+** The Big List
+- Finish the story
+  - Flesh out all of the characters
+  - Write sidequests
+  - Fine-tune pacing
+- Balance the in-game
+  - What creatures are in the game?
+  - What moves are in the game?
+  - What items are in the game?
+  - What abilities are in the game?
+  - How and at what rate do creatures become more powerful?
+  - When do you have access to certain creatures?
+- Balance the out of game
+  - What does the metagame look like?
+  - What macro strategies are available? 
+- Design dungeons
+  - Puzzles
+  - Difficulty
+- Art
+  - Characters
+	- Sprites
+	- Heads
+  - Battle Stuff
+	- Creatures
+	- Attacks
+	- Items
+  - Flashes
+	- Pastoral Society
+	- Smoldering Ruins
+	- Mountain Pass
+	- Frightened Deer
+  - Levels
+	- Boon's House
+	- The City
+	  - Boon's Neighborhood
+	  - The Poor Area
+	  - Ike's Hardware
+	  - The Basement
+	  - The Bar
+	  - Announcement Podium
+	  - The Restaurant
+	- The Forest
+	  - Camp
+	  - Cream Palace
+	- The Desert
+	  - Barr's Outpost
+	  - Landscape
+	- Theseus' Lair
+  - Dungeons
+	- The Warehouse
+	- The Slave Factory
+	- The Police Station
+	- The Capturehouse
+	- The Forest (Boon)
+	- The Forest (Sewell + Evans)
+	- The Tunnel
+	- The Mirage + The House
+	- The Encampment
+	- The Shed
+- Music
+* bugs
+@spader 3/1/2020: Wrap the console interpreter in a safe execution thingy. 
+
+@spader 11/6/2019: Once an animation is added to a GC, you can't edit it. 
+
+@spader 9/7/2019: The install script doesn't work on windows because the
+backslash escapes the closing quotation mark. 
+
+@spader 9/20/2019: You can't select a cactus
+
+@spader 9/20/2019: You can't remove tiles unless you're using undo
+
+@spader 9/22/2019: TDS should do some kind of conversions for integers and
+floats. 
+
+@spader 9/26/2019: When you add an entity, you have to run the prebuild script
+to get it to show up in the chooser. It's probably better to generate that file
+as TDS or something else that C++ can read and parse into a native structure,
+rather than a native C++ map. 
+
+@spader 11/6/2019: Sometimes I just can't paint over a goddamn tile. Kind of
+appears in alternating rows, but not a hundred percent. Might be an issue with
+the Z axis. 
+
+* polish
+@spader 9/8/2019: Fade-out/Fade-in for doors
+
+@spader 11/6/2019: Put some more thought into the API, and the separation of the
+engine from the game. Do I want to make the engine as a DLL? Is that going to
+supremely fuck all of my precious debuggability? As an alternative, I could
+leave the game and the engine as one binary, but separate the code out such that
+it would be really easy to snip them apart when the time comes. Binaries and
+consumption aside, the real reason I want to do this is to get a better handle
+on the responsibilities of each part. What is the core engine actually doing,
+and what parts of the code truly belong to my game? Still in the back of my mind
+have the idea of someone else using this engine. Wouldn't it be cool if this
+engine was a super lightweight one that you modified by (gasp) actually touching
+the source code? Actions and components are packaged up with it, but you can
+easily mod it to allow user ones, too. 
+* features
+@spader 3/1/2020: add time parameter to animation frames
+
+@spader 3/1/2020: Inputs are kind of fucked right now. What's a good way to
+handle chords of all kinds (shift included)? How do the game layers and scripts
+read from the input buffer?
+
+@spader 3/1/2020: could prob autogenerate imgui stuff for entities
+for member in entity:
+  if type(member) == function then pass end
+  if type(member) == number or string then display it
+  if type(member) == table recurse
+
+* closed
+@spader 3/1/2020: Get the rendering system right. Ideally, there's a clever way
+for every entity with a GC to register itself with the rendering engine. You
+could probably do that in the GC constructor -- just call into some API that you
+expose in C++.

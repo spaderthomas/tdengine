@@ -26,8 +26,18 @@ void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int 
 }
 
 void GLFW_Key_Callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-	if (action == GLFW_PRESS) { global_input.is_down[key] = true; }
-    if (action == GLFW_RELEASE) { global_input.is_down[key] = false; } 
+	auto& manager = get_input_manager();
+	
+	if (action == GLFW_PRESS) {
+		global_input.is_down[key] = true;
+		manager.is_down[key] = true;
+	}
+    if (action == GLFW_RELEASE) {
+		global_input.is_down[key] = false;
+		manager.is_down[key] = false;
+	}
+
+	
 }
 
 void GLFW_Scroll_Callback(GLFWwindow* window, double xoffset, double yoffset) {

@@ -4,41 +4,10 @@ local inspect = require('inspect')
 Entities = {}
 Components = {}
 
--- API
-function get_component(entity, kind)
-   local component = Entity["get_component"](entity.cpp_ref, kind)
-   return Components[component:get_id()]
-end
-
-function add_component(entity, kind)
-   local component = Entity["add_component"](entity.cpp_ref, kind)
-   return Components[component:get_id()]
-end
-
-function get_entity_name(entity)
-   return Entity["get_name"](entity.cpp_ref)
-end
-
-function get_entity_id(entity)
-   return Entity["get_id"](entity.cpp_ref)
-end
-
-function get_component_name(component)
-   return Component["get_name"](component.cpp_ref)
-end
-
-function get_component_id(component)
-   return Component["get_id"](component.cpp_ref)
-end
-
-function get_parent(component)
-   local id = Component["get_entity"](component.cpp_ref)
-   return Entities[id]
-end
-
+-- Callbacks
 function update_entity(id, dt)
-   local entity = Entities[id]
-   entity:update(dt)
+  local entity = Entities[id]
+  entity:update(dt)
 end
 
 function update_component(id, dt)
@@ -46,7 +15,53 @@ function update_component(id, dt)
    component:update(dt)
 end
 
+function on_entity_created(cpp_ref)
+   -- Find the matching type in Lua
+   EntityType = _G[cpp_ref:get_name()]
+   if not EntityType then
+	  print('Tried to create an entity of type ' .. cpp_ref:get_name() .. ', but no such entity exists')
+	  return
+   end
+   
+   -- Construct the entity with a do-nothing constructor
+   entity = EntityType:new()
+   
+   -- Inject the table with a reference back to the C++ entity
+   entity.cpp_ref = cpp_ref
+   entity.alive = true
 
+   -- Store it in the global list
+   Entities[cpp_ref:get_id()] = entity
+
+   -- Call user-defined constructor
+   EntityType.init(entity)
+end
+
+function on_component_created(cpp_ref)
+   ComponentType = _G[cpp_ref:get_name()]
+   if not ComponentType then
+	  print('Tried to create an component of type ' .. cpp_ref:get_name() .. ', but no such component exists')
+	  return
+   end
+
+   component = ComponentType:new()
+   
+   component.cpp_ref = cpp_ref
+   component.alive = true
+   component.parent = Entities[cpp_ref:get_entity()]
+
+   Components[cpp_ref:get_id()] = component
+
+   component:init()
+end
+
+function on_scene_created(cpp_ref)
+  print('on_scene_created()')
+  print(cpp_ref:get_name())
+end
+
+
+-- Class stuff
 local function _create_class(name)
   local class = {
 	 name = name,
@@ -119,17 +134,31 @@ local class_mixin = {
   
 }
 
+-- tdengine wrappers for sugar
+function tdengine.draw_entity(entity)
+  tdengine.internal.draw_entity(entity:get_id(), 0)
+end
 
--- TDAPI functions we're injecting in for sugar
 
+-- tdengine functions we're injecting in for sugar
 local entity_mixin = {
-  get_component = get_component,
-  add_component = add_component,
-  get_name = get_entity_name,
-  get_id = get_entity_id
+  get_component = function(self, kind)
+	local component = Entity["get_component"](self.cpp_ref, kind)
+	return Components[component:get_id()]
+  end,  
+  add_component = function(self, kind)
+	local component = Entity["add_component"](self.cpp_ref, kind)
+	return Components[component:get_id()]
+  end,
+  get_name = function(self)
+	return Entity["get_name"](self.cpp_ref)
+  end,
+  get_id = function(self)
+	return Entity["get_id"](self.cpp_ref)
+  end
 }
 
-function tdapi.entity(name)
+function tdengine.entity(name)
   local class = _create_class(name)
   _includeMixin(class, class_mixin)
   class:include(entity_mixin)
@@ -137,11 +166,15 @@ function tdapi.entity(name)
 end
 
 local component_mixin = {
-  get_name = get_component_name,
-  get_id = get_component_id
+  get_name = function(self)
+	return Component["get_name"](self.cpp_ref)
+  end,
+  get_id = function(self)
+	return Component["get_id"](self.cpp_ref)
+  end
 }
 
-function tdapi.component(name)
+function tdengine.component(name)
   local class = _create_class(name)
   _includeMixin(class, class_mixin)
   class:include(component_mixin)
@@ -150,11 +183,11 @@ end
 
 local scene_mixin = {
   add_entity = function(self, entity)
-	tdapi.add_entity_to_scene(self:get_name(), entity)
+	tdengine.add_entity_to_scene(self:get_name(), entity)
   end
 }
 
-function tdapi.scene(name)
+function tdengine.scene(name)
   local class = _create_class(name)
   _includeMixin(class, class_mixin)
   class:include(entity_mixin)
@@ -162,47 +195,4 @@ function tdapi.scene(name)
   return class
 end
 
-function on_entity_created(cpp_ref)
-   -- Find the matching type in Lua
-   EntityType = _G[cpp_ref:get_name()]
-   if not EntityType then
-	  print('Tried to create an entity of type ' .. cpp_ref:get_name() .. ', but no such entity exists')
-	  return
-   end
-   
-   -- Construct the entity with a do-nothing constructor
-   entity = EntityType:new()
-   
-   -- Inject the table with a reference back to the C++ entity
-   entity.cpp_ref = cpp_ref
-   entity.alive = true
 
-   -- Store it in the global list
-   Entities[cpp_ref:get_id()] = entity
-
-   -- Call user-defined constructor
-   EntityType.init(entity)
-end
-
-function on_component_created(cpp_ref)
-   ComponentType = _G[cpp_ref:get_name()]
-   if not ComponentType then
-	  print('Tried to create an component of type ' .. cpp_ref:get_name() .. ', but no such component exists')
-	  return
-   end
-
-   component = ComponentType:new()
-   
-   component.cpp_ref = cpp_ref
-   component.alive = true
-   component.parent = Entities[cpp_ref:get_entity()]
-
-   Components[cpp_ref:get_id()] = component
-
-   component:init()
-end
-
-function on_scene_created(cpp_ref)
-  print('on_scene_created()')
-  print(cpp_ref:get_name())
-end

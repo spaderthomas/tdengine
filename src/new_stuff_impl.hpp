@@ -203,7 +203,7 @@ namespace NewStuff {
 		return entity_manager.create_entity(entity);
 	}
 	
-	RenderEngine& GetRenderEngine() {
+	RenderEngine& get_render_engine() {
 		static RenderEngine engine;
 		return engine;
 	}
@@ -268,7 +268,7 @@ namespace NewStuff {
 		}
 
 		// Main render loop
-		glm::vec2 camera_translation = magnitude_gl_from_screen(active_layer->camera.offset);
+		glm::vec2 camera_translation = magnitude_gl_from_screen(camera_offset);
 		for (auto& depth_level_render_elements : depth_sorted_render_elements) {
 			auto sort_by_world_pos = [](const Render_Element& a, const Render_Element& b) {
 				float wpa = Lua.get_component(a.position->get_id())["world"]["y"];
@@ -349,11 +349,13 @@ namespace NewStuff {
 		scene_manager.add_entity(scene, entity);
 	}
 
-	void draw_entity(EntityHandle entity, Render_Flags flags) {
-		if (!entity) return;
+	void draw_entity(int entity, Render_Flags flags) {
+		EntityHandle handle;
+		handle.id = entity;
+		if (!handle) return;
 
-		auto& render_engine = GetRenderEngine();
-		render_engine.draw(entity, flags);
+		auto& render_engine = get_render_engine();
+		render_engine.draw(handle, flags);
 	}
 	
 	Sprite* get_frame(std::string animation, int frame) {
@@ -408,5 +410,45 @@ namespace NewStuff {
 		}
 		
 		return animation->frames;
+	}
+
+	bool is_key_down(GLFW_KEY_TYPE id, int mask) {
+		auto& manager = get_input_manager();
+		if (!(manager.mask & mask)) return false;
+		
+		return manager.is_down[id];
+	}
+	
+	bool was_key_pressed(GLFW_KEY_TYPE id, int mask) {
+		auto& manager = get_input_manager();
+		if (!(manager.mask & mask)) return false;
+		
+		return manager.is_down[id] && !manager.was_down[id];
+	}
+
+	bool was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask) {
+		auto& manager = get_input_manager();
+		if (!(manager.mask & mask)) return false;
+
+		bool mod_is_down = false;
+		if (mod_key == GLFW_KEY_CONTROL) {
+			mod_is_down |= manager.is_down[GLFW_KEY_RIGHT_CONTROL];
+			mod_is_down |= manager.is_down[GLFW_KEY_LEFT_CONTROL];
+		}
+		if (mod_key == GLFW_KEY_SUPER) {
+			mod_is_down |= manager.is_down[GLFW_KEY_LEFT_SUPER];
+			mod_is_down |= manager.is_down[GLFW_KEY_RIGHT_SUPER];
+		}
+		if (mod_key == GLFW_KEY_SHIFT) {
+			mod_is_down |= manager.is_down[GLFW_KEY_LEFT_SHIFT];
+			mod_is_down |= manager.is_down[GLFW_KEY_RIGHT_SHIFT];
+		}
+		
+		return mod_is_down && manager.was_pressed(cmd_key);
+	}
+
+	void set_camera_offset(float x, float y) {
+		auto& render_engine = get_render_engine();
+		render_engine.camera_offset = { x, y };
 	}
 }

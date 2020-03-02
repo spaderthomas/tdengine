@@ -29,11 +29,24 @@ int LuaState::init() {
 	component_type["get_id"] = &NewStuff::Component::get_id;
 	component_type["get_entity"] = &NewStuff::Component::get_entity;
 
-    state["tdapi"] = state.create_table();
-	state["tdapi"]["add_entity_to_scene"] = &NewStuff::add_entity_to_scene;
-	state["tdapi"]["draw_entity"] = &NewStuff::draw_entity;
-	state["tdapi"]["register_animation"] = &NewStuff::register_animation;
-	state["tdapi"]["get_frames"] = &NewStuff::get_frames;
+    state["tdengine"] = state.create_table();
+	state["tdengine"]["add_entity_to_scene"] = &NewStuff::add_entity_to_scene;
+	state["tdengine"]["register_animation"] = &NewStuff::register_animation;
+	state["tdengine"]["get_frames"] = &NewStuff::get_frames;
+	state["tdengine"]["is_key_down"] = &NewStuff::is_key_down;
+	state["tdengine"]["was_key_pressed"] = &NewStuff::was_key_pressed;
+	state["tdengine"]["was_chord_pressed"] = &NewStuff::was_chord_pressed;
+	state["tdengine"]["set_camera_offset"] = &NewStuff::set_camera_offset;
+
+    state["tdengine"]["internal"] = state.create_table();
+	state["tdengine"]["internal"]["draw_entity"] = &NewStuff::draw_entity;
+
+	state["tdengine"]["InputMask"] = state.create_table();
+	state["tdengine"]["InputMask"]["None"] = INPUT_MASK_NONE;
+	state["tdengine"]["InputMask"]["ImGui"] = INPUT_MASK_IMGUI;
+	state["tdengine"]["InputMask"]["Editor"] = INPUT_MASK_EDITOR;
+	state["tdengine"]["InputMask"]["Game"] = INPUT_MASK_GAME;
+	state["tdengine"]["InputMask"]["All"] = INPUT_MASK_ALL;
 
 	script_file(RelativePath("tdengine.lua"));
 	script_dir(RelativePath("entities"));
@@ -82,11 +95,11 @@ void LuaState::test() {
 	scene_manager.create_scene("Overworld");
 
 	auto& entity_manager = NewStuff::get_entity_manager();
-	entity_manager.create_entity("Spader");
+	entity_manager.create_entity("Editor");
 }
 
 void LuaState::update(float dt) {
-	auto& render_engine = NewStuff::GetRenderEngine();
+	auto& render_engine = NewStuff::get_render_engine();
 	auto& entity_manager = NewStuff::get_entity_manager();
 	
 	//draw_entity(spader);

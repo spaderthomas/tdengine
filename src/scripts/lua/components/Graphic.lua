@@ -1,4 +1,4 @@
-Graphic = tdapi.component('Graphic')
+Graphic = tdengine.component('Graphic')
 function Graphic:init()
    self.scale = { x = 0, y = 0 }
    self.layer = 0
@@ -7,5 +7,6 @@ function Graphic:init()
 end
 
 
-function Graphic:update()
+function Graphic:update(dt)
+  tdengine.draw_entity(self.parent)
 end

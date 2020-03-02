@@ -325,28 +325,7 @@ void Editor::undo_mark() {
 		fn();
 	}
 }
-void Editor::update(float dt) {	
-	if (input.is_down[GLFW_KEY_W]) {
-		camera.offset += glm::vec2{0, .025};
-	}
-	if (input.is_down[GLFW_KEY_S]) {
-		camera.offset += glm::vec2{0, -.025};
-	}
-	if (input.is_down[GLFW_KEY_A]) {
-		camera.offset += glm::vec2{-.025, 0};
-	}
-	if (input.is_down[GLFW_KEY_D]) {
-		camera.offset += glm::vec2{.025, 0};
-	}
-
-	tds_set(camera.offset.x, EDITOR_KEY, POS_KEY, "x");
-	tds_set(camera.offset.y, EDITOR_KEY, POS_KEY, "y");
-	tds_set(active_level->name, EDITOR_KEY, LEVEL_KEY);
-
-	for(auto entity : active_level->entities) {
-		update_animation(entity, dt);
-	}
-	
+void Editor::update(float dt) {
 	// Global ESC -- puts you back in idle
 	if (input.was_pressed(GLFW_KEY_ESCAPE)) {
 		selected = { -1, nullptr };
@@ -722,7 +701,7 @@ void Editor::render() {
 		draw_entity(selected, Render_Flags::Highlighted); 
 	}
 	// Actually make the draw calls to render all the tiles. Anything after this gets painted over it
-	renderer.render_for_frame();
+	//renderer.render_for_frame();
 	
 	// Render the grid
 	if (show_grid) {

@@ -269,7 +269,8 @@ int main() {
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		
 		glfwSwapBuffers(g_window);
-		global_input.reset_for_next_frame();
+		global_input.end_frame();
+		get_input_manager().end_frame();
 		
 		
 		// Wait until we hit the next frame time

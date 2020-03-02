@@ -1,6 +1,6 @@
 struct Level;
 struct Layer {
-	Input input;
+	InputManager input;
 	Level* active_level;
 	Camera camera;
 	Console console;

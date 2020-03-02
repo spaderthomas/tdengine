@@ -1,6 +1,6 @@
 local inspect = require('inspect')
 
-Overworld = tdapi.scene('Overworld')
+Overworld = tdengine.scene('Overworld')
 function Overworld:init()
   print('Overworld:init()')
   self:add_entity('Spader')

@@ -13,7 +13,7 @@ local animations = {
   }
 }
 
-Spader = tdapi.entity('Spader')
+Spader = tdengine.entity('Spader')
 function Spader:init()
   print(self:__tostring())
   local graphic = self:add_component("Graphic")
@@ -25,6 +25,8 @@ function Spader:init()
   
   local position = self:add_component("Position")
 
+  local position = self:get_component("Position")
+  print(position.world.x)
   self.value = "i'm a value"
 end
 

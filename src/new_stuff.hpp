@@ -79,17 +79,23 @@ namespace NewStuff {
 	struct RenderEngine {
 		std::vector<std::function<void()>> primitives;
 		std::vector<Render_Element> render_list;
+		glm::vec2 camera_offset;
+		
 		void draw(EntityHandle entity, Render_Flags flags);
 		void render();
 	};
 
-	RenderEngine& GetRenderEngine();
+	RenderEngine& get_render_engine();
 
 	// API
-	void draw_entity(EntityHandle me, Render_Flags flags = Render_Flags::None);
+	void draw_entity(int entity, Render_Flags flags = Render_Flags::None);
 	void add_entity_to_scene(std::string scene, std::string entity);
 	void register_animation(std::string name, std::vector<std::string> frames);
 	std::vector<std::string> get_frames(std::string animation_name);
+	bool was_key_pressed(GLFW_KEY_TYPE id, int mask = INPUT_MASK_NONE);
+	bool is_key_down(GLFW_KEY_TYPE id, int mask = INPUT_MASK_NONE);
+	bool was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask = INPUT_MASK_NONE);
+	void set_camera_offset(float x, float y);
 	
 	Sprite* get_frame(std::string animation, int frame);
 }

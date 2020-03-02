@@ -39,6 +39,22 @@ typedef unsigned char tdbyte;
 #endif
 
 
+typedef int GLFW_KEY_TYPE;
+#define GLFW_KEY_CONTROL 349
+#define GLFW_KEY_SUPER 350
+#define GLFW_KEY_SHIFT 351
+
+#define ASCII_OPAREN     40
+#define ASCII_CPAREN     41
+#define ASCII_QMARK      63
+#define ASCII_UNDERSCORE 95
+
+#define INPUT_MASK_NONE (1 << 0)
+#define INPUT_MASK_IMGUI (1 << 1)
+#define INPUT_MASK_EDITOR (1 << 2)
+#define INPUT_MASK_GAME (1 << 3)
+#define INPUT_MASK_ALL (0xF)
+
 // STL extensions 
 template<typename vec_type>
 void concat(std::vector<vec_type>& append_to, std::vector<vec_type>& append_from) {
@@ -1413,3 +1429,5 @@ struct FileWatcher {
 	
 };
 FileWatcher file_watcher;
+
+
