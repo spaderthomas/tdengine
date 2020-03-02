@@ -28,10 +28,16 @@ function Editor:init()
   self.last_snap = false
   self.show_grid = false
   self.last_show_grid = false
+
+  print(inspect(imgui))
 end
 
 function Editor:update(dt)
   self:handle_input()
+  --imgui.SetNextWindowSize(300, 300)
+  imgui.Begin("Shit", true)
+  imgui.Button("hello", 40, 40)
+  imgui.End()
 end
 
 function Editor:handle_input()

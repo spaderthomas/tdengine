@@ -25474,6 +25474,10 @@ namespace sol {
 			return *this;
 		}
 
+		lua_State* get_raw() {
+			return unique_base::get();
+		}
+
 		using state_view::get;
 
 		~state() {

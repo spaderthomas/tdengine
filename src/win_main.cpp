@@ -81,6 +81,7 @@ using namespace std::filesystem;
 #include "collision.hpp"
 #include "tdapi.hpp"
 #include "glfw_callbacks.hpp"
+#include "imgui/imgui_lua_bindings.hpp"
 
 #include "new_stuff_impl.hpp"
 #include "console_impl.hpp"

@@ -16,6 +16,8 @@ int LuaState::init() {
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "lua"})));
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "lua", "libs"})));
 
+	LoadImguiBindings();
+
 	sol::usertype<NewStuff::Entity> entity_type = state.new_usertype<NewStuff::Entity>("Entity");
 	entity_type["update"] = &NewStuff::Entity::update;
 	entity_type["add_component"] = &NewStuff::Entity::add_component;
