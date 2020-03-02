@@ -435,10 +435,30 @@ the source code? Actions and components are packaged up with it, but you can
 easily mod it to allow user ones, too. 
 * features
 @spader 3/1/2020: add time parameter to animation frames
+@spader 3/1/2020: entity:print_once()
+@spader 3/1/2020: if/how scenes are going to be in the game. or how you'll
+simulate the features a scene gives you.
+@spader 3/1/2020: tdengine.get_entity(name)
+@spader 3/1/2020: shift map
+@spader 3/1/2020: finish off bitmask logic for inputs
+@spader 3/1/2020: port tile selector
+@spader 3/1/2020: movement component
+@spader 3/1/2020: components you will probably need for level 1...collision,
+interaction, task, tile, dialogue, state
+@spader 3/1/2020: autogenerate tile classes, probably with like a lua for loop?
+tdengine.tile?
+
+
+* closed
+@spader 3/1/2020: Get the rendering system right. Ideally, there's a clever way
+for every entity with a GC to register itself with the rendering engine. You
+could probably do that in the GC constructor -- just call into some API that you
+expose in C++.
 
 @spader 3/1/2020: Inputs are kind of fucked right now. What's a good way to
 handle chords of all kinds (shift included)? How do the game layers and scripts
-read from the input buffer?
+read from the input buffer? n.b. this isn't quite done because I haven't
+/implemented/ when masks are applied, but all the logic is pretty much there
 
 @spader 3/1/2020: could prob autogenerate imgui stuff for entities
 for member in entity:
@@ -446,8 +466,12 @@ for member in entity:
   if type(member) == number or string then display it
   if type(member) == table recurse
 
-* closed
-@spader 3/1/2020: Get the rendering system right. Ideally, there's a clever way
-for every entity with a GC to register itself with the rendering engine. You
-could probably do that in the GC constructor -- just call into some API that you
-expose in C++.
+@spader 3/1/2020: moved engines/managers to jblow style functions
+@spader 3/1/2020: fixed how inputs are masked to different layers, added inputs
+to exported API
+@spader 3/1/2020: found some GLFW key binding definitions
+@spader 3/1/2020: wrote some basic camera code
+@spader 3/1/2020: fixed the imgui binding generator 
+@spader 3/1/2020: figured out how to wrap some of the stuff that doesn't cover.
+@spader 3/1/2020: started porting the editor over to lua
+@spader 3/1/2020: wrote a basic entity viewer 
