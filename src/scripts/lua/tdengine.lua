@@ -140,6 +140,12 @@ function tdengine.draw_entity(entity)
 end
 
 
+imgui.extensions = {
+  PushBoolColor = function()
+	imgui.PushStyleColor_2(imgui.constant.Col.Text, .9, .2, .7, 1)
+  end
+}
+
 -- tdengine functions we're injecting in for sugar
 local entity_mixin = {
   get_component = function(self, kind)

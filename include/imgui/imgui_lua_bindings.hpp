@@ -488,7 +488,23 @@ static void PushImguiEnums(lua_State* lState, const char* tableName) {
   lua_rawset(Lua.state.get_raw(), -3);
 };
 
+namespace ImGuiWrapper {
+	void SetNextWindowSize(float x, float y) {
+		ImGui::SetNextWindowSize(ImVec2(x, y), ImGuiCond_FirstUseEver);
+	}
 
+	void Text(const char* text) {
+		ImGui::Text(text);
+	}
+
+	struct TextFilter {
+		ImGuiTextFilter filter;
+
+		TextFilter() : filter("") {}
+		bool Draw(const char* label) { return filter.Draw(label); }
+		bool PassFilter(const char* text) { return filter.PassFilter(text); }
+	};
+}
 void LoadImguiBindings() {
   if (!Lua.state.get_raw()) {
     fprintf(stderr, "You didn't assign the global Lua.state.get_raw(), either assign that or refactor LoadImguiBindings and RunString\n");
@@ -497,4 +513,14 @@ void LoadImguiBindings() {
   luaL_setfuncs(Lua.state.get_raw(), imguilib, 0);
   PushImguiEnums(Lua.state.get_raw(), "constant");
   lua_setglobal(Lua.state.get_raw(), "imgui");
+
+  Lua.state["imgui"]["Text"] = &ImGuiWrapper::Text;
+  Lua.state["imgui"]["SetNextWindowSize"] = &ImGuiWrapper::SetNextWindowSize;
+
+  sol::usertype<ImGuiWrapper::TextFilter> filter_type = Lua.state.new_usertype<ImGuiWrapper::TextFilter>("TextFilter");
+  filter_type["Draw"] = &ImGuiWrapper::TextFilter::Draw;
+  filter_type["PassFilter"] = &ImGuiWrapper::TextFilter::PassFilter;
+  Lua.state["imgui"]["TextFilter"] = filter_type;
+  
+
 }

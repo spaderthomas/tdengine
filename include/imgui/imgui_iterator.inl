@@ -2439,7 +2439,7 @@ END_ENUM(Cond)
 //struct ImGuiSizeCallbackData
 
 //struct ImGuiPayload
-		 
+
 //struct ImGuiDockFamily
 
 //namespace ImGui

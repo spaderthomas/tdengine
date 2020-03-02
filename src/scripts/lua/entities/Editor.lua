@@ -6,7 +6,7 @@ local EDITOR_STATE = {
   insert = 1,
   edit = 2,
   drag = 3,
-  rectangle_select = 4
+  rectangle_select = 4,
 }
 
 local SELECTION_STATE = {
@@ -29,17 +29,48 @@ function Editor:init()
   self.show_grid = false
   self.last_show_grid = false
 
+  self.filter = imgui.TextFilter.new()
+
   print(inspect(imgui))
 end
 
 function Editor:update(dt)
   self:handle_input()
-  --imgui.SetNextWindowSize(300, 300)
-  imgui.Begin("Shit", true)
-  imgui.Button("hello", 40, 40)
+  imgui.SetNextWindowSize(300, 300)
+  imgui.Begin("The Good Stuff", true)
+  self.filter:Draw("Filter by name")
+  for id, entity in pairs(Entities) do
+	local name = entity:get_name()
+	local passed = self.filter:PassFilter(name)
+	if passed then
+	  if imgui.TreeNode(entity:get_name()) then
+		for member, value in pairs(entity) do
+		  if type(value) == 'string' then
+			imgui.extensions.PushStringColor()
+			imgui.Text(member .. ': ')
+			imgui.PopStyleColor()
+			imgui.SameLine()
+			imgui.Text(value)
+		  elseif type(value) == 'number' then
+			imgui.extensions.PushNumberColor()
+			imgui.Text(member .. ': ')
+			imgui.PopStyleColor()
+			imgui.SameLine()
+			imgui.Text(tostring(value))
+		  elseif type(value) == 'boolean' then
+			imgui.extensions.PushBoolColor()
+			imgui.Text(member .. ': ')
+			imgui.PopStyleColor()
+			imgui.SameLine()
+			imgui.Text(tostring(value))
+		  end -- case statements
+		end -- for loop over entity
+		imgui.TreePop()
+	  end -- TreeNode
+	end -- passed filter
+  end -- for loop over entities
   imgui.End()
 end
-
 function Editor:handle_input()
   self:adjust_camera()
   
@@ -79,4 +110,16 @@ function Editor:adjust_camera()
 
   camera.offset.x = camera.offset.x + offset.x
   camera.offset.y = camera.offset.y + offset.y
+end
+
+imgui.extensions.PushBoolColor = function()
+  imgui.PushStyleColor_2(imgui.constant.Col.Text, .9, .2, .7, 1)
+end
+
+imgui.extensions.PushStringColor = function()
+  imgui.PushStyleColor_2(imgui.constant.Col.Text, .5, .2, .7, 1)
+end
+
+imgui.extensions.PushNumberColor = function()
+  imgui.PushStyleColor_2(imgui.constant.Col.Text, .1, .2, .7, 1)
 end
