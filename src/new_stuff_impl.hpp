@@ -412,39 +412,30 @@ namespace NewStuff {
 		return animation->frames;
 	}
 
+	void enable_input_channel(int channel) {
+		auto& input_manager = get_input_manager();
+		input_manager.enable_channel(channel);
+	}
+	
+	void disable_input_channel(int channel) {
+		auto& input_manager = get_input_manager();
+		input_manager.disable_channel(channel);
+	}
+
 	bool is_key_down(GLFW_KEY_TYPE id, int mask) {
 		auto& manager = get_input_manager();
 		if (!(manager.mask & mask)) return false;
-		
 		return manager.is_down[id];
 	}
 	
 	bool was_key_pressed(GLFW_KEY_TYPE id, int mask) {
 		auto& manager = get_input_manager();
-		if (!(manager.mask & mask)) return false;
-		
-		return manager.is_down[id] && !manager.was_down[id];
+		return manager.was_pressed(id, mask);
 	}
 
 	bool was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask) {
 		auto& manager = get_input_manager();
-		if (!(manager.mask & mask)) return false;
-
-		bool mod_is_down = false;
-		if (mod_key == GLFW_KEY_CONTROL) {
-			mod_is_down |= manager.is_down[GLFW_KEY_RIGHT_CONTROL];
-			mod_is_down |= manager.is_down[GLFW_KEY_LEFT_CONTROL];
-		}
-		if (mod_key == GLFW_KEY_SUPER) {
-			mod_is_down |= manager.is_down[GLFW_KEY_LEFT_SUPER];
-			mod_is_down |= manager.is_down[GLFW_KEY_RIGHT_SUPER];
-		}
-		if (mod_key == GLFW_KEY_SHIFT) {
-			mod_is_down |= manager.is_down[GLFW_KEY_LEFT_SHIFT];
-			mod_is_down |= manager.is_down[GLFW_KEY_RIGHT_SHIFT];
-		}
-		
-		return mod_is_down && manager.was_pressed(cmd_key);
+		return manager.chord(mod_key, cmd_key, mask);
 	}
 
 	void set_camera_offset(float x, float y) {

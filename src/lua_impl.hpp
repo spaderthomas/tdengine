@@ -35,6 +35,8 @@ int LuaState::init() {
 	state["tdengine"]["add_entity_to_scene"] = &NewStuff::add_entity_to_scene;
 	state["tdengine"]["register_animation"] = &NewStuff::register_animation;
 	state["tdengine"]["get_frames"] = &NewStuff::get_frames;
+	state["tdengine"]["enable_input_channel"] = &NewStuff::enable_input_channel;
+	state["tdengine"]["disable_input_channel"] = &NewStuff::disable_input_channel;
 	state["tdengine"]["is_key_down"] = &NewStuff::is_key_down;
 	state["tdengine"]["was_key_pressed"] = &NewStuff::was_key_pressed;
 	state["tdengine"]["was_chord_pressed"] = &NewStuff::was_chord_pressed;
@@ -43,13 +45,14 @@ int LuaState::init() {
     state["tdengine"]["internal"] = state.create_table();
 	state["tdengine"]["internal"]["draw_entity"] = &NewStuff::draw_entity;
 
-	state["tdengine"]["InputMask"] = state.create_table();
-	state["tdengine"]["InputMask"]["None"] = INPUT_MASK_NONE;
-	state["tdengine"]["InputMask"]["ImGui"] = INPUT_MASK_IMGUI;
-	state["tdengine"]["InputMask"]["Editor"] = INPUT_MASK_EDITOR;
-	state["tdengine"]["InputMask"]["Game"] = INPUT_MASK_GAME;
-	state["tdengine"]["InputMask"]["All"] = INPUT_MASK_ALL;
+	state["tdengine"]["InputChannel"] = state.create_table();
+	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
+	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;
+	state["tdengine"]["InputChannel"]["Editor"] = INPUT_MASK_EDITOR;
+	state["tdengine"]["InputChannel"]["Game"] = INPUT_MASK_GAME;
+	state["tdengine"]["InputChannel"]["All"] = INPUT_MASK_ALL;
 
+	script_file(RelativePath("globals.lua"));
 	script_file(RelativePath("tdengine.lua"));
 	script_dir(RelativePath("entities"));
 	script_dir(RelativePath("components"));

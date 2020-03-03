@@ -18,6 +18,7 @@ local SELECTION_STATE = {
 Editor = tdengine.entity('Editor')
 function Editor:init()
   self:add_component('Camera')
+  self:add_component('Debug')
   self:add_component('Input')
 
   self.selected = nil
@@ -31,10 +32,16 @@ function Editor:init()
 
   self.filter = imgui.TextFilter.new()
 
-  print(inspect(imgui))
+  local input = self:get_component('Input')
+  input:set_channel(tdengine.InputChannel.Editor)
+  input:enable()
 end
 
 function Editor:update(dt)
+  local dbg = self:get_component('Debug')
+
+  local input = self:get_component('Input')
+
   self:handle_input()
   imgui.SetNextWindowSize(300, 300)
   imgui.Begin("The Good Stuff", true)

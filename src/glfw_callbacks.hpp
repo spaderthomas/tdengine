@@ -1,26 +1,28 @@
 // GLFW Callbacks
 static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypos) {
+	auto& input_manager = get_input_manager();
 	xpos = std::max<double>(xpos, 0); ypos = std::max<double>(ypos, 0);
-	global_input.px_pos = glm::vec2(xpos, SCREEN_Y - ypos);
-	global_input.screen_pos = glm::vec2(xpos / SCREEN_X, (SCREEN_Y - ypos) / SCREEN_Y);
-	global_input.world_pos = global_input.screen_pos + active_layer->camera.offset;
+	input_manager.px_pos = glm::vec2(xpos, SCREEN_Y - ypos);
+	input_manager.screen_pos = glm::vec2(xpos / SCREEN_X, (SCREEN_Y - ypos) / SCREEN_Y);
+	input_manager.world_pos = input_manager.screen_pos + active_layer->camera.offset; // bleh
 }
 
 void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int mods) {
+	auto& input_manager = get_input_manager();
 	if (button == GLFW_MOUSE_BUTTON_LEFT) {
 		if (action == GLFW_PRESS) {
-			global_input.is_down[GLFW_MOUSE_BUTTON_LEFT] = true;
+			input_manager.is_down[GLFW_MOUSE_BUTTON_LEFT] = true;
 		}
 		if (action == GLFW_RELEASE) {
-			global_input.is_down[GLFW_MOUSE_BUTTON_LEFT] = false;
+			input_manager.is_down[GLFW_MOUSE_BUTTON_LEFT] = false;
 		}
 	}
 	if (button == GLFW_MOUSE_BUTTON_RIGHT) {
 		if (action == GLFW_PRESS) {
-			global_input.is_down[GLFW_MOUSE_BUTTON_RIGHT] = true;
+			input_manager.is_down[GLFW_MOUSE_BUTTON_RIGHT] = true;
 		}
 		if (action == GLFW_RELEASE) {
-			global_input.is_down[GLFW_MOUSE_BUTTON_RIGHT] = false;
+			input_manager.is_down[GLFW_MOUSE_BUTTON_RIGHT] = false;
 		}
 	}
 }
@@ -29,11 +31,9 @@ void GLFW_Key_Callback(GLFWwindow* window, int key, int scancode, int action, in
 	auto& manager = get_input_manager();
 	
 	if (action == GLFW_PRESS) {
-		global_input.is_down[key] = true;
 		manager.is_down[key] = true;
 	}
     if (action == GLFW_RELEASE) {
-		global_input.is_down[key] = false;
 		manager.is_down[key] = false;
 	}
 
@@ -41,7 +41,10 @@ void GLFW_Key_Callback(GLFWwindow* window, int key, int scancode, int action, in
 }
 
 void GLFW_Scroll_Callback(GLFWwindow* window, double xoffset, double yoffset) {
-	global_input.scroll = glm::vec2((float)xoffset, (float)yoffset);
+	auto& input_manager = get_input_manager();
+	
+	input_manager.scroll = glm::vec2((float)xoffset, (float)yoffset);
+	
 	ImGuiIO& io = ImGui::GetIO();
 	io.MouseWheelH += (float)xoffset;
 	io.MouseWheel += (float)yoffset;
@@ -57,7 +60,7 @@ void GLFW_Window_Size_Callback(GLFWwindow* window, int width, int height) {
 }
 
 int init_glfw() {
-		auto result = glfwInit();
+	auto result = glfwInit();
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);

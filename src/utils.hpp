@@ -228,6 +228,7 @@ GLFWwindow* g_window;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
 	glViewport(0, 0, width, height);
 }
+
 /*
 Some unit definitions:
 GL coordinates have 
@@ -1420,7 +1421,6 @@ struct FileWatcher {
 		for (auto& [path, last_known_write_time] : time_map) {
 			auto last_write_time = std::filesystem::last_write_time(path);
 			if (last_known_write_time < last_write_time) {
-				tdns_log.write("Reloaded file " + path);
 				time_map[path] = last_write_time;
 				action_map[path]();
 			}

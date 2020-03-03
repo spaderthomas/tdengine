@@ -1,9 +1,5 @@
 local inspect = require('inspect')
 
--- Globals
-Entities = {}
-Components = {}
-
 -- Callbacks
 function update_entity(id, dt)
   local entity = Entities[id]
@@ -34,8 +30,7 @@ function on_entity_created(cpp_ref)
    Entities[cpp_ref:get_id()] = entity
 
    -- Call user-defined constructor
-   EntityType.init(entity)
-end
+   EntityType.init(entity)end
 
 function on_component_created(cpp_ref)
    ComponentType = _G[cpp_ref:get_name()]
@@ -45,7 +40,7 @@ function on_component_created(cpp_ref)
    end
 
    component = ComponentType:new()
-   
+
    component.cpp_ref = cpp_ref
    component.alive = true
    component.parent = Entities[cpp_ref:get_entity()]
@@ -139,7 +134,17 @@ function tdengine.draw_entity(entity)
   tdengine.internal.draw_entity(entity:get_id(), 0)
 end
 
+function tdengine.get_entity(name)
+  for id, entity in pairs(Entities) do
+	if entity:get_name() == name then
+	  return entity
+	end
+  end
 
+  return nil
+end
+
+-- ImGui extensions
 imgui.extensions = {
   PushBoolColor = function()
 	imgui.PushStyleColor_2(imgui.constant.Col.Text, .9, .2, .7, 1)

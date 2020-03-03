@@ -237,25 +237,12 @@ int main() {
 		glfwPollEvents();
 		
 		// Pass all inputs to ImGui BEFORE ImGui::NewFrame
-		auto io = ImGui::GetIO();
-		give_imgui_mouse_input();
-		if (io.WantCaptureKeyboard || io.WantCaptureMouse)
-			fill_imgui_input();
-		else
-			active_layer->input = global_input;
+		fill_imgui_input();
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		
-		if (global_input.was_pressed(GLFW_KEY_F4)) {
-			active_layer->exit();
-			iactive_layer = (iactive_layer + 1) % all_layers.size();
-			active_layer = all_layers[iactive_layer];
-			active_layer->enter();
-		}
-		if (global_input.was_pressed(GLFW_KEY_F5)) {
-			active_layer->reload();
-		}
-		if (global_input.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
+
+		auto& input_manager = get_input_manager();
+		if (input_manager.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 			show_console = !show_console;
 		}
 		
@@ -270,8 +257,7 @@ int main() {
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		
 		glfwSwapBuffers(g_window);
-		global_input.end_frame();
-		get_input_manager().end_frame();
+		input_manager.end_frame();
 		
 		
 		// Wait until we hit the next frame time
