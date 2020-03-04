@@ -436,12 +436,13 @@ engine was a super lightweight one that you modified by (gasp) actually touching
 the source code? Actions and components are packaged up with it, but you can
 easily mod it to allow user ones, too. 
 * features
+next episode:
+@spader 3/1/2020: movement component
+
 @spader 3/1/2020: add time parameter to animation frames
 @spader 3/1/2020: if/how scenes are going to be in the game. or how you'll
 simulate the features a scene gives you.
-@spader 3/1/2020: shift map
 @spader 3/1/2020: port tile selector
-@spader 3/1/2020: movement component
 @spader 3/1/2020: components you will probably need for level 1...collision,
 interaction, task, tile, dialogue, state
 @spader 3/1/2020: autogenerate tile classes, probably with like a lua for loop?
@@ -476,3 +477,31 @@ to exported API
 @spader 3/1/2020: entity:print_once()
 @spader 3/1/2020: tdengine.get_entity(name)
 @spader 3/1/2020: finish off bitmask logic for inputs
+@spader 3/1/2020: shift map
+* thoughts
+@spader 3/2/2020: I want to avoid writing a lot of wrappers. Ideally, adding a
+binding to the engine is one or two files. Most of the bindings into the engine
+are going to be pretty thin wrappers. The layers look like this: 
+
+Lowest level: ENGINE. 
+Inside here, you have all the subsystems that actually do the work. The
+rendering engine, the physics system, etc. 
+
+Next level: API. 
+Thin wrappers which are directly bound to Lua. The purpose of these
+is to keep my Lua API nice and stable, and let me do whatever tricky things I
+want with function signatures. Varargs, template stuff, whatever. Just register
+a wrapper to Lua. 
+
+Next level: SUGAR.
+Thin wrappers in Lua. The purpose of these are purely sugar. For example, the
+C++ API will take in integer IDs for entities, but I want to pass in the Lua
+table because that looks natural. Write a wrapper that takes the Lua table and
+forwards the ID to C++. 
+
+Last level(?): COMPONENTS.
+Components shouldn't be wrappers around the API per se -- they should put some
+useful functionality on top of it. In other words, they talk to other components
+and then decide what API functions to call. 
+
+That doesn't seem too arduous. 

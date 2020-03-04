@@ -1,6 +1,6 @@
 Input = tdengine.component('Input')
 function Input:init()
-  self.channel = tdengine.InputChannel.Game
+  self.channel = tdengine.InputChannel.Editor
 end
 
 function Input:update()

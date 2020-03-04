@@ -357,6 +357,16 @@ namespace NewStuff {
 		auto& render_engine = get_render_engine();
 		render_engine.draw(handle, flags);
 	}
+
+	void move_entity(int entity) {
+		EntityHandle handle;
+		handle.id = entity;
+		if (!handle) return;
+
+		//auto physics_engine = get_physics_engine();
+		//physics_engine.add_mover(entity);
+	}
+
 	
 	Sprite* get_frame(std::string animation, int frame) {
 		if (animation.empty()) {

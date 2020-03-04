@@ -89,6 +89,7 @@ namespace NewStuff {
 
 	// API
 	void draw_entity(int entity, Render_Flags flags = Render_Flags::None);
+	void move_entity(int entity, float x, float y);
 	void add_entity_to_scene(std::string scene, std::string entity);
 	void register_animation(std::string name, std::vector<std::string> frames);
 	std::vector<std::string> get_frames(std::string animation_name);

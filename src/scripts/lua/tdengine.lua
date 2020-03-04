@@ -134,6 +134,10 @@ function tdengine.draw_entity(entity)
   tdengine.internal.draw_entity(entity:get_id(), 0)
 end
 
+function tdengine.move_entity(entity)
+  tdengine.internal.draw_entity(entity:get_id(), 0)
+end
+
 function tdengine.get_entity(name)
   for id, entity in pairs(Entities) do
 	if entity:get_name() == name then
@@ -206,4 +210,10 @@ function tdengine.scene(name)
   return class
 end
 
-
+function table.shallow_copy(t)
+  local t2 = {}
+  for k,v in pairs(t) do
+    t2[k] = v
+  end
+  return t2
+end
