@@ -1,4 +1,6 @@
 local inspect = require('inspect')
+local GLFW = require('glfw')
+
 local animations = {
   spader_stand = {
 	'spader_stand_1.png'
@@ -43,13 +45,13 @@ function Spader:handle_movement()
 	self.movement:move(0, -1)
   end
   if input:was_key_pressed(GLFW.Keys.L) then
-	self.movement:move(1, -)
+	self.movement:move(1, 0)
   end
   
 end
 
 function Spader:update(dt)
-  self:handle_movement()
+  --self:handle_movement()
 end
 
 
