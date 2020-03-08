@@ -1,4 +1,4 @@
-import os
+import os, platform, subprocess
 import tdbuild.tdbuild as tdbuild
 
 build_options = {
@@ -106,6 +106,8 @@ class Builder(tdbuild.base_builder):
         super().__init__()
 
     def build(self):
+        if platform.system() == 'Windows':
+            subprocess.run(['setup_devenv.bat'], stdout=subprocess.PIPE)
         super().build()
         
     def run(self):
