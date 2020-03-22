@@ -2,20 +2,20 @@ import os, platform, subprocess
 import tdbuild.tdbuild as tdbuild
 
 build_options = {
-    'source_dir': os.path.join('..', 'src'),
+    'source_dir': 'src',
     'include_dirs': [
-        os.path.join('..', 'include'),
-        os.path.join('..', 'include', 'lua')
+        'include',
+        os.path.join('include', 'lua')
     ],
     'lib_dir': os.path.join('..', 'lib'),
     'build_dir': 'build',
     'source_files': [
-        os.path.join("..", "include", "imgui", "imgui.cpp"),
-        os.path.join("..", "include", "imgui", "imgui_demo.cpp"),
-        os.path.join("..", "include", "imgui", "imgui_draw.cpp"),
-        os.path.join("..", "include", "imgui", "imgui_widgets.cpp"),
-        os.path.join("..", "include", "glad", "glad.c"),
-        "win_main.cpp"
+        os.path.join('imgui', 'imgui.cpp'),
+        os.path.join('imgui', 'imgui_demo.cpp'),
+        os.path.join('imgui', 'imgui_draw.cpp'),
+        os.path.join('imgui', 'imgui_widgets.cpp'),
+        'glad.c',
+        'win_main.cpp'
     ],
     'debug': True,
     'cpp': True,
