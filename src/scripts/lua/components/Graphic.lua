@@ -1,3 +1,5 @@
+local inspect = require('inspect')
+
 Graphic = tdengine.component('Graphic')
 function Graphic:init()
    self.scale = { x = 0, y = 0 }

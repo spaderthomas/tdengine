@@ -207,31 +207,6 @@ namespace NewStuff {
 		static RenderEngine engine;
 		return engine;
 	}
-	void RenderEngine::draw(EntityHandle entity, Render_Flags flags) {
-		auto check_component_exists = [entity](auto component, std::string component_type) -> bool {
-			if (component) return true;
-			
-			tdns_log.write("Called draw_entity(), but entity had no" + component_type + " component");
-			tdns_log.write("Entity name: " + entity->get_name());
-			tdns_log.write("Entity ID: " + entity->get_id());
-			return false;
-		};
-		
-		auto graphic = entity->get_component("Graphic");
-		if (!check_component_exists(graphic, "Graphic")) return;
-		auto position = entity->get_component("Position");
-		if (!check_component_exists(position, "Position")) return;
-		auto animation = entity->get_component("Animation");
-		if (!check_component_exists(animation, "Animation")) return;
-
-		Render_Element info = {
-			graphic,
-			position,
-			animation,
-			flags
-		};
-		render_list.push_back(info);
-	}
 	
 	void RenderEngine::render() {
 		bind_sprite_buffers();
@@ -246,23 +221,20 @@ namespace NewStuff {
 		// Sort by Z-position (as if you were going to do the Painter's algorithm
 		// Z positions are integral (since 2D), so just collect elements of each Z-type into collections
 		// Sort these collections by Y-axis (so overlap works properly)
-		auto sort_by_z = [](const Render_Element& a, const Render_Element& b) {
-			float za = Lua.get_component(a.graphic->get_id())["z"];
-			float zb = Lua.get_component(b.graphic->get_id())["z"];
-			return za < zb;
+		auto sort_by_z = [](const auto& a, const auto& b) {
+			return a.layer < b.layer;
 		};
 		sort(render_list.begin(), render_list.end(), sort_by_z);
 
-	
-		int zmax = std::numeric_limits<int>::min();
+
+		// @hack do an in place sort
+		int layer_max = std::numeric_limits<int>::min();
 		std::vector<std::vector<Render_Element>> depth_sorted_render_elements;
 		for (auto& render_element : render_list) {
-			auto& [graphic, position, entity, flags] = render_element;
-			int z = Lua.get_component(graphic->get_id())["layer"];
-			if (z > zmax) {
+			if (render_element.layer > layer_max) {
 				std::vector<Render_Element> new_depth_level;
 				depth_sorted_render_elements.push_back(new_depth_level);
-				zmax = z;
+				layer_max = render_element.layer;
 			}
 			depth_sorted_render_elements.back().push_back(render_element);
 		}
@@ -270,17 +242,15 @@ namespace NewStuff {
 		// Main render loop
 		glm::vec2 camera_translation = magnitude_gl_from_screen(camera_offset);
 		for (auto& depth_level_render_elements : depth_sorted_render_elements) {
-			auto sort_by_world_pos = [](const Render_Element& a, const Render_Element& b) {
-				float wpa = Lua.get_component(a.position->get_id())["world"]["y"];
-				float wpb = Lua.get_component(b.position->get_id())["world"]["y"];
-				return wpa > wpb; 
+			auto sort_by_world_pos = [](const auto& a, const auto& b) {
+				return a.world_pos[1] > b.world_pos[1]; 
 			};
 			stable_sort(depth_level_render_elements.begin(), depth_level_render_elements.end(), sort_by_world_pos);
 		
 			// Draw the correctly sorted elements for a depth level
-			for (auto& [graphic, position, animation, flags] : depth_level_render_elements) {
+			for (auto& r : depth_level_render_elements) {
 				// Swap shader based on flags
-				if (flags & Render_Flags::Highlighted) {
+				if (r.flags & Render_Flags::Highlighted) {
 					if (shader != &highlighted_shader) {
 						shader->end();
 						shader = &highlighted_shader;
@@ -297,33 +267,21 @@ namespace NewStuff {
 					}
 				}
 
-				std::string animation_name = Lua.get_component(animation->get_id())["current"];
-				int frame = Lua.get_component(animation->get_id())["frame"];
-				Sprite* sprite = get_frame(animation_name, frame);
-				if (!sprite) {
-					tdns_log.write("Trying to render, but sprite returned was invalid (nullptr).");
-					tdns_log.write("Animation was: " + animation_name);
-					tdns_log.write("Frame was: " + std::to_string(frame));
-					continue;
-				}
-				if (!sprite->is_initialized()) {
-					tdns_log.write("Trying to render, but the sprite was uninitialized. Sprite was: " + sprite->name);
-					continue;
-				}
-			
-				sprite->atlas->bind();
+				r.sprite->atlas->bind();
 
 				// Point the texture coordinates to this sprite's texcoords
-				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), sprite->tex_coord_offset);
+				glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), r.sprite->tex_coord_offset);
 				glEnableVertexAttribArray(1);
 			
 				SRT transform = SRT::no_transform();
 				transform.scale = {
-					Lua.get_component(graphic->get_id())["scale"]["x"],
-					Lua.get_component(graphic->get_id())["scale"]["y"] };
+					r.scale[0],
+					r.scale[1]
+				};
 				transform.translate = gl_from_screen({
-						Lua.get_component(position->get_id())["world"]["x"],
-						Lua.get_component(position->get_id())["world"]["y"] });
+                    r.world_pos[0],
+					r.world_pos[1]
+				});
 				transform.translate -= camera_translation;
 				auto transform_mat = mat3_from_transform(transform);
 				shader->set_mat3("transform", transform_mat);
@@ -354,8 +312,55 @@ namespace NewStuff {
 		handle.id = entity;
 		if (!handle) return;
 
+		// Grab the relevant components
+		auto check_component_exists = [handle](auto component, std::string component_type) -> bool {
+			if (component) return true;
+			
+			tdns_log.write("Called draw_entity(), but entity had no" + component_type + " component");
+			tdns_log.write("Entity name: " + handle->get_name());
+			tdns_log.write("Entity ID: " + handle->get_id());
+			return false;
+		};
+		
+		auto graphic_ptr = handle->get_component("Graphic");
+		if (!check_component_exists(graphic_ptr, "Graphic")) return;
+		auto graphic = Lua.get_component(graphic_ptr);
+		
+		auto position_ptr = handle->get_component("Position");
+		if (!check_component_exists(position_ptr, "Position")) return;
+		auto position = Lua.get_component(position_ptr);
+		
+		auto animation_ptr = handle->get_component("Animation");
+		if (!check_component_exists(animation_ptr, "Animation")) return;
+		auto animation = Lua.get_component(animation_ptr);
+
+		// Fill out the RenderElement
+		Render_Element r;
+		r.flags = flags;
+		r.layer = graphic["layer"];
+		r.world_pos[0] = position["world"]["x"];
+		r.world_pos[1] = position["world"]["y"];
+		r.scale[0] = graphic["scale"]["x"];
+		r.scale[1] = graphic["scale"]["y"];
+
+		std::string animation_name = animation["current"];
+		int frame = animation["frame"];
+		Sprite* sprite = get_frame(animation_name, frame);
+		if (!sprite) {
+			tdns_log.write("Trying to render, but sprite returned was invalid (nullptr).");
+			tdns_log.write("Animation was: " + animation_name);
+			tdns_log.write("Frame was: " + std::to_string(frame));
+			return;
+		}
+		if (!sprite->is_initialized()) {
+			tdns_log.write("Trying to render, but the sprite was uninitialized. Sprite was: " + sprite->name);
+			return;
+		}
+
+		r.sprite = sprite;
+
 		auto& render_engine = get_render_engine();
-		render_engine.draw(handle, flags);
+		render_engine.render_list.push_back(r);
 	}
 
 	void move_entity(int entity) {

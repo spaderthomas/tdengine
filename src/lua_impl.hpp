@@ -118,3 +118,6 @@ sol::table LuaState::get_entity(int id) {
 sol::table LuaState::get_component(int id) {
 	return state["Components"][id];
 }
+sol::table LuaState::get_component(NewStuff::Component* component) {
+	return state["Components"][component->get_id()];
+}

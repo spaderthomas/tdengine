@@ -51,8 +51,6 @@ function on_component_created(cpp_ref)
 end
 
 function on_scene_created(cpp_ref)
-  print('on_scene_created()')
-  print(cpp_ref:get_name())
 end
 
 

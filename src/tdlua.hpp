@@ -1,3 +1,6 @@
+namespace NewStuff {
+	struct Component;
+}
 struct LuaState {
 	sol::state state;
 
@@ -13,9 +16,9 @@ struct LuaState {
 	void test();
 	void update(float dt);
 
-
 	sol::table get_entity(int id);
 	sol::table get_component(int id);
+	sol::table get_component(NewStuff::Component* component);
 } Lua;
 
 

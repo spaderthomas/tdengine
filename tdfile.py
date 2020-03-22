@@ -15,7 +15,7 @@ build_options = {
         os.path.join('imgui', 'imgui_draw.cpp'),
         os.path.join('imgui', 'imgui_widgets.cpp'),
         'glad.c',
-        'win_main.cpp'
+        'main.cpp'
     ],
     'debug': True,
     'cpp': True,
