@@ -51,7 +51,7 @@ using namespace std::filesystem;
 
 #include "machine_conf.hpp"
 #include "log.hpp"
-#include "db.hpp"
+//#include "db.hpp"
 #include "utils.hpp"
 #include "transform.hpp"
 #include "tdlua.hpp"
@@ -60,53 +60,53 @@ using namespace std::filesystem;
 #include "sprite.hpp"
 #include "shader.hpp"
 #include "texture.hpp"
-#include "dialogue.hpp"
-#include "task.hpp"
-#include "actions/action_includes.hpp"
-#include "battle.hpp"
+//#include "dialogue.hpp"
+//#include "task.hpp"
+//#include "actions/action_includes.hpp"
+//#include "battle.hpp"
 #include "component.hpp"
-#include "components/component_includes.hpp"
-#include "renderer.hpp"
+//#include "components/component_includes.hpp"
+//#include "renderer.hpp"
 #include "new_stuff.hpp"
-#include "entity.hpp"
-#include "camera.hpp"
+//#include "entity.hpp"
+//#include "camera.hpp"
 #include "input.hpp"
-#include "state.hpp"
+//#include "state.hpp"
 #include "console.hpp"
-#include "layer.hpp"
-#include "level.hpp"
-#include "game.hpp"
-#include "editor.hpp"
-#include "layers.hpp"
-#include "collision.hpp"
-#include "tdapi.hpp"
+//#include "layer.hpp"
+//#include "level.hpp"
+//#include "game.hpp"
+//#include "editor.hpp"
+//#include "layers.hpp"
+//#include "collision.hpp"
+//#include "tdapi.hpp"
 #include "glfw_callbacks.hpp"
 #include "imgui/imgui_lua_bindings.hpp"
 
 #include "new_stuff_impl.hpp"
 #include "console_impl.hpp"
-#include "camera_impl.hpp"
-#include "battle_impl.hpp"
-#include "state_impl.hpp"
+//#include "camera_impl.hpp"
+//#include "battle_impl.hpp"
+//#include "state_impl.hpp"
 #include "lua_impl.hpp"
-#include "tdscript_impl.hpp"
-#include "dialogue_impl.hpp"
+//#include "tdscript_impl.hpp"
+//#include "dialogue_impl.hpp"
 #include "shader_impl.hpp"
 #include "transform_impl.hpp"
-#include "actions/action_impl_includes.hpp"
-#include "task_impl.hpp"
+//#include "actions/action_impl_includes.hpp"
+//#include "task_impl.hpp"
 #include "sprite_impl.hpp"
 #include "mesh.hpp"
-#include "components/component_impl_includes.hpp"
+//#include "components/component_impl_includes.hpp"
 #include "draw.hpp"
-#include "entity_impl.hpp"
-#include "collision_impl.hpp"
-#include "level_impl.hpp"
-#include "renderer_impl.hpp"
+//#include "entity_impl.hpp"
+//#include "collision_impl.hpp"
+//#include "level_impl.hpp"
+//#include "renderer_impl.hpp"
 #include "text_impl.hpp"
-#include "editor_impl.hpp"
-#include "game_impl.hpp"
-#include "tdapi_impl.hpp"
+//#include "editor_impl.hpp"
+//#include "game_impl.hpp"
+//#include "tdapi_impl.hpp"
 
 
 int main() {
@@ -116,34 +116,30 @@ int main() {
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
 	
-	component_pool.init();
-	entity_pool.init();
-
-	auto component = create_component_from_string("Tile_Component", nullptr);
+	//component_pool.init();
+	//entity_pool.init();
 
 	init_shaders();
 	init_mesh();
 	create_all_texture_atlas();
-	create_texture("textures/src/other/text_box.png");
 
 	Lua.init();
 	Lua.test();
-	init_tdscript();
-	test_tdscript();
-	change_window_size(tds_string("config", "screen", "default"));
+	//init_tdscript();
+	//change_window_size(tds_string("config", "screen", "default"));
 
 	// Load all the game data out of TDS files
-	init_moves();
-	init_state();
-	init_levels();
+	//init_moves();
+	//init_state();
+	//init_levels();
 	init_fonts();
-	init_cutscenes();
-	init_hero();
-	template_components.init();
+	//init_cutscenes();
+	//init_hero();
+	//template_components.init();
 	
-	game.init();
-	editor.init();
-	battle.init();
+	//game.init();
+	//editor.init();
+	//battle.init();
 	
 	init_collider_matrix();
 	
@@ -222,7 +218,7 @@ int main() {
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
 	
 
-	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), tds_float(CONFIG_KEY, FONTS_KEY, computer_id, "imgui_font_size"));
+	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), 16.0);
    
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {
@@ -248,11 +244,10 @@ int main() {
 		
 		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();
-		Lua.update(seconds_per_update);
-		active_layer->update(seconds_per_update);
-		active_layer->render();
-
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
+		
+		Lua.update(seconds_per_update);
+
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		
@@ -267,11 +262,5 @@ int main() {
 		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
 	}
 
-	TableWriter writer;
-	writer.table = tds_table(EDITOR_KEY);
-	writer.table_name = "editor = ";
-	auto editor_file = absolute_path(path_join({"src", "scripts", "utils", "editor.tds"}));
-	writer.dump(editor_file);
-    
 	return 0;
 }

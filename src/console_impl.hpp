@@ -51,13 +51,6 @@ void  Console::Draw(const char* title)
 		return;
 	}
 
-	if (ImGui::CollapsingHeader("INFO")) {
-		for (auto& [key, value] : layer_map) {
-			if (value == active_layer)
-				ImGui::Text("Layer: %s", key.c_str());
-		}
-	}
-	
 	if (ImGui::SmallButton("Clear")) { ClearLog(); } ImGui::SameLine();
 	bool copy_to_clipboard = ImGui::SmallButton("Copy"); ImGui::SameLine();
 	if (ImGui::SmallButton("Scroll to bottom")) ScrollToBottom = true;
@@ -272,27 +265,8 @@ void  Console::ExecCommand(char* command_line)
 		return;
 	}
 	
-	if (tokens[0] == "editor") {
+	if (tokens[0] == "reload") {
 		ran_generic_command = true;
-		show_console = false;
-		active_layer = &editor;
-		iactive_layer = EDITOR_IDX;
-	}
-	else if (tokens[0] == "game") {
-		ran_generic_command = true;
-		show_console = false;
-		active_layer = &game;
-		iactive_layer = GAME_IDX;
-	}
-	else if (tokens[0] == "battle") {
-		ran_generic_command = true;
-		show_console = false;
-		active_layer = &battle;
-		iactive_layer = BATTLE_IDX;
-	}
-	else if (tokens[0] == "reload") {
-		ran_generic_command = true;
-		active_layer->reload();
 	} else if (tokens[0] == "screen") {
 		ran_generic_command = true;
 
@@ -324,77 +298,12 @@ void  Console::ExecCommand(char* command_line)
 		}
 		
 		std::string which = tokens[1];
-
-		// Just because you always want the game and editor to be synced for sure
-		if (active_layer == &game) {
-			swap_level(&editor, which);
-		}
-		else if (active_layer == &editor) {
-			swap_level(&game, which);
-		}
-		
-		swap_level(active_layer, which);
-	} else if (tokens[0] == "state") {
-		ran_generic_command = true;
-		
-		std::string usage = "format: state {which} {true | false}";
-		if (tokens.size() != 3) {
-			AddLog(usage);
-			return;
-		}
-		
-		std::string which = tokens[1];
-
-		bool value;
-		std::istringstream(tokens[2]) >> std::boolalpha >> value;
-		update_state(which, value);
-	} else if (tokens[0] == "state?") {
-		ran_generic_command = true;
-		
-		std::string usage = "format: state? {which}";
-		if (tokens.size() != 2) {
-			AddLog(usage);
-			return;
-		}
-		
-		std::string which = tokens[1];
-		
-		bool found = false;
-		for (auto& [state_name, value] : game_state) {
-			if (state_name == which) {
-				found = true;
-				std::string message = game_state[which] ?
-					which + " = true" :
-					which + " = false";
-				AddLog(message.c_str());
-			}
-		}
-
-		if (!found) {
-			std::string message = "Sorry, couldn't find the state named [" + which + "]";
-			AddLog(message.c_str());
-		}
-	} else if (tokens[0] == "cutscene") {
-		ran_generic_command = true;
-
-		std::string usage = "format: cutscene {which}";
-		if (tokens.size() != 2) {
-			AddLog(usage);
-			return;
-		}
-		
-		std::string which = tokens[1];
-		if (!does_cutscene_exist(which)) {
-			AddLog("Asked to start cutscene [%s], but couldn't find it.", which);
-		}
-
-		game.do_cutscene(which);
 	} else if (tokens[0] == "exit") {
 		send_kill_signal = true;
 	} 
 	
-	
-	if (!ran_generic_command) active_layer->exec_console_cmd(command_line);
+	// @gut 
+	//if (!ran_generic_command) active_layer->exec_console_cmd(command_line);
 }
 
 

@@ -1,7 +1,0 @@
-levels = {}
-levels.names = {
-	"boon_house",
-	"boon_room",
-    "overworld",
-	"playground",
-}

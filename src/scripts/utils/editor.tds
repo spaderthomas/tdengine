@@ -1,7 +1,0 @@
-editor = {
-	level = "overworld"
-	pos = {
-		x = -0.525000
-		y = -0.400000
-	}
-}

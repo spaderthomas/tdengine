@@ -95,7 +95,8 @@ build_options = {
             'stdc++fs'
         ],
         'extras': [
-            '-pthread'
+            '-pthread',
+            '-fmax-errors=10'
         ],
         'out': 'tdengine'
     }

@@ -1,4 +1,0 @@
-entity.wilson = {}
-entity.wilson.scripts = {}
-entity.wilson.components = {}
-entity.wilson.State_Machine = {}

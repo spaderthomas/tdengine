@@ -12,7 +12,9 @@ void draw_square(Center_Box box, glm::vec4 color) {
 		square->draw(GL_TRIANGLES);
 		solid_shader.end();
 	};
-	renderer.primitives.push_back(draw);
+
+	auto& render_engine = NewStuff::get_render_engine();
+	render_engine.primitives.push_back(draw);
 }
 
 
@@ -38,8 +40,9 @@ void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 
 		solid_shader.end();
 	};
-	renderer.primitives.push_back(draw);
-
+	
+	auto& render_engine = NewStuff::get_render_engine();
+	render_engine.primitives.push_back(draw);
 }
 void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
 	basis = gl_from_screen(basis);
@@ -56,7 +59,8 @@ void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
 		line->draw(GL_LINES);
 		solid_shader.end();
 	};
-	renderer.primitives.push_back(draw);
+	auto& render_engine = NewStuff::get_render_engine();
+	render_engine.primitives.push_back(draw);
 }
 void draw_rect_screen(glm::vec2 top_left, glm::vec2 top_right, glm::vec2 bottom_right, glm::vec2 bottom_left, glm::vec4 color) {
 	draw_line_from_points(top_left, top_right, color);
@@ -73,21 +77,6 @@ void draw_rect_screen(Points_Box& points, glm::vec4 color) {
 	draw_rect_screen(top_left, top_right, bottom_right, bottom_left, color);
 }
 void draw_rect_world(Points_Box points, glm::vec4 color) {
-	// @hack I feel like there is a better way to do this than right here.
-	// Perhaps in the renderer? I want to apply this transformation to everything at once. 
-	if (active_layer->camera.following) {
-		def_get_cmp(following, active_layer->camera.following.deref(), Position_Component);
-
-		// Put the box into camera space, which has the bottom left at an entity's position
-		points.left -= following->world_pos.x;
-		points.right -= following->world_pos.x;
-		points.top -= following->world_pos.y;
-		points.bottom -= following->world_pos.y;
-
-		points.left += .5f;
-		points.right += .5f;
-		points.top += .5f;
-		points.bottom += .5f;
-	}
+	// @gut this dont work no more
 	draw_rect_screen(points, color);
 }

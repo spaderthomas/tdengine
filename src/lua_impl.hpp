@@ -13,8 +13,9 @@ void LuaState::prepend_to_search_path(std::string directory) {
 int LuaState::init() {
 	state.open_libraries(sol::lib::base, sol::lib::package, sol::lib::debug, sol::lib::string, sol::lib::math, sol::lib::table);
 	
-	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "lua"})));
-	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "lua", "libs"})));
+	prepend_to_search_path(absolute_path(path_join({"src", "scripts"})));
+	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
+	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "core"})));
 
 	LoadImguiBindings();
 
@@ -52,8 +53,8 @@ int LuaState::init() {
 	state["tdengine"]["InputChannel"]["Game"] = INPUT_MASK_GAME;
 	state["tdengine"]["InputChannel"]["All"] = INPUT_MASK_ALL;
 
-	script_file(RelativePath("globals.lua"));
-	script_file(RelativePath("tdengine.lua"));
+	script_dir(RelativePath("libs"));
+	script_dir(RelativePath("core"));
 	script_dir(RelativePath("entities"));
 	script_dir(RelativePath("components"));
 	script_dir(RelativePath("scenes"));

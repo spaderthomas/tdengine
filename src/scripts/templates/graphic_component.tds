@@ -1,5 +1,0 @@
-templates.Graphic_Component = {
-    Animations = {},
-    default_animation = "",
-    z = 1
-}

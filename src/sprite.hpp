@@ -21,15 +21,3 @@ GLuint Sprite::elem_buffer;
 GLuint Sprite::vao;
 
 void bind_sprite_buffers();
-
-struct Animation : Asset {
-	std::vector<Sprite*> frames;
-	int icur_frame = -1;
-	float time_to_next_frame = 8.f / 60.f;
-	void next_frame();
-	void add_frames(TableNode* frames_table);
-	void add_frames(std::vector<std::string>& frames_to_add);
-	void add_frame(std::string& sprite_name);
-	Sprite* get_frame(int frame);
-};
-

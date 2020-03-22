@@ -17,7 +17,6 @@ local animations = {
 
 Spader = tdengine.entity('Spader')
 function Spader:init()
-  print(self:__tostring())
   local graphic = self:add_component('Graphic')
   graphic.scale = { x = .1, y = .1 }
   

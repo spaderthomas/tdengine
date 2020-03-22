@@ -4,7 +4,7 @@ static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypo
 	xpos = std::max<double>(xpos, 0); ypos = std::max<double>(ypos, 0);
 	input_manager.px_pos = glm::vec2(xpos, SCREEN_Y - ypos);
 	input_manager.screen_pos = glm::vec2(xpos / SCREEN_X, (SCREEN_Y - ypos) / SCREEN_Y);
-	input_manager.world_pos = input_manager.screen_pos + active_layer->camera.offset; // bleh
+	//input_manager.world_pos = input_manager.screen_pos + active_layer->camera.offset; // @gut
 }
 
 void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int mods) {

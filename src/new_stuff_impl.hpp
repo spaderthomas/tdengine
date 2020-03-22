@@ -409,11 +409,6 @@ namespace NewStuff {
 		}
 
 		asset_table.add_asset<Animation>(name, animation);
-
-		auto a = asset_table.get_asset<Animation>(name);
-		for (auto f : a->frames) {
-			tdns_log.write(f);
-		}
 	}
 	
 	std::vector<std::string> get_frames(std::string animation_name) {
