@@ -643,8 +643,6 @@ ADV Metagross
 ADV Snorlax
 ADV Heracross
 DPP Gyarados
-
-
 ** [FL] flora
 The spirit of floral nature.
 

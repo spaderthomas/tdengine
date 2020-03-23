@@ -21,6 +21,13 @@ function Editor:init()
   self:add_component('Debug')
   self:add_component('Input')
 
+  self.options = {
+	 show_bounding_boxes = false,
+	 show_minkowksi = false,
+	 show_imgui_demo = false,
+	 show_framerate = false
+  }
+  
   self.selected = nil
   self.state = EDITOR_STATE.idle
   self.selection_state = SELECTION_STATE.none
@@ -46,6 +53,7 @@ function Editor:update(dt)
   imgui.SetNextWindowSize(300, 300)
   imgui.Begin("tded v2.0", true)
   self:draw_entity_viewer()
+  self:draw_options()
   imgui.End()
 end
 
@@ -104,38 +112,11 @@ function Editor:draw_entity_viewer()
   imgui.End()
 end
 
-imgui.extensions.Entity = function(entity)
-	  -- Make a tree of each KVP the entity has
-	  if imgui.TreeNode(entity:get_name()) then
-		for member, value in pairs(entity) do
-		  if type(value) == 'string' then
-			imgui.Text(member .. ': ')
-			imgui.SameLine()
-			imgui.Text(value)
-		  elseif type(value) == 'number' then
-			imgui.Text(member .. ': ')
-			imgui.SameLine()
-			imgui.Text(tostring(value))
-		  elseif type(value) == 'boolean' then
-			imgui.Text(member .. ': ')
-			imgui.SameLine()
-			imgui.PushStyleColor_2(imgui.constant.Col.Text, value and 0 or 1, value and 1 or 0, 0, 1)
-			imgui.Text(tostring(value))
-			imgui.PopStyleColor()
-		  end
-		end
-		imgui.TreePop()
-	  end
-end
-
-imgui.extensions.PushBoolColor = function()
-  imgui.PushStyleColor_2(imgui.constant.Col.Text, .9, .2, .7, 1)
-end
-
-imgui.extensions.PushStringColor = function()
-  imgui.PushStyleColor_2(imgui.constant.Col.Text, .5, .2, .7, 1)
-end
-
-imgui.extensions.PushNumberColor = function()
-  imgui.PushStyleColor_2(imgui.constant.Col.Text, .1, .2, .7, 1)
+function Editor:draw_options()
+   imgui.Begin('options', true)
+   for option, value in pairs(self.options) do
+	  draw, new_value = imgui.Checkbox(option, value)
+	  self.options[option] = new_value
+   end
+   imgui.End()
 end
