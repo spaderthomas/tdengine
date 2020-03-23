@@ -1,33 +1,58 @@
+struct Component {
+	std::string name;
+	int entity;
+	int id;
+	
+	static int next_id;
+
+	static Component* create(std::string name, int entity);
+	virtual void update(float dt);
+	std::string get_name();
+	int get_id();
+	int get_entity();
+};
+int Component::next_id = 0;
+
 struct Entity {
 	static int next_id;
 	int id;
 	std::string name;
-	std::map<const std::type_info*, ComponentHandle> components;
-	
-	// Component functions	
-	template <typename Component_Type>
-	void remove_component();
-	
-	template <typename Component_Type>
-	Component_Type* get_component();
-	
-	Component* get_component(std::string kind);
-	
-	void clear_components();
-	
-	static EntityHandle create(std::string name);
-	static void destroy(EntityHandle handle);
-	
-	TableNode* save();
-	void load(TableNode* self);
+	std::map<std::string, Component*> components;
 
-	void imgui_visualizer();
+	Entity(std::string name, int id);
+	void update(float dt);
+	Component* add_component(std::string name);
+	Component* get_component(std::string name);
+	int get_id();
+	std::string get_name();
 };
 int Entity::next_id = 0;
 
-Pool<Entity, DEFAULT_POOL_SIZE> entity_pool;
+struct EntityManager;
+struct EntityHandle {
+	int id;
 
-// @spader 3/19/19: Not 100% sure I want to have the hero be
-// a special thing in the global scope, but no reason not to at this point.
-EntityHandle g_hero;
-void init_hero();
+	operator bool() const;
+	Entity* operator->() const;
+	Entity* get() const;
+};
+
+struct EntityManager {
+	std::map<int, std::unique_ptr<Entity>> entities;
+	
+	Entity* get_entity(int id);
+	bool has_entity(int id);
+	EntityHandle create_entity(std::string name);
+	void update(float dt);
+};
+EntityManager& get_entity_manager();
+
+struct SceneManager {
+	std::map<std::string, EntityHandle> scenes;
+	
+	EntityHandle create_scene(std::string name);
+	EntityHandle get_scene(std::string name);
+	EntityHandle add_entity(std::string scene, std::string entity);
+};
+
+SceneManager& get_scene_manager();

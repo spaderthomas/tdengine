@@ -1,3 +1,106 @@
+void draw_square(Center_Box box, glm::vec4 color) {
+	auto draw = [box, color]() -> void {
+		auto transform = SRT::no_transform();
+		transform.translate = gl_from_screen(box.origin);
+		transform.scale = box.extents;
+		auto trans_mat = mat3_from_transform(transform);
+		solid_shader.begin();
+		solid_shader.set_mat3("transform", trans_mat);
+		solid_shader.set_vec4("color", color);
+		square->bind();
+		solid_shader.check();
+		square->draw(GL_TRIANGLES);
+		solid_shader.end();
+	};
+
+	auto& render_engine = get_render_engine();
+	render_engine.primitives.push_back(draw);
+}
+
+
+void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
+	p1 = gl_from_screen(p1);
+	p2 = gl_from_screen(p2);
+	auto draw = [p1, p2, color]() -> void {
+		solid_shader.begin();
+		glm::vec4 color_ = color; //@hack So I can pass as a reference everywhere else. maybe make it a pointer? but then inconsistent :(
+		solid_shader.set_vec4("color", color_);
+
+		SRT transform = SRT::no_transform();
+		//glm::vec2 camera_translation = magnitude_gl_from_screen(glm::vec2(.5, .5) - _camera.offset);
+		transform.scale = p2 - p1;
+		transform.translate = glm::vec3(p1, 1.f);
+		//transform.translate += camera_translation;
+		auto transform_mat = mat3_from_transform(transform);
+		solid_shader.set_mat3("transform", transform_mat);
+
+		line->bind();
+		solid_shader.check();
+		line->draw(GL_LINES);
+
+		solid_shader.end();
+	};
+	
+	auto& render_engine = get_render_engine();
+	render_engine.primitives.push_back(draw);
+}
+void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
+	basis = gl_from_screen(basis);
+	auto draw = [basis, color]() -> void {
+		solid_shader.begin();
+		glm::vec4 color_ = color;
+		solid_shader.set_vec4("color", color_);
+		SRT transform = SRT::no_transform();
+		transform.scale = basis;
+		auto transform_mat = mat3_from_transform(transform);
+		solid_shader.set_mat3("transform", transform_mat);
+		line->bind();
+		solid_shader.check();
+		line->draw(GL_LINES);
+		solid_shader.end();
+	};
+	auto& render_engine = get_render_engine();
+	render_engine.primitives.push_back(draw);
+}
+void draw_rect_screen(glm::vec2 top_left, glm::vec2 top_right, glm::vec2 bottom_right, glm::vec2 bottom_left, glm::vec4 color) {
+	draw_line_from_points(top_left, top_right, color);
+	draw_line_from_points(top_right, bottom_right, color);
+	draw_line_from_points(bottom_right, bottom_left, color);
+	draw_line_from_points(bottom_left, top_left, color);
+}
+
+void draw_rect_screen(Points_Box& points, glm::vec4 color) {
+	glm::vec2 top_left = glm::vec2(points.left, points.top);
+	glm::vec2 top_right = glm::vec2(points.right, points.top);
+	glm::vec2 bottom_right = glm::vec2(points.right, points.bottom);
+	glm::vec2 bottom_left = glm::vec2(points.left, points.bottom);
+	draw_rect_screen(top_left, top_right, bottom_right, bottom_left, color);
+}
+void draw_rect_world(Points_Box points, glm::vec4 color) {
+	// @gut this dont work no more
+	draw_rect_screen(points, color);
+}
+
+void Line_Set::set_max_point() {
+	max_point = 0;
+	for (auto& line : lines) {
+		max_point += line.size();
+	}
+}
+
+int Line_Set::count() {
+	return (int)lines.size();
+}
+
+void Line_Set::add(std::string line) {
+	lines.push_back(line);
+}
+
+std::string& Line_Set::operator[](int i) {
+	fox_assert(i < (int)lines.size());
+	return lines[i];
+}
+
 Line_Set& Text_Box::current_set() {
 	return sets[index_current_line_set];
 }
@@ -112,7 +215,8 @@ void Text_Box::render() {
 	// Draw the box
 	glBindVertexArray(text_box_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
-	auto texture = asset_table.get_asset<Texture>("text_box.png");
+	auto& asset_manager = get_asset_manager();
+	auto texture = asset_manager.get_asset<Texture>("text_box.png");
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture->handle);
 	
@@ -258,3 +362,101 @@ bool Text_Box::is_current_set_displayed() {
 	return (set.point == set.max_point) && waiting;
 }
 
+RenderEngine& get_render_engine() {
+	static RenderEngine engine;
+	return engine;
+}
+
+void RenderEngine::render() {
+	bind_sprite_buffers();
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
+	glEnableVertexAttribArray(0);
+
+	Shader* shader = &textured_shader;
+	shader->begin();
+	shader->set_int("sampler", 0);
+
+	// Algorithm:
+	// Sort by Z-position (as if you were going to do the Painter's algorithm
+	// Z positions are integral (since 2D), so just collect elements of each Z-type into collections
+	// Sort these collections by Y-axis (so overlap works properly)
+	auto sort_by_z = [](const auto& a, const auto& b) {
+		return a.layer < b.layer;
+	};
+	sort(render_list.begin(), render_list.end(), sort_by_z);
+
+
+	// @hack do an in place sort
+	int layer_max = std::numeric_limits<int>::min();
+	std::vector<std::vector<Render_Element>> depth_sorted_render_elements;
+	for (auto& render_element : render_list) {
+		if (render_element.layer > layer_max) {
+			std::vector<Render_Element> new_depth_level;
+			depth_sorted_render_elements.push_back(new_depth_level);
+			layer_max = render_element.layer;
+		}
+		depth_sorted_render_elements.back().push_back(render_element);
+	}
+
+	// Main render loop
+	glm::vec2 camera_translation = magnitude_gl_from_screen(camera_offset);
+	for (auto& depth_level_render_elements : depth_sorted_render_elements) {
+		auto sort_by_world_pos = [](const auto& a, const auto& b) {
+			return a.world_pos[1] > b.world_pos[1]; 
+		};
+		stable_sort(depth_level_render_elements.begin(), depth_level_render_elements.end(), sort_by_world_pos);
+	
+		// Draw the correctly sorted elements for a depth level
+		for (auto& r : depth_level_render_elements) {
+			// Swap shader based on flags
+			if (r.flags & Render_Flags::Highlighted) {
+				if (shader != &highlighted_shader) {
+					shader->end();
+					shader = &highlighted_shader;
+					shader->begin();
+					shader->set_int("sampler", 0);
+				}
+			}
+			else {
+				if (shader != &textured_shader) {
+					shader->end();
+					shader = &textured_shader;
+					shader->begin();
+					shader->set_int("sampler", 0);
+				}
+			}
+
+			r.sprite->atlas->bind();
+
+			// Point the texture coordinates to this sprite's texcoords
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), r.sprite->tex_coord_offset);
+			glEnableVertexAttribArray(1);
+		
+			SRT transform = SRT::no_transform();
+			transform.scale = {
+				r.scale[0],
+				r.scale[1]
+			};
+			transform.translate = gl_from_screen({
+                r.world_pos[0],
+				r.world_pos[1]
+			});
+			transform.translate -= camera_translation;
+			auto transform_mat = mat3_from_transform(transform);
+			shader->set_mat3("transform", transform_mat);
+
+			shader->check();
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		}
+	}
+
+	shader->end();
+	render_list.clear();
+
+
+	// Finally, render all the primitives on top of the screen in the order they were queued.
+	for (auto& draw_func : primitives) {
+		draw_func();
+	}
+	primitives.clear();
+}

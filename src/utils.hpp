@@ -748,53 +748,6 @@ float Sine_Func::eval_at(float point) {
 }
 
 
-struct Asset {
-	std::string name;
-
-	virtual void make_this_type_polymorphic() {}
-};
-
-struct {
-	std::map<std::string, Asset*> assets;
-
-	template <typename Asset_Type>
-	void add_asset(std::string name, Asset_Type* asset) {
-		static_assert(std::is_base_of_v<Asset, Asset_Type>, "To add an asset to the asset table, its type must derive from Asset.");
-		if (assets.find(name) != assets.end()) {
-			tdns_log.write("Tried to register asset with name " + name + ", but it already existed.");
-		}
-
-		asset->name = name;
-		assets[name] = asset;
-	}
-	
-	template <typename Asset_Type>
-	Asset_Type* get_asset(std::string name) const {
-		auto it = assets.find(name);
-		if (it == assets.end()) return nullptr;
-
-		Asset* asset = it->second;
-		Asset_Type* typed_asset = dynamic_cast<Asset_Type*>(asset);
-		if (typed_asset) return typed_asset;
-
-		tdns_log.write("Tried to get asset of name " + name + ". Found it, but requested it as the wrong type.");
-		return nullptr;
-	}
-	
-	template <typename Asset_Type>
-	std::vector<Asset_Type*> get_all() {
-		std::vector<Asset_Type*> all;
-		for (auto& [name, asset] : assets) {
-			Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
-			if (asset_as_type) {
-				all.push_back(asset_as_type);
-			}
-		}
-		
-		return all;
-	}
-} asset_table;
-
 // POOL DECLS
 struct pool_entry_info {
 	bool available : 1;
@@ -868,9 +821,6 @@ struct pool_handle {
 		return (handlecito != -1) && (pool != nullptr);
 	}
 };
-
-struct Entity;
-typedef pool_handle<Entity> EntityHandle;
 
 //@slow
 template<typename Data_Type, int num_elements>

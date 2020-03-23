@@ -1,3 +1,0 @@
-tds
-	filter remove_matches ^\s*#
-    extension tds

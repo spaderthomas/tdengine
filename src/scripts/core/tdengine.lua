@@ -195,9 +195,10 @@ function tdengine.component(name)
 end
 
 local scene_mixin = {
-  add_entity = function(self, entity)
-	tdengine.add_entity_to_scene(self:get_name(), entity)
-  end
+   add_entity = function(self, entity)
+	  print("this ain't implemented son")
+	  --tdengine.add_entity_to_scene(self:get_name(), entity)
+   end
 }
 
 function tdengine.scene(name)

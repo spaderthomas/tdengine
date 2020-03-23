@@ -1,78 +1,40 @@
-// Library includes
-#include "glad/glad.h"
-#include "GLFW/glfw3.h"
-#include "glm/glm.hpp"
-#include <glm/gtc/type_ptr.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
-#define STB_RECT_PACK_IMPLEMENTATION
-#include "stb/stb_rect_pack.h"
-#define STB_IMAGE_WRITE_IMPLEMENTATION
-#include "stb/stb_image_write.h"
-#define STB_TRUETYPE_IMPLEMENTATION
-#include "stb/stb_truetype.h"
-
-#include "nlohmann/json.hpp"
-using json = nlohmann::json;
-
-extern "C" {
-#include <ft2build.h>
-#include FT_FREETYPE_H  
-}
-
-#include "lua_includes.hpp"
-
-#include "sol.hpp"
-
-#include "imgui/imgui.h"
-#include "imgui_impl_glfw_gl3.hpp"
-
-// STL
-#include <stdlib.h>
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <unordered_map>
-#include <map>
-#include <queue>
-#include <string>
-#include <sstream>
-#include <algorithm>
-#include <cmath>
-#include <typeindex>
-#include <optional>
-#include <iomanip>
-#include <limits>
-#include <typeinfo>
-#include <filesystem>
-using namespace std::filesystem;
+#include "libs.hpp"
+#include "stl.hpp"
 
 #include "machine_conf.hpp"
 #include "log.hpp"
-//#include "db.hpp"
 #include "utils.hpp"
+#include "input.hpp"
 #include "transform.hpp"
 #include "tdlua.hpp"
-#include "tdscript.hpp"
-#include "text.hpp"
-#include "sprite.hpp"
+#include "asset.hpp"
+#include "font.hpp"
+#include "draw.hpp"
 #include "shader.hpp"
-#include "texture.hpp"
+#include "entity.hpp"
+#include "console.hpp"
+#include "imgui/imgui_lua_bindings.hpp"
+#include "api.hpp"
+
+#include "api_impl.hpp"
+#include "asset_impl.hpp"
+#include "console_impl.hpp"
+#include "draw_impl.hpp"
+#include "entity_impl.hpp"
+#include "lua_impl.hpp"
+#include "shader_impl.hpp"
+#include "transform_impl.hpp"
+
+//#include "component.hpp"
 //#include "dialogue.hpp"
 //#include "task.hpp"
 //#include "actions/action_includes.hpp"
 //#include "battle.hpp"
-#include "component.hpp"
 //#include "components/component_includes.hpp"
 //#include "renderer.hpp"
-#include "new_stuff.hpp"
 //#include "entity.hpp"
 //#include "camera.hpp"
-#include "input.hpp"
 //#include "state.hpp"
-#include "console.hpp"
 //#include "layer.hpp"
 //#include "level.hpp"
 //#include "game.hpp"
@@ -80,34 +42,22 @@ using namespace std::filesystem;
 //#include "layers.hpp"
 //#include "collision.hpp"
 //#include "tdapi.hpp"
-#include "glfw_callbacks.hpp"
-#include "imgui/imgui_lua_bindings.hpp"
-
-#include "new_stuff_impl.hpp"
-#include "console_impl.hpp"
 //#include "camera_impl.hpp"
 //#include "battle_impl.hpp"
 //#include "state_impl.hpp"
-#include "lua_impl.hpp"
 //#include "tdscript_impl.hpp"
 //#include "dialogue_impl.hpp"
-#include "shader_impl.hpp"
-#include "transform_impl.hpp"
 //#include "actions/action_impl_includes.hpp"
 //#include "task_impl.hpp"
-#include "sprite_impl.hpp"
-#include "mesh.hpp"
 //#include "components/component_impl_includes.hpp"
-#include "draw.hpp"
 //#include "entity_impl.hpp"
 //#include "collision_impl.hpp"
 //#include "level_impl.hpp"
 //#include "renderer_impl.hpp"
-#include "text_impl.hpp"
 //#include "editor_impl.hpp"
 //#include "game_impl.hpp"
 //#include "tdapi_impl.hpp"
-
+// @CANARY
 
 int main() {
 	tdns_log.init();
@@ -172,7 +122,8 @@ int main() {
 	concat(vert_data, square_verts);
 	
 	// Fill tex coordinate buffer
-	auto sprites = asset_table.get_all<Sprite>();
+	auto& asset_manager = get_asset_manager();
+	auto sprites = asset_manager.get_all<Sprite>();
 	for (auto sprite : sprites) {
 		sprite->tex_coord_offset = (GLvoid*)(sizeof(float) * vert_data.size());
 		concat(vert_data, sprite->tex_coords);
@@ -191,7 +142,7 @@ int main() {
 	
 	// Fill GPU mesh buffers
 	glBindVertexArray(Mesh::vao);
-	std::vector<Mesh*> all_meshes = asset_table.get_all<Mesh>();
+	std::vector<Mesh*> all_meshes = asset_manager.get_all<Mesh>();
 	std::vector<float> vert_buffer;
 	std::vector<uint> indx_buffer;
 	
@@ -219,6 +170,7 @@ int main() {
 	
 
 	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), 16.0);
+	ImGui::GetIO().IniFilename = RelativePath("imgui.ini").path.c_str();
    
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {

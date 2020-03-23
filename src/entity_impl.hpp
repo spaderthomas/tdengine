@@ -1,113 +1,181 @@
-template <typename Component_Type>
-void Entity::remove_component() {
-	auto handle = components[&typeid(Component_Type)];
-	component_pool.mark_available(handle);
-	components.erase(&typeid(Component_Type));
-}
-void Entity::clear_components() {
-	for (auto kvp : components) {
-		pool_handle handle = kvp.second;
-		component_pool.mark_available(handle);
+Component* Component::create(std::string name, int entity) {
+	Component* component = new Component;
+	component->id = Component::next_id++;
+	component->name = name;
+	component->entity = entity;
+
+	auto& c = *component;
+	sol::protected_function on_component_created = Lua.state["on_component_created"];
+	auto result = on_component_created(c);
+	if (!result.valid()) {
+		sol::error error = result;
+		tdns_log.write("Failed to create component. Entity ID: " + std::to_string(entity) + ". Component name: " + name + ". Lua error:");
+		tdns_log.write(error.what());
 	}
 
-	this->components.clear();
+	return component;
 }
 
-template <typename Component_Type>
-Component_Type* Entity::get_component() {
-	auto handle = components[&typeid(Component_Type)];
-	
-	// If it returns a zeroed out entry, then the component doesn't exist
-	if (!handle.pool) {
-		return nullptr;
+void Component::update(float dt) {
+	sol::protected_function update_component = Lua.state["update_component"];
+	auto result = update_component(id, dt);
+	if (!result.valid()) {
+		sol::error error = result;
+		tdns_log.write("Component update failed!");
+		tdns_log.write("Component name: " + name);
+		tdns_log.write("Entity ID: " + std::to_string(entity));
+		tdns_log.write(error.what());
 	}
-	
-	// Otherwise, try to grab the component associated with the handle (performing all the safety checks of the handle)
-	return (Component_Type*)handle();
 }
 
-Component* Entity::get_component(std::string kind) {
-	const std::type_info* info = component_map[kind];
-	auto handle = components[info];
-	
-	// @spader 10/7/2019 Unsafe, probably, I just want a pointer to the union. Since every class in the union derives from
-	// Component, it's all good. 
-	return (Component*)handle(); 
+std::string Component::get_name() {
+	return name;
 }
 
-EntityHandle Entity::create(std::string entity_name) {
-	// Creates a template entity from the given Lua ID
-	EntityHandle entity = entity_pool.next_available();
-	entity->id = next_id++;
-	entity->name = entity_name;
-	
-	TableNode* components = tds_table2(ScriptManager.global_scope, "entity", entity_name, "components");
-	for (auto& node : components->assignments) {
-		KVPNode* kvp = (KVPNode*)node;
-		auto type = kvp->key;
-		auto table = (TableNode*)(kvp->value);
-
-		auto component = create_component(type, table);
-		entity->components[component_map[type]] = component;
-	}
-
-	// @spader 10/7/2019: Would be nice if this were "pure" or generic, but I'm not sure where else to do component setup
-	// that requires an entity to be around. It's for the component, not really the entity, so I don't want it in Component::create.
-	// But I don't like it here because it feels hacky. 
-	if_component(task_component, entity, Task_Component) {
-		// Get the entity's current state and initialize the corresponding task
-		std::string entity_state = tds_string(CH_STATE_KEY, entity_name);
-		TableNode* task_table = tds_table(ENTITY_KEY, entity_name, SCRIPTS_KEY, entity_state);
-			
-		Task* task = new Task;
-		task->init_from_table(task_table, entity);
-		task_component->task = task;
-	}
-	
+int Component::get_entity() {
 	return entity;
 }
 
-TableNode* Entity::save() {
-	TableNode* self = new TableNode;
-	tds_set2(self, name, "name");
-	
-	TableNode* components_table = new TableNode;
-	tds_set2(self, components_table, "components");
-	for (auto& kvp : components) {
-		auto& handle = kvp.second;
-		Component* component = (Component*)handle();
-		// 9/8/2019 @hack: If you check for existence, you push a null component back to the vector. Which would make
-		// this null when you try to save it, because it doesn't really exist. Feels hacky. 
-		if (!component) continue;
-		TableNode* saved = component->save();
-		// Components that have no state to save just return nullptr
-		// So if we get that, just ignore saving this component.
-		if (saved) tds_set2(components_table, saved, component->name());
-	}
-	
-	return self;
-}
-void Entity::load(TableNode* table) {
-	TableNode* components_table = tds_table2(table, COMPONENTS_KEY);
-	for (KVPNode* kvp : components_table->assignments) {
-		Component* component = (Component*)get_component(kvp->key);
-		TableNode* component_table = tds_table2(components_table, kvp->key);
-		component->load(component_table);
-	}
-}
-void Entity::destroy(pool_handle<Entity> handle) {
-	handle()->clear_components();
-	entity_pool.mark_available(handle);
+int Component::get_id() {
+	return id;
 }
 
-void Entity::imgui_visualizer() {
-	// Iterate through components, displaying whatever you need
-	for (auto& [type, handle] : components) {
-		Component* component = (Component*)handle();
-		if (component) component->imgui_visualizer();
+Entity::Entity(std::string name, int id) {
+	this->name = name;
+	this->id = id;
+}
+
+int Entity::get_id() {
+	return id;
+}
+
+std::string Entity::get_name() {
+	return name;
+}
+
+void Entity::update(float dt) {
+	sol::protected_function update_entity = Lua.state["update_entity"];
+	auto result = update_entity(id, dt);
+	if (!result.valid()) {
+		sol::error error = result;
+		tdns_log.write("Entity update failed. Entity name: " + name + "Entity ID: " + std::to_string(id) + ". Lua error:");
+		tdns_log.write(error.what());
+	}
+
+	for (auto& [kind, component] : components) {
+		component->update(dt);
 	}
 }
 
-void init_hero() {
-	g_hero = Entity::create("boon");
+Component* Entity::add_component(std::string name) {
+	// Don't double add components
+	if (components.find(name) != components.end()) {
+		return components[name];
+	}
+	
+	auto c = Component::create(name, id);
+	components[name] = c;
+	return c;
+}
+
+Component* Entity::get_component(std::string name) {
+	if (components.find(name) == components.end()) {
+		tdns_log.write("Tried to get a component, but it didn't exist. Entity ID: " + std::to_string(id) + ". Component name: " + name);
+	}
+	return components[name];
+}
+
+EntityManager& get_entity_manager() {
+	static EntityManager manager;
+	return manager;
+}
+
+void EntityManager::update(float dt) {
+	for (auto& [id, entity] : entities) {
+		entity->update(dt);
+	}
+}
+
+Entity* EntityManager::get_entity(int id) {
+	return entities[id].get();
+}
+
+bool EntityManager::has_entity(int id) {
+	return entities.find(id) != entities.end();
+}
+
+EntityHandle EntityManager::create_entity(std::string name) {
+	// Construct the entity
+	auto inserted = entities.emplace(Entity::next_id, std::make_unique<Entity>(name, Entity::next_id));
+	Entity::next_id++;
+	auto it = inserted.first;
+	Entity& entity = *it->second;
+
+	// Add it to Lua
+	sol::protected_function on_entity_created = Lua.state["on_entity_created"];
+	auto result = on_entity_created(entity);
+	if (!result.valid()) {
+		sol::error error = result;
+		tdns_log.write("Failed to create entity. Name was: " + name);
+		tdns_log.write(error.what());
+	}
+
+	// Return a handle
+	EntityHandle handle;
+	handle.id = entity.id;
+	return handle;
+}
+
+EntityHandle::operator bool() const {
+	auto& manager = get_entity_manager();
+	if (manager.has_entity(id)) return manager.get_entity(id);
+	return false;
+}
+
+Entity* EntityHandle::operator->() const {
+	return get();
+}
+
+Entity* EntityHandle::get() const {
+	auto& manager = get_entity_manager();
+	fox_assert(manager.has_entity(id));
+	return manager.get_entity(id);
+}
+
+SceneManager& get_scene_manager() {
+	static SceneManager manager;
+	return manager;
+}
+
+EntityHandle SceneManager::create_scene(std::string name) {
+	auto& entity_manager = get_entity_manager();
+	auto scene = entity_manager.create_entity(name);
+	auto& scene_ref = *entity_manager.get_entity(scene.id);
+		
+	// Add it to Lua
+	sol::protected_function on_scene_created = Lua.state["on_scene_created"];
+	auto result = on_scene_created(scene_ref);
+	if (!result.valid()) {
+		sol::error error = result;
+		tdns_log.write("Failed to create scene. Name was: " + name);
+		tdns_log.write(error.what());
+	}
+
+	return scene;
+}
+
+EntityHandle SceneManager::get_scene(std::string name) {
+	auto it = scenes.find(name);
+	if (it == scenes.end()) {
+		tdns_log.write("Tried to get scene: " + name + ", but it didn't exist.");
+		return EntityHandle{-1};
+	}
+
+	return it->second;
+}
+EntityHandle SceneManager::add_entity(std::string scene, std::string entity) {
+	// @spader 3/1/20: This function is worthless right now, but you're definitely going to want to do some
+	// bookkeeping to map entities to scenes. So you'd do that here.
+	auto& entity_manager = get_entity_manager();
+	return entity_manager.create_entity(entity);
 }

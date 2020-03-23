@@ -1,0 +1,19 @@
+// STL
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <unordered_map>
+#include <map>
+#include <queue>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <cmath>
+#include <typeindex>
+#include <optional>
+#include <iomanip>
+#include <limits>
+#include <typeinfo>
+#include <filesystem>
+using namespace std::filesystem;

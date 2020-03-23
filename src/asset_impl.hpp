@@ -1,20 +1,44 @@
-#define REGULAR_ATLAS_SIZE 1024
-
-struct Texture : Asset {
-	GLuint handle;
-
-	int width, height, num_channels;
-
-	void bind() {
-		glBindTexture(GL_TEXTURE_2D, handle);
+template <typename Asset_Type>
+void AssetManager::add_asset(std::string name, Asset_Type* asset) {
+	static_assert(std::is_base_of_v<Asset, Asset_Type>, "To add an asset to the asset table, its type must derive from Asset.");
+	if (assets.find(name) != assets.end()) {
+		tdns_log.write("Tried to register asset with name " + name + ", but it already existed.");
 	}
-};
 
-// We need this struct so we can identify which rectangle goes to which sprite when we pack them
-struct Name_And_ID {
-	std::string name;
-	int id;
-};
+	asset->name = name;
+	assets[name] = asset;
+}
+
+template <typename Asset_Type>
+Asset_Type* AssetManager::get_asset(std::string name) const {
+	auto it = assets.find(name);
+	if (it == assets.end()) return nullptr;
+
+	Asset* asset = it->second;
+	Asset_Type* typed_asset = dynamic_cast<Asset_Type*>(asset);
+	if (typed_asset) return typed_asset;
+
+	tdns_log.write("Tried to get asset of name " + name + ". Found it, but requested it as the wrong type.");
+	return nullptr;
+}
+
+template <typename Asset_Type>
+std::vector<Asset_Type*> AssetManager::get_all() {
+	std::vector<Asset_Type*> all;
+	for (auto& [name, asset] : assets) {
+		Asset_Type* asset_as_type = dynamic_cast<Asset_Type*>(asset);
+		if (asset_as_type) {
+			all.push_back(asset_as_type);
+		}
+	}
+	
+	return all;
+}
+
+
+void Texture::bind() {
+	glBindTexture(GL_TEXTURE_2D, handle);
+}
 
 //@leak never free stbi memory
 // @spader This is only used for the text box....kill it!
@@ -26,6 +50,7 @@ void create_texture(std::string path) {
 		stbi_set_flip_vertically_on_load(true);
 		unsigned char* data = stbi_load(absolute_path(path).c_str(), &new_texture->width, &new_texture->height, &new_texture->num_channels, 0);
 		if (data) {
+			defer { free(data); };
 			// Now, create all the OpenGL internals and point it to the newly created atlas
 			glGenTextures(1, &new_texture->handle);
 			glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
@@ -39,7 +64,9 @@ void create_texture(std::string path) {
 
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, new_texture->width, new_texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
-			asset_table.add_asset<Texture>(texture_name, new_texture);
+
+			auto& asset_manager = get_asset_manager();
+			asset_manager.add_asset<Texture>(texture_name, new_texture);
 		} else {
 			std::string msg = "stb_image failed to load an image. Path was: " + path;
 			tdns_log.write(msg);
@@ -48,6 +75,8 @@ void create_texture(std::string path) {
 }
 
 void create_texture_atlas(std::string assets_dir) {
+	auto& asset_manager = get_asset_manager();
+	
 	// Extract name of the atlas png from the dir name (e.g. /environment will output an atlas to /atlases/environment.png)
 	std::string atlas_name = name_from_full_path(assets_dir);
 	if (is_alphanumeric(atlas_name)) {
@@ -86,7 +115,9 @@ void create_texture_atlas(std::string assets_dir) {
 						Sprite* sprite = new Sprite;
 						sprite->atlas = atlas;
 						sprite->name = asset_name;
-						asset_table.add_asset<Sprite>(asset_name, sprite);
+
+						auto& asset_manager = get_asset_manager();
+						asset_manager.add_asset<Sprite>(asset_name, sprite);
 						
 						// Load the image data, create a rectangle for it
 						unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
@@ -120,7 +151,7 @@ void create_texture_atlas(std::string assets_dir) {
 			auto& rect = rects[irect];
 			for (auto& name_and_id : sprite_ids) {
 				if (rect.id == name_and_id.id) {
-					Sprite* sprite = asset_table.get_asset<Sprite>(name_and_id.name);
+					Sprite* sprite = asset_manager.get_asset<Sprite>(name_and_id.name);
 					// top right
 					sprite->tex_coords.push_back((rect.x + rect.w) / 1024.f);
 					sprite->tex_coords.push_back((rect.y) / 1024.f);
@@ -171,7 +202,7 @@ void create_texture_atlas(std::string assets_dir) {
 		atlas->height = REGULAR_ATLAS_SIZE;
 		atlas->num_channels = 4;
 
-		asset_table.add_asset<Texture>(atlas_name, atlas);
+		asset_manager.add_asset<Texture>(atlas_name, atlas);
 	} else {
 		std::string msg = "Invalid texture atlas name. Expected alpanumeric, but got: " + atlas_name;
 		tdns_log.write(msg);
@@ -189,3 +220,79 @@ void create_all_texture_atlas() {
 		create_texture_atlas(dir);
 	}
 }
+
+void bind_sprite_buffers() {
+	glBindVertexArray(Sprite::vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Sprite::elem_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, Sprite::vert_buffer);
+}
+
+bool Sprite::is_initialized() const{
+	return (nullptr != this->atlas);
+}
+
+void Mesh::bind() {
+	glBindVertexArray(Mesh::vao);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Mesh::elem_buffer);
+	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
+
+	// 0: Vertices
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), vert_offset);
+	glEnableVertexAttribArray(0);
+	if (use_tex_coords) {
+		// 1: Texture coordinates
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), tex_coord_offset);
+		glEnableVertexAttribArray(1);
+	}
+	else {
+		glDisableVertexAttribArray(1);
+	}
+}
+
+void Mesh::draw(GLuint mode) {
+	glDrawElements(mode, (GLsizei)indices.size(), GL_UNSIGNED_INT, indices_offset);
+}
+
+void init_mesh() {
+	auto& manager = get_asset_manager();
+	
+	Mesh* line = new Mesh;
+	line->verts = line_verts;
+	line->indices = line_indices;
+	manager.add_asset<Mesh>("line", line);
+
+	Mesh* square = new Mesh;
+	square->verts = square_verts;
+	square->indices = square_indices;
+	manager.add_asset<Mesh>("square", square);
+}
+
+void Animation::add_frames(std::vector<std::string>& frames_to_add) {
+	for (auto& frame : frames_to_add) {
+		this->add_frame(frame);
+	}
+}
+
+void Animation::add_frame(std::string& frame) {
+	auto& asset_manager = get_asset_manager();
+	Sprite* sprite = asset_manager.get_asset<Sprite>(frame);
+	if (!sprite) {
+		tdns_log.write("Tried to add a frame to an animation, but couldn't find the sprite.");
+		tdns_log.write("Requested sprite: " + frame);
+		tdns_log.write("Animation name" + this->name);
+		return;
+	}
+
+	frames.push_back(frame);
+}
+
+std::string Animation::get_frame(int frame) {
+	return this->frames[frame];
+}
+	
+
+AssetManager& get_asset_manager() {
+	static AssetManager manager;
+	return manager;
+}
+

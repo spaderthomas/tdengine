@@ -13,38 +13,36 @@ void LuaState::prepend_to_search_path(std::string directory) {
 int LuaState::init() {
 	state.open_libraries(sol::lib::base, sol::lib::package, sol::lib::debug, sol::lib::string, sol::lib::math, sol::lib::table);
 	
-	prepend_to_search_path(absolute_path(path_join({"src", "scripts"})));
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "core"})));
 
 	LoadImguiBindings();
 
-	sol::usertype<NewStuff::Entity> entity_type = state.new_usertype<NewStuff::Entity>("Entity");
-	entity_type["update"] = &NewStuff::Entity::update;
-	entity_type["add_component"] = &NewStuff::Entity::add_component;
-	entity_type["get_component"] = &NewStuff::Entity::get_component;
-	entity_type["get_name"] = &NewStuff::Entity::get_name;
-	entity_type["get_id"] = &NewStuff::Entity::get_id;
+	sol::usertype<Entity> entity_type = state.new_usertype<Entity>("Entity");
+	entity_type["update"] = &Entity::update;
+	entity_type["add_component"] = &Entity::add_component;
+	entity_type["get_component"] = &Entity::get_component;
+	entity_type["get_name"] = &Entity::get_name;
+	entity_type["get_id"] = &Entity::get_id;
 
-	sol::usertype<NewStuff::Component> component_type = state.new_usertype<NewStuff::Component>("Component");
-	component_type["update"] = &NewStuff::Component::update;
-	component_type["get_name"] = &NewStuff::Component::get_name;
-	component_type["get_id"] = &NewStuff::Component::get_id;
-	component_type["get_entity"] = &NewStuff::Component::get_entity;
+	sol::usertype<Component> component_type = state.new_usertype<Component>("Component");
+	component_type["update"] = &Component::update;
+	component_type["get_name"] = &Component::get_name;
+	component_type["get_id"] = &Component::get_id;
+	component_type["get_entity"] = &Component::get_entity;
 
     state["tdengine"] = state.create_table();
-	state["tdengine"]["add_entity_to_scene"] = &NewStuff::add_entity_to_scene;
-	state["tdengine"]["register_animation"] = &NewStuff::register_animation;
-	state["tdengine"]["get_frames"] = &NewStuff::get_frames;
-	state["tdengine"]["enable_input_channel"] = &NewStuff::enable_input_channel;
-	state["tdengine"]["disable_input_channel"] = &NewStuff::disable_input_channel;
-	state["tdengine"]["is_key_down"] = &NewStuff::is_key_down;
-	state["tdengine"]["was_key_pressed"] = &NewStuff::was_key_pressed;
-	state["tdengine"]["was_chord_pressed"] = &NewStuff::was_chord_pressed;
-	state["tdengine"]["set_camera_offset"] = &NewStuff::set_camera_offset;
+	state["tdengine"]["register_animation"] = &register_animation;
+	state["tdengine"]["get_frames"] = &get_frames;
+	state["tdengine"]["enable_input_channel"] = &enable_input_channel;
+	state["tdengine"]["disable_input_channel"] = &disable_input_channel;
+	state["tdengine"]["is_key_down"] = &is_key_down;
+	state["tdengine"]["was_key_pressed"] = &was_key_pressed;
+	state["tdengine"]["was_chord_pressed"] = &was_chord_pressed;
+	state["tdengine"]["set_camera_offset"] = &set_camera_offset;
 
     state["tdengine"]["internal"] = state.create_table();
-	state["tdengine"]["internal"]["draw_entity"] = &NewStuff::draw_entity;
+	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
 
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
@@ -97,16 +95,16 @@ void LuaState::script_file(ScriptPath path) {
 }
 
 void LuaState::test() {
-	auto& scene_manager = NewStuff::get_scene_manager();
+	auto& scene_manager = get_scene_manager();
 	scene_manager.create_scene("Overworld");
 
-	auto& entity_manager = NewStuff::get_entity_manager();
+	auto& entity_manager = get_entity_manager();
 	entity_manager.create_entity("Editor");
 }
 
 void LuaState::update(float dt) {
-	auto& render_engine = NewStuff::get_render_engine();
-	auto& entity_manager = NewStuff::get_entity_manager();
+	auto& render_engine = get_render_engine();
+	auto& entity_manager = get_entity_manager();
 	
 	//draw_entity(spader);
 	entity_manager.update(dt);
@@ -119,6 +117,6 @@ sol::table LuaState::get_entity(int id) {
 sol::table LuaState::get_component(int id) {
 	return state["Components"][id];
 }
-sol::table LuaState::get_component(NewStuff::Component* component) {
+sol::table LuaState::get_component(Component* component) {
 	return state["Components"][component->get_id()];
 }
