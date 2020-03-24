@@ -50,10 +50,6 @@ function on_component_created(cpp_ref)
    component:init()
 end
 
-function on_scene_created(cpp_ref)
-end
-
-
 -- Class stuff
 local function _create_class(name)
   local class = {
@@ -162,6 +158,9 @@ local entity_mixin = {
   get_id = function(self)
 	return Entity["get_id"](self.cpp_ref)
   end,
+  create_entity = function(self, name)
+	 return tdengine.create_entity(name)
+  end,
   add_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = true
   end,
@@ -197,18 +196,25 @@ function tdengine.component(name)
   return class
 end
 
-local scene_mixin = {
-   add_entity = function(self, entity)
-	  print("this ain't implemented son")
-	  --tdengine.add_entity_to_scene(self:get_name(), entity)
-   end
+local tile_mixin = {
+  init = function(self)
+	 local graphic = self:add_component('Graphic')
+	 graphic.scale = { x = .1, y = .1 }
+	 
+	 local animation = self:add_component('Animation')
+	 animation:add(self:get_name(), { self:get_name() .. '.png' })
+	 animation:begin(self:get_name())
+	 
+	 local position = self:add_component('Position')
+  end,
+  update = function(self) end
 }
 
-function tdengine.scene(name)
+function tdengine.tile(name)
   local class = _create_class(name)
   _includeMixin(class, class_mixin)
   class:include(entity_mixin)
-  class:include(scene_mixin)
+  class:include(tile_mixin)
   return class
 end
 
@@ -227,3 +233,51 @@ function tdengine.do_once(f, ...)
    end
 end
 tdengine.last_do_once = function() end
+
+function tdengine.platform()
+   local separator = package.config:sub(1,1)
+   if separator == '\\' then
+	  return 'Windows'
+   elseif separator == '/' then
+	  return 'Unix'
+   else
+	  return ''
+   end
+end
+
+function tdengine.is_extension(path, extension)
+   local ext_len = string.len(extension)
+   local path_len = string.len(path)
+   if ext_len > path_len then return false end
+
+   local last = string.sub(path, path_len - ext_len + 1, path_len)
+   return last == extension
+end
+
+function tdengine.has_extension(path)
+   return string.find(path, '%.')
+end
+
+function tdengine.strip_extension(path)
+   local extension = tdengine.has_extension(path)
+   if not extension then return path end
+
+   return path:sub(1, extension - 1)
+end
+
+-- Lua implementation of PHP scandir function
+function tdengine.scandir(dir)
+   local platform = tdengine.platform()
+   local command = ''
+   if platform == 'Unix' then command = 'ls -a "' .. dir .. '"' end
+   if platform == 'Windows' then command = 'dir "' .. dir .. '" /b /ad' end
+
+   local i, t, popen = 0, {}, io.popen
+   local pfile = popen(command)
+   for filename in pfile:lines() do
+	  i = i + 1
+	  t[i] = filename
+   end
+   pfile:close()
+   return t
+end

@@ -1,3 +1,4 @@
+void create_entity(std::string name);
 void draw_entity(int entity, Render_Flags flags = Render_Flags::None);
 void move_entity(int entity, float x, float y);
 
@@ -13,3 +14,5 @@ bool was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask = 
 void set_camera_offset(float x, float y);
 
 Sprite* get_frame(std::string animation, int frame);
+
+bool draw_sprite_button(std::string sprite, float sx, float sy);

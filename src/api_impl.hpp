@@ -1,3 +1,8 @@
+void create_entity(std::string name) {
+	auto& entity_manager = get_entity_manager();
+	entity_manager.create_entity(name);
+}
+
 void draw_entity(int entity, Render_Flags flags) {
 	EntityHandle handle;
 	handle.id = entity;
@@ -145,4 +150,24 @@ bool was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask) {
 void set_camera_offset(float x, float y) {
 	auto& render_engine = get_render_engine();
 	render_engine.camera_offset = { x, y };
+}
+
+bool draw_sprite_button(std::string sprite_name, float sx, float sy) {
+	auto& asset_manager = get_asset_manager();
+	auto sprite = asset_manager.get_asset<Sprite>(sprite_name);
+	if (!sprite) {
+		std::string message = "Tried to draw a SpriteButton, but couldn't get sprite.\n";
+		message += "Sprite name was: " + sprite_name;
+		tdns_log.write(message);
+		return false;
+	}
+
+	ImVec2 top_right_tex_coords = ImVec2(sprite->tex_coords[2], sprite->tex_coords[3]);
+	ImVec2 bottom_left_tex_coords = ImVec2(sprite->tex_coords[6], sprite->tex_coords[7]);
+	ImVec2 button_size = ImVec2(sx, sy);
+
+	return ImGui::ImageButton((ImTextureID)(uintptr_t)sprite->atlas->handle,
+							  button_size,
+							  bottom_left_tex_coords, top_right_tex_coords);
+
 }

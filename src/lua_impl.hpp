@@ -17,7 +17,8 @@ int LuaState::init() {
 		sol::lib::debug,
 		sol::lib::string,
 		sol::lib::math,
-		sol::lib::table);
+		sol::lib::table,
+		sol::lib::io);
 	
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "core"})));
@@ -36,8 +37,11 @@ int LuaState::init() {
 	component_type["get_name"] = &Component::get_name;
 	component_type["get_id"] = &Component::get_id;
 	component_type["get_entity"] = &Component::get_entity;
-
+	
+	auto& entity_manager = get_entity_manager();
+	
     state["tdengine"] = state.create_table();
+	state["tdengine"]["create_entity"] = &create_entity;
 	state["tdengine"]["register_animation"] = &register_animation;
 	state["tdengine"]["get_frames"] = &get_frames;
 	state["tdengine"]["enable_input_channel"] = &enable_input_channel;
@@ -57,11 +61,18 @@ int LuaState::init() {
 	state["tdengine"]["InputChannel"]["Game"] = INPUT_MASK_GAME;
 	state["tdengine"]["InputChannel"]["All"] = INPUT_MASK_ALL;
 
+	state["tdengine"]["paths"] = state.create_table();
+	state["tdengine"]["paths"]["root"] = root_dir;
+	state["tdengine"]["paths"]["join"] = path_join;
+
+	state["imgui"]["extensions"] = state.create_table();
+	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;
+	
+
 	script_dir(RelativePath("libs"));
 	script_dir(RelativePath("core"));
 	script_dir(RelativePath("entities"));
 	script_dir(RelativePath("components"));
-	script_dir(RelativePath("scenes"));
 
 	return 0;
 }
@@ -101,10 +112,8 @@ void LuaState::script_file(ScriptPath path) {
 }
 
 void LuaState::test() {
-	auto& scene_manager = get_scene_manager();
-	scene_manager.create_scene("Overworld");
-
 	auto& entity_manager = get_entity_manager();
+	entity_manager.create_entity("Overworld");
 	entity_manager.create_entity("Editor");
 }
 

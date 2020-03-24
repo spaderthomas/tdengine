@@ -46,13 +46,3 @@ struct EntityManager {
 	void update(float dt);
 };
 EntityManager& get_entity_manager();
-
-struct SceneManager {
-	std::map<std::string, EntityHandle> scenes;
-	
-	EntityHandle create_scene(std::string name);
-	EntityHandle get_scene(std::string name);
-	EntityHandle add_entity(std::string scene, std::string entity);
-};
-
-SceneManager& get_scene_manager();

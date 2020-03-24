@@ -4,7 +4,9 @@ local inspect = require('inspect')
 imgui.extensions = imgui.extensions or {}
 
 imgui.extensions.Entity = function(entity)
+   imgui.PushID(entity:get_id())
    imgui.extensions.Table(entity:get_name(), entity, entity.imgui_ignore, ignore)
+   imgui.PopID()
 end
 
 imgui.extensions.Table = function(name, tbl, ignore, imgui_id)

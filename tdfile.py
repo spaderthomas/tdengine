@@ -7,7 +7,7 @@ build_options = {
         'include',
         os.path.join('include', 'lua')
     ],
-    'lib_dir': os.path.join('..', 'lib'),
+    'lib_dir': 'lib',
     'build_dir': 'build',
     'source_files': [
         os.path.join('imgui', 'imgui.cpp'),
@@ -92,15 +92,16 @@ build_options = {
             'X11',
             'c',
             'dl',
-            'stdc++fs'
+            'stdc++fs',
         ],
         'extras': [
             '-pthread',
-            '-fmax-errors=10'
+            '-fmax-errors=10',
         ],
         'out': 'tdengine'
     }
 }
+
 
 class Builder(tdbuild.base_builder):
     def __init__(self):
