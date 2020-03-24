@@ -53,6 +53,8 @@ int LuaState::init() {
 
     state["tdengine"]["internal"] = state.create_table();
 	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
+	state["tdengine"]["internal"]["move_entity"] = &move_entity;
+	state["tdengine"]["internal"]["register_collider"] = &register_collider;
 
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
@@ -134,4 +136,12 @@ sol::table LuaState::get_component(int id) {
 }
 sol::table LuaState::get_component(Component* component) {
 	return state["Components"][component->get_id()];
+}
+sol::table LuaState::get_component(int entity, std::string which) {
+	EntityHandle handle;
+	handle.id = entity;
+	if (!handle) return sol::table();
+
+	auto component_ptr = handle->get_component(which);
+	return get_component(component_ptr);
 }

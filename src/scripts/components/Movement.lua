@@ -9,13 +9,14 @@ end
 function Movement:update(dt)
   local position = self.parent:get_component('Position')
   if not (self.wish.x == position.world.x and self.wish.y == position.world.y) then
-	tdengine.move_entity(self.wish.x, self.wish.y)
+	 tdengine.internal.move_entity(self.parent:get_id())
   end
 end
 
 function Movement:move(xunits, yunits)
   self.wish.x = self.wish.x + self.speed * xunits
   self.wish.y = self.wish.y + self.speed * yunits
+  tdengine.internal.move_entity(self.parent:get_id())
 end
 
 function Movement:teleport(x, y)

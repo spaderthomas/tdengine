@@ -24,7 +24,7 @@ function Spader:init()
   animation:batch_add(animations)
   animation:begin('spader_walk_down')
   
-  local position = self:add_component('Position')
+  local physics = self:add_component('Physics')
   local movement = self:add_component('Movement')
   local input = self:add_component('Input')
 end

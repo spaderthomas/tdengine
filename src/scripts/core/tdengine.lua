@@ -128,10 +128,6 @@ function tdengine.draw_entity(entity)
   tdengine.internal.draw_entity(entity:get_id(), 0)
 end
 
-function tdengine.move_entity(entity)
-  tdengine.internal.draw_entity(entity:get_id(), 0)
-end
-
 function tdengine.get_entity(name)
   for id, entity in pairs(Entities) do
 	if entity:get_name() == name then

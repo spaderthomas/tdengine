@@ -59,13 +59,44 @@ void draw_entity(int entity, Render_Flags flags) {
 	render_engine.render_list.push_back(r);
 }
 
+void register_collider(int entity) {
+	EntityHandle handle;
+	handle.id = entity;
+	if (!handle) return;
+
+	auto box = Lua.get_component(entity, "BoundingBox");
+
+	Collider collider;
+	collider.entity = handle;
+	collider.origin.x = box["origin"]["x"];
+	collider.origin.y = box["origin"]["y"];
+	collider.extents.x = box["extents"]["x"];
+	collider.extents.y = box["extents"]["y"];	
+		
+	auto& physics_engine = get_physics_engine();
+	physics_engine.colliders.push_back(collider);
+}
+
 void move_entity(int entity) {
 	EntityHandle handle;
 	handle.id = entity;
 	if (!handle) return;
 
-	//auto physics_engine = get_physics_engine();
-	//physics_engine.add_mover(entity);
+	auto box = Lua.get_component(entity, "BoundingBox");
+	auto movement = Lua.get_component(entity, "Movement");
+
+	MoveRequest request;
+	request.collider.entity = handle;
+	request.collider.origin.x = box["origin"]["x"];
+	request.collider.origin.y = box["origin"]["y"];
+	request.collider.extents.x = box["extents"]["x"];
+	request.collider.extents.y = box["extents"]["y"];	
+
+	request.wish.x = movement["wish"]["x"];
+	request.wish.y = movement["wish"]["y"];
+		
+	auto& physics_engine = get_physics_engine();
+	physics_engine.requests.push_back(request);
 }
 
 
@@ -170,4 +201,10 @@ bool draw_sprite_button(std::string sprite_name, float sx, float sy) {
 							  button_size,
 							  bottom_left_tex_coords, top_right_tex_coords);
 
+}
+
+void finalize_move(MoveRequest request) {
+	auto position = Lua.get_component(request.collider.entity.id, "Position");
+	position["world"]["x"] = request.wish.x;
+	position["world"]["y"] = request.wish.y;
 }
