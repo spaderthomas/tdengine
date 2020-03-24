@@ -161,7 +161,17 @@ local entity_mixin = {
   end,
   get_id = function(self)
 	return Entity["get_id"](self.cpp_ref)
-  end
+  end,
+  add_imgui_ignore = function(self, member_name)
+	 self.imgui_ignore[member_name] = true
+  end,
+  remove_imgui_ignore = function(self, member_name)
+	 self.imgui_ignore[member_name] = false
+  end,
+  imgui_ignore = {
+	 class = true,
+	 imgui_ignore = true
+  }
 }
 
 function tdengine.entity(name)
@@ -209,3 +219,11 @@ function table.shallow_copy(t)
   end
   return t2
 end
+
+function tdengine.do_once(f, ...)
+   if string.dump(tdengine.last_do_once) ~= string.dump(f) then
+	  f(...)
+	  tdengine.last_do_once = f
+   end
+end
+tdengine.last_do_once = function() end

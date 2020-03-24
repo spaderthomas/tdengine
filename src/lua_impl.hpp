@@ -11,7 +11,13 @@ void LuaState::prepend_to_search_path(std::string directory) {
 }
 
 int LuaState::init() {
-	state.open_libraries(sol::lib::base, sol::lib::package, sol::lib::debug, sol::lib::string, sol::lib::math, sol::lib::table);
+	state.open_libraries(
+        sol::lib::base,
+		sol::lib::package,
+		sol::lib::debug,
+		sol::lib::string,
+		sol::lib::math,
+		sol::lib::table);
 	
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "core"})));

@@ -1,3 +1,5 @@
+void init_gl();
+
 void draw_square(Center_Box box, glm::vec4 color);
 void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color);
 void draw_line_from_origin(glm::vec2 basis, glm::vec4 color);

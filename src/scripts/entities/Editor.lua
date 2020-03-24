@@ -39,9 +39,14 @@ function Editor:init()
 
   self.filter = imgui.TextFilter.new()
 
+  self.entity_tree = {}
+
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
   input:enable()
+
+  self:add_imgui_ignore('entity_tree')
+  self:add_imgui_ignore('outer_heaven')
 end
 
 function Editor:update(dt)
@@ -120,3 +125,4 @@ function Editor:draw_options()
    end
    imgui.End()
 end
+
