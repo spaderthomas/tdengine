@@ -207,4 +207,9 @@ void finalize_move(MoveRequest request) {
 	auto position = Lua.get_component(request.collider.entity.id, "Position");
 	position["world"]["x"] = request.wish.x;
 	position["world"]["y"] = request.wish.y;
+
+	auto movement = Lua.get_component(request.collider.entity.id, "Movement");
+	movement["wish"]["x"] = request.wish.x;
+	movement["wish"]["y"] = request.wish.y;
+
 }

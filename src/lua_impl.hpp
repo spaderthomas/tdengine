@@ -66,6 +66,7 @@ int LuaState::init() {
 	state["tdengine"]["paths"] = state.create_table();
 	state["tdengine"]["paths"]["root"] = root_dir;
 	state["tdengine"]["paths"]["join"] = path_join;
+	
 
 	state["imgui"]["extensions"] = state.create_table();
 	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;
@@ -120,12 +121,6 @@ void LuaState::test() {
 }
 
 void LuaState::update(float dt) {
-	auto& render_engine = get_render_engine();
-	auto& entity_manager = get_entity_manager();
-	
-	//draw_entity(spader);
-	entity_manager.update(dt);
-	render_engine.render();
 }
 
 sol::table LuaState::get_entity(int id) {

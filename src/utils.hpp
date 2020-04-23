@@ -585,6 +585,8 @@ bool show_state_tweaker = true;
 bool show_task_editor = false;
 bool send_kill_signal = false;
 
+float framerate = 0.f;
+
 const std::string ACTIONS_KEY              = "actions";
 const std::string ANIMATIONS_KEY           = "Animations";
 const std::string BOUNDING_BOX_KEY         = "bounding_box";

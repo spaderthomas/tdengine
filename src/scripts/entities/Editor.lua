@@ -41,6 +41,10 @@ function Editor:init()
 
   self.tile_tree = self:build_tile_tree()
 
+  self.display_framerate = 0
+  self.average_framerate = 0
+  self.frame = 0
+
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
   input:enable()
@@ -49,16 +53,21 @@ function Editor:init()
 end
 
 function Editor:update(dt)
-   tdengine.do_once(function()
-		 
-   end)
   local dbg = self:get_component('Debug')
-
   local input = self:get_component('Input')
+
+  self.average_framerate = self.average_framerate * .5
+  self.average_framerate = self.average_framerate + tdengine.framerate * .5
+  self.frame = self.frame + 1
+  if self.frame % 20 == 0 then
+	 self.display_framerate = self.average_framerate
+  end
 
   self:handle_input()
   imgui.SetNextWindowSize(300, 300)
   imgui.Begin("tded v2.0", true)
+  imgui.Text('frame: ' .. tostring(self.frame))
+  imgui.Text('fps: ' .. tostring(self.display_framerate))
   self:draw_entity_viewer()
   self:draw_tile_tree()
   imgui.End()

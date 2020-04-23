@@ -21,34 +21,14 @@ function Wilson:init()
   animation:batch_add(animations)
   animation:begin('wilson_walk_down')
 
-  local physics = self:add_component('Physics')
-  local movement = self:add_component('Movement')
-  local input = self:add_component('Input')
-end
-
-function Wilson:handle_movement()
-  local position = self:get_component('Position')
-  local movement = self:get_component('Movement')
-
-  local input = self:get_component('Input')
-  if input:was_key_pressed(GLFW.Keys.FIVE) then
-	movement:move(0, 1)
-  end
-  if input:was_key_pressed(GLFW.Keys.ONE) then
-	movement:move(-1, 0)
-  end
-  if input:was_key_pressed(GLFW.Keys.TWO) then
-	movement:move(0, -1)
-  end
-  if input:was_key_pressed(GLFW.Keys.THREE) then
-	movement:move(1, 0)
-  end
+  --local physics = self:add_component('Physics')
   
+  local position = self:add_component('Position')
+  position.world.x = .4
+  position.world.y = .4
 end
 
 function Wilson:update(dt)
-   self:handle_movement()
-   local c = self:get_component('Movement')
 end
 
 

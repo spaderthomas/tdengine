@@ -67,6 +67,11 @@ int main() {
 
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
+
+	auto& input_manager  = get_input_manager();
+	auto& render_engine  = get_render_engine();
+	auto& entity_manager = get_entity_manager();
+	auto& physics_engine = get_physics_engine();
 	
 	init_shaders();
 	init_mesh();
@@ -102,7 +107,6 @@ int main() {
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		auto& input_manager = get_input_manager();
 		if (input_manager.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
 			show_console = !show_console;
 		}
@@ -111,7 +115,10 @@ int main() {
 		ImGui_ImplGlfwGL3_NewFrame();
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
 		
-		Lua.update(seconds_per_update);
+	
+		entity_manager.update(seconds_per_update);
+		physics_engine.update(seconds_per_update);
+		render_engine.render();
 
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
@@ -121,9 +128,9 @@ int main() {
 		
 		
 		// Wait until we hit the next frame time
-		if (print_framerate) {
-			std::cout << (1 / (glfwGetTime() - frame_start_time)) << " fps\n";
-		}
+		framerate = 1.f / (glfwGetTime() - frame_start_time);
+		Lua.state["tdengine"]["framerate"] = framerate;
+		
 		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
 	}
 

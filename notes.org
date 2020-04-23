@@ -480,6 +480,43 @@ useful functionality on top of it. In other words, they talk to other components
 and then decide what API functions to call. 
 
 That doesn't seem too arduous. 
+** collisions
+a grid based system seems good. spitball how that would look....
+
+you still need float positions for stuff. it needs to move smoothly. so purely
+storing entity positions as a grid isn't going to work. seems like the thing to
+do is to store position + bounding box, then calculate grid squares occupied,
+then run collision algorithm on that. static stuff could be precomputed. you
+have flags on the collider. you have an internal grid structure -- maybe it's
+sparse so you don't have to hardcode a size. 
+
+#+BEGIN_SRC cpp
+int grid[1000][1000]
+#+END_SRC
+
+you know another problem here is loading chunks of levels. will that be
+something i need to do? the overworld is the only thing i can see becoming big
+enough to need that. but even then, it's not going to be /that/ big. from a
+point of view of how many things exist in the level, that's not going to
+overload the grid system. the problem might be in running all the scripts. if
+every NPC in the overworld exists at all times, running all their scripts might
+be a lot. i mean, what's that gonna be? a hundred things? three hundred? if
+you're not stupid with what you're doing...
+** making the damn intro
+fade in from the title screen (worry about this later)
+the player has no control
+you need to animate the TV flickering
+you need to have some lines of text go across the screen like what the
+television is saying or ...
+then the TV flicks off
+some more text pops on the screen as boon is thinking to himself
+boon stands up
+control is returned to the player and the game begins
+
+so really this is a simple set of sequential commands that I want to
+issue. generalizing just a little bit, it's like the action lists that i had
+before. so maybe you want some of these things to happen in parallel or force
+one to wait until a previous one finishes. 
 * gameplay
 ** types
 The types are, flavor wise, supposed to represent the reflections of different

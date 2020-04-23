@@ -1,0 +1,3 @@
+[console_scripts]
+tdbuild = tdbuild.tdbuild:main
+

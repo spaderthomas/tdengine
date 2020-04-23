@@ -15,8 +15,8 @@ local animations = {
   }
 }
 
-Spader = tdengine.entity('Spader')
-function Spader:init()
+Player = tdengine.entity('Player')
+function Player:init()
   local graphic = self:add_component('Graphic')
   graphic.scale = { x = .1, y = .1 }
   
@@ -24,33 +24,32 @@ function Spader:init()
   animation:batch_add(animations)
   animation:begin('spader_walk_down')
   
-  local physics = self:add_component('Physics')
+  local position = self:add_component('Physics')
   local movement = self:add_component('Movement')
   local input = self:add_component('Input')
 end
 
-function Spader:handle_movement()
-  local position = self:get_component('Position')
+function Player:handle_movement()
+  local input = self:get_component('Input')
   local movement = self:get_component('Movement')
 
-  local input = self:get_component('Movement')
-  if input:was_key_pressed(GLFW.Keys.I) then
-	self.movement:move(0, 1)
+  if input:is_key_down(GLFW.Keys.I) then
+	movement:move(0, .0025)
   end
-  if input:was_key_pressed(GLFW.Keys.J) then
-	self.movement:move(-1, 0)
+  if input:is_key_down(GLFW.Keys.J) then
+	movement:move(-.0025, 0)
   end
-  if input:was_key_pressed(GLFW.Keys.K) then
-	self.movement:move(0, -1)
+  if input:is_key_down(GLFW.Keys.K) then
+	movement:move(0, -.0025)
   end
-  if input:was_key_pressed(GLFW.Keys.L) then
-	self.movement:move(1, 0)
+  if input:is_key_down(GLFW.Keys.L) then
+	movement:move(.0025, 0)
   end
   
 end
 
-function Spader:update(dt)
-  --self:handle_movement()
+function Player:update(dt)
+   self:handle_movement()
 end
 
 
