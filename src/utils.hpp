@@ -281,10 +281,6 @@ void use_640_360() {
 	SCREEN_X = (subpixel_unit)640.f;
 	SCREEN_Y = (subpixel_unit)360.f;
 	CELL_SIZE = (subpixel_unit)16.f;
-	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
-	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
-	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
-	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
 	glfwSetWindowSize(g_window, 640, 360);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
 }
@@ -292,10 +288,6 @@ void use_720p() {
 	SCREEN_X = (subpixel_unit)1280.f;
 	SCREEN_Y = (subpixel_unit)720.f;
 	CELL_SIZE = (subpixel_unit)32.f;
-	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
-	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
-	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
-	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
 	glfwSetWindowSize(g_window, 1280, 720);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
 }
@@ -303,10 +295,6 @@ void use_1080p() {
 	SCREEN_X = (subpixel_unit)1920.f;
 	SCREEN_Y = (subpixel_unit)1080.f;
 	CELL_SIZE = (subpixel_unit)48.f;
-	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
-	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
-	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
-	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
 	glfwSetWindowSize(g_window, 1920, 1080);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
 }
@@ -314,10 +302,6 @@ void use_1440p() {
 	SCREEN_X = (subpixel_unit)2560.f;
 	SCREEN_Y = (subpixel_unit)1440.f;
 	CELL_SIZE = (subpixel_unit)64.f;
-	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
-	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
-	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
-	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
 	glfwSetWindowSize(g_window, 2560, 1440);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
 }
@@ -325,10 +309,6 @@ void use_arbitrary_screen_size(int height, int width) {
 	SCREEN_X = (subpixel_unit)width;
 	SCREEN_Y = (subpixel_unit)height;
 	CELL_SIZE = (subpixel_unit)64.f;
-	SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
-	SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
-	GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
-	GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
 	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);	
 }
 void change_window_size(std::string size) {

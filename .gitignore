@@ -2,6 +2,8 @@
 .vscode/
 
 __pycache__/
+venv/
+.venv/
 
 build/
 src/scripts/__init__.tds

@@ -1,21 +1,3 @@
-Component* Component::create(std::string name, int entity) {
-	Component* component = new Component;
-	component->id = Component::next_id++;
-	component->name = name;
-	component->entity = entity;
-
-	auto& c = *component;
-	sol::protected_function on_component_created = Lua.state["on_component_created"];
-	auto result = on_component_created(c);
-	if (!result.valid()) {
-		sol::error error = result;
-		tdns_log.write("Failed to create component. Entity ID: " + std::to_string(entity) + ". Component name: " + name + ". Lua error:");
-		tdns_log.write(error.what());
-	}
-
-	return component;
-}
-
 void Component::update(float dt) {
 	sol::protected_function update_component = Lua.state["update_component"];
 	auto result = update_component(id, dt);
@@ -39,6 +21,62 @@ int Component::get_entity() {
 int Component::get_id() {
 	return id;
 }
+
+ComponentManager& get_component_manager() {
+	static ComponentManager manager;
+	return manager;
+}
+
+Component* ComponentManager::create_component(std::string name, int entity) {
+	auto component = std::make_unique<Component>();
+	auto id = Component::next_id++;
+	component->id = id;
+	component->name = name;
+	component->entity = entity;
+
+	auto& c = *(component.get());
+	sol::protected_function on_component_created = Lua.state["on_component_created"];
+	auto result = on_component_created(c);
+	if (!result.valid()) {
+		sol::error error = result;
+		tdns_log.write("Failed to create component. Entity ID: " + std::to_string(entity) + ". Component name: " + name + ". Lua error:");
+		tdns_log.write(error.what());
+	}
+
+	
+	components[component->id] = std::move(component);
+	return components[id].get();
+}
+
+Component* ComponentManager::get_component(int id) {
+	for (auto& [other_id, component] : components) {
+		if (id == other_id) return component.get();
+	}
+
+	return nullptr;
+}
+	
+bool ComponentManager::has_component(int id) {
+	return components.find(id) != components.end();
+}
+
+void ComponentManager::destroy_component(int id) {
+	bool found = components.find(id) != components.end();
+	if (!found) return;
+	
+	auto component = components[id].get();
+	
+	sol::protected_function on_component_created = Lua.state["on_component_destroyed"];
+	auto result = on_component_created(component);
+	if (!result.valid()) {
+		sol::error error = result;
+		tdns_log.write("Failed to destroy component. ID was: " + std::to_string(id));
+		tdns_log.write(error.what());
+	}
+
+	components.erase(id);
+}
+	
 
 Entity::Entity(std::string name, int id) {
 	this->name = name;
@@ -72,10 +110,18 @@ Component* Entity::add_component(std::string name) {
 	if (components.find(name) != components.end()) {
 		return components[name];
 	}
-	
-	auto c = Component::create(name, id);
+
+	auto& component_manager = get_component_manager();
+	auto c = component_manager.create_component(name, id);
 	components[name] = c;
 	return c;
+}
+
+void Entity::remove_component(std::string name) {
+	bool found = components.find(name) != components.end();
+	if (!found) return;
+
+	
 }
 
 Component* Entity::get_component(std::string name) {
@@ -83,6 +129,14 @@ Component* Entity::get_component(std::string name) {
 		tdns_log.write("Tried to get a component, but it didn't exist. Entity ID: " + std::to_string(id) + ". Component name: " + name);
 	}
 	return components[name];
+}
+
+std::vector<Component*> Entity::all_components() {
+	std::vector<Component*> out;
+	for (auto& [name, component] : components) {
+		out.push_back(component);
+	}
+	return out;
 }
 
 EntityManager& get_entity_manager() {
@@ -124,6 +178,23 @@ EntityHandle EntityManager::create_entity(std::string name) {
 	EntityHandle handle;
 	handle.id = entity.id;
 	return handle;
+}
+
+void EntityManager::destroy_entity(int id) {
+	bool found = entities.find(id) != entities.end();
+	if (!found) return;
+	
+	auto entity = entities[id].get();
+	
+	sol::protected_function on_entity_created = Lua.state["on_entity_destroyed"];
+	auto result = on_entity_created(entity);
+	if (!result.valid()) {
+		sol::error error = result;
+		tdns_log.write("Failed to destroy entity. ID was: " + std::to_string(id));
+		tdns_log.write(error.what());
+	}
+
+	entities.erase(id);
 }
 
 EntityHandle::operator bool() const {

@@ -85,6 +85,10 @@ void draw_square(Center_Box box, glm::vec4 color) {
 		solid_shader.begin();
 		solid_shader.set_mat3("transform", trans_mat);
 		solid_shader.set_vec4("color", color);
+
+		auto& asset_manager = get_asset_manager();
+		Mesh* square = asset_manager.get_asset<Mesh>("square");
+
 		square->bind();
 		solid_shader.check();
 		square->draw(GL_TRIANGLES);
@@ -112,6 +116,8 @@ void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 		auto transform_mat = mat3_from_transform(transform);
 		solid_shader.set_mat3("transform", transform_mat);
 
+		auto& asset_manager = get_asset_manager();
+		Mesh* line = asset_manager.get_asset<Mesh>("line");
 		line->bind();
 		solid_shader.check();
 		line->draw(GL_LINES);
@@ -132,6 +138,9 @@ void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
 		transform.scale = basis;
 		auto transform_mat = mat3_from_transform(transform);
 		solid_shader.set_mat3("transform", transform_mat);
+
+		auto& asset_manager = get_asset_manager();
+		Mesh* line = asset_manager.get_asset<Mesh>("line");
 		line->bind();
 		solid_shader.check();
 		line->draw(GL_LINES);

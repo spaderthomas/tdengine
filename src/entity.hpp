@@ -5,7 +5,6 @@ struct Component {
 	
 	static int next_id;
 
-	static Component* create(std::string name, int entity);
 	virtual void update(float dt);
 	std::string get_name();
 	int get_id();
@@ -23,6 +22,8 @@ struct Entity {
 	void update(float dt);
 	Component* add_component(std::string name);
 	Component* get_component(std::string name);
+	void remove_component(std::string name);
+	std::vector<Component*> all_components();
 	int get_id();
 	std::string get_name();
 };
@@ -43,6 +44,17 @@ struct EntityManager {
 	Entity* get_entity(int id);
 	bool has_entity(int id);
 	EntityHandle create_entity(std::string name);
+	void destroy_entity(int id);
 	void update(float dt);
 };
 EntityManager& get_entity_manager();
+
+struct ComponentManager {
+	std::map<int, std::unique_ptr<Component>> components;
+	
+	Component* get_component(int id);
+	bool has_component(int id);
+	Component* create_component(std::string name, int entity);
+	void destroy_component(int id);
+};
+ComponentManager& get_component_manager();

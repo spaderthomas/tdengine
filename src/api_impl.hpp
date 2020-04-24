@@ -3,6 +3,11 @@ void create_entity(std::string name) {
 	entity_manager.create_entity(name);
 }
 
+void destroy_entity(int entity) {
+	auto& entity_manager = get_entity_manager();
+	entity_manager.destroy_entity(entity);
+}
+
 void draw_entity(int entity, Render_Flags flags) {
 	EntityHandle handle;
 	handle.id = entity;
@@ -202,6 +207,16 @@ bool draw_sprite_button(std::string sprite_name, float sx, float sy) {
 							  bottom_left_tex_coords, top_right_tex_coords);
 
 }
+
+void _draw_line_from_points(float p1x, float p1y, float p2x, float p2y, float r, float g, float b, float a) {
+	glm::vec2 p1{p1x, p1y};
+	glm::vec2 p2{p2x, p2y};
+	glm::vec4 color{r, g, b, a};
+
+	draw_line_from_points(p1, p2, color);
+}
+	
+
 
 void finalize_move(MoveRequest request) {
 	auto position = Lua.get_component(request.collider.entity.id, "Position");

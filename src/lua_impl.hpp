@@ -29,6 +29,7 @@ int LuaState::init() {
 	entity_type["update"] = &Entity::update;
 	entity_type["add_component"] = &Entity::add_component;
 	entity_type["get_component"] = &Entity::get_component;
+	entity_type["all_components"] = &Entity::all_components;
 	entity_type["get_name"] = &Entity::get_name;
 	entity_type["get_id"] = &Entity::get_id;
 
@@ -42,6 +43,7 @@ int LuaState::init() {
 	
     state["tdengine"] = state.create_table();
 	state["tdengine"]["create_entity"] = &create_entity;
+	state["tdengine"]["destroy_entity"] = &destroy_entity;
 	state["tdengine"]["register_animation"] = &register_animation;
 	state["tdengine"]["get_frames"] = &get_frames;
 	state["tdengine"]["enable_input_channel"] = &enable_input_channel;
@@ -55,7 +57,14 @@ int LuaState::init() {
 	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
 	state["tdengine"]["internal"]["move_entity"] = &move_entity;
 	state["tdengine"]["internal"]["register_collider"] = &register_collider;
+	state["tdengine"]["internal"]["draw_line_from_points"] = &_draw_line_from_points;
 
+	state["tdengine"]["Units"] = state.create_table();
+	state["tdengine"]["Units"]["TileSize"] = state.create_table();
+	state["tdengine"]["Units"]["TileSize"]["Screen"] = state.create_table();
+	state["tdengine"]["Units"]["TileSize"]["Screen"]["x"] = SCR_TILESIZE_X;
+	state["tdengine"]["Units"]["TileSize"]["Screen"]["y"] = SCR_TILESIZE_Y;
+		
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
 	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;

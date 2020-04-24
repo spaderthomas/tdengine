@@ -1,18 +1,18 @@
 local GLFW = require('glfw')
 local inspect = require('inspect')
 
-local EDITOR_STATE = {
-  idle = 0,
-  insert = 1,
-  edit = 2,
-  drag = 3,
-  rectangle_select = 4,
+local EditState = {
+  Idle = 0,
+  Insert = 1,
+  Edit = 2,
+  Drag = 3,
+  RectangleSelect = 4,
 }
 
-local SELECTION_STATE = {
-  none = 0,
-  tile = 1,
-  entity = 2
+local SelectionState = {
+  None = 0,
+  Tile = 1,
+  Entity = 2
 }
 
 Editor = tdengine.entity('Editor')
@@ -29,8 +29,8 @@ function Editor:init()
   }
   
   self.selected = nil
-  self.state = EDITOR_STATE.idle
-  self.selection_state = SELECTION_STATE.none
+  self.state = EditState.Idle
+  self.selection_state = SelectionState.None
   
   self.snap = false
   self.last_snap = false
@@ -55,15 +55,13 @@ end
 function Editor:update(dt)
   local dbg = self:get_component('Debug')
   local input = self:get_component('Input')
-
-  self.average_framerate = self.average_framerate * .5
-  self.average_framerate = self.average_framerate + tdengine.framerate * .5
-  self.frame = self.frame + 1
-  if self.frame % 20 == 0 then
-	 self.display_framerate = self.average_framerate
-  end
-
+  local player = self:get_entity('Player')
+  if player then self:destroy_entity(player:get_id()) end
+  self:calculate_framerate()
+  
   self:handle_input()
+  if self.show_grid then self:draw_grid() end
+  
   imgui.SetNextWindowSize(300, 300)
   imgui.Begin("tded v2.0", true)
   imgui.Text('frame: ' .. tostring(self.frame))
@@ -73,6 +71,16 @@ function Editor:update(dt)
   imgui.End()
 end
 
+function Editor:calculate_framerate()
+   local framerate = tdengine.framerate or 0
+   self.average_framerate = self.average_framerate * .5
+   self.average_framerate = self.average_framerate + framerate * .5
+   self.frame = self.frame + 1
+   if self.frame % 20 == 0 then
+	  self.display_framerate = self.average_framerate
+   end   
+end
+
 function Editor:handle_input()
   self:adjust_camera()
   
@@ -80,9 +88,10 @@ function Editor:handle_input()
   if input:was_key_pressed(GLFW.Keys.ESCAPE) then
 	print('esc')
 	self.selected = nil
-	self.state = EDITOR_STATE.idle
+	self.state = EditState.Idle
 
-	if self.selection_state == SELECTION_STATE.tile then
+	-- If you were selecting a tile and escaped, bring the state back to how it was
+	if self.selection_state == SelectionState.Tile then
 	  self.snap = self.last_snap
 	  self.show_grid = self.last_show_grid
 	end
@@ -95,19 +104,19 @@ function Editor:adjust_camera()
 
   local offset = { x = 0, y = 0 }
   if input:is_key_down(GLFW.Keys.W) then
-	offset.y = offset.y + .025
+	offset.y = offset.y + .02
   end
   
   if input:is_key_down(GLFW.Keys.A) then
-	offset.x = offset.x - .025
+	offset.x = offset.x - .02
   end
   
   if input:is_key_down(GLFW.Keys.S) then
-	offset.y = offset.y - .025
+	offset.y = offset.y - .02
   end
   
   if input:is_key_down(GLFW.Keys.D) then
-	offset.x = offset.x + .025
+	offset.x = offset.x + .02
   end
 
   camera.offset.x = camera.offset.x + offset.x
@@ -190,4 +199,20 @@ function Editor:draw_tile_tree_recursive(tbl, unique_button_index)
 	  end
    end
    
+end
+
+function Editor:draw_grid()
+   local camera = self:get_component('Camera')
+   local tsx = tdengine.Units.TileSize.Screen.x
+   local tsy = tdengine.Units.TileSize.Screen.y
+   local xb = math.fmod(camera.offset.x, tsx)
+   local yb = math.fmod(camera.offset.y, tsy) + (tsy / 2)
+
+   for col_offset = 1 - xb, 0, -tsx do
+	  tdengine.internal.draw_line_from_points(col_offset, 0, col_offset, 1, .2, .1, .9, .5)
+   end
+
+   for row_offset = 1 - yb, 0, -tsy do
+	  tdengine.internal.draw_line_from_points(0, row_offset, 1, row_offset, .2, .1, .9, .5)
+   end
 end

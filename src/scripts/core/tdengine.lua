@@ -30,7 +30,18 @@ function on_entity_created(cpp_ref)
    Entities[cpp_ref:get_id()] = entity
 
    -- Call user-defined constructor
-   EntityType.init(entity)end
+   EntityType.init(entity)
+end
+
+function on_entity_destroyed(cpp_ref)
+   local components = cpp_ref:all_components()
+
+   for i=1, #components do
+	  local component = components[i]
+	  print(component:get_name())
+   end
+   Entities[cpp_ref:get_id()] = nil
+end
 
 function on_component_created(cpp_ref)
    ComponentType = _G[cpp_ref:get_name()]
@@ -156,6 +167,17 @@ local entity_mixin = {
   end,
   create_entity = function(self, name)
 	 return tdengine.create_entity(name)
+  end,
+  destroy_entity = function(self, id)
+	 tdengine.destroy_entity(id)
+  end,
+  get_entity = function(self, name)
+	 for i=1, #Entities do
+		local entity = Entities[i]
+		if entity and entity:get_name() == name then return entity end
+	 end
+	 
+	 return nil
   end,
   add_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = true

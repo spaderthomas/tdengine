@@ -1,4 +1,5 @@
 void create_entity(std::string name);
+void destroy_entity(int entity);
 void draw_entity(int entity, Render_Flags flags = Render_Flags::None);
 void move_entity(int entity);
 void register_collider(int entity);
@@ -17,5 +18,6 @@ void set_camera_offset(float x, float y);
 Sprite* get_frame(std::string animation, int frame);
 
 bool draw_sprite_button(std::string sprite, float sx, float sy);
+void _draw_line_from_points(float p1x, float p1y, float p2x, float p2y, float r, float g, float b, float a);
 
 void finalize_move(MoveRequest request);

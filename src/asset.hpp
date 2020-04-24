@@ -26,9 +26,6 @@ GLuint Mesh::vert_buffer;
 GLuint Mesh::elem_buffer;
 GLuint Mesh::vao;
 
-Mesh* line;
-Mesh* square;
-
 void init_mesh();
 
 struct AssetManager {
