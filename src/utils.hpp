@@ -166,15 +166,16 @@ glm::vec2 vec_divide(glm::vec2 vec, float by) {
 
 
 // Colors
-glm::vec4 hannah_color = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's favorite three floating point numbers.
-glm::vec4 red = glm::vec4(1.f, 0.f, 0.f, 1.f);
-glm::vec4 green = glm::vec4(0.f, 1.f, 0.f, 1.f);
-glm::vec4 blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
-glm::vec4 brown = glm::vec4(173.f / 255.f, 133.f / 255.f, 74.f / 255.f, 1.f);
-glm::vec4 black = glm::vec4(0.f, 0.f, 0.f, 1.f);
-glm::vec4 white4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
-glm::vec3 white3 = glm::vec3(1.f, 1.f, 1.f);
-
+namespace Colors {
+	glm::vec4 Hannah = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's favorite three floating point numbers.
+	glm::vec4 Red = glm::vec4(1.f, 0.f, 0.f, 1.f);
+	glm::vec4 Green = glm::vec4(0.f, 1.f, 0.f, 1.f);
+	glm::vec4 Blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
+	glm::vec4 Brown = glm::vec4(173.f / 255.f, 133.f / 255.f, 74.f / 255.f, 1.f);
+	glm::vec4 Black = glm::vec4(0.f, 0.f, 0.f, 1.f);
+	glm::vec4 White4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
+	glm::vec3 TextWhite = glm::vec3(1.f, 1.f, 1.f);
+}
 #define ImGuiColor_Red ImVec4(1.f, 0.f, 0.f, 1.f)
 #define ImGuiColor_Green ImVec4(0.f, 1.f, 0.f, 1.f)
 	
@@ -1361,180 +1362,3 @@ struct FileWatcher {
 	
 };
 FileWatcher file_watcher;
-
-struct Points_Box;
-struct Center_Box {
-	glm::vec2 origin;
-	glm::vec2 extents;
-	
-	// @gut static std::optional<Center_Box> from_entity(EntityHandle handle);
-	static Center_Box from_points(Points_Box& points);
-	Points_Box as_points();
-};
-
-struct Points_Box {
-	float top;
-	float bottom;
-	float left;
-	float right;
-	
-	void convert_screen_to_gl();
-	Center_Box as_center_box();
-};
-bool point_inside_box(glm::vec2& screen_pos, Center_Box& box);
-
-bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration);
-bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration);
-
-// @spader 10/13/2019: Use better enum for this...?
-enum Collider_Kind : int {
-	NO_COLLIDER,
-	STATIC,
-	//@simplify(joey :3) combine dynamic and hero
-	DYNAMIC,
-	HERO,
-	DOOR,
-	COUNT_COLLIDERS
-};
-
-std::vector<std::string> collider_kind_descriptions = {
-	"No Collider",
-	"Static",
-	"Dynamic",
-	"Hero",
-	"Door"
-};
-
-bool collider_matrix[Collider_Kind::COUNT_COLLIDERS][Collider_Kind::COUNT_COLLIDERS];
-void collider_matrix_add(Collider_Kind me, Collider_Kind other, bool should_test);
-bool should_test_collision(Collider_Kind me, Collider_Kind other);
-void init_collider_matrix();
-
-
-bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
-	// First, calculate the Minkowski difference
-	Center_Box minkowski;
-	minkowski.extents = a.extents + b.extents;
-	float a_left = a.origin.x - .5f * a.extents.x;
-	float b_right = b.origin.x + .5f * b.extents.x;
-	minkowski.origin.x = a_left - b_right + .5f * minkowski.extents.x;
-	float a_top = a.origin.y + .5f * a.extents.y;
-	float b_bottom = b.origin.y - .5f * b.extents.y;
-	minkowski.origin.y = a_top - b_bottom - .5f * minkowski.extents.y;
-
-	// If the Minkowski difference intersects the origin, there's a collision
-	auto verts = minkowski.as_points();
-	if (verts.right >= 0 && verts.left <= 0 && verts.top >= 0 && verts.bottom <= 0) {
-		// The pen vector is the shortest vector from the origin of the MD to an edge.
-		// You know this has to be a vertical or horizontal line from the origin (these are by def. the shortest)
-		float min = 100000.f;
-		if (abs(verts.left) < min) {
-			min = abs(verts.left);
-			penetration = glm::vec2(verts.left, 0.f);
-		}
-		if (abs(verts.right) < min) {
-			min = abs(verts.right);
-			penetration = glm::vec2(verts.right, 0.f);
-		}
-		if (abs(verts.top) < min) {
-			min = abs(verts.top);
-			penetration = glm::vec2(0.f, verts.top);
-		}
-		if (abs(verts.bottom) < min) {
-			min = abs(verts.bottom);
-			penetration = glm::vec2(0.f, verts.bottom);
-		}
-
-		return true;
-	}
-
-	penetration = glm::vec2(0.f);
-	return false;
-}
-bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration) {
-	//@hack just write this
-	return are_boxes_colliding(a.as_center_box(), b.as_center_box(), penetration);
-}
- 
-void collider_matrix_add(Collider_Kind me, Collider_Kind other, bool should_test) {
-	collider_matrix[me][other] = should_test;
-}
-bool should_test_collision(Collider_Kind me, Collider_Kind other) {
-	return collider_matrix[me][other];
-}
-void init_collider_matrix() {
-	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::STATIC, true);
-	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::DYNAMIC, true);
-	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::HERO, true);
-	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::DOOR, false);
-	collider_matrix_add(Collider_Kind::DYNAMIC, Collider_Kind::NO_COLLIDER, false);
-
-	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::STATIC, false);
-	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::DYNAMIC, false);
-	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::HERO, false);
-	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::DOOR, false);
-	collider_matrix_add(Collider_Kind::STATIC, Collider_Kind::NO_COLLIDER, false);
-
-	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::STATIC, true);
-	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::DYNAMIC, true);
-	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::HERO, dont_care);
-	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::DOOR, false);
-	collider_matrix_add(Collider_Kind::HERO, Collider_Kind::NO_COLLIDER, false);
-
-	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::STATIC, false);
-	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::DYNAMIC, false);
-	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::HERO, false);
-	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::DOOR, false);
-	collider_matrix_add(Collider_Kind::DOOR, Collider_Kind::NO_COLLIDER, false);
-
-	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::STATIC, false);
-	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::DYNAMIC, false);
-	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::HERO, false);
-	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::DOOR, false);
-	collider_matrix_add(Collider_Kind::NO_COLLIDER, Collider_Kind::NO_COLLIDER, false);
-}
-
-Points_Box Center_Box::as_points() {
-	float left = origin.x - extents.x / 2;
-	float right = origin.x + extents.x / 2;
-	float top = origin.y + extents.y / 2;
-	float bottom = origin.y - extents.y / 2;
-
-	return { top, bottom, left, right };
-}
-Center_Box Center_Box::from_points(Points_Box& points) {
-	Center_Box box;
-	box.origin = glm::vec2((points.left + points.right) / 2, (points.top + points.bottom) / 2);
-	box.extents = glm::vec2(points.right - points.left, points.top - points.bottom);
-	return box;
-}
-
-void Points_Box::convert_screen_to_gl() {
-	left = gl_from_screen(left);
-	right = gl_from_screen(right);
-	top = gl_from_screen(top);
-	bottom = gl_from_screen(bottom);
-}
-Center_Box Points_Box::as_center_box() {
-	Center_Box center_box;
-	center_box.origin = {
-		(left + right) / 2.f,
-		(top + bottom) / 2.f
-	};
-	center_box.extents = {
-		(right - left),
-		(top - bottom)
-	};
-
-	return center_box;
-}
-
-bool point_inside_box(glm::vec2& screen_pos, Center_Box& box) {
-	Points_Box points = box.as_points();
-	if (screen_pos.x > points.left && screen_pos.x < points.right
-		&& screen_pos.y > points.bottom && screen_pos.y < points.top) {
-		return true;
-	}
-
-	return false;
-}

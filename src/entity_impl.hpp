@@ -185,6 +185,11 @@ void EntityManager::destroy_entity(int id) {
 	if (!found) return;
 	
 	auto entity = entities[id].get();
+
+	auto& component_manager = get_component_manager();
+	for (auto [name, component] : entity->components) {
+		component_manager.destroy_component(component->get_id());
+	}
 	
 	sol::protected_function on_entity_created = Lua.state["on_entity_destroyed"];
 	auto result = on_entity_created(entity);

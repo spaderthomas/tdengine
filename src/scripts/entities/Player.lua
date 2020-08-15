@@ -34,22 +34,28 @@ function Player:handle_movement()
   local movement = self:get_component('Movement')
 
   if input:is_key_down(GLFW.Keys.I) then
-	movement:move(0, .0025)
+	movement:move(0, .3)
   end
   if input:is_key_down(GLFW.Keys.J) then
-	movement:move(-.0025, 0)
+	movement:move(-.3, 0)
   end
   if input:is_key_down(GLFW.Keys.K) then
-	movement:move(0, -.0025)
+	movement:move(0, -.3)
   end
   if input:is_key_down(GLFW.Keys.L) then
-	movement:move(.0025, 0)
+	movement:move(.3, 0)
   end
   
 end
 
 function Player:update(dt)
    self:handle_movement()
+   
+   local aabb = self:get_component('BoundingBox')
+   local position = self:get_component('Position')
+   print('from update: x:' .. position.world.x .. ', y:' .. position.world.y)
+   print('camera: x:' .. tdengine.get_camera_x() .. ', y:' .. tdengine.get_camera_y())
+   aabb:draw()
 end
 
 

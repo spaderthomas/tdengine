@@ -51,7 +51,10 @@ int LuaState::init() {
 	state["tdengine"]["is_key_down"] = &is_key_down;
 	state["tdengine"]["was_key_pressed"] = &was_key_pressed;
 	state["tdengine"]["was_chord_pressed"] = &was_chord_pressed;
-	state["tdengine"]["set_camera_offset"] = &set_camera_offset;
+	
+	state["tdengine"]["get_camera_x"] = &get_camera_x;
+	state["tdengine"]["get_camera_y"] = &get_camera_y;
+	state["tdengine"]["move_camera"] = &move_camera;
 
     state["tdengine"]["internal"] = state.create_table();
 	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
@@ -75,7 +78,12 @@ int LuaState::init() {
 	state["tdengine"]["paths"] = state.create_table();
 	state["tdengine"]["paths"]["root"] = root_dir;
 	state["tdengine"]["paths"]["join"] = path_join;
-	
+
+	state["tdengine"]["draw"] = state.create_table();
+	state["tdengine"]["draw"]["filled_rect_screen"] = &_draw_rect_filled_screen;
+	state["tdengine"]["draw"]["outline_rect_screen"] = &_draw_rect_outline_screen;
+	state["tdengine"]["draw"]["outline_rect_world"] = &_draw_rect_outline_world;
+
 
 	state["imgui"]["extensions"] = state.create_table();
 	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;

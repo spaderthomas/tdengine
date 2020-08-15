@@ -12,6 +12,8 @@ struct Component {
 };
 int Component::next_id = 0;
 
+using EntityID = int;
+
 struct Entity {
 	static int next_id;
 	int id;

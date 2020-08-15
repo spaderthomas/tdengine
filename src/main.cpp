@@ -9,9 +9,9 @@
 #include "tdlua.hpp"
 #include "asset.hpp"
 #include "font.hpp"
+#include "entity.hpp"
 #include "draw.hpp"
 #include "shader.hpp"
-#include "entity.hpp"
 #include "physics.hpp"
 #include "console.hpp"
 #include "imgui/imgui_lua_bindings.hpp"
@@ -26,40 +26,6 @@
 #include "physics_impl.hpp"
 #include "shader_impl.hpp"
 #include "transform_impl.hpp"
-
-//#include "component.hpp"
-//#include "dialogue.hpp"
-//#include "task.hpp"
-//#include "actions/action_includes.hpp"
-//#include "battle.hpp"
-//#include "components/component_includes.hpp"
-//#include "renderer.hpp"
-//#include "entity.hpp"
-//#include "camera.hpp"
-//#include "state.hpp"
-//#include "layer.hpp"
-//#include "level.hpp"
-//#include "game.hpp"
-//#include "editor.hpp"
-//#include "layers.hpp"
-//#include "collision.hpp"
-//#include "tdapi.hpp"
-//#include "camera_impl.hpp"
-//#include "battle_impl.hpp"
-//#include "state_impl.hpp"
-//#include "tdscript_impl.hpp"
-//#include "dialogue_impl.hpp"
-//#include "actions/action_impl_includes.hpp"
-//#include "task_impl.hpp"
-//#include "components/component_impl_includes.hpp"
-//#include "entity_impl.hpp"
-//#include "collision_impl.hpp"
-//#include "level_impl.hpp"
-//#include "renderer_impl.hpp"
-//#include "editor_impl.hpp"
-//#include "game_impl.hpp"
-//#include "tdapi_impl.hpp"
-// @CANARY
 
 int main() {
 	tdns_log.init();
@@ -82,10 +48,7 @@ int main() {
 
 	init_fonts();
 	
-	init_collider_matrix();
 	init_gl();
-	// Set up some debug output
-	
 
 	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), 16.0);
 	ImGui::GetIO().IniFilename = RelativePath("imgui.ini").path.c_str();
@@ -115,7 +78,6 @@ int main() {
 		ImGui_ImplGlfwGL3_NewFrame();
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
 		
-	
 		entity_manager.update(seconds_per_update);
 		physics_engine.update(seconds_per_update);
 		render_engine.render();

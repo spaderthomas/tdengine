@@ -87,7 +87,7 @@ build_options = {
             'lua51'
         ],
         'system_libs':[
-            'z',
+            #'z',
             'GL',
             'X11',
             'c',
@@ -101,7 +101,6 @@ build_options = {
         'out': 'tdengine'
     }
 }
-
 
 class Builder(tdbuild.base_builder):
     def __init__(self):

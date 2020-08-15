@@ -34,12 +34,6 @@ function on_entity_created(cpp_ref)
 end
 
 function on_entity_destroyed(cpp_ref)
-   local components = cpp_ref:all_components()
-
-   for i=1, #components do
-	  local component = components[i]
-	  print(component:get_name())
-   end
    Entities[cpp_ref:get_id()] = nil
 end
 
@@ -61,6 +55,9 @@ function on_component_created(cpp_ref)
    component:init()
 end
 
+function on_component_destroyed(cpp_ref)
+   Components[cpp_ref:get_id()] = nil
+end
 -- Class stuff
 local function _create_class(name)
   local class = {

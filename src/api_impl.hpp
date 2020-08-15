@@ -69,17 +69,22 @@ void register_collider(int entity) {
 	handle.id = entity;
 	if (!handle) return;
 
+	auto& physics_engine = get_physics_engine();
+	if (physics_engine.has_collider(entity)) return;
+
 	auto box = Lua.get_component(entity, "BoundingBox");
+	auto position = Lua.get_component(entity, "Position");
 
 	Collider collider;
 	collider.entity = handle;
-	collider.origin.x = box["origin"]["x"];
-	collider.origin.y = box["origin"]["y"];
+	collider.origin.x = position["world"]["x"];
+	collider.origin.y = position["world"]["y"];
 	collider.extents.x = box["extents"]["x"];
 	collider.extents.y = box["extents"]["y"];	
-		
-	auto& physics_engine = get_physics_engine();
-	physics_engine.colliders.push_back(collider);
+	
+	physics_engine.add_collider(entity, collider);
+
+	tdns_log.write("Registered collider for EntityID " + std::to_string(entity));
 }
 
 void move_entity(int entity) {
@@ -89,11 +94,12 @@ void move_entity(int entity) {
 
 	auto box = Lua.get_component(entity, "BoundingBox");
 	auto movement = Lua.get_component(entity, "Movement");
+	auto position = Lua.get_component(entity, "Position");
 
 	MoveRequest request;
 	request.collider.entity = handle;
-	request.collider.origin.x = box["origin"]["x"];
-	request.collider.origin.y = box["origin"]["y"];
+	request.collider.origin.x = position["world"]["x"];
+	request.collider.origin.y = position["world"]["y"];
 	request.collider.extents.x = box["extents"]["x"];
 	request.collider.extents.y = box["extents"]["y"];	
 
@@ -182,10 +188,18 @@ bool was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask) {
 	auto& manager = get_input_manager();
 	return manager.chord(mod_key, cmd_key, mask);
 }
-
-void set_camera_offset(float x, float y) {
+float get_camera_x() {
 	auto& render_engine = get_render_engine();
-	render_engine.camera_offset = { x, y };
+	return render_engine.camera.x;
+}
+float get_camera_y() {
+	auto& render_engine = get_render_engine();
+	return render_engine.camera.y;
+}
+void move_camera(float x, float y) {
+	auto& render_engine = get_render_engine();
+	render_engine.camera.x += x;
+	render_engine.camera.y += y;
 }
 
 bool draw_sprite_button(std::string sprite_name, float sx, float sy) {
@@ -205,26 +219,32 @@ bool draw_sprite_button(std::string sprite_name, float sx, float sy) {
 	return ImGui::ImageButton((ImTextureID)(uintptr_t)sprite->atlas->handle,
 							  button_size,
 							  bottom_left_tex_coords, top_right_tex_coords);
-
 }
 
 void _draw_line_from_points(float p1x, float p1y, float p2x, float p2y, float r, float g, float b, float a) {
 	glm::vec2 p1{p1x, p1y};
 	glm::vec2 p2{p2x, p2y};
 	glm::vec4 color{r, g, b, a};
-
 	draw_line_from_points(p1, p2, color);
 }
-	
 
+void _draw_rect_filled_screen(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a) {
+	glm::vec2 origin{origin_x, origin_y};
+	glm::vec2 extents{extent_x, extent_y};
+	glm::vec4 color{r, g, b, a};
+	draw_rect_filled_screen(origin, extents, color);
+}
 
-void finalize_move(MoveRequest request) {
-	auto position = Lua.get_component(request.collider.entity.id, "Position");
-	position["world"]["x"] = request.wish.x;
-	position["world"]["y"] = request.wish.y;
+void _draw_rect_outline_screen(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a) {
+	glm::vec2 origin{origin_x, origin_y};
+	glm::vec2 extents{extent_x, extent_y};
+	glm::vec4 color{r, g, b, a};
+	draw_rect_outline_screen(origin, extents, color);
+}
 
-	auto movement = Lua.get_component(request.collider.entity.id, "Movement");
-	movement["wish"]["x"] = request.wish.x;
-	movement["wish"]["y"] = request.wish.y;
-
+void _draw_rect_outline_world(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a) {
+	glm::vec2 origin{origin_x, origin_y};
+	glm::vec2 extents{extent_x, extent_y};
+	glm::vec4 color{r, g, b, a};
+	draw_rect_outline_world(origin, extents, color);
 }

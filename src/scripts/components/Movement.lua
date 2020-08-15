@@ -14,7 +14,6 @@ function Movement:update(dt)
 end
 
 function Movement:move(xunits, yunits)
-   print('Im movin!')
   self.wish.x = self.wish.x + self.speed * xunits
   self.wish.y = self.wish.y + self.speed * yunits
   tdengine.internal.move_entity(self.parent:get_id())

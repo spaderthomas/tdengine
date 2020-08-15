@@ -76,28 +76,6 @@ void init_gl() {
 }
 	
 
-void draw_square(Center_Box box, glm::vec4 color) {
-	auto draw = [box, color]() -> void {
-		auto transform = SRT::no_transform();
-		transform.translate = gl_from_screen(box.origin);
-		transform.scale = box.extents;
-		auto trans_mat = mat3_from_transform(transform);
-		solid_shader.begin();
-		solid_shader.set_mat3("transform", trans_mat);
-		solid_shader.set_vec4("color", color);
-
-		auto& asset_manager = get_asset_manager();
-		Mesh* square = asset_manager.get_asset<Mesh>("square");
-
-		square->bind();
-		solid_shader.check();
-		square->draw(GL_TRIANGLES);
-		solid_shader.end();
-	};
-
-	auto& render_engine = get_render_engine();
-	render_engine.primitives.push_back(draw);
-}
 
 
 void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
@@ -149,23 +127,57 @@ void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
 	auto& render_engine = get_render_engine();
 	render_engine.primitives.push_back(draw);
 }
-void draw_rect_screen(glm::vec2 top_left, glm::vec2 top_right, glm::vec2 bottom_right, glm::vec2 bottom_left, glm::vec4 color) {
-	draw_line_from_points(top_left, top_right, color);
-	draw_line_from_points(top_right, bottom_right, color);
-	draw_line_from_points(bottom_right, bottom_left, color);
-	draw_line_from_points(bottom_left, top_left, color);
+
+void draw_rect_filled_screen(glm::vec2 origin, glm::vec2 extents, glm::vec4 color) {
+	auto draw = [origin, extents, color]() -> void {
+		auto transform = SRT::no_transform();
+		transform.translate = gl_from_screen(origin);
+		transform.scale = extents;
+		auto trans_mat = mat3_from_transform(transform);
+		solid_shader.begin();
+		solid_shader.set_mat3("transform", trans_mat);
+		solid_shader.set_vec4("color", color);
+
+		auto& asset_manager = get_asset_manager();
+		Mesh* square = asset_manager.get_asset<Mesh>("square");
+
+		square->bind();
+		solid_shader.check();
+		square->draw(GL_TRIANGLES);
+		solid_shader.end();
+	};
+
+	auto& render_engine = get_render_engine();
+	render_engine.primitives.push_back(draw);
 }
 
-void draw_rect_screen(Points_Box& points, glm::vec4 color) {
-	glm::vec2 top_left = glm::vec2(points.left, points.top);
-	glm::vec2 top_right = glm::vec2(points.right, points.top);
-	glm::vec2 bottom_right = glm::vec2(points.right, points.bottom);
-	glm::vec2 bottom_left = glm::vec2(points.left, points.bottom);
-	draw_rect_screen(top_left, top_right, bottom_right, bottom_left, color);
+void draw_rect_outline_screen(glm::vec2 tl, glm::vec2 tr, glm::vec2 br, glm::vec2 bl, glm::vec4 color) {
+	draw_line_from_points(tl, tr, color);
+	draw_line_from_points(tr, br, color);
+	draw_line_from_points(br, bl, color);
+	draw_line_from_points(bl, tl, color);
 }
-void draw_rect_world(Points_Box points, glm::vec4 color) {
-	// @gut this dont work no more
-	draw_rect_screen(points, color);
+
+void draw_rect_outline_screen(glm::vec2 origin, glm::vec2 extents, glm::vec4 color) {
+	// Extents is the length from side to side, so the distance from the origin to the extreme uses half the extent
+	extents.x = extents.x / 2;
+	extents.y = extents.y / 2;
+	glm::vec2 bl = {origin.x - extents.x, origin.y - extents.y};
+	glm::vec2 tl = {origin.x - extents.x, origin.y + extents.y};
+	glm::vec2 br = {origin.x + extents.x, origin.y - extents.y};
+	glm::vec2 tr = {origin.x + extents.x, origin.y + extents.y};
+	
+	draw_rect_outline_screen(tl, tr, br, bl, color);
+}
+
+void draw_rect_outline_world(glm::vec2 origin, glm::vec2 extents, glm::vec4 color) {
+	auto& render_engine = get_render_engine();
+
+	glm::vec2 camera_translation{render_engine.camera.x, render_engine.camera.y};
+
+	origin += camera_translation;
+	
+	draw_rect_outline_screen(origin, extents, color);	
 }
 
 void Line_Set::set_max_point() {
@@ -370,7 +382,7 @@ void Text_Box::render() {
 		SRT transform = SRT::no_transform();
 		glm::mat3 mat = mat3_from_transform(transform);
 		text_shader.set_mat3("transform", mat);
-		text_shader.set_vec3("text_color", white3);
+		text_shader.set_vec3("text_color", Colors::TextWhite);
 		text_shader.set_int("sampler", 0);
 		
 		// We can render text at floating point pixel levels, so explicitly cast
@@ -454,6 +466,10 @@ RenderEngine& get_render_engine() {
 	return engine;
 }
 
+Camera& RenderEngine::get_camera() {
+	return camera;
+}
+
 void RenderEngine::render() {
 	bind_sprite_buffers();
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
@@ -486,6 +502,7 @@ void RenderEngine::render() {
 	}
 
 	// Main render loop
+	glm::vec2 camera_offset{camera.x, camera.y};
 	glm::vec2 camera_translation = magnitude_gl_from_screen(camera_offset);
 	for (auto& depth_level_render_elements : depth_sorted_render_elements) {
 		auto sort_by_world_pos = [](const auto& a, const auto& b) {
@@ -528,7 +545,7 @@ void RenderEngine::render() {
                 r.world_pos[0],
 				r.world_pos[1]
 			});
-			transform.translate -= camera_translation;
+			transform.translate += camera_translation;
 			auto transform_mat = mat3_from_transform(transform);
 			shader->set_mat3("transform", transform_mat);
 

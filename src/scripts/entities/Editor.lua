@@ -17,7 +17,6 @@ local SelectionState = {
 
 Editor = tdengine.entity('Editor')
 function Editor:init()
-  self:add_component('Camera')
   self:add_component('Debug')
   self:add_component('Input')
 
@@ -56,7 +55,6 @@ function Editor:update(dt)
   local dbg = self:get_component('Debug')
   local input = self:get_component('Input')
   local player = self:get_entity('Player')
-  if player then self:destroy_entity(player:get_id()) end
   self:calculate_framerate()
   
   self:handle_input()
@@ -99,28 +97,26 @@ function Editor:handle_input()
 end
 
 function Editor:adjust_camera()
-  local camera = self:get_component('Camera')
   local input = self:get_component('Input')
 
   local offset = { x = 0, y = 0 }
   if input:is_key_down(GLFW.Keys.W) then
-	offset.y = offset.y + .02
-  end
-  
-  if input:is_key_down(GLFW.Keys.A) then
-	offset.x = offset.x - .02
-  end
-  
-  if input:is_key_down(GLFW.Keys.S) then
 	offset.y = offset.y - .02
   end
   
-  if input:is_key_down(GLFW.Keys.D) then
+  if input:is_key_down(GLFW.Keys.A) then
 	offset.x = offset.x + .02
   end
+  
+  if input:is_key_down(GLFW.Keys.S) then
+	offset.y = offset.y + .02
+  end
+  
+  if input:is_key_down(GLFW.Keys.D) then
+	offset.x = offset.x - .02
+  end
 
-  camera.offset.x = camera.offset.x + offset.x
-  camera.offset.y = camera.offset.y + offset.y
+  tdengine.move_camera(offset.x, offset.y)
 end
 
 function Editor:draw_entity_viewer()
@@ -202,11 +198,10 @@ function Editor:draw_tile_tree_recursive(tbl, unique_button_index)
 end
 
 function Editor:draw_grid()
-   local camera = self:get_component('Camera')
    local tsx = tdengine.Units.TileSize.Screen.x
    local tsy = tdengine.Units.TileSize.Screen.y
-   local xb = math.fmod(camera.offset.x, tsx)
-   local yb = math.fmod(camera.offset.y, tsy) + (tsy / 2)
+   local xb = math.fmod(tdengine.get_camera_x(), tsx)
+   local yb = math.fmod(tdengine.get_camera_y(), tsy) + (tsy / 2)
 
    for col_offset = 1 - xb, 0, -tsx do
 	  tdengine.internal.draw_line_from_points(col_offset, 0, col_offset, 1, .2, .1, .9, .5)
