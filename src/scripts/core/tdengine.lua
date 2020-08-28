@@ -160,11 +160,19 @@ end
 local entity_mixin = {
   get_component = function(self, kind)
 	local component = Entity["get_component"](self.cpp_ref, kind)
-	return Components[component:get_id()]
+	if component then
+	  return Components[component:get_id()]
+	else
+      return nil
+	end
   end,  
   add_component = function(self, kind)
 	local component = Entity["add_component"](self.cpp_ref, kind)
-	return Components[component:get_id()]
+	if component then
+      return Components[component:get_id()]
+	else
+	  return nil
+	end
   end,
   get_name = function(self)
 	return Entity["get_name"](self.cpp_ref)
@@ -240,7 +248,7 @@ function tdengine.load_scene(name)
    local scene = _G[name]
    local entities = scene.entities
    for index, entity in pairs(entities) do
-	  create_entity(entity.Name)
+	  local entity = create_entity(entity.Name)
 	  
    end
 end

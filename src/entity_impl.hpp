@@ -112,9 +112,15 @@ Component* Entity::add_component(std::string name) {
 	}
 
 	auto& component_manager = get_component_manager();
-	auto c = component_manager.create_component(name, id);
-	components[name] = c;
-	return c;
+	auto component = component_manager.create_component(name, id);
+	
+	if (component) {
+		components[name] = component;
+	    return component;
+	} else {
+		// For example, a typo in the component name, or if its init() is broken
+		return nullptr;
+	}
 }
 
 void Entity::remove_component(std::string name) {
@@ -127,6 +133,7 @@ void Entity::remove_component(std::string name) {
 Component* Entity::get_component(std::string name) {
 	if (components.find(name) == components.end()) {
 		tdns_log.write("Tried to get a component, but it didn't exist. Entity ID: " + std::to_string(id) + ". Component name: " + name);
+		return nullptr;
 	}
 	return components[name];
 }
