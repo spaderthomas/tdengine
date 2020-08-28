@@ -7,10 +7,6 @@ function Movement:init()
 end
 
 function Movement:update(dt)
-  local position = self.parent:get_component('Position')
-  if not (self.wish.x == position.world.x and self.wish.y == position.world.y) then
-	 tdengine.internal.move_entity(self.parent:get_id())
-  end
 end
 
 function Movement:move(xunits, yunits)

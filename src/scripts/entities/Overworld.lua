@@ -2,7 +2,8 @@ local inspect = require('inspect')
 
 Overworld = tdengine.entity('Overworld')
 function Overworld:init()
-   self:create_entity('Tom')
+   local tom = self:create_entity('Tom')
+   print(inspect(tom))
    self:create_entity('Player')
 end
 

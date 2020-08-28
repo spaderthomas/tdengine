@@ -1,6 +1,7 @@
-void create_entity(std::string name) {
+EntityID create_entity(std::string name) {
 	auto& entity_manager = get_entity_manager();
-	entity_manager.create_entity(name);
+	auto handle = entity_manager.create_entity(name);
+	return handle.id;
 }
 
 void destroy_entity(int entity) {
@@ -247,4 +248,48 @@ void _draw_rect_outline_world(float origin_x, float origin_y, float extent_x, fl
 	glm::vec2 extents{extent_x, extent_y};
 	glm::vec4 color{r, g, b, a};
 	draw_rect_outline_world(origin, extents, color);
+}
+
+void register_lua_api() {
+	auto& state = Lua.state;
+    state["tdengine"] = state.create_table();
+	state["tdengine"]["create_entity"] = &create_entity;
+	state["tdengine"]["destroy_entity"] = &destroy_entity;
+	state["tdengine"]["register_animation"] = &register_animation;
+	state["tdengine"]["get_frames"] = &get_frames;
+	state["tdengine"]["enable_input_channel"] = &enable_input_channel;
+	state["tdengine"]["disable_input_channel"] = &disable_input_channel;
+	state["tdengine"]["is_key_down"] = &is_key_down;
+	state["tdengine"]["was_key_pressed"] = &was_key_pressed;
+	state["tdengine"]["was_chord_pressed"] = &was_chord_pressed;
+	state["tdengine"]["get_camera_x"] = &get_camera_x;
+	state["tdengine"]["get_camera_y"] = &get_camera_y;
+	state["tdengine"]["move_camera"] = &move_camera;
+	state["tdengine"]["draw"] = state.create_table();
+	state["tdengine"]["draw"]["filled_rect_screen"] = &_draw_rect_filled_screen;
+	state["tdengine"]["draw"]["outline_rect_screen"] = &_draw_rect_outline_screen;
+	state["tdengine"]["draw"]["outline_rect_world"] = &_draw_rect_outline_world;
+	state["tdengine"]["Units"] = state.create_table();
+	state["tdengine"]["Units"]["TileSize"] = state.create_table();
+	state["tdengine"]["Units"]["TileSize"]["Screen"] = state.create_table();
+	state["tdengine"]["Units"]["TileSize"]["Screen"]["x"] = SCR_TILESIZE_X;
+	state["tdengine"]["Units"]["TileSize"]["Screen"]["y"] = SCR_TILESIZE_Y;
+	state["tdengine"]["InputChannel"] = state.create_table();
+	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
+	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;
+	state["tdengine"]["InputChannel"]["Editor"] = INPUT_MASK_EDITOR;
+	state["tdengine"]["InputChannel"]["Game"] = INPUT_MASK_GAME;
+	state["tdengine"]["InputChannel"]["All"] = INPUT_MASK_ALL;
+	state["tdengine"]["paths"] = state.create_table();
+	state["tdengine"]["paths"]["root"] = root_dir;
+	state["tdengine"]["paths"]["join"] = &path_join;
+	
+    state["tdengine"]["internal"] = state.create_table();
+	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
+	state["tdengine"]["internal"]["move_entity"] = &move_entity;
+	state["tdengine"]["internal"]["register_collider"] = &register_collider;
+	state["tdengine"]["internal"]["draw_line_from_points"] = &_draw_line_from_points;
+
+	state["imgui"]["extensions"] = state.create_table();
+	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;
 }

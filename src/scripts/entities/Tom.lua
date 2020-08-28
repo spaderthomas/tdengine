@@ -1,15 +1,24 @@
+local animations = {
+  stand = {
+	'tree.png'
+  }
+}
+
 Tom = tdengine.entity('Tom')
 function Tom:init()
    local position = self:add_component('Position')
-   print(position)
    local physics = self:add_component('Physics')
    local movement = self:add_component('Movement')
-   print('Created Tom with EntityID: ' .. self:get_id())
+   
+   local graphic = self:add_component('Graphic')
+   graphic.scale = { x = .2, y = .2 }
+
+   local animation = self:add_component('Animation')
+   animation:batch_add(animations)
+   animation:begin('stand')
 end
 
 function Tom:update(dt)
-   local position = self:get_component('Position')
-   position.world = { x = .5, y = .5 }
    local aabb = self:get_component('BoundingBox')
-   aabb:draw()
+   aabb:draw(tdengine.colors.green)
 end

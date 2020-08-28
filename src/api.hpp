@@ -1,4 +1,4 @@
-void create_entity(std::string name);
+EntityID create_entity(std::string name);
 void destroy_entity(int entity);
 void draw_entity(int entity, Render_Flags flags = Render_Flags::None);
 void move_entity(int entity);
@@ -27,3 +27,5 @@ void _draw_line_from_points(float p1x, float p1y, float p2x, float p2y, float r,
 void _draw_rect_filled_screen(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a);
 void _draw_rect_outline_screen(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a);
 void _draw_rect_outline_world(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a);
+
+void register_lua_api();

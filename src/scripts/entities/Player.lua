@@ -24,7 +24,7 @@ function Player:init()
   animation:batch_add(animations)
   animation:begin('spader_walk_down')
   
-  local position = self:add_component('Physics')
+  local physics = self:add_component('Physics')
   local movement = self:add_component('Movement')
   local input = self:add_component('Input')
 end
@@ -34,16 +34,16 @@ function Player:handle_movement()
   local movement = self:get_component('Movement')
 
   if input:is_key_down(GLFW.Keys.I) then
-	movement:move(0, .3)
+	movement:move(0, .2)
   end
   if input:is_key_down(GLFW.Keys.J) then
-	movement:move(-.3, 0)
+	movement:move(-.2, 0)
   end
   if input:is_key_down(GLFW.Keys.K) then
-	movement:move(0, -.3)
+	movement:move(0, -.2)
   end
   if input:is_key_down(GLFW.Keys.L) then
-	movement:move(.3, 0)
+	movement:move(.2, 0)
   end
   
 end
@@ -53,8 +53,6 @@ function Player:update(dt)
    
    local aabb = self:get_component('BoundingBox')
    local position = self:get_component('Position')
-   print('from update: x:' .. position.world.x .. ', y:' .. position.world.y)
-   print('camera: x:' .. tdengine.get_camera_x() .. ', y:' .. tdengine.get_camera_y())
    aabb:draw()
 end
 

@@ -1,5 +1,12 @@
 local inspect = require('inspect')
 
+-- Utilities
+tdengine.colors = {}
+tdengine.colors.red =   { r = 1, g = 0, b = 0, a = 1 }
+tdengine.colors.green = { r = 0, g = 1, b = 0, a = 1 }
+tdengine.colors.blue =  { r = 0, g = 0, b = 1, a = 1 }
+
+
 -- Callbacks
 function update_entity(id, dt)
   local entity = Entities[id]
@@ -58,6 +65,8 @@ end
 function on_component_destroyed(cpp_ref)
    Components[cpp_ref:get_id()] = nil
 end
+
+
 -- Class stuff
 local function _create_class(name)
   local class = {
@@ -131,6 +140,7 @@ local class_mixin = {
   
 }
 
+
 -- tdengine wrappers for sugar
 function tdengine.draw_entity(entity)
   tdengine.internal.draw_entity(entity:get_id(), 0)
@@ -163,7 +173,8 @@ local entity_mixin = {
 	return Entity["get_id"](self.cpp_ref)
   end,
   create_entity = function(self, name)
-	 return tdengine.create_entity(name)
+	 local id = tdengine.create_entity(name)
+	 return Entities[id]
   end,
   destroy_entity = function(self, id)
 	 tdengine.destroy_entity(id)
@@ -225,6 +236,17 @@ local tile_mixin = {
   update = function(self) end
 }
 
+function tdengine.load_scene(name)
+   local scene = _G[name]
+   local entities = scene.entities
+   for index, entity in pairs(entities) do
+	  create_entity(entity.Name)
+	  
+   end
+end
+
+
+-- Utilities
 function tdengine.tile(name)
   local class = _create_class(name)
   _includeMixin(class, class_mixin)
@@ -280,7 +302,6 @@ function tdengine.strip_extension(path)
    return path:sub(1, extension - 1)
 end
 
--- Lua implementation of PHP scandir function
 function tdengine.scandir(dir)
    local platform = tdengine.platform()
    local command = ''

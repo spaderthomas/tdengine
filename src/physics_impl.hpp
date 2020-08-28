@@ -131,12 +131,23 @@ bool point_inside_box(glm::vec2& screen_pos, Center_Box& box) {
 
 void PhysicsEngine::update(float dt) {
 	for (auto& request : requests) {
+		auto request_id = request.collider.entity.id;
 		request.collider.origin = request.wish;
 
 		for (auto& [id, other] : colliders) {
+			if (id == request_id) continue;
+			
 			glm::vec2 penetration;
 			if (are_colliding(request.collider, other, penetration)) {
 				request.wish -= penetration;
+				auto physics = Lua.get_component(request_id, "Physics");
+				physics["had_collision"] = true;
+				physics["collided_with"] = id;
+
+				physics = Lua.get_component(id, "Physics");
+				physics["had_collision"] = true;
+				physics["collided_with"] = request_id;
+				
 				tdns_log.write("Collision found.");
 			}
 		}
@@ -159,7 +170,6 @@ void PhysicsEngine::update(float dt) {
 		collider.origin = {request.wish.x, request.wish.y};
 	}
 
-	colliders.clear();
 	requests.clear();
 }
 

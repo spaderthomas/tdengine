@@ -397,12 +397,24 @@ components get owning entity
 * bugs
 * polish
 * features
-next episode:
-@spader 3/1/2020: movement component
+@spader 8/27/2020: scenes
+Idea 1: Each scene is a Lua class. This doesn't work with the editor, or with
+saving stuff out. You want data, not code. When stuff changes during the game,
+you need to save that, and code won't work for that. 
 
+What entities exist?
+What are their locations?
+What tiles exist?
+
+Start by making the infrastructure: A list of scenes in Lua. A SceneManager in
+C++. A scene class in Lua. A basic file format (in Lua) to describe what's in a
+scene. Some functions on the scene class to read it in and build the scene --
+what entities exist and where they are. In the future, maybe save / load
+functions on entities. 
+
+
+next episode:
 @spader 3/1/2020: add time parameter to animation frames
-@spader 3/1/2020: if/how scenes are going to be in the game. or how you'll
-simulate the features a scene gives you.
 @spader 3/1/2020: port tile selector
 @spader 3/1/2020: components you will probably need for level 1...collision,
 interaction, task, tile, dialogue, state
