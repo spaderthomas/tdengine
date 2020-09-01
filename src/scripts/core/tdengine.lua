@@ -22,8 +22,7 @@ function on_entity_created(cpp_ref)
    -- Find the matching type in Lua
    EntityType = _G[cpp_ref:get_name()]
    if not EntityType then
-	  print('Tried to create an entity of type ' .. cpp_ref:get_name() .. ', but no such entity exists')
-	  return
+	  return 1
    end
    
    -- Construct the entity with a do-nothing constructor
@@ -248,8 +247,13 @@ function tdengine.load_scene(name)
    local scene = _G[name]
    local entities = scene.entities
    for index, entity in pairs(entities) do
-	  local entity = create_entity(entity.Name)
+	  local id = tdengine.create_entity(entity.Name)
+	  if not id then return end
 	  
+	  local position = entity.Position
+	  if position then
+		 tdengine.internal.teleport_entity(id, position.x, position.y)
+	  end
    end
 end
 

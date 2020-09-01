@@ -2,6 +2,7 @@ EntityID create_entity(std::string name);
 void destroy_entity(int entity);
 void draw_entity(int entity, Render_Flags flags = Render_Flags::None);
 void move_entity(int entity);
+void teleport_entity(int entity, float x, float y);
 void register_collider(int entity);
 
 void register_animation(std::string name, std::vector<std::string> frames);

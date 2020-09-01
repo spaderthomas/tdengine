@@ -4,9 +4,14 @@ struct Collider {
 	glm::vec2 extents;
 };
 
+namespace MoveFlags {
+	constexpr int BypassCollision = 1;
+}
+	
 struct MoveRequest {
 	Collider collider;
 	glm::vec2 wish;
+	int flags = 0;
 };
 
 struct Points_Box;
@@ -14,7 +19,6 @@ struct Center_Box {
 	glm::vec2 origin;
 	glm::vec2 extents;
 	
-	// @gut static std::optional<Center_Box> from_entity(EntityHandle handle);
 	static Center_Box from_points(Points_Box& points);
 	Points_Box as_points();
 };

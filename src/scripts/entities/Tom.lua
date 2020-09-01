@@ -9,7 +9,7 @@ function Tom:init()
    local position = self:add_component('Position')
    local physics = self:add_component('Physics')
    local movement = self:add_component('Movement')
-   
+
    local graphic = self:add_component('Graphic')
    graphic.scale = { x = .2, y = .2 }
 

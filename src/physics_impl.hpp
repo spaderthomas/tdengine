@@ -131,6 +131,8 @@ bool point_inside_box(glm::vec2& screen_pos, Center_Box& box) {
 
 void PhysicsEngine::update(float dt) {
 	for (auto& request : requests) {
+		if (request.flags & MoveFlags::BypassCollision) continue;
+		
 		auto request_id = request.collider.entity.id;
 		request.collider.origin = request.wish;
 

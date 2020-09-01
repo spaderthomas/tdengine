@@ -175,10 +175,32 @@ EntityHandle EntityManager::create_entity(std::string name) {
 	// Add it to Lua
 	sol::protected_function on_entity_created = Lua.state["on_entity_created"];
 	auto result = on_entity_created(entity);
+
+	// This one is hit if there's an error in the Lua code for the entity		
 	if (!result.valid()) {
 		sol::error error = result;
-		tdns_log.write("Failed to create entity. Name was: " + name);
+		std::string message = "You tried to create an entity named " + name;
+		message += ", but it errored out in init(). Here's the Lua error:";
+		tdns_log.write(message);
+		tdns_log.write("BEGIN");
 		tdns_log.write(error.what());
+		tdns_log.write("END");
+	}
+	// Otherwise, check the return code. We'll return 0 if we couldn't find the entity type.
+	else {
+		int code = result;
+
+		if (code) {
+			std::string message = "You tried to create an entity named " + name;
+			message += ", but there is no Lua class for that entity";
+			tdns_log.write(message);
+
+			// Delete the C++ object we just created
+			entities.erase(entities.find(entity.id));
+			EntityHandle handle;
+			handle.id = -1;
+			return handle;
+		}
 	}
 
 	// Return a handle

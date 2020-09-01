@@ -111,6 +111,19 @@ void move_entity(int entity) {
 	physics_engine.requests.push_back(request);
 }
 
+void teleport_entity(int entity, float x, float y) {
+	EntityHandle handle;
+	handle.id = entity;
+	if (!handle) return;
+
+	MoveRequest request;
+	request.collider.entity = handle;
+	request.wish.x = x;
+	request.wish.y = y;
+		
+	auto& physics_engine = get_physics_engine();
+	physics_engine.requests.push_back(request);	
+}
 
 Sprite* get_frame(std::string animation, int frame) {
 	if (animation.empty()) {
@@ -252,6 +265,7 @@ void _draw_rect_outline_world(float origin_x, float origin_y, float extent_x, fl
 
 void register_lua_api() {
 	auto& state = Lua.state;
+	
     state["tdengine"] = state.create_table();
 	state["tdengine"]["create_entity"] = &create_entity;
 	state["tdengine"]["destroy_entity"] = &destroy_entity;
@@ -287,6 +301,8 @@ void register_lua_api() {
     state["tdengine"]["internal"] = state.create_table();
 	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
 	state["tdengine"]["internal"]["move_entity"] = &move_entity;
+	state["tdengine"]["internal"]["teleport_entity"] = &teleport_entity;
+
 	state["tdengine"]["internal"]["register_collider"] = &register_collider;
 	state["tdengine"]["internal"]["draw_line_from_points"] = &_draw_line_from_points;
 
