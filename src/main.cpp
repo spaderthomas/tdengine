@@ -6,6 +6,7 @@
 #include "utils.hpp"
 #include "input.hpp"
 #include "transform.hpp"
+#include "console.hpp"
 #include "tdlua.hpp"
 #include "asset.hpp"
 #include "font.hpp"
@@ -13,7 +14,6 @@
 #include "draw.hpp"
 #include "shader.hpp"
 #include "physics.hpp"
-#include "console.hpp"
 #include "imgui/imgui_lua_bindings.hpp"
 #include "api.hpp"
 
@@ -44,11 +44,13 @@ int main() {
 	create_all_texture_atlas();
 
 	Lua.init();
-	Lua.test();
 
 	init_fonts();
 	
 	init_gl();
+
+	// @spader 9/4/2020: When the game gets much farther along, this isn't how you kick off entity creation
+	entity_manager.create_entity("Editor");
 
 	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), 16.0);
 	ImGui::GetIO().IniFilename = RelativePath("imgui.ini").path.c_str();
@@ -70,13 +72,10 @@ int main() {
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		if (input_manager.was_pressed(GLFW_KEY_LEFT_CONTROL)) {
-			show_console = !show_console;
-		}
-		
 		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
+		if (show_console) { console.Draw("tdengine"); }
 		
 		entity_manager.update(seconds_per_update);
 		physics_engine.update(seconds_per_update);

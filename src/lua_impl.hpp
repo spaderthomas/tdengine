@@ -85,12 +85,10 @@ void LuaState::script_file(ScriptPath path) {
 }
 
 void LuaState::test() {
-	auto& entity_manager = get_entity_manager();
-	entity_manager.create_entity("Overworld");
-	entity_manager.create_entity("Editor");
 }
 
 void LuaState::update(float dt) {
+	
 }
 
 sol::table LuaState::get_entity(int id) {

@@ -1,4 +1,4 @@
-Overworld_ = {
+tdengine.scenes.Overworld = {
    entities = {
 	  {
 		 Name = 'Player',
@@ -8,7 +8,7 @@ Overworld_ = {
 		 Name = 'Tom',
 		 Position = { x = .2, y = .2 }
 	  }
-   },
-   tiles = {
    }
 }
+
+tdengine.load_scene('Overworld')

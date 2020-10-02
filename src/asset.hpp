@@ -43,7 +43,7 @@ struct AssetManager {
 
 AssetManager& get_asset_manager();
 
-#define REGULAR_ATLAS_SIZE 1024
+#define REGULAR_ATLAS_SIZE 2048
 
 struct Texture : Asset {
 	GLuint handle;

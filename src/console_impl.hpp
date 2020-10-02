@@ -234,11 +234,7 @@ void  Console::ExecCommand(char* command_line)
 		break;
 	}
 	History.push_back(Strdup(command_line));
-
 	
-	// If this gets set, we know not to pipe the command down to the layer-specific handler
-	bool ran_generic_command = false;
-
 	std::string copy = std::string(command_line);
 	auto tokens = split(copy, ' ');
 	if (tokens.empty()) {
@@ -247,63 +243,9 @@ void  Console::ExecCommand(char* command_line)
 		AddLog(message.c_str());
 	}
 
-	// Swap modes
-	if (tokens[0] == "lua") {
-		if (this->mode == Mode::Lua) {
-			AddLog("Exiting the Lua interpreter");
-			this->mode = Mode::Engine;
-		}
-		else {
-			this->mode = Mode::Lua;
-		}
-		return;
+	try {
+		Lua.state.safe_script(command_line);
+	} catch (const sol::error& error) {
+		AddLog(error.what());
 	}
-
-	// Feed the input into the interpreter if we're in Lua mode
-	if (this->mode == Mode::Lua) {
-		Lua.state.script(command_line);
-		return;
-	}
-	
-	if (tokens[0] == "reload") {
-		ran_generic_command = true;
-	} else if (tokens[0] == "screen") {
-		ran_generic_command = true;
-
-		std::string usage = "format: screen {640, 720, 1080, 1440}";
-		if (tokens.size() != 2) {
-			AddLog(usage);
-			return;
-		}
-		
-		std::string res = tokens[1];
-		if (res.empty()) {
-			AddLog(usage);
-			return;
-		}
-		
-		if (res == "640") use_640_360();
-		else if (res == "720") use_720p();
-		else if (res == "1080") use_1080p();
-		else if (res == "1440") use_1440p();
-		else AddLog(usage);
-	}
-	else if (tokens[0] == "level") {
-		ran_generic_command = true;
-
-		std::string usage = "format: level {which}";
-		if (tokens.size() != 2) {
-			AddLog(usage);
-			return;
-		}
-		
-		std::string which = tokens[1];
-	} else if (tokens[0] == "exit") {
-		send_kill_signal = true;
-	} 
-	
-	// @gut 
-	//if (!ran_generic_command) active_layer->exec_console_cmd(command_line);
 }
-
-

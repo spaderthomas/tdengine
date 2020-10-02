@@ -263,6 +263,10 @@ void _draw_rect_outline_world(float origin_x, float origin_y, float extent_x, fl
 	draw_rect_outline_world(origin, extents, color);
 }
 
+void toggle_console() {
+	show_console = !show_console;
+}
+
 void register_lua_api() {
 	auto& state = Lua.state;
 	
@@ -279,21 +283,26 @@ void register_lua_api() {
 	state["tdengine"]["get_camera_x"] = &get_camera_x;
 	state["tdengine"]["get_camera_y"] = &get_camera_y;
 	state["tdengine"]["move_camera"] = &move_camera;
+	state.set_function("tdengine.log", &Log::write, &tdns_log);
+	
 	state["tdengine"]["draw"] = state.create_table();
 	state["tdengine"]["draw"]["filled_rect_screen"] = &_draw_rect_filled_screen;
 	state["tdengine"]["draw"]["outline_rect_screen"] = &_draw_rect_outline_screen;
 	state["tdengine"]["draw"]["outline_rect_world"] = &_draw_rect_outline_world;
+	
 	state["tdengine"]["Units"] = state.create_table();
 	state["tdengine"]["Units"]["TileSize"] = state.create_table();
 	state["tdengine"]["Units"]["TileSize"]["Screen"] = state.create_table();
 	state["tdengine"]["Units"]["TileSize"]["Screen"]["x"] = SCR_TILESIZE_X;
 	state["tdengine"]["Units"]["TileSize"]["Screen"]["y"] = SCR_TILESIZE_Y;
+	
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
 	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;
 	state["tdengine"]["InputChannel"]["Editor"] = INPUT_MASK_EDITOR;
 	state["tdengine"]["InputChannel"]["Game"] = INPUT_MASK_GAME;
 	state["tdengine"]["InputChannel"]["All"] = INPUT_MASK_ALL;
+	
 	state["tdengine"]["paths"] = state.create_table();
 	state["tdengine"]["paths"]["root"] = root_dir;
 	state["tdengine"]["paths"]["join"] = &path_join;
@@ -302,9 +311,13 @@ void register_lua_api() {
 	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
 	state["tdengine"]["internal"]["move_entity"] = &move_entity;
 	state["tdengine"]["internal"]["teleport_entity"] = &teleport_entity;
-
 	state["tdengine"]["internal"]["register_collider"] = &register_collider;
 	state["tdengine"]["internal"]["draw_line_from_points"] = &_draw_line_from_points;
+	state["tdengine"]["internal"]["screen_640"] = &use_640_360;
+	state["tdengine"]["internal"]["screen_720"] = &use_720p;
+	state["tdengine"]["internal"]["screen_1080"] = &use_1080p;
+	state["tdengine"]["internal"]["screen_1440"] = &use_1440p;
+	state["tdengine"]["internal"]["toggle_console"] = &toggle_console;
 
 	state["imgui"]["extensions"] = state.create_table();
 	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;

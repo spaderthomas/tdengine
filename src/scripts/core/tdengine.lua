@@ -187,12 +187,7 @@ local entity_mixin = {
 	 tdengine.destroy_entity(id)
   end,
   get_entity = function(self, name)
-	 for i=1, #Entities do
-		local entity = Entities[i]
-		if entity and entity:get_name() == name then return entity end
-	 end
-	 
-	 return nil
+    return tdengine.get_entity(name)
   end,
   add_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = true
@@ -244,17 +239,18 @@ local tile_mixin = {
 }
 
 function tdengine.load_scene(name)
-   local scene = _G[name]
-   local entities = scene.entities
-   for index, entity in pairs(entities) do
-	  local id = tdengine.create_entity(entity.Name)
-	  if not id then return end
+  local scene = tdengine.scenes[name]
+  
+  local entities = scene.entities
+  for index, entity in pairs(entities) do
+	local id = tdengine.create_entity(entity.Name)
+	if not id then return end
 	  
-	  local position = entity.Position
-	  if position then
-		 tdengine.internal.teleport_entity(id, position.x, position.y)
-	  end
-   end
+	local position = entity.Position
+	if position then
+	  tdengine.internal.teleport_entity(id, position.x, position.y)
+	end
+  end
 end
 
 

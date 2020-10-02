@@ -29,4 +29,6 @@ void _draw_rect_filled_screen(float origin_x, float origin_y, float extent_x, fl
 void _draw_rect_outline_screen(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a);
 void _draw_rect_outline_world(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a);
 
+void toggle_console();
+
 void register_lua_api();

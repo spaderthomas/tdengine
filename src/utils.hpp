@@ -456,7 +456,6 @@ std::string path_join(std::vector<std::string> items) {
 
 // Are these good to have?
 struct Paths {
-	std::string tile_texture_path;
 	std::string character_texture_path;
 	std::string other_texture_path;
 	std::string script_path;
@@ -464,7 +463,6 @@ struct Paths {
 Paths g_paths;
 
 void init_path_constants() {
-	g_paths.tile_texture_path = absolute_path(path_join({"textures", "src", "tiles"}));
 	g_paths.character_texture_path = absolute_path(path_join({"textures", "src", "characters"}));
 	g_paths.other_texture_path = absolute_path(path_join({"textures", "src", "other"}));
 	g_paths.script_path = absolute_path(path_join({"src", "scripts"}));
@@ -704,7 +702,7 @@ void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum s
 	
 	debug_msg += "\nGL message: " + std::string(message);
 	debug_msg += "\n\n";
-	tdns_log.write(debug_msg);
+	tdns_log.write(debug_msg, Log_Flags::File);
 }
 
 float seconds_per_update = 1.f / 60.f;

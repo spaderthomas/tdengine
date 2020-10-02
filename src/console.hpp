@@ -1,9 +1,4 @@
 struct Console {
-	enum class Mode {
-		Engine,
-		Lua
-	};
-	Mode                  mode = Mode::Engine;
     char                  InputBuf[256];
     ImVector<char*>       Items;
     bool                  ScrollToBottom;
@@ -28,3 +23,4 @@ struct Console {
 	static int TextEditCallbackStub(ImGuiTextEditCallbackData* data); 
 	int TextEditCallback(ImGuiTextEditCallbackData* data);
 };
+Console console;

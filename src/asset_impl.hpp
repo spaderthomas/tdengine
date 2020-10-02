@@ -75,150 +75,138 @@ void create_texture(std::string path) {
 }
 
 void create_texture_atlas(std::string assets_dir) {
+	tdns_log.write("Creating an atlas from files at " + assets_dir, Log_Flags::File);
+	
 	auto& asset_manager = get_asset_manager();
 	
-	// Extract name of the atlas png from the dir name (e.g. /environment will output an atlas to /atlases/environment.png)
-	std::string atlas_name = name_from_full_path(assets_dir);
-	if (is_alphanumeric(atlas_name)) {
-		atlas_name += ".png";
-		Texture* atlas = new Texture;
+	Texture* atlas = new Texture;
+	atlas->name = "atlas";
 
-		// Create some memory for our atlas
-		stbi_set_flip_vertically_on_load(false);
-		int count_atlas_bytes = sizeof(int32) * REGULAR_ATLAS_SIZE * REGULAR_ATLAS_SIZE;
-		int32* atlas_data = (int32*)malloc(count_atlas_bytes);
-		defer { free(atlas_data); };
-		memset(atlas_data, 0x0, count_atlas_bytes);
+	// Create some memory for our atlas
+	stbi_set_flip_vertically_on_load(false);
+	int count_atlas_bytes = sizeof(int32) * REGULAR_ATLAS_SIZE * REGULAR_ATLAS_SIZE;
+	int32* atlas_data = (int32*)malloc(count_atlas_bytes);
+	defer { free(atlas_data); };
+	memset(atlas_data, 0x0, count_atlas_bytes);
 
-		// Init some data for stb_rectpack
-		std::vector<stbrp_rect> rects;
-		std::vector<Name_And_ID> sprite_ids;
-		std::vector<unsigned char*> image_data;
+	// Init some data for stb_rectpack
+	std::vector<stbrp_rect> rects;
+	std::vector<Name_And_ID> sprite_ids;
+	std::vector<unsigned char*> image_data;
 
-		// Go through each sprite, register it in the asset table, and collect its rect data
-		int rect_id = 0;
-		auto recursive_add_from_dir = [&](std::string root_dir) -> void{
-			// The meat; given a directory, recursively add all PNGs
-			auto lambda = [&](std::string dir, const auto& lambda) -> void {
-				for (directory_iterator iter(dir); iter != directory_iterator(); ++iter) {
-					std::string asset_path = iter->path().string();
+	// Go through each sprite, register it in the asset table, and collect its rect data
+	int rect_id = 0;
+	auto recursive_add_from_dir = [&](std::string root_dir) -> void{
+		// The meat; given a directory, recursively add all PNGs
+		auto lambda = [&](std::string dir, const auto& lambda) -> void {
+			for (directory_iterator iter(dir); iter != directory_iterator(); ++iter) {
+				std::string asset_path = iter->path().string();
 
-					// Recurse to find assets in subdirectories
-					if (is_directory(iter->status())) { 
-						lambda(asset_path, lambda);
-					}
-					// If it's a regular file, check that it's a PNG and if so, load it
-					else if (is_regular_file(iter->status())) {
-						if (!is_png(asset_path)) { continue; }
-
-						std::string asset_name = name_from_full_path(asset_path);
-						Sprite* sprite = new Sprite;
-						sprite->atlas = atlas;
-						sprite->name = asset_name;
-
-						auto& asset_manager = get_asset_manager();
-						asset_manager.add_asset<Sprite>(asset_name, sprite);
-						
-						// Load the image data, create a rectangle for it
-						unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
-						if (data) {
-							image_data.push_back(data);
-							stbrp_rect new_rect;
-							new_rect.id = rect_id++;
-							new_rect.w = sprite->width;
-							new_rect.h = sprite->height;
-							rects.push_back(new_rect);
-							Name_And_ID new_id = { asset_name, new_rect.id };
-							sprite_ids.push_back(new_id);
-						}
-					}
+				// Recurse to find assets in subdirectories
+				if (is_directory(iter->status())) { 
+					lambda(asset_path, lambda);
 				}
-			};
+				// If it's a regular file, check that it's a PNG and if so, load it
+				else if (is_regular_file(iter->status())) {
+					if (!is_png(asset_path)) { continue; }
 
-			// Kick off the recursion
-			lambda(root_dir, lambda);
-		};
-		recursive_add_from_dir(assets_dir);
+					std::string asset_name = name_from_full_path(asset_path);
+					Sprite* sprite = new Sprite;
+					sprite->atlas = atlas;
+					sprite->name = asset_name;
 
-		// Pack the rectangles
-		stbrp_context* context = (stbrp_context*)calloc(1, sizeof(stbrp_context)); defer { free(context); };
-		stbrp_node* nodes = (stbrp_node*)calloc(REGULAR_ATLAS_SIZE, sizeof(stbrp_node)); defer { free(nodes); };
-		stbrp_init_target(context, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, nodes, REGULAR_ATLAS_SIZE);
-		stbrp_pack_rects(context, rects.data(), rects.size());
-
-		// Write them to the image buffer and mark offsets in the sprites
-		fox_for(irect, rects.size()) {
-			auto& rect = rects[irect];
-			for (auto& name_and_id : sprite_ids) {
-				if (rect.id == name_and_id.id) {
-					Sprite* sprite = asset_manager.get_asset<Sprite>(name_and_id.name);
-					// top right
-					sprite->tex_coords.push_back((rect.x + rect.w) / 1024.f);
-					sprite->tex_coords.push_back((rect.y) / 1024.f);
-					// bottom right
-					sprite->tex_coords.push_back((rect.x + rect.w) / 1024.f);
-					sprite->tex_coords.push_back((rect.y + rect.h) / 1024.f);
-					// bottom left
-					sprite->tex_coords.push_back((rect.x) / 1024.f);
-					sprite->tex_coords.push_back((rect.y + rect.h) / 1024.f);
-					// top left
-					sprite->tex_coords.push_back((rect.x) / 1024.f);
-					sprite->tex_coords.push_back((rect.y) / 1024.f);
-					break;
+					auto& asset_manager = get_asset_manager();
+					asset_manager.add_asset<Sprite>(asset_name, sprite);
+						
+					// Load the image data, create a rectangle for it
+					unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
+					if (data) {
+						image_data.push_back(data);
+						stbrp_rect new_rect;
+						new_rect.id = rect_id++;
+						new_rect.w = sprite->width;
+						new_rect.h = sprite->height;
+						rects.push_back(new_rect);
+						Name_And_ID new_id = { asset_name, new_rect.id };
+						sprite_ids.push_back(new_id);
+					}
 				}
 			}
+		};
 
-			// Copy the sprite into the image buffer
-			int32* image_cur_row = (int32*)image_data[irect];
-			int32* atlas_cur_row = atlas_data + rect.x + REGULAR_ATLAS_SIZE * rect.y;
+		// Kick off the recursion
+		lambda(root_dir, lambda);
+	};
+	recursive_add_from_dir(assets_dir);
 
-			fox_for(row, rect.h) {
-				memcpy(atlas_cur_row, image_cur_row, rect.w * sizeof(int32));
-				atlas_cur_row += REGULAR_ATLAS_SIZE;
-				image_cur_row += rect.w;
+	// Pack the rectangles
+	stbrp_context* context = (stbrp_context*)calloc(1, sizeof(stbrp_context)); defer { free(context); };
+	stbrp_node* nodes = (stbrp_node*)calloc(REGULAR_ATLAS_SIZE, sizeof(stbrp_node)); defer { free(nodes); };
+	stbrp_init_target(context, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, nodes, REGULAR_ATLAS_SIZE);
+	stbrp_pack_rects(context, rects.data(), rects.size());
+
+	// Write them to the image buffer and mark offsets in the sprites
+	fox_for(irect, rects.size()) {
+		auto& rect = rects[irect];
+		for (auto& name_and_id : sprite_ids) {
+			if (rect.id == name_and_id.id) {
+				Sprite* sprite = asset_manager.get_asset<Sprite>(name_and_id.name);
+				// top right
+				sprite->tex_coords.push_back((rect.x + rect.w) / (float)REGULAR_ATLAS_SIZE);
+				sprite->tex_coords.push_back((rect.y) / (float)REGULAR_ATLAS_SIZE);
+				// bottom right
+				sprite->tex_coords.push_back((rect.x + rect.w) / (float)REGULAR_ATLAS_SIZE);
+				sprite->tex_coords.push_back((rect.y + rect.h) / (float)REGULAR_ATLAS_SIZE);
+				// bottom left
+				sprite->tex_coords.push_back((rect.x) / (float)REGULAR_ATLAS_SIZE);
+				sprite->tex_coords.push_back((rect.y + rect.h) / (float)REGULAR_ATLAS_SIZE);
+				// top left
+				sprite->tex_coords.push_back((rect.x) / (float)REGULAR_ATLAS_SIZE);
+				sprite->tex_coords.push_back((rect.y) / (float)REGULAR_ATLAS_SIZE);
+				break;
 			}
 		}
 
-		// Write the atlas itself, with the same name as the folder it was created from	
-		std::string atlas_path = absolute_path("textures/atlases/") + atlas->name;
-		stbi_write_png(atlas_path.c_str(), REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 4, atlas_data, 0);
+		// Copy the sprite into the image buffer
+		int32* image_cur_row = (int32*)image_data[irect];
+		int32* atlas_cur_row = atlas_data + rect.x + REGULAR_ATLAS_SIZE * rect.y;
 
-		// Now, create all the OpenGL internals and point it to the newly created atlas
-		glGenTextures(1, &atlas->handle);
-		glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
-		glBindTexture(GL_TEXTURE_2D, atlas->handle);
-
-		// Some sane defaults
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas_data);
-		glGenerateMipmap(GL_TEXTURE_2D);
-
-		// Give it the image data
-		atlas->width = REGULAR_ATLAS_SIZE;
-		atlas->height = REGULAR_ATLAS_SIZE;
-		atlas->num_channels = 4;
-
-		asset_manager.add_asset<Texture>(atlas_name, atlas);
-	} else {
-		std::string msg = "Invalid texture atlas name. Expected alpanumeric, but got: " + atlas_name;
-		tdns_log.write(msg);
+		fox_for(row, rect.h) {
+			memcpy(atlas_cur_row, image_cur_row, rect.w * sizeof(int32));
+			atlas_cur_row += REGULAR_ATLAS_SIZE;
+			image_cur_row += rect.w;
+		}
 	}
+
+	// Write the atlas itself, with the same name as the folder it was created from	
+	std::string atlas_path = absolute_path("build/atlas.png");
+	stbi_write_png(atlas_path.c_str(), REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 4, atlas_data, 0);
+
+	// Now, create all the OpenGL internals and point it to the newly created atlas
+	glGenTextures(1, &atlas->handle);
+	glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
+	glBindTexture(GL_TEXTURE_2D, atlas->handle);
+
+	// Some sane defaults
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas_data);
+	glGenerateMipmap(GL_TEXTURE_2D);
+
+	// Give it the image data
+	atlas->width = REGULAR_ATLAS_SIZE;
+	atlas->height = REGULAR_ATLAS_SIZE;
+	atlas->num_channels = 4;
+
+	asset_manager.add_asset<Texture>(atlas->name, atlas);
 }
 
 void create_all_texture_atlas() {
-	std::string atlas_dirs[] = {
-		g_paths.character_texture_path,
-		g_paths.other_texture_path,
-		g_paths.tile_texture_path
-	};
-
-	for (auto& dir : atlas_dirs) {
-		create_texture_atlas(dir);
-	}
+	std::string dir = absolute_path("asset/art");
+	create_texture_atlas(dir);
 }
 
 void bind_sprite_buffers() {

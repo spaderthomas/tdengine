@@ -38,8 +38,6 @@ function Editor:init()
 
   self.filter = imgui.TextFilter.new()
 
-  self.tile_tree = self:build_tile_tree()
-
   self.display_framerate = 0
   self.average_framerate = 0
   self.frame = 0
@@ -47,8 +45,6 @@ function Editor:init()
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
   input:enable()
-
-  self:add_imgui_ignore('tile_tree')
 end
 
 function Editor:update(dt)
@@ -65,7 +61,6 @@ function Editor:update(dt)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
   self:draw_entity_viewer()
-  self:draw_tile_tree()
   imgui.End()
 end
 
@@ -93,6 +88,10 @@ function Editor:handle_input()
 	  self.snap = self.last_snap
 	  self.show_grid = self.last_show_grid
 	end
+  end
+
+  if input:was_key_pressed(GLFW.Keys.LEFT_CONTROL) then
+    tdengine.internal.toggle_console()
   end
 end
 
@@ -131,70 +130,6 @@ function Editor:draw_entity_viewer()
   end
   
   imgui.End()
-end
-
-function Editor:build_tile_tree(tree, dir)
-   tree = tree or {}
-   dir = dir or tdengine.paths.join({ tdengine.paths.root, 'textures', 'src', 'tiles' })
-   local ignore = function(item)
-	  return item == '.' or item == '..'
-   end
-
-   local items = tdengine.scandir(dir)
-   for idx, item in pairs(items) do
-	  local length = string.len(item)
-	  local is_png = tdengine.is_extension(item, '.png')
-	  local is_file = tdengine.has_extension(item)
-	  if is_png then
-		 tree.leaves = tree.leaves or {}
-		 table.insert(tree.leaves, item)
-	  elseif not ignore(item) and not is_file then
-		 tree[item] = {}
-		 self:build_tile_tree(tree[item], tdengine.paths.join({dir, item}))
-	  end
-   end
-
-   return tree
-end
-
-function Editor:draw_tile_tree()
-   imgui.Begin('tiles')
-   self:draw_tile_tree_recursive()
-   imgui.End()
-end
-
-function Editor:draw_tile_tree_recursive(tbl, unique_button_index)
-   unique_button_index = unique_button_index or 0
-   tbl = tbl or self.tile_tree
-   
-   leaves = tbl.leaves or {}
-   for idx, child in pairs(leaves) do
-	  imgui.PushID(unique_button_index)
-	  unique_button_index = unique_button_index + 1
-	  if imgui.extensions.SpriteButton(child, 32, 32) then
-		 -- Every tile's entity name is the same as its PNG, by convention
-		 entity_name = tdengine.strip_extension(child)
-		 self:create_entity(entity_name)
-	  end
-
-	  local end_of_line = math.fmod(idx, 5) == 0
-	  local end_of_set = idx == table.getn(leaves)
-	  if not (end_of_line or end_of_set) then
-		 imgui.SameLine()
-	  end
-	  
-	  imgui.PopID()
-   end
-   
-   for name, children in pairs(tbl) do
-	  if name ~= 'leaves' then
-		 if imgui.TreeNode(name) then
-			self:draw_tile_tree_recursive(tbl[name], unique_button_index)
-			imgui.TreePop()
-		 end
-	  end
-   end
-   
 end
 
 function Editor:draw_grid()
