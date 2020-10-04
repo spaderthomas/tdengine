@@ -538,8 +538,8 @@ void RenderEngine::render() {
 		
 			SRT transform = SRT::no_transform();
 			transform.scale = {
-				r.scale[0],
-				r.scale[1]
+				r.sprite->width / internal_resolution_width,
+				r.sprite->height / internal_resolution_height
 			};
 			transform.translate = gl_from_screen({
                 r.world_pos[0],

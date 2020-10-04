@@ -42,8 +42,6 @@ void draw_entity(int entity, Render_Flags flags) {
 	r.layer = graphic["layer"];
 	r.world_pos[0] = position["world"]["x"];
 	r.world_pos[1] = position["world"]["y"];
-	r.scale[0] = graphic["scale"]["x"];
-	r.scale[1] = graphic["scale"]["y"];
 
 	std::string animation_name = animation["current"];
 	int frame = animation["frame"];

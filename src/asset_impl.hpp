@@ -210,9 +210,9 @@ void init_assets() {
 	sprite->num_channels = texture->num_channels;
 	sprite->tex_coords = {
 		1, 1,
-		1, -1,
-		-1, -1,
-		-1, 1
+		1, 0,
+		0, 0,
+		0, 1
 	};
 	asset_manager.add_asset<Sprite>("classroom", sprite);
 

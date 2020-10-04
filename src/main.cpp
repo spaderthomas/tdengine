@@ -86,8 +86,6 @@ int main() {
 		r.layer = 0;
 		r.world_pos[0] = 0;
 		r.world_pos[1] = 0;
-		r.scale[0] = .5;
-		r.scale[1] = .5;
 		r.sprite = asset_manager.get_asset<Sprite>("classroom");
 		render_engine.render_list.push_back(r);
 
