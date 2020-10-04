@@ -34,6 +34,7 @@ int main() {
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
 
+	auto& asset_manager  = get_asset_manager();
 	auto& input_manager  = get_input_manager();
 	auto& render_engine  = get_render_engine();
 	auto& entity_manager = get_entity_manager();
@@ -41,7 +42,7 @@ int main() {
 	
 	init_shaders();
 	init_mesh();
-	create_all_texture_atlas();
+	init_assets();
 
 	Lua.init();
 
@@ -79,6 +80,17 @@ int main() {
 		
 		entity_manager.update(seconds_per_update);
 		physics_engine.update(seconds_per_update);
+
+		Render_Element r;
+		r.flags = Render_Flags::None;
+		r.layer = 0;
+		r.world_pos[0] = 0;
+		r.world_pos[1] = 0;
+		r.scale[0] = .5;
+		r.scale[1] = .5;
+		r.sprite = asset_manager.get_asset<Sprite>("classroom");
+		render_engine.render_list.push_back(r);
+
 		render_engine.render();
 
 		ImGui::Render();

@@ -40,7 +40,6 @@ void Texture::bind() {
 	glBindTexture(GL_TEXTURE_2D, handle);
 }
 
-//@leak never free stbi memory
 // @spader This is only used for the text box....kill it!
 void create_texture(std::string path) {
 	std::string texture_name = name_from_full_path(path);
@@ -96,48 +95,35 @@ void create_texture_atlas(std::string assets_dir) {
 
 	// Go through each sprite, register it in the asset table, and collect its rect data
 	int rect_id = 0;
-	auto recursive_add_from_dir = [&](std::string root_dir) -> void{
-		// The meat; given a directory, recursively add all PNGs
-		auto lambda = [&](std::string dir, const auto& lambda) -> void {
-			for (directory_iterator iter(dir); iter != directory_iterator(); ++iter) {
-				std::string asset_path = iter->path().string();
+	for (directory_iterator iter(assets_dir); iter != directory_iterator(); ++iter) {
+		std::string asset_path = iter->path().string();
 
-				// Recurse to find assets in subdirectories
-				if (is_directory(iter->status())) { 
-					lambda(asset_path, lambda);
-				}
-				// If it's a regular file, check that it's a PNG and if so, load it
-				else if (is_regular_file(iter->status())) {
-					if (!is_png(asset_path)) { continue; }
+		// If it's a regular file, check that it's a PNG and if so, load it
+		if (is_regular_file(iter->status())) {
+			if (!is_png(asset_path)) { continue; }
 
-					std::string asset_name = name_from_full_path(asset_path);
-					Sprite* sprite = new Sprite;
-					sprite->atlas = atlas;
-					sprite->name = asset_name;
+			auto& asset_manager = get_asset_manager();
+			
+			Sprite* sprite = new Sprite;
+			sprite->atlas = atlas;
+			sprite->name = name_from_full_path(asset_path);
 
-					auto& asset_manager = get_asset_manager();
-					asset_manager.add_asset<Sprite>(asset_name, sprite);
+			asset_manager.add_asset<Sprite>(sprite->name, sprite);
 						
-					// Load the image data, create a rectangle for it
-					unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
-					if (data) {
-						image_data.push_back(data);
-						stbrp_rect new_rect;
-						new_rect.id = rect_id++;
-						new_rect.w = sprite->width;
-						new_rect.h = sprite->height;
-						rects.push_back(new_rect);
-						Name_And_ID new_id = { asset_name, new_rect.id };
-						sprite_ids.push_back(new_id);
-					}
-				}
+			// Load the image data, create a rectangle for it
+			unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
+			if (data) {
+				image_data.push_back(data);
+				stbrp_rect rect;
+				rect.id = rect_id++;
+				rect.w = sprite->width;
+				rect.h = sprite->height;
+				rects.push_back(rect);
+				Name_And_ID new_id = { sprite->name, rect.id };
+				sprite_ids.push_back(new_id);
 			}
-		};
-
-		// Kick off the recursion
-		lambda(root_dir, lambda);
-	};
-	recursive_add_from_dir(assets_dir);
+		}
+	}
 
 	// Pack the rectangles
 	stbrp_context* context = (stbrp_context*)calloc(1, sizeof(stbrp_context)); defer { free(context); };
@@ -209,6 +195,29 @@ void create_all_texture_atlas() {
 	create_texture_atlas(dir);
 }
 
+void init_assets() {
+	create_all_texture_atlas();
+	create_texture(absolute_path("asset/art/backgrounds/classroom.png"));
+
+	auto& asset_manager = get_asset_manager();
+	
+	Texture* texture = asset_manager.get_asset<Texture>("classroom.png");
+
+	Sprite* sprite = new Sprite;
+	sprite->atlas = texture;
+	sprite->height = texture->height;
+	sprite->width = texture->width;
+	sprite->num_channels = texture->num_channels;
+	sprite->tex_coords = {
+		1, 1,
+		1, -1,
+		-1, -1,
+		-1, 1
+	};
+	asset_manager.add_asset<Sprite>("classroom", sprite);
+
+}
+
 void bind_sprite_buffers() {
 	glBindVertexArray(Sprite::vao);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Sprite::elem_buffer);
@@ -227,6 +236,8 @@ void Mesh::bind() {
 	// 0: Vertices
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), vert_offset);
 	glEnableVertexAttribArray(0);
+
+	// @spader 2020/10/02: This is dead code. We never draw a mesh that has a texture; it's only used for rectangles and lines
 	if (use_tex_coords) {
 		// 1: Texture coordinates
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), tex_coord_offset);

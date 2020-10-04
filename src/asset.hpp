@@ -64,9 +64,10 @@ struct Name_And_ID {
 void create_texture(std::string path);
 void create_texture_atlas(std::string assets_dir);
 void create_all_texture_atlas();
+void init_assets();
 
-struct Texture;
 struct Sprite : Asset {
+	// @spader 2020/10/02: These are just for when we make the texture atlas. I don't think that we need to store them
 	int height = 0;
 	int width = 0;
 	int num_channels = 0;

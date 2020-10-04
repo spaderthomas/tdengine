@@ -269,6 +269,9 @@ typedef float subpixel_unit;
 typedef float screen_unit;
 typedef float gl_unit;
 
+float internal_resolution_width = 320;
+float internal_resolution_height = 180;
+
 // Screen size definitions
 subpixel_unit SCREEN_X = (subpixel_unit)640.f;
 subpixel_unit SCREEN_Y = (subpixel_unit)360.f;
@@ -317,17 +320,6 @@ void change_window_size(std::string size) {
 	else if (size == "720") { use_720p(); }
 	else if (size == "1080") { use_1080p(); }
 	else if (size == "1440") { use_1440p(); }
-}
-// Converting to grid units
-glm::ivec2 grid_pos_from_px_pos(glm::vec2 px_pos) {
-	int closest_x = (int)floor(px_pos.x / CELL_SIZE);
-	int closest_y = (int)floor(px_pos.y / CELL_SIZE);
-	return glm::ivec2(closest_x, closest_y);
-}
-glm::ivec2 grid_from_world(glm::vec2 world_pos) {
-	int closest_x = (int)floor(world_pos.x / SCR_TILESIZE_X);
-	int closest_y = (int)floor(world_pos.y / SCR_TILESIZE_Y);
-	return glm::ivec2(closest_x, closest_y);
 }
 
 // Converting to GL units
