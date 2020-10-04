@@ -31,27 +31,7 @@ glm::mat3 mat3_from_transform(SRT transform) {
 	return trans_mat * rot_mat * scale_mat;
 }
 
-// Single-tile scaled SRT centered at grid_pos. 
-SRT srt_from_grid_pos(glm::ivec2 grid_pos) {
-	SRT grid_pos_transform = SRT::no_transform();
-	grid_pos_transform.scale = glm::vec2(SCR_TILESIZE_X, SCR_TILESIZE_Y);
-
-	// Starting at -1, move grid_pos tiles forward
-	grid_pos_transform.translate = glm::vec2(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y);
-
-	// Since tile was centered before, it'll be halfway between the tile, so correct that
-	grid_pos_transform.translate += glm::vec2(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y);
-	return grid_pos_transform;
-}
-
-glm::vec2 translation_from_grid_pos(glm::ivec2 grid_pos) {
-	glm::vec2 translation = glm::vec2(-1.f + grid_pos.x * GLSCR_TILESIZE_X, 1.f - grid_pos.y * GLSCR_TILESIZE_Y);
-	translation += glm::vec2(.5f * GLSCR_TILESIZE_X, -.5f * GLSCR_TILESIZE_Y);
-	return translation;
-}
-
 glm::vec2 translation_from_px_pos(glm::vec2 px_pos) {
-	glm::vec2 screen_coords = glm::vec2(px_pos.x / SCREEN_X, px_pos.y / SCREEN_Y);
-	glm::vec2 gl_coords = gl_from_screen(screen_coords);
+	glm::vec2 gl_coords = gl_from_screen(screen_from_px(px_pos));
 	return gl_coords;
 }

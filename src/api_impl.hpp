@@ -290,12 +290,6 @@ void register_lua_api() {
 	state["tdengine"]["draw"]["outline_rect_screen"] = &_draw_rect_outline_screen;
 	state["tdengine"]["draw"]["outline_rect_world"] = &_draw_rect_outline_world;
 	
-	state["tdengine"]["Units"] = state.create_table();
-	state["tdengine"]["Units"]["TileSize"] = state.create_table();
-	state["tdengine"]["Units"]["TileSize"]["Screen"] = state.create_table();
-	state["tdengine"]["Units"]["TileSize"]["Screen"]["x"] = SCR_TILESIZE_X;
-	state["tdengine"]["Units"]["TileSize"]["Screen"]["y"] = SCR_TILESIZE_Y;
-	
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
 	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;

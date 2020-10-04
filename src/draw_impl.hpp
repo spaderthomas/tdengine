@@ -216,7 +216,7 @@ void Text_Box::begin(std::string text) {
 	gl_unit padding_x = .075f;
 	
 	// Wrap once you go the fraction of the screen defined by size (minus padding on both sides)
-	pixel_unit wrap = (pixel_unit)(SCREEN_X * magnitude_screen_from_gl(size_x - 2 * padding_x));
+	pixel_unit wrap = (pixel_unit)(screen_x * magnitude_screen_from_gl(size_x - 2 * padding_x));
 	
 	// Break that bad boy up into lines
 	Line_Set set;
@@ -366,7 +366,7 @@ void Text_Box::render() {
 	gl_unit text_start_y = top - padding_y;
 	
 	// Move the text down so the top of the text is aligned with the top of the box
-	screen_unit screen_align_offset = Character::px_largest.y / SCREEN_Y;
+	screen_unit screen_align_offset = screen_y_from_px(Character::px_largest.y);
 	gl_unit gl_align_offset = 2 * screen_align_offset;
 	text_start_y -= gl_align_offset * scale;
 	glm::ivec2 text_start_px = px_coords_from_gl_coords(glm::vec2((float)text_start_x, (float)text_start_y));

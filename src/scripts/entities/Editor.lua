@@ -133,8 +133,7 @@ function Editor:draw_entity_viewer()
 end
 
 function Editor:draw_grid()
-   local tsx = tdengine.Units.TileSize.Screen.x
-   local tsy = tdengine.Units.TileSize.Screen.y
+   print('draw_grid() is broken.')
    local xb = math.fmod(tdengine.get_camera_x(), tsx)
    local yb = math.fmod(tdengine.get_camera_y(), tsy) + (tsy / 2)
 

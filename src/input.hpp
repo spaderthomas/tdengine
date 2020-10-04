@@ -197,9 +197,8 @@ void fill_imgui_input() {
 static void GLFW_Cursor_Pos_Callback(GLFWwindow* window, double xpos, double ypos) {
 	auto& input_manager = get_input_manager();
 	xpos = std::max<double>(xpos, 0); ypos = std::max<double>(ypos, 0);
-	input_manager.px_pos = glm::vec2(xpos, SCREEN_Y - ypos);
-	input_manager.screen_pos = glm::vec2(xpos / SCREEN_X, (SCREEN_Y - ypos) / SCREEN_Y);
-	//input_manager.world_pos = input_manager.screen_pos + active_layer->camera.offset; // @gut
+	input_manager.px_pos = glm::vec2(xpos, screen_y - ypos);
+	input_manager.screen_pos = screen_from_px(input_manager.px_pos);
 }
 
 void GLFW_Mouse_Button_Callback(GLFWwindow* window, int button, int action, int mods) {
@@ -262,7 +261,7 @@ int init_glfw() {
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
 	
-	g_window = glfwCreateWindow((int)SCREEN_X, (int)SCREEN_Y, "tdengine", NULL, NULL);
+	g_window = glfwCreateWindow((int)screen_x, (int)screen_y, "tdengine", NULL, NULL);
 	if (g_window == NULL) {
 		tdns_log.write("Failed to create GLFW window");
 		glfwTerminate();

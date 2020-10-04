@@ -8,6 +8,4 @@ struct SRT {
 
 glm::mat3 identity_mat3();
 glm::mat3 mat3_from_transform(SRT transform);
-SRT srt_from_grid_pos(glm::ivec2 grid_pos);
-glm::vec2 translation_from_grid_pos(glm::ivec2 grid_pos);
 glm::vec2 translation_from_px_pos(glm::vec2 px_pos);

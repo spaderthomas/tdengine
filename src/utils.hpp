@@ -271,49 +271,38 @@ typedef float gl_unit;
 
 float internal_resolution_width = 320;
 float internal_resolution_height = 180;
+float screen_x = 320;
+float screen_y = 180;
 
 // Screen size definitions
-subpixel_unit SCREEN_X = (subpixel_unit)640.f;
-subpixel_unit SCREEN_Y = (subpixel_unit)360.f;
-subpixel_unit CELL_SIZE = (subpixel_unit)16.f;
-screen_unit SCR_TILESIZE_X = (screen_unit)(CELL_SIZE / SCREEN_X);
-screen_unit SCR_TILESIZE_Y = (screen_unit)(CELL_SIZE / SCREEN_Y);
-gl_unit GLSCR_TILESIZE_X = (gl_unit)(2 * SCR_TILESIZE_X);
-gl_unit GLSCR_TILESIZE_Y = (gl_unit)(2 * SCR_TILESIZE_Y);
-
 void use_640_360() {
-	SCREEN_X = (subpixel_unit)640.f;
-	SCREEN_Y = (subpixel_unit)360.f;
-	CELL_SIZE = (subpixel_unit)16.f;
+	screen_x = (subpixel_unit)640.f;
+	screen_y = (subpixel_unit)360.f;
 	glfwSetWindowSize(g_window, 640, 360);
-	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+	glViewport(0, 0, (int)screen_x, (int)screen_y);
 }
 void use_720p() {
-	SCREEN_X = (subpixel_unit)1280.f;
-	SCREEN_Y = (subpixel_unit)720.f;
-	CELL_SIZE = (subpixel_unit)32.f;
+	screen_x = (subpixel_unit)1280.f;
+	screen_y = (subpixel_unit)720.f;
 	glfwSetWindowSize(g_window, 1280, 720);
-	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+	glViewport(0, 0, (int)screen_x, (int)screen_y);
 }
 void use_1080p() {
-	SCREEN_X = (subpixel_unit)1920.f;
-	SCREEN_Y = (subpixel_unit)1080.f;
-	CELL_SIZE = (subpixel_unit)48.f;
+	screen_x = (subpixel_unit)1920.f;
+	screen_y = (subpixel_unit)1080.f;
 	glfwSetWindowSize(g_window, 1920, 1080);
-	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+	glViewport(0, 0, (int)screen_x, (int)screen_y);
 }
 void use_1440p() {
-	SCREEN_X = (subpixel_unit)2560.f;
-	SCREEN_Y = (subpixel_unit)1440.f;
-	CELL_SIZE = (subpixel_unit)64.f;
+	screen_x = (subpixel_unit)2560.f;
+	screen_y = (subpixel_unit)1440.f;
 	glfwSetWindowSize(g_window, 2560, 1440);
-	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);
+	glViewport(0, 0, (int)screen_x, (int)screen_y);
 }
 void use_arbitrary_screen_size(int height, int width) {
-	SCREEN_X = (subpixel_unit)width;
-	SCREEN_Y = (subpixel_unit)height;
-	CELL_SIZE = (subpixel_unit)64.f;
-	glViewport(0, 0, (int)SCREEN_X, (int)SCREEN_Y);	
+	screen_x = (subpixel_unit)width;
+	screen_y = (subpixel_unit)height;
+	glViewport(0, 0, (int)screen_x, (int)screen_y);	
 }
 void change_window_size(std::string size) {
 	if (size == "640") { use_640_360(); }
@@ -337,33 +326,26 @@ glm::vec2 magnitude_gl_from_screen(glm::vec2 screen_coords) {
 gl_unit magnitude_gl_from_screen(screen_unit s) {
 	return s * 2;
 }
+
 // Converting to screen units
 screen_unit magnitude_screen_from_gl(gl_unit u) {
 	return (screen_unit)(u / 2);
 }
 screen_unit screen_x_from_px(pixel_unit px) {
-	return px / SCREEN_X;
+	return px / screen_x;
 }
 screen_unit screen_y_from_px(pixel_unit px) {
-	return px / SCREEN_Y;
+	return px / screen_y;
 }
 glm::vec2 screen_from_px(glm::ivec2 px) {
-	return glm::vec2(px.x / SCREEN_X, px.y / SCREEN_Y);
+	return glm::vec2(px.x / screen_x, px.y / screen_y);
 }
-// Puts it in the center of the grid tile
-glm::vec2 screen_from_grid(glm::ivec2 grid_pos) { 
-	screen_unit x = (screen_unit)(grid_pos.x * SCR_TILESIZE_X);
-	screen_unit y = (screen_unit)(grid_pos.y * SCR_TILESIZE_Y);
-	x += (screen_unit)(.5 * SCR_TILESIZE_X);
-	y += (screen_unit)(.5 * SCR_TILESIZE_Y);
-	return glm::vec2(x, y);
-} 
 
 // Converting to pixel units
 glm::ivec2 px_coords_from_gl_coords(glm::vec2 gl_coords) {
 	float y = (gl_coords.y + 1) / 2;
 	float x = (gl_coords.x + 1) / 2;
-	return glm::ivec2(floor(x * SCREEN_X), floor(y * SCREEN_Y));
+	return glm::ivec2(floor(x * screen_x), floor(y * screen_y));
 }
 
 
