@@ -1,4 +1,4 @@
-import os, platform, subprocess
+import os, platform, subprocess, tempfile
 import tdbuild.tdbuild as tdbuild
 
 build_options = {
@@ -102,13 +102,23 @@ build_options = {
     }
 }
 
+# I really hate having this file in my project
+setup_devenv = '''@echo off
+if not defined DevEnvDir (
+   call "C:/Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+)'''
+setup_devenv = 'echo imascript'
+
 class Builder(tdbuild.base_builder):
     def __init__(self):
         super().__init__()
 
     def build(self):
         if platform.system() == 'Windows':
-            subprocess.run(['setup_devenv.bat'], stdout=subprocess.PIPE)
+            devenv_script = tempfile.NamedTemporaryFile('w')
+            devenv_script.write(setup_devenv)
+            subprocess.run([devenv_script.name], stdout=subprocess.PIPE)
+            devent_script.close()
         super().build()
         
     def run(self):

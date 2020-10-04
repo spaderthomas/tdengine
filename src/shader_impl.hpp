@@ -1,5 +1,4 @@
 void Shader::init(std::string vs_path, std::string fs_path, std::string name) {
-
 	std::string paths[] = {
 		vs_path,
 		fs_path
@@ -125,8 +124,8 @@ void Shader::end() {
 }
 
 void init_shaders() {
-	textured_shader.init(absolute_path("shaders/textured.vs"), absolute_path("shaders/textured.fs"), "textured");
-	highlighted_shader.init(absolute_path("shaders/textured.vs"), absolute_path("shaders/highlighted.fs"), "highlighted");
-	solid_shader.init(absolute_path("shaders/solid.vs"), absolute_path("shaders/solid.fs"), "solid");
-	text_shader.init(absolute_path("shaders/textured.vs"), absolute_path("shaders/text.fs"), "text");
+	textured_shader.init(absolute_path("asset/shaders/textured.vs"), absolute_path("asset/shaders/textured.fs"), "textured");
+	highlighted_shader.init(absolute_path("asset/shaders/textured.vs"), absolute_path("asset/shaders/highlighted.fs"), "highlighted");
+	solid_shader.init(absolute_path("asset/shaders/solid.vs"), absolute_path("asset/shaders/solid.fs"), "solid");
+	text_shader.init(absolute_path("asset/shaders/textured.vs"), absolute_path("asset/shaders/text.fs"), "text");
 }

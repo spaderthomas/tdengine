@@ -517,7 +517,7 @@ bool is_lua(std::string& path) {
 
 std::string get_default_font_path() {
 	// @hack use pathjoin
-	return absolute_path("fonts/Inconsolata-Regular.ttf");
+	return absolute_path("asset/fonts/Inconsolata-Regular.ttf");
 }
 
 

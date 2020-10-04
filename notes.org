@@ -1,4 +1,6 @@
 * todo
+@render_refactor
+Stop baking texture atlases, texture coordinates, etc on startup. 
 * closed
 @spader 11/6/2019: Put some more thought into the API, and the separation of the
 engine from the game. Do I want to make the engine as a DLL? Is that going to
@@ -153,6 +155,59 @@ be able to use the editor to draw simple geometry over that image. i want that
 geometry to be hooked up into the physics engine. then, i want that geometry +
 image to be saved out as part of the level. simple as that -- don't want to
 worry about what else goes in a save file, or how it gets serialized. 
+** 10/03/2020
+@render_refactor
+so loading up the image and rendering it forced me to fix the internal
+resolution stuff. i'm happy about that! some notes from that:
+
+when we load the image to bake the texture atlas, we record its height and
+width. then, when we render, we check the height and width against the internal
+screen resolution, which will spit out what fraction of the screen it should
+take up. 
+
+one problem with this is that we're calculating that fraction every time
+
+another problem is that there's no way to scale up a particular instance of
+rendering a sprite. that's not a problem, because we don't need to do that, but
+it is kind of weird.
+
+the render code is doing that calculation. is that the right place for it? how
+much processing should the render engine be doing? it's also building the
+transform for the thing. also it has the camera...? but i guess the camera
+really only effects the viewport. kinda feels like it should just be sorting the
+structs and then issuing GL commands
+
+speaking of issuing GL commands, we're issuing a glDrawElements for every
+sprite. not sure how that's going to pan out. rendering a 1920x1080 thing
+dropped my framerate by about 20%. 
+
+when i'm not building the texture atlas on startup (which would be a good thing
+to do soon, since that actually adds noticeable startup time), i need to write
+some metadata about my assets. the program will do pretty much what it does now,
+but instead of actually adding assets to the tree, we'll just write out the
+height, width, number of channels, texcoords to a file. we can also dump all the
+texture coordinates into an array. then you can loop over that and add all the
+sprites, and just grab a pointer to the texture object and give em back to the
+sprite.
+
+one thing i'm realizing is that you have to store your entities as data. you
+can't touch them in the level editor if not. reason i'm thinking about this: if
+i want to add level geometry to the level, save it, and load it back, i have to
+load back in at least the position and size of those boxes. 
+
+oh, also, now is the time where i need to have several entities of the same name
+existent at the same time. 
+
+plus, if i want to do stuff like draw bounding boxes over things and move shit
+around, i mean that has to go in data that gets loaded up. need to do some
+design on this -- have the idea of unity prefab floating around in my
+mind. because there's some data that never needs to be saved/loaded. for
+example, what your animation data is. but then there's some data that pretty
+much always needs to be loaded, like your position. n then how we store it -- it
+would be fucking awesome to store all the data as lua scripts. there is surely a
+way to do this thing. i don't want to pull in and compile a stupid json parser. 
+
+so that's tomorrow i guess!
 * gameplay
 ** game 2
 *** august 11, 2020
