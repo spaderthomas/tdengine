@@ -6,12 +6,12 @@ end
 function Input:update()
 end
 
-function Input:was_key_pressed(key)
-  return tdengine.was_key_pressed(key, self.channel)
+function Input:was_pressed(key)
+  return tdengine.was_pressed(key, self.channel)
 end
 
-function Input:is_key_down(key)
-  return tdengine.is_key_down(key, self.channel)
+function Input:is_down(key)
+  return tdengine.is_down(key, self.channel)
 end
 
 function Input:set_channel(channel)

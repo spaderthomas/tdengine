@@ -7,6 +7,8 @@ local EditState = {
   Edit = 'Edit',
   Drag = 'Drag',
   RectangleSelect = 'RectangleSelect',
+  ReadyToDrawGeometry = 'ReadyToDrawGeometry',
+  DrawingGeometry = 'DrawingGeometry',
 }
 
 Editor = tdengine.entity('Editor')
@@ -23,6 +25,9 @@ function Editor:init()
   
   self.selected = nil
   self.state = EditState.Idle
+
+  -- Stored as screen coordinates, converted to world when we submit the geometry
+  self.geometry_start = { x = 0, y = 0 }
   
   self.filter = imgui.TextFilter.new()
 
@@ -46,9 +51,44 @@ function Editor:update(dt)
   imgui.Begin("tded v2.0", true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
-  self:draw_tools()
+  if imgui.Button("save imgui.ini") then
+  	 tdengine.internal.save_imgui_layout()
+  end
+  
+  imgui.Begin("scene", true)
   self:draw_entity_viewer()
+  imgui.Separator()
+  self:draw_tools()
   imgui.End()
+  imgui.End()
+
+  if self.state == EditState.ReadyToDrawGeometry then
+  	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
+	 	self.geometry_start.x = tdengine.get_cursor_x()
+	 	self.geometry_start.y = tdengine.get_cursor_y()
+		self.state = EditState.DrawingGeometry
+	 end
+  elseif self.state == EditState.DrawingGeometry then
+  	 if not input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
+	 	geometry_end = {
+		  x = tdengine.get_cursor_x(),
+		  y = tdengine.get_cursor_y()
+		}
+
+		local box = self:create_entity('Box')
+		local aabb = box:get_component('BoundingBox')
+		
+		aabb.extents.x = math.abs(geometry_end.x - self.geometry_start.x)
+		aabb.extents.y = math.abs(geometry_end.y - self.geometry_start.y)
+		tdengine.internal.register_collider(box:get_id())
+
+		tdengine.internal.teleport_entity(box:get_id(), self.geometry_start.x, self.geometry_start.y)
+
+		self.state = EditState.Idle
+		self.geometry_start.x = 0
+		self.geometry_start.y = 0
+	 end
+  end
 end
 
 function Editor:calculate_framerate()
@@ -65,12 +105,12 @@ function Editor:handle_input()
   self:adjust_camera()
   
   local input = self:get_component('Input')
-  if input:was_key_pressed(GLFW.Keys.ESCAPE) then
+  if input:was_pressed(GLFW.Keys.ESCAPE) then
 	self.selected = nil
 	self.state = EditState.Idle
   end
 
-  if input:was_key_pressed(GLFW.Keys.LEFT_CONTROL) then
+  if input:was_pressed(GLFW.Keys.LEFT_CONTROL) then
     tdengine.internal.toggle_console()
   end
 end
@@ -79,19 +119,19 @@ function Editor:adjust_camera()
   local input = self:get_component('Input')
 
   local offset = { x = 0, y = 0 }
-  if input:is_key_down(GLFW.Keys.W) then
+  if input:is_down(GLFW.Keys.W) then
 	offset.y = offset.y - .02
   end
   
-  if input:is_key_down(GLFW.Keys.A) then
+  if input:is_down(GLFW.Keys.A) then
 	offset.x = offset.x + .02
   end
   
-  if input:is_key_down(GLFW.Keys.S) then
+  if input:is_down(GLFW.Keys.S) then
 	offset.y = offset.y + .02
   end
   
-  if input:is_key_down(GLFW.Keys.D) then
+  if input:is_down(GLFW.Keys.D) then
 	offset.x = offset.x - .02
   end
 
@@ -99,20 +139,13 @@ function Editor:adjust_camera()
 end
 
 function Editor:draw_tools()
-  imgui.Begin("tools", true)
-  if imgui.Button("save imgui layout") then
-  	 tdengine.internal.save_imgui_layout()
+  if imgui.Button("Add Geometry") then
+  	 local input = self:get_component('Input')
+	 self.state = EditState.ReadyToDrawGeometry
   end
-  if imgui.Button("hi") then
-  
-  end
-  
-  imgui.End()
 end
 
 function Editor:draw_entity_viewer()
-  imgui.Begin("scene", true)
-
   self.filter:Draw("Filter by name")
   for id, entity in pairs(Entities) do
 	local name = entity:get_name()
@@ -120,8 +153,6 @@ function Editor:draw_entity_viewer()
 	  imgui.extensions.Entity(entity)
 	end
   end
-  
-  imgui.End()
 end
 
 function Editor:draw_grid()

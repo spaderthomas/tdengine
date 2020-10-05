@@ -69,7 +69,6 @@ void register_collider(int entity) {
 	if (!handle) return;
 
 	auto& physics_engine = get_physics_engine();
-	if (physics_engine.has_collider(entity)) return;
 
 	auto box = Lua.get_component(entity, "BoundingBox");
 	auto position = Lua.get_component(entity, "Position");
@@ -181,21 +180,29 @@ void disable_input_channel(int channel) {
 	input_manager.disable_channel(channel);
 }
 
-bool is_key_down(GLFW_KEY_TYPE id, int mask) {
+bool is_down(GLFW_KEY_TYPE id, int mask) {
 	auto& manager = get_input_manager();
 	if (!(manager.mask & mask)) return false;
 	return manager.is_down[id];
 }
 
-bool was_key_pressed(GLFW_KEY_TYPE id, int mask) {
+bool was_pressed(GLFW_KEY_TYPE id, int mask) {
 	auto& manager = get_input_manager();
 	return manager.was_pressed(id, mask);
 }
-
 bool was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask) {
 	auto& manager = get_input_manager();
 	return manager.chord(mod_key, cmd_key, mask);
 }
+float get_cursor_x() {
+	auto& manager = get_input_manager();
+	return manager.screen_pos.x;
+}
+float get_cursor_y() {
+	auto& manager = get_input_manager();
+	return manager.screen_pos.y;
+}
+
 float get_camera_x() {
 	auto& render_engine = get_render_engine();
 	return render_engine.camera.x;
@@ -275,9 +282,11 @@ void register_lua_api() {
 	state["tdengine"]["get_frames"] = &get_frames;
 	state["tdengine"]["enable_input_channel"] = &enable_input_channel;
 	state["tdengine"]["disable_input_channel"] = &disable_input_channel;
-	state["tdengine"]["is_key_down"] = &is_key_down;
-	state["tdengine"]["was_key_pressed"] = &was_key_pressed;
+	state["tdengine"]["is_down"] = &is_down;
+	state["tdengine"]["was_pressed"] = &was_pressed;
 	state["tdengine"]["was_chord_pressed"] = &was_chord_pressed;
+	state["tdengine"]["get_cursor_x"] = &get_cursor_x;
+	state["tdengine"]["get_cursor_y"] = &get_cursor_y;
 	state["tdengine"]["get_camera_x"] = &get_camera_x;
 	state["tdengine"]["get_camera_y"] = &get_camera_y;
 	state["tdengine"]["move_camera"] = &move_camera;

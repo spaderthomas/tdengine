@@ -106,8 +106,7 @@ void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
 	basis = gl_from_screen(basis);
 	auto draw = [basis, color]() -> void {
 		solid_shader.begin();
-		glm::vec4 color_ = color;
-		solid_shader.set_vec4("color", color_);
+		solid_shader.set_vec4("color", color);
 		SRT transform = SRT::no_transform();
 		transform.scale = basis;
 		auto transform_mat = mat3_from_transform(transform);
