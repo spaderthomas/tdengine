@@ -61,7 +61,6 @@ to exported API
 @spader 3/1/2020: wrote a basic entity viewer 
 
 @spader 3/1/2020: entity:print_once()
-@spader 3/1/2020: tdengine.get_entity(name)
 @spader 3/1/2020: finish off bitmask logic for inputs
 @spader 3/1/2020: shift map
 * notes
@@ -155,7 +154,7 @@ be able to use the editor to draw simple geometry over that image. i want that
 geometry to be hooked up into the physics engine. then, i want that geometry +
 image to be saved out as part of the level. simple as that -- don't want to
 worry about what else goes in a save file, or how it gets serialized. 
-** 10/03/2020
+** 10/03/2020: rendering stuff
 @render_refactor
 so loading up the image and rendering it forced me to fix the internal
 resolution stuff. i'm happy about that! some notes from that:

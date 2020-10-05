@@ -72,12 +72,8 @@ void init_gl() {
 	
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
-
 }
 	
-
-
-
 void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 	p1 = gl_from_screen(p1);
 	p2 = gl_from_screen(p2);

@@ -9,7 +9,7 @@ namespace MoveFlags {
 }
 	
 struct MoveRequest {
-	Collider collider;
+	int entity;
 	glm::vec2 wish;
 	int flags = 0;
 };

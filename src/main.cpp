@@ -52,9 +52,6 @@ int main() {
 
 	// @spader 9/4/2020: When the game gets much farther along, this isn't how you kick off entity creation
 	entity_manager.create_entity("Editor");
-
-	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), 16.0);
-	ImGui::GetIO().IniFilename = RelativePath("imgui.ini").path.c_str();
    
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {
@@ -96,7 +93,6 @@ int main() {
 		
 		glfwSwapBuffers(g_window);
 		input_manager.end_frame();
-		
 		
 		// Wait until we hit the next frame time
 		framerate = 1.f / (glfwGetTime() - frame_start_time);

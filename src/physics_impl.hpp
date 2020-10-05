@@ -131,24 +131,30 @@ bool point_inside_box(glm::vec2& screen_pos, Center_Box& box) {
 
 void PhysicsEngine::update(float dt) {
 	for (auto& request : requests) {
-		if (request.flags & MoveFlags::BypassCollision) continue;
-		
-		auto request_id = request.collider.entity.id;
-		request.collider.origin = request.wish;
+		auto& collider = colliders.at(request.entity);
+
+		// @hack 2020/10/04: Normally, wish describes an offset from where you currently are.
+		// To make teleport_entity() not be complicated, when we don't care about collision we treat it as a position, not an offset
+		if (request.flags & MoveFlags::BypassCollision) {
+			collider.origin = request.wish;
+			continue;
+		}
+
+		collider.origin += request.wish;
 
 		for (auto& [id, other] : colliders) {
-			if (id == request_id) continue;
+			if (id == request.entity) continue;
 			
 			glm::vec2 penetration;
-			if (are_colliding(request.collider, other, penetration)) {
-				request.wish -= penetration;
-				auto physics = Lua.get_component(request_id, "Physics");
+			if (are_colliding(collider, other, penetration)) {
+				collider.origin -= penetration;
+				auto physics = Lua.get_component(request.entity, "Physics");
 				physics["had_collision"] = true;
 				physics["collided_with"] = id;
 
 				physics = Lua.get_component(id, "Physics");
 				physics["had_collision"] = true;
-				physics["collided_with"] = request_id;
+				physics["collided_with"] = request.entity;
 				
 				tdns_log.write("Collision found.");
 			}
@@ -156,20 +162,12 @@ void PhysicsEngine::update(float dt) {
 	}
 
 	for (auto request : requests) {
-		auto id = request.collider.entity.id;
-		
-		// Update the positions in Lua
-		auto position = Lua.get_component(id, "Position");
-		position["world"]["x"] = request.wish.x;
-		position["world"]["y"] = request.wish.y;
-		
-		auto movement = Lua.get_component(id, "Movement");
-		movement["wish"]["x"] = request.wish.x;
-		movement["wish"]["y"] = request.wish.y;
+		auto& collider = colliders.at(request.entity);
 
-		// Update the positions in the collider map
-		auto& collider = colliders[id];
-		collider.origin = {request.wish.x, request.wish.y};
+		// Update the positions in Lua
+		auto position = Lua.get_component(request.entity, "Position");
+		position["world"]["x"] = collider.origin.x;
+		position["world"]["y"] = collider.origin.y;
 	}
 
 	requests.clear();

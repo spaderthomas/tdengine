@@ -50,7 +50,7 @@ end
 
 function Player:update(dt)
    self:handle_movement()
-   
+
    local aabb = self:get_component('BoundingBox')
    local position = self:get_component('Position')
    aabb:draw()

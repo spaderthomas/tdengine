@@ -2,17 +2,11 @@ local GLFW = require('glfw')
 local inspect = require('inspect')
 
 local EditState = {
-  Idle = 0,
-  Insert = 1,
-  Edit = 2,
-  Drag = 3,
-  RectangleSelect = 4,
-}
-
-local SelectionState = {
-  None = 0,
-  Tile = 1,
-  Entity = 2
+  Idle = 'Idle',
+  Insert = 'Insert',
+  Edit = 'Edit',
+  Drag = 'Drag',
+  RectangleSelect = 'RectangleSelect',
 }
 
 Editor = tdengine.entity('Editor')
@@ -29,13 +23,7 @@ function Editor:init()
   
   self.selected = nil
   self.state = EditState.Idle
-  self.selection_state = SelectionState.None
   
-  self.snap = false
-  self.last_snap = false
-  self.show_grid = false
-  self.last_show_grid = false
-
   self.filter = imgui.TextFilter.new()
 
   self.display_framerate = 0
@@ -50,16 +38,15 @@ end
 function Editor:update(dt)
   local dbg = self:get_component('Debug')
   local input = self:get_component('Input')
-  local player = self:get_entity('Player')
   self:calculate_framerate()
   
   self:handle_input()
-  if self.show_grid then self:draw_grid() end
   
   imgui.SetNextWindowSize(300, 300)
   imgui.Begin("tded v2.0", true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
+  self:draw_tools()
   self:draw_entity_viewer()
   imgui.End()
 end
@@ -79,15 +66,8 @@ function Editor:handle_input()
   
   local input = self:get_component('Input')
   if input:was_key_pressed(GLFW.Keys.ESCAPE) then
-	print('esc')
 	self.selected = nil
 	self.state = EditState.Idle
-
-	-- If you were selecting a tile and escaped, bring the state back to how it was
-	if self.selection_state == SelectionState.Tile then
-	  self.snap = self.last_snap
-	  self.show_grid = self.last_show_grid
-	end
   end
 
   if input:was_key_pressed(GLFW.Keys.LEFT_CONTROL) then
@@ -116,6 +96,18 @@ function Editor:adjust_camera()
   end
 
   tdengine.move_camera(offset.x, offset.y)
+end
+
+function Editor:draw_tools()
+  imgui.Begin("tools", true)
+  if imgui.Button("save imgui layout") then
+  	 tdengine.internal.save_imgui_layout()
+  end
+  if imgui.Button("hi") then
+  
+  end
+  
+  imgui.End()
 end
 
 function Editor:draw_entity_viewer()

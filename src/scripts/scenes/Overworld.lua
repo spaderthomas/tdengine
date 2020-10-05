@@ -5,7 +5,7 @@ tdengine.scenes.Overworld = {
 		 Position = { x = 0, y = 0 }
 	  },
 	  {
-		 Name = 'Tom',
+		 Name = 'Box',
 		 Position = { x = .2, y = .2 }
 	  }
    }

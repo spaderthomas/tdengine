@@ -145,16 +145,6 @@ function tdengine.draw_entity(entity)
   tdengine.internal.draw_entity(entity:get_id(), 0)
 end
 
-function tdengine.get_entity(name)
-  for id, entity in pairs(Entities) do
-	if entity:get_name() == name then
-	  return entity
-	end
-  end
-
-  return nil
-end
-
 -- tdengine functions we're injecting in for sugar
 local entity_mixin = {
   get_component = function(self, kind)
@@ -185,9 +175,6 @@ local entity_mixin = {
   end,
   destroy_entity = function(self, id)
 	 tdengine.destroy_entity(id)
-  end,
-  get_entity = function(self, name)
-    return tdengine.get_entity(name)
   end,
   add_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = true

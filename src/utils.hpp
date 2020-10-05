@@ -1200,6 +1200,11 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 	ImGui::End();
 }
 
+std::string& imgui_ini() {
+	static auto ini = AbsolutePath(RelativePath("build/imgui.ini")).path;
+	return ini;
+	
+}
 void init_imgui() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -1207,6 +1212,12 @@ void init_imgui() {
 	auto& imgui = ImGui::GetIO();
 	imgui.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::StyleColorsDark();
+
+	auto imgui_font = ImGui::GetIO().Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), 16.0);
+
+	ImGui::GetIO().IniFilename = imgui_ini().c_str();
+	tdns_log.write("Loading Imgui configuration from: " + imgui_ini(), Log_Flags::File);	
+
 }
 
 std::string capitalize_component_name(std::string name_from_path) {

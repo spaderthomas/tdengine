@@ -93,14 +93,9 @@ void move_entity(int entity) {
 
 	auto box = Lua.get_component(entity, "BoundingBox");
 	auto movement = Lua.get_component(entity, "Movement");
-	auto position = Lua.get_component(entity, "Position");
 
 	MoveRequest request;
-	request.collider.entity = handle;
-	request.collider.origin.x = position["world"]["x"];
-	request.collider.origin.y = position["world"]["y"];
-	request.collider.extents.x = box["extents"]["x"];
-	request.collider.extents.y = box["extents"]["y"];	
+	request.entity = handle;
 
 	request.wish.x = movement["wish"]["x"];
 	request.wish.y = movement["wish"]["y"];
@@ -115,7 +110,8 @@ void teleport_entity(int entity, float x, float y) {
 	if (!handle) return;
 
 	MoveRequest request;
-	request.collider.entity = handle;
+	request.flags |= MoveFlags::BypassCollision;
+	request.entity = entity;
 	request.wish.x = x;
 	request.wish.y = y;
 		
@@ -264,6 +260,10 @@ void _draw_rect_outline_world(float origin_x, float origin_y, float extent_x, fl
 void toggle_console() {
 	show_console = !show_console;
 }
+void save_imgui_layout() {
+	ImGui::SaveIniSettingsToDisk(ImGui::GetIO().IniFilename);
+}
+
 
 void register_lua_api() {
 	auto& state = Lua.state;
@@ -310,6 +310,7 @@ void register_lua_api() {
 	state["tdengine"]["internal"]["screen_1080"] = &use_1080p;
 	state["tdengine"]["internal"]["screen_1440"] = &use_1440p;
 	state["tdengine"]["internal"]["toggle_console"] = &toggle_console;
+	state["tdengine"]["internal"]["save_imgui_layout"] = &save_imgui_layout;
 
 	state["imgui"]["extensions"] = state.create_table();
 	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;
