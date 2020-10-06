@@ -165,7 +165,7 @@ bool EntityManager::has_entity(int id) {
 	return entities.find(id) != entities.end();
 }
 
-EntityHandle EntityManager::create_entity(std::string name) {
+int EntityManager::create_entity(std::string name) {
 	// Construct the entity
 	auto inserted = entities.emplace(Entity::next_id, std::make_unique<Entity>(name, Entity::next_id));
 	Entity::next_id++;
@@ -197,16 +197,11 @@ EntityHandle EntityManager::create_entity(std::string name) {
 
 			// Delete the C++ object we just created
 			entities.erase(entities.find(entity.id));
-			EntityHandle handle;
-			handle.id = -1;
-			return handle;
+			return -1;
 		}
 	}
 
-	// Return a handle
-	EntityHandle handle;
-	handle.id = entity.id;
-	return handle;
+	return entity.id;
 }
 
 void EntityManager::destroy_entity(int id) {
@@ -229,20 +224,4 @@ void EntityManager::destroy_entity(int id) {
 	}
 
 	entities.erase(id);
-}
-
-EntityHandle::operator bool() const {
-	auto& manager = get_entity_manager();
-	if (manager.has_entity(id)) return manager.get_entity(id);
-	return false;
-}
-
-Entity* EntityHandle::operator->() const {
-	return get();
-}
-
-Entity* EntityHandle::get() const {
-	auto& manager = get_entity_manager();
-	fox_assert(manager.has_entity(id));
-	return manager.get_entity(id);
 }

@@ -207,6 +207,12 @@ would be fucking awesome to store all the data as lua scripts. there is surely a
 way to do this thing. i don't want to pull in and compile a stupid json parser. 
 
 so that's tomorrow i guess!
+
+** 10/04/2020: movement
+think i fucked something up...when i move the player, he's not actually
+moving. everything is moving around him. not sure what the deal is there.
+
+but there are still collisions? so something is moving
 * gameplay
 ** game 2
 *** august 11, 2020

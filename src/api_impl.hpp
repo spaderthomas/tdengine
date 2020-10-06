@@ -1,7 +1,6 @@
-EntityID create_entity(std::string name) {
+int create_entity(std::string name) {
 	auto& entity_manager = get_entity_manager();
-	auto handle = entity_manager.create_entity(name);
-	return handle.id;
+	return entity_manager.create_entity(name);
 }
 
 void destroy_entity(int entity) {
@@ -10,29 +9,28 @@ void destroy_entity(int entity) {
 }
 
 void draw_entity(int entity, Render_Flags flags) {
-	EntityHandle handle;
-	handle.id = entity;
-	if (!handle) return;
-
+	auto& entity_manager = get_entity_manager();
+	auto entity_ptr = entity_manager.get_entity(entity);
+	
 	// Grab the relevant components
-	auto check_component_exists = [handle](auto component, std::string component_type) -> bool {
+	auto check_component_exists = [entity_ptr](auto component, std::string component_type) -> bool {
 		if (component) return true;
 		
 		tdns_log.write("Called draw_entity(), but entity had no" + component_type + " component");
-		tdns_log.write("Entity name: " + handle->get_name());
-		tdns_log.write("Entity ID: " + handle->get_id());
+		tdns_log.write("Entity name: " + entity_ptr->get_name());
+		tdns_log.write("Entity ID: " + entity_ptr->get_id());
 		return false;
 	};
 	
-	auto graphic_ptr = handle->get_component("Graphic");
+	auto graphic_ptr = entity_ptr->get_component("Graphic");
 	if (!check_component_exists(graphic_ptr, "Graphic")) return;
 	auto graphic = Lua.get_component(graphic_ptr);
 	
-	auto position_ptr = handle->get_component("Position");
+	auto position_ptr = entity_ptr->get_component("Position");
 	if (!check_component_exists(position_ptr, "Position")) return;
 	auto position = Lua.get_component(position_ptr);
 	
-	auto animation_ptr = handle->get_component("Animation");
+	auto animation_ptr = entity_ptr->get_component("Animation");
 	if (!check_component_exists(animation_ptr, "Animation")) return;
 	auto animation = Lua.get_component(animation_ptr);
 
@@ -64,17 +62,13 @@ void draw_entity(int entity, Render_Flags flags) {
 }
 
 void register_collider(int entity) {
-	EntityHandle handle;
-	handle.id = entity;
-	if (!handle) return;
-
 	auto& physics_engine = get_physics_engine();
 
 	auto box = Lua.get_component(entity, "BoundingBox");
 	auto position = Lua.get_component(entity, "Position");
 
 	Collider collider;
-	collider.entity = handle;
+	collider.entity = entity;
 	collider.origin.x = position["world"]["x"];
 	collider.origin.y = position["world"]["y"];
 	collider.extents.x = box["extents"]["x"];
@@ -86,15 +80,11 @@ void register_collider(int entity) {
 }
 
 void move_entity(int entity) {
-	EntityHandle handle;
-	handle.id = entity;
-	if (!handle) return;
-
 	auto box = Lua.get_component(entity, "BoundingBox");
 	auto movement = Lua.get_component(entity, "Movement");
 
 	MoveRequest request;
-	request.entity = handle;
+	request.entity = entity;
 
 	request.wish.x = movement["wish"]["x"];
 	request.wish.y = movement["wish"]["y"];
@@ -104,10 +94,6 @@ void move_entity(int entity) {
 }
 
 void teleport_entity(int entity, float x, float y) {
-	EntityHandle handle;
-	handle.id = entity;
-	if (!handle) return;
-
 	MoveRequest request;
 	request.flags |= MoveFlags::BypassCollision;
 	request.entity = entity;

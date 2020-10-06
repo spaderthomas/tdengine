@@ -1,7 +1,7 @@
 Movement = tdengine.component('Movement')
 function Movement:init()
   self.wish = { x = 0, y = 0 }
-  self.speed = -.01 -- @hack
+  self.speed = .01
 end
 
 function Movement:update(dt)

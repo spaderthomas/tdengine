@@ -101,10 +101,15 @@ sol::table LuaState::get_component(Component* component) {
 	return state["Components"][component->get_id()];
 }
 sol::table LuaState::get_component(int entity, std::string which) {
-	EntityHandle handle;
-	handle.id = entity;
-	if (!handle) return sol::table();
+	auto& entity_manager = get_entity_manager();
+	auto entity_ptr = entity_manager.get_entity(entity);
 
-	auto component_ptr = handle->get_component(which);
+	if (!entity_ptr) {
+		std::string message = "Tried to get " + which + "component for entity " + std::to_string(entity) + ", but entity did not exist.";
+		tdns_log.write(message);
+		return sol::table();
+	}
+
+	auto component_ptr = entity_ptr->get_component(which);
 	return get_component(component_ptr);
 }

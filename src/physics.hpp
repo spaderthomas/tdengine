@@ -1,5 +1,5 @@
 struct Collider {
-	EntityHandle entity;
+	int entity;
 	glm::vec2 origin;
 	glm::vec2 extents;
 };

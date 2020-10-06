@@ -31,21 +31,12 @@ struct Entity {
 };
 int Entity::next_id = 0;
 
-struct EntityManager;
-struct EntityHandle {
-	int id;
-
-	operator bool() const;
-	Entity* operator->() const;
-	Entity* get() const;
-};
-
 struct EntityManager {
 	std::map<int, std::unique_ptr<Entity>> entities;
 	
 	Entity* get_entity(int id);
 	bool has_entity(int id);
-	EntityHandle create_entity(std::string name);
+	int create_entity(std::string name);
 	void destroy_entity(int id);
 	void update(float dt);
 };

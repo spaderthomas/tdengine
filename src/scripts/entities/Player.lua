@@ -45,7 +45,6 @@ function Player:handle_movement()
   if input:is_down(GLFW.Keys.L) then
 	movement:move(.3, 0)
   end
-  
 end
 
 function Player:update(dt)
@@ -55,5 +54,3 @@ function Player:update(dt)
    local position = self:get_component('Position')
    aabb:draw()
 end
-
-
