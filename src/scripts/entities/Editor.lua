@@ -54,6 +54,9 @@ function Editor:update(dt)
   if imgui.Button("save imgui.ini") then
   	 tdengine.internal.save_imgui_layout()
   end
+
+  imgui.Text(tostring(tdengine.get_camera_x()))
+  imgui.Text(tostring(tdengine.get_camera_y()))
   
   imgui.Begin("scene", true)
   self:draw_entity_viewer()
@@ -70,19 +73,22 @@ function Editor:update(dt)
 	 end
   elseif self.state == EditState.DrawingGeometry then
   	 if not input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
-	 	geometry_end = {
-		  x = tdengine.get_cursor_x(),
-		  y = tdengine.get_cursor_y()
-		}
-
 		local box = self:create_entity('Box')
-		local aabb = box:get_component('BoundingBox')
 		
-		aabb.extents.x = math.abs(geometry_end.x - self.geometry_start.x)
-		aabb.extents.y = math.abs(geometry_end.y - self.geometry_start.y)
+		local aabb = box:get_component('BoundingBox')
+		aabb.extents.x = math.abs(tdengine.get_cursor_x() - self.geometry_start.x)
+		aabb.extents.y = math.abs(tdengine.get_cursor_y() - self.geometry_start.y)
+		
+		local position = box:get_component('Position')
+		local center = {
+		   x = (tdengine.get_cursor_x() + self.geometry_start.x) / 2,
+		   y = (tdengine.get_cursor_y() + self.geometry_start.y) / 2
+		}
+		print(inspect(center))
+		position.world = tdengine.screen_to_world(center)
+		print(inspect(position.world))
+		
 		tdengine.internal.register_collider(box:get_id())
-
-		tdengine.internal.teleport_entity(box:get_id(), self.geometry_start.x, self.geometry_start.y)
 
 		self.state = EditState.Idle
 		self.geometry_start.x = 0

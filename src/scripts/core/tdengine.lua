@@ -312,3 +312,10 @@ function tdengine.scandir(dir)
    pfile:close()
    return t
 end
+
+function tdengine.screen_to_world(screen)
+   return {
+      x = screen.x - tdengine.get_camera_x(),
+      y = screen.y - tdengine.get_camera_y()
+   }
+end		 
