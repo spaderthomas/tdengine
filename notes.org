@@ -213,6 +213,31 @@ think i fucked something up...when i move the player, he's not actually
 moving. everything is moving around him. not sure what the deal is there.
 
 but there are still collisions? so something is moving
+** 10/05/2020: drawing colliders
+it works
+
+you need to make it so you can see the collider before you release the mouse
+(but that's easy) (tm)
+
+what i learned today: my coordinate system got flip flopped somewhere along the
+way. but if you ever need to think about it, this is how:
+- the (x, y) of the camera defines where the bottom-left most part of the screen
+  is being shown
+- your coordinate system is inverted along both axes
+
+so if the camera is at .2, .3, that means that the screen is like this
+
+                             v------ (-.8, -.7) world == (1, 1) screen
+[                            .]
+
+                                    <--- my attempt at 16:9 lol
+
+
+
+
+
+[.                            ]
+ ^---- (.2, .3) world == (0, 0) screen
 * gameplay
 ** game 2
 *** august 11, 2020
