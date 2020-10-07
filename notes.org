@@ -238,6 +238,34 @@ so if the camera is at .2, .3, that means that the screen is like this
 
 [.                            ]
  ^---- (.2, .3) world == (0, 0) screen
+** 10/06/2020: saving colliders
+for one, i don't just want to save the file with the same name as the
+level. because it sounds really useful to be able to load a couple different
+states for a level.
+
+i feel like it'd be useful to split the file into two parts: all the shit in the
+level, and then some global configs. like, it'd be a really likely scenario
+based on the game i have planned out that you would need to store:
+- the seed used to generate the enemy layouts
+- the camera
+- the player's team
+
+what DO you need to save for a level? i mean saving at playtime, not at
+edittime. at edit time, you need to move shit around. add shit. all that
+stuff. but at playtime, what part of that is not totally baked? so, once you
+battle a trainer, you need a flag that says they're defeated. but you could
+store that in the global save? but it would make more sense to store it in a
+level save. because then you wouldn't have to make a unique ID that that trainer
+entity knows how to load, you'd just do the normal flow of save all components
+and load em back up. 
+
+i think the best thing to do is to save most stuff in the level file for now. 
+
+ok, so what's that look like? i think it actually looks pretty simple. when you
+save a scene, we're just going to go through the entities that exist and save
+them.
+entity:save()
+for component in entity.get_components
 * gameplay
 ** game 2
 *** august 11, 2020

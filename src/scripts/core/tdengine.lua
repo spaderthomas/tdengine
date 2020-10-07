@@ -163,6 +163,17 @@ local entity_mixin = {
 	  return nil
 	end
   end,
+  all_components = function(self)
+    local components = Entity["all_components"](self.cpp_ref)
+	local array = {}
+	for i = 1, #components do
+	  local component = components[i]
+	  array[i] = Components[component:get_id()]
+	  local as_lua = array[i]
+	  print(as_lua:get_name())
+	end
+	return array
+  end,
   get_name = function(self)
 	return Entity["get_name"](self.cpp_ref)
   end,

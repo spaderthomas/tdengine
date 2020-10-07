@@ -53,4 +53,6 @@ function Player:update(dt)
    local aabb = self:get_component('BoundingBox')
    local position = self:get_component('Position')
    aabb:draw()
+
+   self:all_components()
 end

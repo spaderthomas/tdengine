@@ -146,6 +146,10 @@ function Editor:draw_tools()
   	 local input = self:get_component('Input')
 	 self.state = EditState.ReadyToDrawGeometry
   end
+  if imgui.Button("Save") then
+     local x = 0
+  end
+
 end
 
 function Editor:draw_entity_viewer()
