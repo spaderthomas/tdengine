@@ -9,5 +9,9 @@ end
 function BoundingBox:draw(color)
    color = color or tdengine.colors.red
    local position = self.parent:get_component('Position')
-   tdengine.draw.outline_rect_world(position.world.x, position.world.y, self.extents.x, self.extents.y, color.r, color.g, color.b, color.a)
+   local rect = {
+      origin = position.world,
+	  extents = self.extents
+   }
+   tdengine.draw.rect_outline_world(rect, color)
 end

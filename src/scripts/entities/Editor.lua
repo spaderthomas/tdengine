@@ -72,21 +72,18 @@ function Editor:update(dt)
 		self.state = EditState.DrawingGeometry
 	 end
   elseif self.state == EditState.DrawingGeometry then
-  	 if not input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
+     if input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
+	    local rect = self:get_rect()
+	    tdengine.draw.rect_outline_screen(rect, tdengine.colors.red)
+  	 else
 		local box = self:create_entity('Box')
+		local rect = self:get_rect()
 		
 		local aabb = box:get_component('BoundingBox')
-		aabb.extents.x = math.abs(tdengine.get_cursor_x() - self.geometry_start.x)
-		aabb.extents.y = math.abs(tdengine.get_cursor_y() - self.geometry_start.y)
+		aabb.extents = rect.extents
 		
 		local position = box:get_component('Position')
-		local center = {
-		   x = (tdengine.get_cursor_x() + self.geometry_start.x) / 2,
-		   y = (tdengine.get_cursor_y() + self.geometry_start.y) / 2
-		}
-		print(inspect(center))
-		position.world = tdengine.screen_to_world(center)
-		print(inspect(position.world))
+		position.world = tdengine.screen_to_world(rect.origin)
 		
 		tdengine.internal.register_collider(box:get_id())
 
@@ -161,16 +158,15 @@ function Editor:draw_entity_viewer()
   end
 end
 
-function Editor:draw_grid()
-   print('draw_grid() is broken.')
-   local xb = math.fmod(tdengine.get_camera_x(), tsx)
-   local yb = math.fmod(tdengine.get_camera_y(), tsy) + (tsy / 2)
-
-   for col_offset = 1 - xb, 0, -tsx do
-	  tdengine.internal.draw_line_from_points(col_offset, 0, col_offset, 1, .2, .1, .9, .5)
-   end
-
-   for row_offset = 1 - yb, 0, -tsy do
-	  tdengine.internal.draw_line_from_points(0, row_offset, 1, row_offset, .2, .1, .9, .5)
-   end
+function Editor:get_rect()
+   return {
+      extents = {
+	     x = math.abs(tdengine.get_cursor_x() - self.geometry_start.x),
+		 y = math.abs(tdengine.get_cursor_y() - self.geometry_start.y)
+	  },
+	  origin = {
+	     x = (tdengine.get_cursor_x() + self.geometry_start.x) / 2,
+	     y = (tdengine.get_cursor_y() + self.geometry_start.y) / 2
+	  }
+   }
 end

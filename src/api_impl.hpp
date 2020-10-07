@@ -222,32 +222,32 @@ bool draw_sprite_button(std::string sprite_name, float sx, float sy) {
 							  bottom_left_tex_coords, top_right_tex_coords);
 }
 
-void _draw_line_from_points(float p1x, float p1y, float p2x, float p2y, float r, float g, float b, float a) {
-	glm::vec2 p1{p1x, p1y};
-	glm::vec2 p2{p2x, p2y};
-	glm::vec4 color{r, g, b, a};
-	draw_line_from_points(p1, p2, color);
+void line_screen(sol::table p1, sol::table p2, sol::table color) {
+	glm::vec2 a{p1["x"], p2["y"]};
+	glm::vec2 b{p2["x"], p2["y"]};
+	glm::vec4 clr{color["r"], color["g"], color["b"], color["a"]};
+	draw_line_from_points(a, b, clr);
 }
 
-void _draw_rect_filled_screen(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a) {
-	glm::vec2 origin{origin_x, origin_y};
-	glm::vec2 extents{extent_x, extent_y};
-	glm::vec4 color{r, g, b, a};
-	draw_rect_filled_screen(origin, extents, color);
+void rect_filled_screen(sol::table rect, sol::table color) {
+	glm::vec2 origin{rect["origin"]["x"], rect["origin"]["y"]};
+	glm::vec2 extents{rect["extents"]["x"], rect["extents"]["y"]};
+	glm::vec4 clr{color["r"], color["g"], color["b"], color["a"]};
+	draw_rect_filled_screen(origin, extents, clr);
 }
 
-void _draw_rect_outline_screen(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a) {
-	glm::vec2 origin{origin_x, origin_y};
-	glm::vec2 extents{extent_x, extent_y};
-	glm::vec4 color{r, g, b, a};
-	draw_rect_outline_screen(origin, extents, color);
+void rect_outline_screen(sol::table rect, sol::table color) {
+	glm::vec2 origin{rect["origin"]["x"], rect["origin"]["y"]};
+	glm::vec2 extents{rect["extents"]["x"], rect["extents"]["y"]};
+	glm::vec4 clr{color["r"], color["g"], color["b"], color["a"]};
+	draw_rect_outline_screen(origin, extents, clr);
 }
 
-void _draw_rect_outline_world(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a) {
-	glm::vec2 origin{origin_x, origin_y};
-	glm::vec2 extents{extent_x, extent_y};
-	glm::vec4 color{r, g, b, a};
-	draw_rect_outline_world(origin, extents, color);
+void rect_outline_world(sol::table rect, sol::table color) {
+	glm::vec2 origin{rect["origin"]["x"], rect["origin"]["y"]};
+	glm::vec2 extents{rect["extents"]["x"], rect["extents"]["y"]};
+	glm::vec4 clr{color["r"], color["g"], color["b"], color["a"]};
+	draw_rect_outline_screen(origin, extents, clr);
 }
 
 void toggle_console() {
@@ -279,9 +279,10 @@ void register_lua_api() {
 	state.set_function("tdengine.log", &Log::write, &tdns_log);
 	
 	state["tdengine"]["draw"] = state.create_table();
-	state["tdengine"]["draw"]["filled_rect_screen"] = &_draw_rect_filled_screen;
-	state["tdengine"]["draw"]["outline_rect_screen"] = &_draw_rect_outline_screen;
-	state["tdengine"]["draw"]["outline_rect_world"] = &_draw_rect_outline_world;
+	state["tdengine"]["draw"]["line_screen"] = &line_screen;
+	state["tdengine"]["draw"]["rect_filled_screen"] = &rect_filled_screen;
+	state["tdengine"]["draw"]["rect_outline_screen"] = &rect_outline_screen;
+	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;
 	
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
@@ -299,7 +300,6 @@ void register_lua_api() {
 	state["tdengine"]["internal"]["move_entity"] = &move_entity;
 	state["tdengine"]["internal"]["teleport_entity"] = &teleport_entity;
 	state["tdengine"]["internal"]["register_collider"] = &register_collider;
-	state["tdengine"]["internal"]["draw_line_from_points"] = &_draw_line_from_points;
 	state["tdengine"]["internal"]["screen_640"] = &use_640_360;
 	state["tdengine"]["internal"]["screen_720"] = &use_720p;
 	state["tdengine"]["internal"]["screen_1080"] = &use_1080p;

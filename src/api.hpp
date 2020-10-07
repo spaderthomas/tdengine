@@ -24,12 +24,10 @@ Sprite* get_frame(std::string animation, int frame);
 
 bool draw_sprite_button(std::string sprite, float sx, float sy);
 
-// @spader 2020/08/13: These just forward to the internal draw functions.
-// They are here because Lua can't use GLM vectors.
-void _draw_line_from_points(float p1x, float p1y, float p2x, float p2y, float r, float g, float b, float a);
-void _draw_rect_filled_screen(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a);
-void _draw_rect_outline_screen(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a);
-void _draw_rect_outline_world(float origin_x, float origin_y, float extent_x, float extent_y, float r, float g, float b, float a);
+void line_screen(sol::table p1, sol::table p2, sol::table color);
+void rect_filled_screen(sol::table rect, sol::table color);
+void rect_outline_screen(sol::table rect, sol::table color);
+void rect_outline_world(sol::table rect, sol::table color);
 
 void toggle_console();
 void save_imgui_layout();
