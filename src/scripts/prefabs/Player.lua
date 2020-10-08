@@ -18,6 +18,10 @@ return {
 	  current = 'spader_walk_down'
 	},
 	Physics = {},
+	Position = {},
+	BoundingBox = {
+	   extents = { x = .05, y = .15 }
+	},
 	Movement = {},
 	Input = {}
   }

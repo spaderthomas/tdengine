@@ -31,7 +31,6 @@ function on_entity_created(cpp_ref)
    -- Load up any data from its prefab
    tdengine.load_prefab(entity)
 
-
    -- Call user-defined constructor
    EntityType.init(entity)
 end
@@ -40,20 +39,22 @@ function on_entity_destroyed(cpp_ref)
    Entities[cpp_ref:get_id()] = nil
 end
 
-function on_component_created(cpp_ref)
+function on_component_created(cpp_ref, data)
    ComponentType = _G[cpp_ref:get_name()]
    if not ComponentType then
 	  print('Tried to create an component of type ' .. cpp_ref:get_name() .. ', but no such component exists')
 	  return
    end
-
+   
    component = ComponentType:new()
 
    component.cpp_ref = cpp_ref
    component.alive = true
    component.parent = Entities[cpp_ref:get_entity()]
-
+   
    Components[cpp_ref:get_id()] = component
+
+   component:load(data)
 
    component:init()
 end
@@ -152,8 +153,8 @@ local entity_mixin = {
       return nil
 	end
   end,  
-  add_component = function(self, kind)
-	local component = Entity["add_component"](self.cpp_ref, kind)
+  add_component = function(self, kind, data)
+	local component = Entity["add_component"](self.cpp_ref, kind, data)
 	if component then
       return Components[component:get_id()]
 	else
@@ -315,9 +316,6 @@ function tdengine.load_prefab(entity)
    local components = prefab.components
    if not components then return end
    for name, data in pairs(components) do
-	  local component = entity:add_component(name)
-	  com
-	  print(name)
-	  print(inspect(data))
+	  local component = entity:add_component(name, data)
    end
 end

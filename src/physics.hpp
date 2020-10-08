@@ -42,8 +42,9 @@ struct PhysicsEngine {
 	std::vector<MoveRequest> requests;
 	
 	void update(float dt);
-	bool has_collider(EntityID id);
-	void add_collider(EntityID id, Collider collider);
+	bool has_collider(int entity);
+	void add_collider(int entity, Collider collider);
+	Collider* get_collider(int entity);
 };
 
 PhysicsEngine& get_physics_engine();

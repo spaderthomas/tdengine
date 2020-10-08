@@ -1,6 +1,6 @@
 Box = tdengine.entity('Box')
 function Box:init()
-   self:add_component('Physics')
+   tdengine.internal.register_collider(self:get_id())
 end
 
 function Box:update(dt)

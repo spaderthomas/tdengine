@@ -1,1 +1,6 @@
-return {}
+return {
+   components = {
+	  Debug = {},
+	  Input = {}
+   }
+}

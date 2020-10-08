@@ -1,6 +1,10 @@
 BoundingBox = tdengine.component('BoundingBox')
+function BoundingBox:load(data)
+   local extents = data.extents or { x = .1, y = .1 }
+   self.extents = extents
+end
+
 function BoundingBox:init()
-   self.extents = { x = .1, y = .1 }
 end
 
 function BoundingBox:update()

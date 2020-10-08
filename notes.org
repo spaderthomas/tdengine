@@ -301,6 +301,22 @@ so i need to make a load() function for sure. that gets called when you do load
 or prefab. when you prefab, we also call init() after we load the data. 
 
 creating a component at runtime means you have to pass in a table of data
+
+-- later
+
+awesome, it works :D!
+
+main problem now is that there is no ordering of components
+
+so for example, i want to register the collider. that needs a position and a
+bounding box. i'd like to stick the registration code in one of those components
+so i don't have to type it every time. but i can't know which one gets created
+first, and the engine needs both of them to make the collider. so for now i have
+to put it in the entity's init function
+
+maybe late_init()?
+
+ 
 * gameplay
 ** game 2
 *** august 11, 2020

@@ -131,23 +131,24 @@ bool point_inside_box(glm::vec2& screen_pos, Center_Box& box) {
 
 void PhysicsEngine::update(float dt) {
 	for (auto& request : requests) {
-		auto& collider = colliders.at(request.entity);
+		auto collider = get_collider(request.entity);
+		if (!collider) continue;
 
 		// @hack 2020/10/04: Normally, wish describes an offset from where you currently are.
 		// To make teleport_entity() not be complicated, when we don't care about collision we treat it as a position, not an offset
 		if (request.flags & MoveFlags::BypassCollision) {
-			collider.origin = request.wish;
+			collider->origin = request.wish;
 			continue;
 		}
 
-		collider.origin += request.wish;
+		collider->origin += request.wish;
 
 		for (auto& [id, other] : colliders) {
 			if (id == request.entity) continue;
 			
 			glm::vec2 penetration;
-			if (are_colliding(collider, other, penetration)) {
-				collider.origin -= penetration;
+			if (are_colliding(*collider, other, penetration)) {
+				collider->origin -= penetration;
 				auto physics = Lua.get_component(request.entity, "Physics");
 				physics["had_collision"] = true;
 				physics["collided_with"] = id;
@@ -155,30 +156,45 @@ void PhysicsEngine::update(float dt) {
 				physics = Lua.get_component(id, "Physics");
 				physics["had_collision"] = true;
 				physics["collided_with"] = request.entity;
-				
-				tdns_log.write("Collision found.");
 			}
 		}
 	}
 
 	for (auto request : requests) {
-		auto& collider = colliders.at(request.entity);
+		auto collider = get_collider(request.entity);
+		if (!collider) continue;
 
 		// Update the positions in Lua
 		auto position = Lua.get_component(request.entity, "Position");
-		position["world"]["x"] = collider.origin.x;
-		position["world"]["y"] = collider.origin.y;
+		position["world"]["x"] = collider->origin.x;
+		position["world"]["y"] = collider->origin.y;
 	}
 
 	requests.clear();
 }
 
-void PhysicsEngine::add_collider(EntityID id, Collider collider) {
-	colliders[id] = collider;
+void PhysicsEngine::add_collider(int entity, Collider collider) {
+	colliders[entity] = collider;
 }
 
-bool PhysicsEngine::has_collider(EntityID id) {
-	return colliders.find(id) != colliders.end();
+bool PhysicsEngine::has_collider(int entity) {
+	return colliders.find(entity) != colliders.end();
+}
+
+Collider* PhysicsEngine::get_collider(int entity_id) {
+	auto it = colliders.find(entity_id);
+	if (it == colliders.end()) {
+		auto& entity_manager = get_entity_manager();
+		auto entity = entity_manager.get_entity(entity_id);
+		std::string message = "The physics engine tried to get a collider for ";
+		message += entity->get_name() + "(" + std::to_string(entity_id) + ")";
+		message += ", but it never registered a collider.";
+		tdns_log.write(message);
+		return nullptr;
+	}
+
+	return &(it->second);
+
 }
 
 PhysicsEngine& get_physics_engine() {

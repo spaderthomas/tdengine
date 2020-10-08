@@ -1,31 +1,9 @@
 local inspect = require('inspect')
 local GLFW = require('glfw')
 
-local animations = {
-  spader_stand = {
-	'spader_stand_1.png'
-  },
-  spader_walk_down = {
-	'spader_walk_down1.png',
-	'spader_walk_down2.png',
-	'spader_walk_down3.png',
-	'spader_walk_down4.png',
-	'spader_walk_down5.png',
-	'spader_walk_down6.png'
-  }
-}
-
 Player = tdengine.entity('Player')
 function Player:init()
-  local graphic = self:add_component('Graphic')
-  
-  local animation = self:add_component('Animation')
-  animation:batch_add(animations)
-  animation:begin('spader_walk_down')
-  
-  local physics = self:add_component('Physics')
-  local movement = self:add_component('Movement')
-  local input = self:add_component('Input')
+   tdengine.internal.register_collider(self:get_id())
 end
 
 function Player:handle_movement()

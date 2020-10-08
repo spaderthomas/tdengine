@@ -13,9 +13,6 @@ local EditState = {
 
 Editor = tdengine.entity('Editor')
 function Editor:init()
-  self:add_component('Debug')
-  self:add_component('Input')
-
   self.options = {
 	 show_bounding_boxes = false,
 	 show_minkowksi = false,

@@ -18,6 +18,7 @@ int LuaState::init() {
 		sol::lib::string,
 		sol::lib::math,
 		sol::lib::table,
+		sol::lib::os,
 		sol::lib::io);
 	
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
