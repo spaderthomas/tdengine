@@ -27,7 +27,7 @@ ComponentManager& get_component_manager() {
 	return manager;
 }
 
-Component* ComponentManager::create_component(std::string name, int entity) {
+Component* ComponentManager::create_component(std::string name, int entity, sol::table data) {
 	auto component = std::make_unique<Component>();
 	auto id = Component::next_id++;
 	component->id = id;
@@ -36,7 +36,7 @@ Component* ComponentManager::create_component(std::string name, int entity) {
 
 	auto& c = *(component.get());
 	sol::protected_function on_component_created = Lua.state["on_component_created"];
-	auto result = on_component_created(c);
+	auto result = on_component_created(c, data);
 	if (!result.valid()) {
 		sol::error error = result;
 		tdns_log.write("Failed to create component. Entity ID: " + std::to_string(entity) + ". Component name: " + name + ". Lua error:");
@@ -105,14 +105,14 @@ void Entity::update(float dt) {
 	}
 }
 
-Component* Entity::add_component(std::string name) {
+Component* Entity::add_component(std::string name, sol::table data) {
 	// Don't double add components
 	if (components.find(name) != components.end()) {
 		return components[name];
 	}
 
 	auto& component_manager = get_component_manager();
-	auto component = component_manager.create_component(name, id);
+	auto component = component_manager.create_component(name, id, data);
 	
 	if (component) {
 		components[name] = component;
@@ -182,9 +182,7 @@ int EntityManager::create_entity(std::string name) {
 		std::string message = "You tried to create an entity named " + name;
 		message += ", but it errored out in init(). Here's the Lua error:";
 		tdns_log.write(message);
-		tdns_log.write("BEGIN");
 		tdns_log.write(error.what());
-		tdns_log.write("END");
 	}
 	// Otherwise, check the return code. We'll return 0 if we couldn't find the entity type.
 	else {

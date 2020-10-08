@@ -247,7 +247,7 @@ void rect_outline_world(sol::table rect, sol::table color) {
 	glm::vec2 origin{rect["origin"]["x"], rect["origin"]["y"]};
 	glm::vec2 extents{rect["extents"]["x"], rect["extents"]["y"]};
 	glm::vec4 clr{color["r"], color["g"], color["b"], color["a"]};
-	draw_rect_outline_screen(origin, extents, clr);
+	draw_rect_outline_world(origin, extents, clr);
 }
 
 void toggle_console() {

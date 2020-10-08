@@ -22,6 +22,7 @@ int LuaState::init() {
 	
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
 	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "core"})));
+	prepend_to_search_path(absolute_path(path_join({"src", "scripts"})));
 
 	LoadImguiBindings();
 

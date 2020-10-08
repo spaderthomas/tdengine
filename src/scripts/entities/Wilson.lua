@@ -15,7 +15,6 @@ local animations = {
 Wilson = tdengine.entity('Wilson')
 function Wilson:init()
   local graphic = self:add_component('Graphic')
-  graphic.scale = { x = .1, y = .1 }
   
   local animation = self:add_component('Animation')
   animation:batch_add(animations)

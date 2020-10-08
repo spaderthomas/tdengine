@@ -22,7 +22,7 @@ struct Entity {
 
 	Entity(std::string name, int id);
 	void update(float dt);
-	Component* add_component(std::string name);
+	Component* add_component(std::string name, sol::table data);
 	Component* get_component(std::string name);
 	void remove_component(std::string name);
 	std::vector<Component*> all_components();
@@ -47,7 +47,7 @@ struct ComponentManager {
 	
 	Component* get_component(int id);
 	bool has_component(int id);
-	Component* create_component(std::string name, int entity);
+	Component* create_component(std::string name, int entity, sol::table data);
 	void destroy_component(int id);
 };
 ComponentManager& get_component_manager();

@@ -1,12 +1,5 @@
 local inspect = require('inspect')
 
--- Utilities
-tdengine.colors = {}
-tdengine.colors.red =   { r = 1, g = 0, b = 0, a = 1 }
-tdengine.colors.green = { r = 0, g = 1, b = 0, a = 1 }
-tdengine.colors.blue =  { r = 0, g = 0, b = 1, a = 1 }
-
-
 -- Callbacks
 function update_entity(id, dt)
   local entity = Entities[id]
@@ -31,9 +24,13 @@ function on_entity_created(cpp_ref)
    -- Inject the table with a reference back to the C++ entity
    entity.cpp_ref = cpp_ref
    entity.alive = true
-
+   
    -- Store it in the global list
    Entities[cpp_ref:get_id()] = entity
+
+   -- Load up any data from its prefab
+   tdengine.load_prefab(entity)
+
 
    -- Call user-defined constructor
    EntityType.init(entity)
@@ -169,8 +166,6 @@ local entity_mixin = {
 	for i = 1, #components do
 	  local component = components[i]
 	  array[i] = Components[component:get_id()]
-	  local as_lua = array[i]
-	  print(as_lua:get_name())
 	end
 	return array
   end,
@@ -222,20 +217,6 @@ function tdengine.component(name)
   return class
 end
 
-local tile_mixin = {
-  init = function(self)
-	 local graphic = self:add_component('Graphic')
-	 graphic.scale = { x = .1, y = .1 }
-	 
-	 local animation = self:add_component('Animation')
-	 animation:add(self:get_name(), { self:get_name() .. '.png' })
-	 animation:begin(self:get_name())
-	 
-	 local position = self:add_component('Position')
-  end,
-  update = function(self) end
-}
-
 function tdengine.load_scene(name)
   local scene = tdengine.scenes[name]
   
@@ -253,13 +234,10 @@ end
 
 
 -- Utilities
-function tdengine.tile(name)
-  local class = _create_class(name)
-  _includeMixin(class, class_mixin)
-  class:include(entity_mixin)
-  class:include(tile_mixin)
-  return class
-end
+tdengine.colors = {}
+tdengine.colors.red =   { r = 1, g = 0, b = 0, a = 1 }
+tdengine.colors.green = { r = 0, g = 1, b = 0, a = 1 }
+tdengine.colors.blue =  { r = 0, g = 0, b = 1, a = 1 }
 
 function table.shallow_copy(t)
   local t2 = {}
@@ -330,3 +308,16 @@ function tdengine.screen_to_world(screen)
       y = screen.y - tdengine.get_camera_y()
    }
 end		 
+
+function tdengine.load_prefab(entity)
+   local file = 'prefabs/' .. entity:get_name()
+   local prefab = require(file)
+   local components = prefab.components
+   if not components then return end
+   for name, data in pairs(components) do
+	  local component = entity:add_component(name)
+	  com
+	  print(name)
+	  print(inspect(data))
+   end
+end

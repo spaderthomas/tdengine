@@ -11,7 +11,6 @@ function Tom:init()
    local movement = self:add_component('Movement')
 
    local graphic = self:add_component('Graphic')
-   graphic.scale = { x = .2, y = .2 }
 
    local animation = self:add_component('Animation')
    animation:batch_add(animations)

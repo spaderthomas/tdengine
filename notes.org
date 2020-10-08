@@ -266,6 +266,41 @@ save a scene, we're just going to go through the entities that exist and save
 them.
 entity:save()
 for component in entity.get_components
+** 10/07/2020: saving colliders 2
+the general save/load cycle is pretty clear to me. what's less clear to me is
+how i should lay out my entities. for example, the player looks like this:
+#+BEGIN_SRC lua
+function Player:init()
+  local graphic = self:add_component('Graphic')
+  graphic.scale = { x = .1, y = .1 }
+  
+  local animation = self:add_component('Animation')
+  animation:batch_add(animations)
+  animation:begin('spader_walk_down')
+  
+  local physics = self:add_component('Physics')
+  local movement = self:add_component('Movement')
+  local input = self:add_component('Input')
+end
+#+END_SRC
+all of that can be defined in a table
+
+so when i create an entity, i already know where the prefab is. there's no need
+to pass that in or around -- i can just load the module from the prefabs
+directory, create all the components, etc. but for a component, there's no 1:1
+mapping between prefabs <-> components. in other words, the data you want to use
+to create the component is associated with the specific entity you're creating
+it for. 
+
+how i want it to work:
+- you can still create a component at runtime
+- when init() is called, the component's data is already setup
+- load and prefab work exactly the same way
+
+so i need to make a load() function for sure. that gets called when you do load
+or prefab. when you prefab, we also call init() after we load the data. 
+
+creating a component at runtime means you have to pass in a table of data
 * gameplay
 ** game 2
 *** august 11, 2020
