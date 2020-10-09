@@ -124,14 +124,17 @@ Component* Entity::add_component(std::string name, sol::table data) {
 }
 
 void Entity::remove_component(std::string name) {
-	bool found = components.find(name) != components.end();
-	if (!found) return;
+	if (!has_component(name)) return;
+	assert(!"remove_component() is unimplemented");
+}
 
-	
+bool Entity::has_component(std::string name)
+{
+	return components.find(name) != components.end();
 }
 
 Component* Entity::get_component(std::string name) {
-	if (components.find(name) == components.end()) {
+	if (!has_component(name)) {
 		tdns_log.write("Tried to get a component, but it didn't exist. Entity ID: " + std::to_string(id) + ". Component name: " + name);
 		return nullptr;
 	}
@@ -184,7 +187,7 @@ int EntityManager::create_entity(std::string name) {
 		tdns_log.write(message);
 		tdns_log.write(error.what());
 	}
-	// Otherwise, check the return code. We'll return 0 if we couldn't find the entity type.
+	// Otherwise, check the return code. We'll return 1 if we couldn't find the entity type.
 	else {
 		int code = result;
 

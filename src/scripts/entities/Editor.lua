@@ -12,7 +12,12 @@ local EditState = {
 }
 
 Editor = tdengine.entity('Editor')
+function Editor:load(data)
+end
+
 function Editor:init()
+  self:persist()
+   
   self.options = {
 	 show_bounding_boxes = false,
 	 show_minkowksi = false,
@@ -38,6 +43,9 @@ function Editor:init()
 end
 
 function Editor:update(dt)
+   if self.frame == 0 then
+	  tdengine.load_scene('overworld_demo')
+   end
   local dbg = self:get_component('Debug')
   local input = self:get_component('Input')
   self:calculate_framerate()
@@ -110,9 +118,11 @@ function Editor:handle_input()
 	self.state = EditState.Idle
   end
 
+  input:set_channel(tdengine.InputChannel.All)
   if input:was_pressed(GLFW.Keys.LEFT_CONTROL) then
     tdengine.internal.toggle_console()
   end
+  input:set_channel(tdengine.InputChannel.Editor)
 end
 
 function Editor:adjust_camera()
@@ -151,7 +161,7 @@ end
 
 function Editor:draw_entity_viewer()
   self.filter:Draw("Filter by name")
-  for id, entity in pairs(Entities) do
+  for id, entity in pairs(tdengine.entities) do
 	local name = entity:get_name()
 	if self.filter:PassFilter(name) then
 	  imgui.extensions.Entity(entity)

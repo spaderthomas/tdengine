@@ -2,12 +2,12 @@ local inspect = require('inspect')
 
 -- Callbacks
 function update_entity(id, dt)
-  local entity = Entities[id]
+  local entity = tdengine.entities[id]
   entity:update(dt)
 end
 
 function update_component(id, dt)
-   local component = Components[id]
+   local component = tdengine.components[id]
    component:update(dt)
 end
 
@@ -20,23 +20,18 @@ function on_entity_created(cpp_ref)
    
    -- Construct the entity with a do-nothing constructor
    entity = EntityType:new()
-   
-   -- Inject the table with a reference back to the C++ entity
    entity.cpp_ref = cpp_ref
    entity.alive = true
    
-   -- Store it in the global list
-   Entities[cpp_ref:get_id()] = entity
+   tdengine.entities[cpp_ref:get_id()] = entity
 
-   -- Load up any data from its prefab
    tdengine.load_prefab(entity)
 
-   -- Call user-defined constructor
    EntityType.init(entity)
 end
 
 function on_entity_destroyed(cpp_ref)
-   Entities[cpp_ref:get_id()] = nil
+   tdengine.entities[cpp_ref:get_id()] = nil
 end
 
 function on_component_created(cpp_ref, data)
@@ -50,17 +45,26 @@ function on_component_created(cpp_ref, data)
 
    component.cpp_ref = cpp_ref
    component.alive = true
-   component.parent = Entities[cpp_ref:get_entity()]
+   component.parent = tdengine.entities[cpp_ref:get_entity()]
    
-   Components[cpp_ref:get_id()] = component
+   tdengine.components[cpp_ref:get_id()] = component
 
    component:load(data)
 
-   component:init()
+   -- When we create entities from prefabs, we want to make sure everything
+   -- is created and loaded before we run init (which may make API calls that
+   -- require other components to be there).
+   --
+   -- When we directly call add_component() at runtime, we want to initialize
+   -- it straight off.
+   local skip_init = data.skip_init or false
+   if not skip_init then
+      component:init()
+   end
 end
 
 function on_component_destroyed(cpp_ref)
-   Components[cpp_ref:get_id()] = nil
+   tdengine.components[cpp_ref:get_id()] = nil
 end
 
 
@@ -145,10 +149,13 @@ end
 
 -- tdengine functions we're injecting in for sugar
 local entity_mixin = {
+  has_component = function(self, kind)
+	return Entity["has_component"](self.cpp_ref, kind)
+  end,  
   get_component = function(self, kind)
 	local component = Entity["get_component"](self.cpp_ref, kind)
 	if component then
-	  return Components[component:get_id()]
+	  return tdengine.components[component:get_id()]
 	else
       return nil
 	end
@@ -156,7 +163,7 @@ local entity_mixin = {
   add_component = function(self, kind, data)
 	local component = Entity["add_component"](self.cpp_ref, kind, data)
 	if component then
-      return Components[component:get_id()]
+      return tdengine.components[component:get_id()]
 	else
 	  return nil
 	end
@@ -166,7 +173,7 @@ local entity_mixin = {
 	local array = {}
 	for i = 1, #components do
 	  local component = components[i]
-	  array[i] = Components[component:get_id()]
+	  array[i] = tdengine.components[component:get_id()]
 	end
 	return array
   end,
@@ -178,7 +185,7 @@ local entity_mixin = {
   end,
   create_entity = function(self, name)
 	 local id = tdengine.create_entity(name)
-	 return Entities[id]
+	 return tdengine.entities[id]
   end,
   destroy_entity = function(self, id)
 	 tdengine.destroy_entity(id)
@@ -188,6 +195,9 @@ local entity_mixin = {
   end,
   remove_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = false
+  end,
+  persist = function(self)
+	 self.tdengine_persist = true
   end,
   imgui_ignore = {
 	 class = true,
@@ -212,27 +222,59 @@ local component_mixin = {
 }
 
 function tdengine.component(name)
-  local class = _create_class(name)
-  _includeMixin(class, class_mixin)
-  class:include(component_mixin)
-  return class
+   local class = _create_class(name)
+   _includeMixin(class, class_mixin)
+   class:include(component_mixin)
+   return class
 end
 
 function tdengine.load_scene(name)
-  local scene = tdengine.scenes[name]
+   package.loaded['scenes/'..name] = nil
+   local scene = require('scenes/' .. name)
+   
+   for id, entity in pairs(tdengine.entities) do
+	  persist = entity.tdengine_persist or false
+	  if not persist then
+		 tdengine.destroy_entity(id)
+	  end
+   end
   
-  local entities = scene.entities
-  for index, entity in pairs(entities) do
-	local id = tdengine.create_entity(entity.Name)
-	if not id then return end
-	  
-	local position = entity.Position
-	if position then
-	  tdengine.internal.teleport_entity(id, position.x, position.y)
-	end
-  end
+   for index, data in pairs(scene.entities) do
+	  local id = tdengine.create_entity(data.name)
+	  if not id then return end
+
+	  local entity = tdengine.entities[id]
+	  tdengine.load_entity(entity, data)
+   end
 end
 
+function tdengine.load_entity(entity, data)
+   local components = data.components
+   if not components then return end
+
+   for name, data in pairs(components) do
+	  if entity:has_component(name) then
+		 local component = entity:get_component(name)
+		 component:load(data)
+	  else
+		 data.skip_init = true
+		 local component = entity:add_component(name, data)		 
+	  end
+   end
+   
+   for name, data in pairs(components) do
+	  local component = entity:get_component(name)
+	  component:init()
+   end   
+end
+
+function tdengine.load_prefab(entity)
+   tdengine.load_entity(entity, require('prefabs/' .. entity:get_name()))
+end
+
+function tdengine.save()
+   
+end
 
 -- Utilities
 tdengine.colors = {}
@@ -309,13 +351,3 @@ function tdengine.screen_to_world(screen)
       y = screen.y - tdengine.get_camera_y()
    }
 end		 
-
-function tdengine.load_prefab(entity)
-   local file = 'prefabs/' .. entity:get_name()
-   local prefab = require(file)
-   local components = prefab.components
-   if not components then return end
-   for name, data in pairs(components) do
-	  local component = entity:add_component(name, data)
-   end
-end

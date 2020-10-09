@@ -31,6 +31,7 @@ int LuaState::init() {
 	entity_type["update"] = &Entity::update;
 	entity_type["add_component"] = &Entity::add_component;
 	entity_type["get_component"] = &Entity::get_component;
+	entity_type["has_component"] = &Entity::has_component;
 	entity_type["all_components"] = &Entity::all_components;
 	entity_type["get_name"] = &Entity::get_name;
 	entity_type["get_id"] = &Entity::get_id;
@@ -94,20 +95,20 @@ void LuaState::update(float dt) {
 }
 
 sol::table LuaState::get_entity(int id) {
-	return state["Entities"][id];
+	return state["tdengine"]["entities"][id];
 }
 sol::table LuaState::get_component(int id) {
-	return state["Components"][id];
+	return state["tdengine"]["components"][id];
 }
 sol::table LuaState::get_component(Component* component) {
-	return state["Components"][component->get_id()];
+	return state["tdengine"]["components"][component->get_id()];
 }
 sol::table LuaState::get_component(int entity, std::string which) {
 	auto& entity_manager = get_entity_manager();
 	auto entity_ptr = entity_manager.get_entity(entity);
 
 	if (!entity_ptr) {
-		std::string message = "Tried to get " + which + "component for entity " + std::to_string(entity) + ", but entity did not exist.";
+		std::string message = "Tried to get " + which + " for entity " + std::to_string(entity) + ", but entity did not exist.";
 		tdns_log.write(message);
 		return sol::table();
 	}

@@ -298,7 +298,7 @@ void register_lua_api() {
     state["tdengine"]["internal"] = state.create_table();
 	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
 	state["tdengine"]["internal"]["move_entity"] = &move_entity;
-	state["tdengine"]["internal"]["teleport_entity"] = &teleport_entity;
+	state["tdengine"]["teleport_entity"] = &teleport_entity;
 	state["tdengine"]["internal"]["register_collider"] = &register_collider;
 	state["tdengine"]["internal"]["screen_640"] = &use_640_360;
 	state["tdengine"]["internal"]["screen_720"] = &use_720p;

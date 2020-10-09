@@ -24,6 +24,7 @@ struct Entity {
 	void update(float dt);
 	Component* add_component(std::string name, sol::table data);
 	Component* get_component(std::string name);
+	bool has_component(std::string name);
 	void remove_component(std::string name);
 	std::vector<Component*> all_components();
 	int get_id();

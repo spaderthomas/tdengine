@@ -3,7 +3,6 @@ local GLFW = require('glfw')
 
 Player = tdengine.entity('Player')
 function Player:init()
-   tdengine.internal.register_collider(self:get_id())
 end
 
 function Player:handle_movement()

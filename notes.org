@@ -315,8 +315,19 @@ first, and the engine needs both of them to make the collider. so for now i have
 to put it in the entity's init function
 
 maybe late_init()?
-
  
+** 10/08/2020: saving scenes
+saving entities is pretty straightforward...what i care about is the semantics
+of saving levels. 
+
+i was thinking of having a 'prefab' for a level -- all that means is a list of
+the default setup of the level. what entities are there. but those entities also
+need to be populated with some data. at that point, why not just use a save
+file? why write the same code twice -- and it will be the same code, because
+fundamentally you're just creating entities according to a list and then feeding
+them in some configurations. in both cases. 
+
+so why not make a 'scene' the same as a save file? 
 * gameplay
 ** game 2
 *** august 11, 2020

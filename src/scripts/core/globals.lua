@@ -1,3 +1,2 @@
-Entities = {}
-Components = {}
-tdengine.scenes = {}
+tdengine.entities = {}
+tdengine.components = {}
