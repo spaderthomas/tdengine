@@ -21,7 +21,6 @@ function on_entity_created(cpp_ref)
    -- Construct the entity with a do-nothing constructor
    entity = EntityType:new()
    entity.cpp_ref = cpp_ref
-   entity.alive = true
    
    tdengine.entities[cpp_ref:get_id()] = entity
 
@@ -44,7 +43,6 @@ function on_component_created(cpp_ref, data)
    component = ComponentType:new()
 
    component.cpp_ref = cpp_ref
-   component.alive = true
    component.parent = tdengine.entities[cpp_ref:get_entity()]
    
    tdengine.components[cpp_ref:get_id()] = component
@@ -218,7 +216,18 @@ local component_mixin = {
   end,
   get_id = function(self)
 	return Component["get_id"](self.cpp_ref)
-  end
+  end,
+    add_imgui_ignore = function(self, member_name)
+	 self.imgui_ignore[member_name] = true
+  end,
+  remove_imgui_ignore = function(self, member_name)
+	 self.imgui_ignore[member_name] = false
+  end,
+  imgui_ignore = {
+	 class = true,
+	 parent = true,
+	 imgui_ignore = true
+  }
 }
 
 function tdengine.component(name)

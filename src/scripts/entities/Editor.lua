@@ -70,7 +70,11 @@ function Editor:update(dt)
   imgui.End()
   imgui.End()
 
-  if self.state == EditState.ReadyToDrawGeometry then
+  self:do_geometry()
+end
+
+function Editor:do_geometry()
+   if self.state == EditState.ReadyToDrawGeometry then
   	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
 	 	self.geometry_start.x = tdengine.get_cursor_x()
 	 	self.geometry_start.y = tdengine.get_cursor_y()
@@ -98,7 +102,6 @@ function Editor:update(dt)
 	 end
   end
 end
-
 function Editor:calculate_framerate()
    local framerate = tdengine.framerate or 0
    self.average_framerate = self.average_framerate * .5

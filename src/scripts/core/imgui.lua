@@ -3,10 +3,61 @@ local inspect = require('inspect')
 -- ImGui extensions
 imgui.extensions = imgui.extensions or {}
 
+imgui.extensions.Component = function(component)
+   imgui.PushID(component:get_id())
+   
+   if imgui.TreeNode(component:get_name()) then
+	  imgui.extensions.VariableName('id')
+	  imgui.extensions.RightAlignedString(tostring(component:get_id()))
+	  imgui.extensions.TableMembers(component:get_name(), component)
+	  imgui.TreePop()
+   end
+
+   imgui.PopID()
+end
+
 imgui.extensions.Entity = function(entity)
    imgui.PushID(entity:get_id())
-   imgui.extensions.Table(entity:get_name(), entity, entity.imgui_ignore, ignore)
+   if imgui.TreeNode(entity:get_name()) then
+	  imgui.extensions.VariableName('id')
+	  imgui.extensions.RightAlignedString(tostring(entity:get_id()))
+
+	  local components = entity:all_components()
+	  for index, component in pairs(components) do
+		 imgui.extensions.Component(component)
+	  end
+
+	  imgui.extensions.TableMembers(entity:get_name(), entity)
+	  imgui.TreePop()
+   end
+
    imgui.PopID()
+end
+
+imgui.extensions.TableMembers = function(name, tbl, ignore, imgui_id)
+   ignore = tbl.imgui_ignore or {}
+   imgui_id = imgui_id or '##' .. name
+   for member, value in pairs(tbl) do
+	  if not ignore[member] then
+		 local value_type = type(value)
+		 local next_imgui_id = imgui_id .. '__' .. member
+		 
+		 if value_type == 'string' then
+   		   imgui.extensions.VariableName(member)
+   		   imgui.extensions.RightAlignedString(value)
+		 elseif value_type == 'number' then
+			imgui.extensions.VariableName(member)
+			imgui.extensions.RightAlignedString(tostring(value))
+		 elseif value_type == 'boolean' then
+			imgui.extensions.VariableName(member)
+			imgui.SameLine(imgui.GetWindowWidth() - 30)
+			draw, new = imgui.Checkbox(next_imgui_id, value)
+			tbl[member] = new
+		 elseif value_type == 'table' then
+			imgui.extensions.Table(member, value, {}, next_imgui_id)
+		 end
+	  end
+   end
 end
 
 imgui.extensions.Table = function(name, tbl, ignore, imgui_id)
@@ -14,27 +65,7 @@ imgui.extensions.Table = function(name, tbl, ignore, imgui_id)
    imgui_id = imgui_id or '##' .. name
    
    if imgui.TreeNode(name) then
-	  for member, value in pairs(tbl) do
-		 if not ignore[member] then
-			local value_type = type(value)
-			local next_imgui_id = imgui_id .. '__' .. member
-			
-			if value_type == 'string' then
-			   imgui.extensions.VariableName(member)
-			   imgui.extensions.RightAlignedString(value)
-			elseif value_type == 'number' then
-			   imgui.extensions.VariableName(member)
-			   imgui.extensions.RightAlignedString(tostring(value))
-			elseif value_type == 'boolean' then
-			   imgui.extensions.VariableName(member)
-			   imgui.SameLine(imgui.GetWindowWidth() - 30)
-			   draw, new = imgui.Checkbox(next_imgui_id, value)
-			   tbl[member] = new
-			elseif value_type == 'table' then
-			   imgui.extensions.Table(member, value, {}, next_imgui_id)
-			end
-		 end
-	  end
+	  imgui.extensions.TableMembers(name, tbl, ignore, imgui_id)
 	  imgui.TreePop()
    end
 end
