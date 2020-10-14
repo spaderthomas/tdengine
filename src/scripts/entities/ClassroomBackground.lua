@@ -1,9 +1,9 @@
-Background = tdengine.entity('Background')
-function Background:init()
+ClassroomBackground = tdengine.entity('ClassroomBackground')
+function ClassroomBackground:init()
    -- Engine needs to know the position of the thing to render it
    tdengine.register_collider(self:get_id())
    tdengine.teleport_entity(self:get_id(), 3, 3)
 end
 
-function Background:update(dt)
+function ClassroomBackground:update(dt)
 end

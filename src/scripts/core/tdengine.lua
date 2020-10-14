@@ -200,11 +200,12 @@ local entity_mixin = {
   end,
   do_not_save = function(self)
 	 self.tdengine_do_not_save = true
-  end
+  end,
   imgui_ignore = {
 	 class = true,
 	 imgui_ignore = true,
-	 tdengine_persist = true
+	 tdengine_persist = true,
+	 tdengine_do_not_save = true
   }
 }
 
@@ -289,21 +290,38 @@ function tdengine.load_prefab(entity)
 end
 
 function tdengine.save_scene(name)
-   local scene_filename = 'scenes/' .. scene_name
-   local file = io.open(scene_filename)
+   local relative = 'src/scripts/scenes/' .. name .. '.lua'
+   local filepath = tdengine.paths.absolute_path(relative)
+   local file = assert(io.open(filepath, 'w'))
    if file then
-	  local scene = require(scene_filename)
+	  local scene = require('scenes/' .. name)
 	  local save = {
-		 background = scene.background,
 		 entities = {}
 	  }
 
 	  for index, entity in pairs(tdengine.entities) do
 		 do_not_save = entity.tdengine_do_not_save or false
 		 if not do_not_save then
-			table.insert(save.entities, entity:save())
+			local saved = {
+			   name = entity:get_name(),
+			   components = {}
+			}
+			
+			local components = entity:all_components()
+			for index, component in pairs(components) do
+			   if component.save then
+				  saved.components[component:get_name()] = component:save()
+			   end
+			end
+
+			table.insert(save.entities, saved)
 		 end
 	  end
+
+	  local serpent = require('serpent')
+	  print(serpent.block(save, { comment = false }))
+	  file:write('return ')
+	  file:write(serpent.block(save, { comment = false }))
    end
 end
 

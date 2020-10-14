@@ -38,13 +38,11 @@ function Editor:init()
   self.average_framerate = 0
   self.frame = 0
 
-  self.save_scene_as = ''
+  self:do_not_save()
   
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
   input:enable()
-  
-  tdengine.load_scene("overworld_demo")
 end
 
 function Editor:update(dt)
@@ -160,11 +158,6 @@ function Editor:draw_tools()
   end
 
   if imgui.Button("Save") then
-	 local scene_name = tdengine.loaded_scene
-	 if self.save_scene_as ~= '' then
-		scene_name = self.save_scene
-	 end
-
 	 tdengine.save_scene(tdengine.loaded_scene)	 
   end
 

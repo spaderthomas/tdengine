@@ -302,6 +302,7 @@ void register_lua_api() {
 	state["tdengine"]["paths"] = state.create_table();
 	state["tdengine"]["paths"]["root"] = root_dir;
 	state["tdengine"]["paths"]["join"] = &path_join;
+	state["tdengine"]["paths"]["absolute_path"] = &absolute_path;
 	
     state["tdengine"]["internal"] = state.create_table();
 	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
