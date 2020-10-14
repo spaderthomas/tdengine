@@ -29,6 +29,7 @@ struct Entity {
 	std::vector<Component*> all_components();
 	int get_id();
 	std::string get_name();
+	std::string debug_string();
 };
 int Entity::next_id = 0;
 

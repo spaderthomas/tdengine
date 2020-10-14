@@ -7,6 +7,8 @@ void AssetManager::add_asset(std::string name, Asset_Type* asset) {
 
 	asset->name = name;
 	assets[name] = asset;
+
+	tdns_log.write("Registered asset: " + name, Log_Flags::File);
 }
 
 template <typename Asset_Type>
@@ -40,20 +42,19 @@ void Texture::bind() {
 	glBindTexture(GL_TEXTURE_2D, handle);
 }
 
-// @spader This is only used for the text box....kill it!
 void create_texture(std::string path) {
 	std::string texture_name = name_from_full_path(path);
 	if (is_valid_filename(texture_name)) {
-		Texture* new_texture = new Texture;
+		Texture* texture = new Texture;
 
 		stbi_set_flip_vertically_on_load(true);
-		unsigned char* data = stbi_load(absolute_path(path).c_str(), &new_texture->width, &new_texture->height, &new_texture->num_channels, 0);
+		unsigned char* data = stbi_load(absolute_path(path).c_str(), &texture->width, &texture->height, &texture->num_channels, 0);
 		if (data) {
 			defer { free(data); };
-			// Now, create all the OpenGL internals and point it to the newly created atlas
-			glGenTextures(1, &new_texture->handle);
+			// Now, create all the OpenGL internals and point it to the newly created texture
+			glGenTextures(1, &texture->handle);
 			glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
-			glBindTexture(GL_TEXTURE_2D, new_texture->handle);
+			glBindTexture(GL_TEXTURE_2D, texture->handle);
 
 			// Some sane defaults
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -61,11 +62,11 @@ void create_texture(std::string path) {
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, new_texture->width, new_texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
 			glGenerateMipmap(GL_TEXTURE_2D);
 
 			auto& asset_manager = get_asset_manager();
-			asset_manager.add_asset<Texture>(texture_name, new_texture);
+			asset_manager.add_asset<Texture>(texture_name, texture);
 		} else {
 			std::string msg = "stb_image failed to load an image. Path was: " + path;
 			tdns_log.write(msg);
@@ -190,31 +191,41 @@ void create_texture_atlas(std::string assets_dir) {
 	asset_manager.add_asset<Texture>(atlas->name, atlas);
 }
 
-void create_all_texture_atlas() {
+void create_texture_atlas() {
 	std::string dir = absolute_path("asset/art");
 	create_texture_atlas(dir);
 }
 
 void init_assets() {
-	create_all_texture_atlas();
-	create_texture(absolute_path("asset/art/backgrounds/classroom.png"));
+	create_texture_atlas();
 
 	auto& asset_manager = get_asset_manager();
-	
-	Texture* texture = asset_manager.get_asset<Texture>("classroom.png");
+		
+	auto backgrounds = AbsolutePath(RelativePath("asset/art/backgrounds"));
+	tdns_log.write("Loading backgrounds from " + backgrounds.path, Log_Flags::File);
+	directory_iterator it(backgrounds.path);
+	for (it; it != directory_iterator(); ++it) {
+		create_texture(it->path().string());
+		
+		auto name = name_from_full_path(it->path().string());
+		auto texture = asset_manager.get_asset<Texture>(name);
 
-	Sprite* sprite = new Sprite;
-	sprite->atlas = texture;
-	sprite->height = texture->height;
-	sprite->width = texture->width;
-	sprite->num_channels = texture->num_channels;
-	sprite->tex_coords = {
-		1, 1,
-		1, 0,
-		0, 0,
-		0, 1
-	};
-	asset_manager.add_asset<Sprite>("classroom", sprite);
+		Sprite* sprite = new Sprite;
+		sprite->atlas = texture;
+		sprite->height = texture->height;
+		sprite->width = texture->width;
+		sprite->num_channels = texture->num_channels;
+		sprite->tex_coords = {
+			1, 1,
+			1, 0,
+			0, 0,
+			0, 1
+		};
+
+		asset_manager.add_asset<Sprite>(name, sprite);
+	}
+
+
 
 }
 

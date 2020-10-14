@@ -32,22 +32,23 @@ function Editor:init()
   self.geometry_start = { x = 0, y = 0 }
   
   self.filter = imgui.TextFilter.new()
+  self.id_filter = imgui.TextFilter.new()
 
   self.display_framerate = 0
   self.average_framerate = 0
   self.frame = 0
 
+  self.save_scene_as = ''
+  
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
   input:enable()
+  
+  tdengine.load_scene("overworld_demo")
 end
 
 function Editor:update(dt)
-   if self.frame == 0 then
-	  tdengine.load_scene('overworld_demo')
-   end
   local dbg = self:get_component('Debug')
-  local input = self:get_component('Input')
   self:calculate_framerate()
   
   self:handle_input()
@@ -74,6 +75,8 @@ function Editor:update(dt)
 end
 
 function Editor:do_geometry()
+   local input = self:get_component('Input')
+
    if self.state == EditState.ReadyToDrawGeometry then
   	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
 	 	self.geometry_start.x = tdengine.get_cursor_x()
@@ -91,11 +94,10 @@ function Editor:do_geometry()
 		local aabb = box:get_component('BoundingBox')
 		aabb.extents = rect.extents
 		
-		local position = box:get_component('Position')
-		position.world = tdengine.screen_to_world(rect.origin)
+		local position = tdengine.screen_to_world(rect.origin)
+		tdengine.register_collider(box:get_id())
+		tdengine.teleport_entity(box:get_id(), position.x, position.y)
 		
-		tdengine.internal.register_collider(box:get_id())
-
 		self.state = EditState.Idle
 		self.geometry_start.x = 0
 		self.geometry_start.y = 0
@@ -156,8 +158,14 @@ function Editor:draw_tools()
   	 local input = self:get_component('Input')
 	 self.state = EditState.ReadyToDrawGeometry
   end
+
   if imgui.Button("Save") then
-     local x = 0
+	 local scene_name = tdengine.loaded_scene
+	 if self.save_scene_as ~= '' then
+		scene_name = self.save_scene
+	 end
+
+	 tdengine.save_scene(tdengine.loaded_scene)	 
   end
 
 end
@@ -166,7 +174,8 @@ function Editor:draw_entity_viewer()
   self.filter:Draw("Filter by name")
   for id, entity in pairs(tdengine.entities) do
 	local name = entity:get_name()
-	if self.filter:PassFilter(name) then
+	local id = tostring(entity:get_id())
+	if self.filter:PassFilter(name) or self.filter:PassFilter(id) then
 	  imgui.extensions.Entity(entity)
 	end
   end

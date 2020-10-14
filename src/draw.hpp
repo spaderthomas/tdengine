@@ -52,7 +52,7 @@ enum Render_Flags {
 };
 struct Render_Element {
 	int layer;
-	float world_pos[2];
+	int entity;
 	Sprite* sprite;
 	Render_Flags flags;
 };

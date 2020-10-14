@@ -328,6 +328,24 @@ fundamentally you're just creating entities according to a list and then feeding
 them in some configurations. in both cases. 
 
 so why not make a 'scene' the same as a save file? 
+** 10/13/2020: what's next
+make the backgrounds render in the right place
++ fix the hack used to render the background (which doesn't work right now anyway)
+
+how the render engine figures out positions and stuff is honestly fine
+
+i want to do the gameplay first. ah, well, fuck, that might not work -- it'd be
+tough to lay out a dungeon when you don't know what it will look like. but on
+the other hand, you could totally lay out all the enemies and get the battling
+air tight (or at least only semiporous), and then lay out those enemies in a way
+that makes sense visually. 
+
+but before i start that, i would like to tie off some of the loose ends i have
+with the editor. in particular:
+- select an entity in the editor
+  - save as prefab
+- draw bounding boxes on an entity and store it in the prefab
+- filter entity by ID
 * gameplay
 ** game 2
 *** august 11, 2020

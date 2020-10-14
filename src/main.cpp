@@ -52,7 +52,7 @@ int main() {
 
 	// @spader 9/4/2020: When the game gets much farther along, this isn't how you kick off entity creation
 	entity_manager.create_entity("Editor");
-   
+	
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {
 		double frame_start_time = glfwGetTime();
@@ -77,14 +77,6 @@ int main() {
 		
 		entity_manager.update(seconds_per_update);
 		physics_engine.update(seconds_per_update);
-
-		Render_Element r;
-		r.flags = Render_Flags::None;
-		r.layer = 0;
-		r.world_pos[0] = 0;
-		r.world_pos[1] = 0;
-		r.sprite = asset_manager.get_asset<Sprite>("classroom");
-		render_engine.render_list.push_back(r);
 
 		render_engine.render();
 

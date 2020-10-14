@@ -497,8 +497,11 @@ void RenderEngine::render() {
 	glm::vec2 camera_offset{camera.x, camera.y};
 	glm::vec2 camera_translation = magnitude_gl_from_screen(camera_offset);
 	for (auto& depth_level_render_elements : depth_sorted_render_elements) {
-		auto sort_by_world_pos = [](const auto& a, const auto& b) {
-			return a.world_pos[1] > b.world_pos[1]; 
+		auto sort_by_world_pos = [](const auto& ra, const auto& rb) {
+			auto& physics_engine = get_physics_engine();
+			auto ca = physics_engine.get_collider(ra.entity);
+			auto cb = physics_engine.get_collider(rb.entity);
+			return ca->origin.y > cb->origin.y; 
 		};
 		stable_sort(depth_level_render_elements.begin(), depth_level_render_elements.end(), sort_by_world_pos);
 	
@@ -527,15 +530,17 @@ void RenderEngine::render() {
 			// Point the texture coordinates to this sprite's texcoords
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), r.sprite->tex_coord_offset);
 			glEnableVertexAttribArray(1);
-		
+			
+			auto& physics_engine = get_physics_engine();
+			auto collider = physics_engine.get_collider(r.entity);
 			SRT transform = SRT::no_transform();
 			transform.scale = {
 				r.sprite->width / internal_resolution_width,
 				r.sprite->height / internal_resolution_height
 			};
 			transform.translate = gl_from_screen({
-                r.world_pos[0],
-				r.world_pos[1]
+                collider->origin.x,
+                collider->origin.y
 			});
 			transform.translate += camera_translation;
 			auto transform_mat = mat3_from_transform(transform);

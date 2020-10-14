@@ -91,6 +91,10 @@ std::string Entity::get_name() {
 	return name;
 }
 
+std::string Entity::debug_string() {
+	return get_name() + "(" + std::to_string(get_id()) + ")";
+}
+
 void Entity::update(float dt) {
 	sol::protected_function update_entity = Lua.state["update_entity"];
 	auto result = update_entity(id, dt);

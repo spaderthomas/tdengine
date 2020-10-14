@@ -7,6 +7,7 @@ void register_collider(int entity);
 
 void register_animation(std::string name, std::vector<std::string> frames);
 std::vector<std::string> get_frames(std::string animation_name);
+Sprite* get_frame(std::string animation, int frame);
 
 void enable_input_channel(int channel);
 void disable_input_channel(int channel);
@@ -20,10 +21,7 @@ float get_camera_x();
 float get_camera_y();
 void move_camera(float x, float y);
 
-Sprite* get_frame(std::string animation, int frame);
-
 bool draw_sprite_button(std::string sprite, float sx, float sy);
-
 void line_screen(sol::table p1, sol::table p2, sol::table color);
 void rect_filled_screen(sol::table rect, sol::table color);
 void rect_outline_screen(sol::table rect, sol::table color);

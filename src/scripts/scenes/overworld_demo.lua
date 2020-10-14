@@ -1,5 +1,17 @@
 return {
+   background = '',
    entities = {
+	  {
+		 name = 'Background',
+		 components = {
+			Animation = {
+			   animations = {
+				  background = { 'classroom.png' }
+			   },
+			   current = 'background'
+			}
+		 }
+	  },
 	  {
 		 name = 'Player',
 		 components = {

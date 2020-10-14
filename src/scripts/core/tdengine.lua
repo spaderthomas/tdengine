@@ -194,12 +194,17 @@ local entity_mixin = {
   remove_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = false
   end,
+  -- Do not destroy this thing when you load a new scene
   persist = function(self)
 	 self.tdengine_persist = true
   end,
+  do_not_save = function(self)
+	 self.tdengine_do_not_save = true
+  end
   imgui_ignore = {
 	 class = true,
-	 imgui_ignore = true
+	 imgui_ignore = true,
+	 tdengine_persist = true
   }
 }
 
@@ -217,7 +222,7 @@ local component_mixin = {
   get_id = function(self)
 	return Component["get_id"](self.cpp_ref)
   end,
-    add_imgui_ignore = function(self, member_name)
+  add_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = true
   end,
   remove_imgui_ignore = function(self, member_name)
@@ -255,6 +260,8 @@ function tdengine.load_scene(name)
 	  local entity = tdengine.entities[id]
 	  tdengine.load_entity(entity, data)
    end
+
+   tdengine.loaded_scene = name
 end
 
 function tdengine.load_entity(entity, data)
@@ -281,8 +288,23 @@ function tdengine.load_prefab(entity)
    tdengine.load_entity(entity, require('prefabs/' .. entity:get_name()))
 end
 
-function tdengine.save()
-   
+function tdengine.save_scene(name)
+   local scene_filename = 'scenes/' .. scene_name
+   local file = io.open(scene_filename)
+   if file then
+	  local scene = require(scene_filename)
+	  local save = {
+		 background = scene.background,
+		 entities = {}
+	  }
+
+	  for index, entity in pairs(tdengine.entities) do
+		 do_not_save = entity.tdengine_do_not_save or false
+		 if not do_not_save then
+			table.insert(save.entities, entity:save())
+		 end
+	  end
+   end
 end
 
 -- Utilities

@@ -26,10 +26,6 @@ void draw_entity(int entity, Render_Flags flags) {
 	if (!check_component_exists(graphic_ptr, "Graphic")) return;
 	auto graphic = Lua.get_component(graphic_ptr);
 	
-	auto position_ptr = entity_ptr->get_component("Position");
-	if (!check_component_exists(position_ptr, "Position")) return;
-	auto position = Lua.get_component(position_ptr);
-	
 	auto animation_ptr = entity_ptr->get_component("Animation");
 	if (!check_component_exists(animation_ptr, "Animation")) return;
 	auto animation = Lua.get_component(animation_ptr);
@@ -38,8 +34,7 @@ void draw_entity(int entity, Render_Flags flags) {
 	Render_Element r;
 	r.flags = flags;
 	r.layer = graphic["layer"];
-	r.world_pos[0] = position["world"]["x"];
-	r.world_pos[1] = position["world"]["y"];
+	r.entity = entity;
 
 	std::string animation_name = animation["current"];
 	int frame = animation["frame"];
@@ -62,21 +57,34 @@ void draw_entity(int entity, Render_Flags flags) {
 }
 
 void register_collider(int entity) {
-	auto& physics_engine = get_physics_engine();
-
-	auto box = Lua.get_component(entity, "BoundingBox");
-	auto position = Lua.get_component(entity, "Position");
+	auto& entity_manager = get_entity_manager();
 
 	Collider collider;
 	collider.entity = entity;
+
+	auto entity_ptr = entity_manager.get_entity(entity);
+	if (!entity_ptr->has_component("BoundingBox")) {
+		std::string message = "Called register_collider() for ";
+		message += entity_ptr->debug_string() + " but it did not have a BoundingBox";
+		message += ". Using default bounding box extents.";
+		tdns_log.write(message);
+
+		collider.extents.x = 0;
+		collider.extents.y = 0;	
+	} else {
+		auto box = Lua.get_component(entity, "BoundingBox");
+		collider.extents.x = box["extents"]["x"];
+		collider.extents.y = box["extents"]["y"];	
+	}
+	
+	auto position = Lua.get_component(entity, "Position");
 	collider.origin.x = position["world"]["x"];
 	collider.origin.y = position["world"]["y"];
-	collider.extents.x = box["extents"]["x"];
-	collider.extents.y = box["extents"]["y"];	
 	
+	auto& physics_engine = get_physics_engine();
 	physics_engine.add_collider(entity, collider);
 
-	tdns_log.write("Registered collider for EntityID " + std::to_string(entity));
+	tdns_log.write("Registered collider for EntityID " + entity_ptr->debug_string());
 }
 
 void move_entity(int entity) {
@@ -299,7 +307,7 @@ void register_lua_api() {
 	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
 	state["tdengine"]["internal"]["move_entity"] = &move_entity;
 	state["tdengine"]["teleport_entity"] = &teleport_entity;
-	state["tdengine"]["internal"]["register_collider"] = &register_collider;
+	state["tdengine"]["register_collider"] = &register_collider;
 	state["tdengine"]["internal"]["screen_640"] = &use_640_360;
 	state["tdengine"]["internal"]["screen_720"] = &use_720p;
 	state["tdengine"]["internal"]["screen_1080"] = &use_1080p;
