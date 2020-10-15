@@ -73,12 +73,14 @@ function Editor:update(dt)
   local input = self:get_component('Input')
   if self.state == EditState.Idle then
 	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
-		local x = tdengine.get_cursor_x()
-		local y = tdengine.get_cursor_y()
-		self.selected = tdengine.ray_cast(x, y)
+		local rect = { x = tdengine.get_cursor_x(), y = tdengine.get_cursor_y() }
+		rect = tdengine.screen_to_world(rect)
+		self.selected = tdengine.ray_cast(rect.x, rect.y)
 		if self.selected ~= nil then
 		   local graphic = self.selected:get_component('Graphic')
-		   graphic.flags = 1
+		   if graphic ~= nil then
+			  graphic.flags = 1
+		   end
 		end
 	 end
   end
@@ -129,8 +131,10 @@ function Editor:handle_input()
   
   local input = self:get_component('Input')
   if input:was_pressed(GLFW.Keys.ESCAPE) then
-	local graphic = self.selected:get_component('Graphic')
-	graphic.flags = 0
+	 local graphic = self.selected:get_component('Graphic')
+	 if graphic ~= nil then
+		graphic.flags = 0
+	 end
 	self.selected = nil
 	
 	self.state = EditState.Idle
