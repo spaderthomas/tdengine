@@ -59,17 +59,29 @@ function Editor:update(dt)
   	 tdengine.internal.save_imgui_layout()
   end
 
-  imgui.Text(tostring(tdengine.get_camera_x()))
-  imgui.Text(tostring(tdengine.get_camera_y()))
-  
   imgui.Begin("scene", true)
   self:draw_entity_viewer()
+  imgui.Separator()
+  self:draw_selected_view()
   imgui.Separator()
   self:draw_tools()
   imgui.End()
   imgui.End()
 
   self:do_geometry()
+
+  local input = self:get_component('Input')
+  if self.state == EditState.Idle then
+	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
+		local x = tdengine.get_cursor_x()
+		local y = tdengine.get_cursor_y()
+		self.selected = tdengine.ray_cast(x, y)
+		if self.selected ~= nil then
+		   local graphic = self.selected:get_component('Graphic')
+		   graphic.flags = 1
+		end
+	 end
+  end
 end
 
 function Editor:do_geometry()
@@ -117,7 +129,10 @@ function Editor:handle_input()
   
   local input = self:get_component('Input')
   if input:was_pressed(GLFW.Keys.ESCAPE) then
+	local graphic = self.selected:get_component('Graphic')
+	graphic.flags = 0
 	self.selected = nil
+	
 	self.state = EditState.Idle
   end
 
@@ -172,6 +187,19 @@ function Editor:draw_entity_viewer()
 	  imgui.extensions.Entity(entity)
 	end
   end
+end
+
+function Editor:draw_selected_view()
+   if self.selected ~= nil then
+	  if imgui.Button('Delete') then
+		 tdengine.destroy_entity(self.selected:get_id())
+		 self.selected = nil
+	  end
+	  
+	  if self.selected ~= nil then
+		 imgui.extensions.Entity(self.selected)
+	  end
+   end
 end
 
 function Editor:get_rect()

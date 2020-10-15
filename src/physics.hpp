@@ -33,6 +33,7 @@ struct Points_Box {
 	Center_Box as_center_box();
 };
 bool point_inside_box(glm::vec2& screen_pos, Center_Box& box);
+bool point_inside_collider(float x, float y, const Collider& collider);
 
 bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration);
 bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration);
@@ -45,6 +46,7 @@ struct PhysicsEngine {
 	bool has_collider(int entity);
 	void add_collider(int entity, Collider collider);
 	Collider* get_collider(int entity);
+	void remove_entity(int entity);
 };
 
 PhysicsEngine& get_physics_engine();

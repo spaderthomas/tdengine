@@ -3,8 +3,6 @@ function Physics:load(data)
 end
 
 function Physics:init()
-   tdengine.register_collider(self.parent:get_id())
-
    self.had_collision = false
    self.collided_with = 0
 end

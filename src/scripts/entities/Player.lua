@@ -3,6 +3,7 @@ local GLFW = require('glfw')
 
 Player = tdengine.entity('Player')
 function Player:init()
+   tdengine.register_collider(self:get_id())
 end
 
 function Player:handle_movement()
@@ -31,4 +32,6 @@ function Player:update(dt)
    aabb:draw()
 
    self:all_components()
+
+   local graphic = self:get_component('Graphic')
 end

@@ -462,6 +462,16 @@ Camera& RenderEngine::get_camera() {
 	return camera;
 }
 
+void RenderEngine::remove_entity(int entity) {
+	for (auto it = render_list.begin(); it != render_list.end();) {
+		if (it->entity == entity) {
+			it = render_list.erase(it);
+		} else {
+			it++;
+		}
+	}
+}
+
 void RenderEngine::render() {
 	bind_sprite_buffers();
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)

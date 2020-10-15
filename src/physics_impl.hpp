@@ -128,6 +128,17 @@ bool point_inside_box(glm::vec2& screen_pos, Center_Box& box) {
 
 	return false;
 }
+bool point_inside_collider(float x, float y, const Collider& collider) {
+	float xl = collider.origin.x + (collider.extents.x / 2);
+	float xs = collider.origin.x - (collider.extents.x / 2);
+	bool inside_x = (xs < x) && (x < xl);
+
+	float yl = collider.origin.y + (collider.extents.y / 2);
+	float ys = collider.origin.y - (collider.extents.y / 2);
+	bool inside_y = (ys < y) && (y < yl);
+
+	return inside_x && inside_y;
+}
 
 void PhysicsEngine::update(float dt) {
 	for (auto& request : requests) {
@@ -195,6 +206,10 @@ Collider* PhysicsEngine::get_collider(int entity_id) {
 
 	return &(it->second);
 
+}
+
+void PhysicsEngine::remove_entity(int entity) {
+	colliders.erase(entity);
 }
 
 PhysicsEngine& get_physics_engine() {

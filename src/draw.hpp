@@ -61,7 +61,8 @@ struct RenderEngine {
 	std::vector<std::function<void()>> primitives;
 	std::vector<Render_Element> render_list;
 	Camera camera;
-	
+
+	void remove_entity(int entity);
 	void render();
 	Camera& get_camera();
 };

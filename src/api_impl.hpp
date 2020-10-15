@@ -5,10 +5,14 @@ int create_entity(std::string name) {
 
 void destroy_entity(int entity) {
 	auto& entity_manager = get_entity_manager();
+	auto& physics_engine = get_physics_engine();
+	auto& render_engine = get_render_engine();
+	render_engine.remove_entity(entity);
+	physics_engine.remove_entity(entity);
 	entity_manager.destroy_entity(entity);
 }
 
-void draw_entity(int entity, Render_Flags flags) {
+void draw_entity(int entity, int flags) {
 	auto& entity_manager = get_entity_manager();
 	auto entity_ptr = entity_manager.get_entity(entity);
 	
@@ -32,7 +36,7 @@ void draw_entity(int entity, Render_Flags flags) {
 
 	// Fill out the RenderElement
 	Render_Element r;
-	r.flags = flags;
+	r.flags = static_cast<Render_Flags>(flags);
 	r.layer = graphic["layer"];
 	r.entity = entity;
 
@@ -85,6 +89,18 @@ void register_collider(int entity) {
 	physics_engine.add_collider(entity, collider);
 
 	tdns_log.write("Registered collider for EntityID " + entity_ptr->debug_string());
+}
+
+int ray_cast(float x, float y) {
+	auto& physics_engine = get_physics_engine();
+
+	for (const auto& [entity, collider] : physics_engine.colliders) {
+		if (point_inside_collider(x, y, collider)) {
+			return entity;
+		}
+	}
+
+	return -1;
 }
 
 void move_entity(int entity) {
@@ -284,6 +300,7 @@ void register_lua_api() {
 	state["tdengine"]["get_camera_x"] = &get_camera_x;
 	state["tdengine"]["get_camera_y"] = &get_camera_y;
 	state["tdengine"]["move_camera"] = &move_camera;
+	state["tdengine"]["draw_entity"] = &draw_entity;
 	state.set_function("tdengine.log", &Log::write, &tdns_log);
 	
 	state["tdengine"]["draw"] = state.create_table();
@@ -305,7 +322,6 @@ void register_lua_api() {
 	state["tdengine"]["paths"]["absolute_path"] = &absolute_path;
 	
     state["tdengine"]["internal"] = state.create_table();
-	state["tdengine"]["internal"]["draw_entity"] = &draw_entity;
 	state["tdengine"]["internal"]["move_entity"] = &move_entity;
 	state["tdengine"]["teleport_entity"] = &teleport_entity;
 	state["tdengine"]["register_collider"] = &register_collider;
@@ -315,6 +331,9 @@ void register_lua_api() {
 	state["tdengine"]["internal"]["screen_1440"] = &use_1440p;
 	state["tdengine"]["internal"]["toggle_console"] = &toggle_console;
 	state["tdengine"]["internal"]["save_imgui_layout"] = &save_imgui_layout;
+
+	// This one's internal because we want the Lua version to return a table
+	state["tdengine"]["internal"]["ray_cast"] = &ray_cast;
 
 	state["imgui"]["extensions"] = state.create_table();
 	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;

@@ -1,5 +1,3 @@
-local inspect = require('inspect')
-
 -- Callbacks
 function update_entity(id, dt)
   local entity = tdengine.entities[id]
@@ -139,12 +137,6 @@ local class_mixin = {
   
 }
 
-
--- tdengine wrappers for sugar
-function tdengine.draw_entity(entity)
-  tdengine.internal.draw_entity(entity:get_id(), 0)
-end
-
 -- tdengine functions we're injecting in for sugar
 local entity_mixin = {
   has_component = function(self, kind)
@@ -282,11 +274,31 @@ function tdengine.load_entity(entity, data)
    for name, data in pairs(components) do
 	  local component = entity:get_component(name)
 	  component:init()
-   end   
+   end
+
+   entity:init()
 end
 
 function tdengine.load_prefab(entity)
-   tdengine.load_entity(entity, require('prefabs/' .. entity:get_name()))
+   local data = require('prefabs/' .. entity:get_name())
+
+   local components = data.components
+   if not components then return end
+
+   for name, data in pairs(components) do
+	  if entity:has_component(name) then
+		 local component = entity:get_component(name)
+		 component:load(data)
+	  else
+		 data.skip_init = true
+		 local component = entity:add_component(name, data)		 
+	  end
+   end
+   
+   for name, data in pairs(components) do
+	  local component = entity:get_component(name)
+	  component:init()
+   end
 end
 
 function tdengine.save_scene(name)
@@ -400,3 +412,11 @@ function tdengine.screen_to_world(screen)
       y = screen.y - tdengine.get_camera_y()
    }
 end		 
+
+function tdengine.ray_cast(x, y)
+   local id = tdengine.internal.ray_cast(x, y)
+   return tdengine.entities[id]
+end
+
+-- Stuff we jam in global scope for use in the console
+scene = tdengine.load_scene

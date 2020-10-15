@@ -1,5 +1,6 @@
 Box = tdengine.entity('Box')
 function Box:init()
+   tdengine.register_collider(self:get_id())
 end
 
 function Box:update(dt)
