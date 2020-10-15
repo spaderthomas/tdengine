@@ -1,8 +1,6 @@
 BoundingBox = tdengine.component('BoundingBox')
 function BoundingBox:load(data)
    self.extents = data.extents or { x = .1, y = .1 }
-   print(self.parent:get_name() .. '(' .. self.parent:get_id() .. ')' .. ' data:')
-   print(inspect(data.extents))
 end
 
 function BoundingBox:save()
