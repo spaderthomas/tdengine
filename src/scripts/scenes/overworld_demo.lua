@@ -7,9 +7,15 @@ return {
             x = 3,
             y = 3
           }
-        }
+        },
+		Animation = {
+		   animations = {
+			  classroom_background = { 'classroom.png' }
+		   },
+		   current = 'classroom_background'
+		}
       },
-      name = "ClassroomBackground"
+      name = "Background"
     },
     {
       components = {
