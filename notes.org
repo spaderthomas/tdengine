@@ -923,6 +923,114 @@ again, setting out a grand plot structure can be nebulous when the plot that
 comes to be doesn't fit in the structure. but you're making guidelines more than
 anything. the guideline was good to have when i was writing the first game. it
 helped me figure where a boss needed to go, where a dungeon needed to go. 
+** 01/02/2021: [planning] answering ?s
+little summary from yesterday: the world should be gray and absurd, humorous,
+and the player should feel as if they are being dragged along through a strange
+world that has an internal consistency but a surreal consistency and a fixed
+nature. 
+
+WRITING STYLE
+okay, so from yesterday: quiet conversations between two characters, like
+murakami, where they explain key points of the game through their thoughts. they
+express ideas, themes, and they themselves should be symbols in what they think
+and say. 
+
+most of the writing is dialogue, i just realized. besides flavor text, it's all
+dialogue. so the writing style depends heavily on the characters and their
+voices. 
+
+CHARACTERS
+i want the characters to be few and big. not big as in wheel of time big --
+fleshed out through dozens and dozens of conversations -- but having a distict
+personality. i really lovs sans. in fact, i like the whole undertale model of
+characters. there aren't too many characters that talk, but you'll remember
+every single one who does. and the ones that don't still have a personality to
+them. 
+
+boon is kind of a shinji figure. he is quiet, and well mannered, and
+angsty. there's going to be a main sidekick that guides him through the world,
+someone of experience. what is the relationship between these two like? i love
+the idea of oliver, the street urchin who has been trapped in limbo for over a
+hundred years. but what is the tone of his sentence? wisdom, resignation. he
+cannot get out of limbo (note: what if this is a decision you can make at the
+end of the game?). there is no hope for him, but instead of becoming despondent
+he resigns himself to the situation. this is part of the theme of the game: how
+you handle the tide of life. 
+
+the one problem with oliver being this wise yet resigned character is who spurs
+boon forth? boon is another facet of how we handle life. he is someone who is
+meek and timid, and is afraid to assert his agency. upon second thought, i don't
+think he is depressed. he just flinches. he has been broken at some point in his
+life, broken to where he believes that he cannot take what the world throws at
+him and that the only answer to life is to pre-emptively curl into the fetal
+position and pray that it doesn't irreparably harm you. how do you get a
+character like that to take decisive action? well, the whole arc of the game is
+boon overcoming this outlook. 
+
+so maybe the dynamic between oliver and boon is this: oliver sees that boon
+could escape, so he decides to help him. oliver is resigned to his own fate, but
+he is not resigned as a personality trait. and there are some conversations that
+explore oliver's feelings about his being trapped. 
+
+GAMEPLAY
+okay, this is a hard one. i want every battle to be handcrafted, out in the
+open. that means no random battles. playing through, say, FF6, if you took out
+the random battles then you're seriously walking from place to place. and i
+don't think that random battles are interesting enough to break that up. 
+
+the one idea that i have is puzzles, but the problem with that is that this is
+supposed to be a small game, a focused game, and i think that by putting in
+puzzles i am going to start getting in over my head (especially with the effort
+needed to make GOOD puzzles). i would rather have really good and tight battles
+and combat design. 
+
+undertale solves this in a fucking brilliant way. it keeps the random battles,
+but they're all minigames. well, before i brainstorm about this, let me lay out
+the game on a slightly higher level.
+
+the game is essentially a "walk right" game. there's no backtracking. you don't
+diverge in the order you beat different parts. there are a few main hubs -- at
+least one for each grade. and then there are smaller little outposts that you
+hit. there are no quests, at least not in the traditional sense (go here, do
+this thing, then come back to me). there are things you can do in the
+towns. brainstorm
+you can have seemingly innocuous conversations with people that may subtly
+influence other parts of the game
+resolving a conflict between two people that gets you a one-off battle and a
+neat item at the end
+mini-dungeons -- think of the dojo in cerulean city
+hidden mini dungeons
+shops, inns
+
+i think the important thing is to pack detail in the towns. everyone you talk to
+should be opening up some small gameplay, or giving you a good conversation. the
+people in the town should connect. the towns are not big, they are not a focal
+point of the game, but i want them to feel less like waypoints and more like
+breathing entities (not to the extent that, say, vampire breathes. but breath
+nonetheless).
+
+so yes: hubs, outposts, and then what i will call dungeons. a dungeon is any
+section of the game that is focused on combat between two hubs or outposts. 
+
+outposts are more there for plot and scenery breakup, i think. like, i can put a
+heal point anywhere in the dungeon to break it up into functionally two
+dungeons. so maybe outposts take the place of heal points? maybe outposts can be
+really tiny things, like a single house, packed with personality, and that is
+just what a heal point is. but if the layout of the game is the three grades and
+then maybe an intro city, i don't think you want to have them playing for like
+two to three hours straight doing a whole grade without really talking to
+anyone. so these outposts can also be plot points. put macguffins there, etc. 
+
+one thing though: i definitely want dialogue to be a formal part of the
+game. choices you can make -- at least in the smaller parts of the game, like
+the mini quests. or it is silently impactful (take a conversation one way, item
+A shows up late game, take it the other way, item B)
+
+DIVISION
+three grades. with an introduction. keep it easy. everyone is under levi and
+o'doyle. the sixth graders are minor bosses, the seventh graders are a little
+higher in the pecking order. so as you go along, you get closer to the top and
+you learn more about how it's being run. 
 * plot
 Open up in an everyday elementary school. Rows of particle boards desks, wide
 rectangular fluorescent lights, concrete painted white on all four sides. The
@@ -1138,5 +1246,13 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-01-02 Sat 22:58]--[2021-01-03 Sun 00:05] =>  1:07
 CLOCK: [2021-01-01 Fri 21:39]--[2021-01-01 Fri 22:40] =>  1:01
 :END:
+
+* other
+https://store.steampowered.com/app/256460/Cosmic_Star_Heroine/
+cosmic star heroine. an RPG styled after chrono trigger with no random
+encounters. 
+
+https://store.steampowered.com/app/251150/The_Legend_of_Heroes_Trails_in_the_Sky/
