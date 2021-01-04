@@ -1031,6 +1031,30 @@ three grades. with an introduction. keep it easy. everyone is under levi and
 o'doyle. the sixth graders are minor bosses, the seventh graders are a little
 higher in the pecking order. so as you go along, you get closer to the top and
 you learn more about how it's being run. 
+** 01/03/2021: [planning] differentiate
+i don't know how the hell the gameplay looks with no random encounters. I just
+looked into cosmic star heroine a little more and it basically has random
+encounters. well, that's not totally fair -- it doesn't. there are monsters that
+you can see on the screen. i guess because of how they look it doesn't feel
+different than random encounters, but it really is. it's the same as i want to
+do: every encounter is designed. 
+
+alright, so check this: make the game a little less of a rightwalker. there are
+doors with keys...almost like simple 2D zelda puzzles? 
+
+kind of an aside. one thing i didn't like about the (admittedly few) videos i
+watched about CSH was that the game does not make you feel. it has a certain
+style to it, a certain consistency, but not one that is special. i want this
+game to be ethereal, strange, fey. 
+ 
+so there are these small sub-tasks in the dungeons that keep things
+interesting. you end up doing something like 30-40 minutes of battles, then you
+come to some way point. the waypoints join together into larger sections. the
+waypoints provide you with intermediate goals to make the game feel
+cohesive. the levels can have some mild backtracking. but it's all about
+stringing together these intermediate goals between the big hubs. this feels
+kind of nebuluous writing it but clearer in my mind. i think this will flesh out
+more as i design the game.
 * plot
 Open up in an everyday elementary school. Rows of particle boards desks, wide
 rectangular fluorescent lights, concrete painted white on all four sides. The
@@ -1246,6 +1270,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-01-03 Sun 16:19]--[2021-01-03 Sun 17:06] =>  0:47
 CLOCK: [2021-01-02 Sat 22:58]--[2021-01-03 Sun 00:05] =>  1:07
 CLOCK: [2021-01-01 Fri 21:39]--[2021-01-01 Fri 22:40] =>  1:01
 :END:
