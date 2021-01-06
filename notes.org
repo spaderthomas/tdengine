@@ -43,6 +43,9 @@ been out of commission for a few decades.
 "well of course not, young oliver. you know as well as i do that we souls lack
 hormonal and nervous systems in our body. i'm as cold and unfeeling as you are,
 my boy!"
+
+how do you replicate those long, tense, quiet scenes in NGE where it's just
+shinji and you can see the pain in his eyes?
 * log
 ** 03/02/2020: [code] engine architecture
 @spader 3/2/2020: I want to avoid writing a lot of wrappers. Ideally, adding a
@@ -1055,8 +1058,150 @@ cohesive. the levels can have some mild backtracking. but it's all about
 stringing together these intermediate goals between the big hubs. this feels
 kind of nebuluous writing it but clearer in my mind. i think this will flesh out
 more as i design the game.
+** 01/04/2021: [planning] limbo ideas
+think these entries are going to just be summaries sometimes. i'm going to start
+designing the world, the hubs. maybe some waypoints, but i think those will be
+tied more to the story.
+
+the first place you will enter is limbo. limbo is the space between the
+grades. you wake up in some designated room of limbo, the room where newly
+damned souls enter. limbo is one of the four hubs of the game (the other three
+being the three middle school grades). the three grades are long hallways that
+stretch like three fingers from the palm that is limbo. it is a place that you
+will return to after each dungeon. limbo is the largest hub of the game, and
+after each dungeon, things become unlocked in it. brainstorm for some places in
+limbo
+
+a bar where wayward souls gather. there could be a lot of conversations
+here. there could be a hidden room in the back of the bar that the keep allows
+you into if you smooth talk the right way. people could ask you to retreive
+their lost items from the different grades
+
+an old teacher's soul whose mind has not adjusted to the afterlife, and holds
+raving lessons in the town square
+
+some souls that have taken up an ordinary life in limbo. an irony there --
+living the afterlife just as you lived the life. fate throws you a curveball
+but you haven't even walked up to the plate yet. 
+
+another idea: everyone you talk to in limbo is a part of the graph. they are all
+connected by degrees. 
+
+a library, with a strange and otherworldly librarian. one who seems to know too
+much of the world to be a simple librarian, almost like hoid. 
+
+a warehouse that holds a secret entrance into one of the grades. (maybe this is
+the gym). i would love it if there were a talking basketball in one of the
+gyms. as in, everything has a soul, and even the souls of inanimate objects may
+manifest themselves strongly enough to be conscious in the afterlife. 
+
+i think you could also have many 'ordinary' buildings -- places of work,
+dwellings, that don't mean anything on their own, but take place in these small
+stories that emerge through the hub. 
+
+so the point of the hub is that it is this (relative to the game size) large
+place which is full of life, secrets, and sendings-off. as i think about it,
+since you return to the hub, it may be best to have it be the ONLY hub, and to
+truly have the grades be dungeons. this also keeps the game down to a much more
+manageable size and length -- and more like the length i was intending for it to
+be. lets me pack in the details that i want while still keeping it short. so the
+game then becomes periods of, say, an hour in the hub. sorting things out,
+figuring out how to get into the next grade. then, say, two hours to run the
+dungeon. which puts you at about 8-10 hours (1 + 2 + 1 + 2 + 1 + 2). which could
+be extended a bit by adding in mini-dungeons. 
+
+so i think the next thing to do is to figure out what takes place in between you
+landing in limbo and you starting the first dungeon. how do you get there? how
+do you learn the mechanics of the game? what places and people are involved? are
+there multiple ways to do it? what side items are available in that time?
+
+who are ollie's friends? how many integral characters does this game have? like,
+i don't think there should be five more people that you meet there. the game
+simply isn't long enough to really flesh them out. ollie is totally fine as far
+as development, because he's always with you. there could be, say, three souls
+there. and each one is a jumping off point for the different grades. so each one
+gets to be developed. but it kind of sucks that you deal with the first one to
+get to 6th grade and then never again for the rest of the game. that might not
+be so bad for two reasons: for one, these secondary characters can be tied into
+the network of the hub. you can run into them at other places. for two, they can
+always be there giving input when you return to the hub and for you to talk to
+after you have been briefed. 
+
+so let's say there are three damned souls. are they extensions of the themes of
+the game? are they different manifestations of how we deal with suffering? or
+are they just interesting traits wrapped up in a human shell? is their main
+purpose to push the themes? like, are they designed around that, or are they
+designed around being cool characters and then the theme is bolted onto them?
+
+hey, here's another thought: don't be too deadly serious with these
+characters. i mean, i don't want to be as silly as undertale, but the reason
+undertale is so fucking awesome is because the characters are really big, and
+silly, and funny. 
+
+brainstormin:
+
+T. A. Milliken, a teenaged boy dressed in a fine bespoke uniform, who is from
+old textile money. He's a bit haughty, but not maliciously so. He is a bit of a
+buffoon, but ultimately a loveable one. 
+** 01/05/2021: [planning] more brainstorm
+what are ways that we deal with our lives? we take drugs. we become
+depressed. we distract ourselves with meaningless things. we pretend things are
+meaningful. we surround ourselves with people. we become promiscuous. we lock
+ourselves in our rooms. we feel empty. we curl up into a ball and pray that we
+are not kicked again. we overcompensate and become manic. 
+
+i like the idea of these four characters at the center of...some story. maybe
+it's not the main story. maybe the main story continues to be a boy and an
+unlikely companion trying against the odds of what is known and possible to
+overcome fate. you know, maybe here's another idea popping up: why we do things,
+and the selfishness therein. boon is eradicating evil, yes, but he's doing it
+purely selfishly.
+
+these three characters could be the core of the goings-on in the hub. of the
+sidequests, of all the people. the center of the network. let me also look at
+some of the side characters from the last game...
+
+i've got a good idea for a character forming. i keep getting the image of desire
+from the sandman. someone overt, androgynous, charming, tantalizing,
+colorful. someone worried deeply about the superficial pleasures of life --
+seeing and being seen, checking, swiping, checking. someone whose personality is
+so big that you know it cannot be real. an overcompensation in the other
+direction. you meet this person and you dislike them, they grate on your
+nerves. they feel so plastic. but you come to realize that you are truly the
+same as them. the mask you wear and the mask they wear are the same, differing
+in color and form but still to call the thin strip of plastic the person is flat
+wrong. and the person underneath is the same. 
+
+barbara (a.k.a barb)
+
+she's an ex-cheerleader. her dad was a horrible alcoholic, but you wouldn't have
+known it to know her or be around her family. he was verbally abusive. he told
+her that no one would ever love her -- and do you know how hard it is to hear
+that from your own parent? even when you know it's untrue? she had an eating
+disorder, but not bad enough to kill her. just bad enough to keep her thin and
+beautiful and validate her. the pain of being at home grew to overwhelm
+her. then, all of a sudden, it stopped. her father died, suddenly, in a car
+accident. barb couldn't get a hold on her emotions. she felt everything, relief,
+hurt, pain, emptiness, joy. she had nobody to tell these things to. there was
+nobody who wouldn't think her a freak for being joyful at her father's
+death. they didn't understand. all she really wanted to do was to not feel
+_anything_. not the good, not the bad. she just wanted to stop existing. 
+
+so she killed herself.
+
+in the afterlife, things don't change so much. it's weird -- you think that fate
+is something that affects the living. fate is all these things that get thrown
+at you and happen to you, and you juggle them until you feel like the dishes are
+about to drop and at the last second you stumble across the finish line and all
+the dishes break but it's okay -- they aren't your responsibility any
+more. you've made it. you can breathe a sigh of relief. but all those feelings
+that fate laid on you, they don't just end. now that you're dead, they're just
+there, forever, morphing yes but so slowly that it is almost unbearable. 
+
+even the dead have to cope!
 * plot
-Open up in an everyday elementary school. Rows of particle boards desks, wide
+** an introduction!
+Open up in an everyday elementary school. Rows of particle board desks, wide
 rectangular fluorescent lights, concrete painted white on all four sides. The
 kids are all sitting, faces down intently at their exams. They can't be more
 than ten or eleven years old. One boy nervously chews a pencil while he tries to
@@ -1162,10 +1307,56 @@ Last.
 
 KICK.
 
-"Don't mess with me, son."
+"Don't mess with me."
 
---- An Indeterminate Amount of Time Later
+** an indeterminate amount of time later
+when boon comes to, he's in a room that looks exactly like the janitor's closet
+that he blacked out in, but twisted. it's slightly degraded, it looks wrong, the
+music is droning and warbling. 
 
+there is  a young boy standing over him, prodding him and cooling his
+face with a damp rag. the boy looks to be younger than boon, about ten years
+old. he's dressed in an old time schoolboy's uniform -- jacket, necktie, tucked
+into shorts with a pair of black oxfords and long socks. he still has a child's
+chubbiness and red cheeks, and he speaks formally like someone of old money. he
+introduces himself as oliver. 
+
+he doesn't seem surprised to see you. you ask him where you are, and he replies
+that you are in limbo. souls who cannot pass into the afterlife live on this
+plane. in particular, souls who still have an unresolved connection to the
+school are trapped in this place, which is the mirrored version of the school in
+this realm. new such souls come through here pretty often, and this is the place
+where they land. it's kind of his job to man the station and usher through any
+new souls that come here.
+
+"does this mean that i'm dead," you ask. normally yes, he says, but something is
+different about you. your soul still has a physical component. even though the
+souls here have not fully moved to the spiritual realm, they are still fully
+composed of spirit. 
+
+next logical question: can i get back? oliver pauses. he's not entirely sure --
+he has never seen anyone like you come through here. but then again, there are a
+lot of weird things going on right now. maybe you should come talk to the
+others. 
+** talking to the others
+you walk out of the janitor's closet into the lobby of a school. the lobby of
+your school, in fact. but just like the closet, something is off about
+it. moreover, it has a slight resemblance to a shanty town -- a place that's
+been co-opted for something beyond its original purpose. it's not like a favela,
+but it definitely has a thrown together vibe to it. you can tell that the, shall
+we say high class souls are not who resides here. 
+
+from the lobby, you can get to a couple places. the cafeteria has been co-opted
+into the town square. there are shops here, there are spots of congregation (do
+souls need to eat...?). there are a few rooms for the teachers that don't belong
+in any particular grade -- art, music. you can get to the library. the
+principal's office, which is the spot so to speak. the principal's office is
+where ollie and his group hang out -- the secretary's desk is like a bar, there
+are chairs set about, and there are two rooms: the principal's office and the
+vice principal's office. 
+
+he brings you into the secretary's office. 
+** old notes
 Boon wakes up. He's in a place that looks like 
 
 all of this twisted world is a school -- of course it is. dungeons are made of
@@ -1270,12 +1461,15 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-01-06 Wed 00:00]--[2021-01-06 Wed 00:35] =>  0:35
+CLOCK: [2021-01-04 Mon 22:01]--[2021-01-04 Mon 23:10] =>  1:09
+CLOCK: [2021-01-04 Mon 12:54]--[2021-01-04 Mon 13:29] =>  0:35
 CLOCK: [2021-01-03 Sun 16:19]--[2021-01-03 Sun 17:06] =>  0:47
 CLOCK: [2021-01-02 Sat 22:58]--[2021-01-03 Sun 00:05] =>  1:07
 CLOCK: [2021-01-01 Fri 21:39]--[2021-01-01 Fri 22:40] =>  1:01
 :END:
 
-* other
+* other games
 https://store.steampowered.com/app/256460/Cosmic_Star_Heroine/
 cosmic star heroine. an RPG styled after chrono trigger with no random
 encounters. 
