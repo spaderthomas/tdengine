@@ -18,6 +18,9 @@ RULE #7: anything is possible
 * todo
 @render_refactor
 Stop baking texture atlases, texture coordinates, etc on startup. 
+* schedule
+- february 10th, 2021 :: rough plot
+- may 10th, 2021      :: rough design
 * ideas
 what if each wing of the school had a particular theme or feeling? it would be
 pretty funny to walk into the seventh grade hall, not knowing what to expect,
@@ -46,6 +49,12 @@ my boy!"
 
 how do you replicate those long, tense, quiet scenes in NGE where it's just
 shinji and you can see the pain in his eyes?
+
+when bad things happen to you, you want desperately to return to your old
+life. but you can't -- not even if you solve the bad thing and return your
+external world to the same state as before. it changes you inside, permanently. 
+
+oliver calls boon sir even though he's only a week older than him
 * log
 ** 03/02/2020: [code] engine architecture
 @spader 3/2/2020: I want to avoid writing a lot of wrappers. Ideally, adding a
@@ -1199,7 +1208,7 @@ that fate laid on you, they don't just end. now that you're dead, they're just
 there, forever, morphing yes but so slowly that it is almost unbearable. 
 
 even the dead have to cope!
-** 01/06/2020
+** 01/06/2020: 
 i got a cat today :) here's some stuff i wrote while i was waiting for jonathan
 
 i'm excited for the barb character. one thing i was thinking about today is how
@@ -1225,6 +1234,315 @@ down into corn field flat plains. but what makes the player care about him if he
 is so flat? what is his motive for being in a pseudo political organization that
 knows things about the goings-on of the enemy? why would he do any of these
 tings if he derives no pleasure or pain from them?
+** 01/07/2020: 
+back at it. so the two threads i have to pull on now are: who are the main
+people who populate this world, and how do you get to the first dungeon? first,
+though, i want to do a little more meta planning. rough list of big things that
+need to happen:
+- first draft of the plot slash structure  - sketch main characters
+  - each section: intro, first dungeon, interlude, second, interlude, third,
+    final boss
+  - hub design
+- design the game itself
+  - battle system
+  - dungeons
+- program the thing
+  - dialogue
+  - battling
+  - persistence
+  - tools
+- promotion
+- find an artist
+- concept art
+- converting programmer art to production art
+- polish
+- package it for sale
+
+i think i could finish the plot except really hammering down the connectedness
+of the hub in a month. so maybe there are some things to do in the hub, the main
+thrust of what you do there in the interludes is fleshed out, but all the fine
+details are not ironed out
+
+the programming...honestly, i could see that taking at least 6-8 months. i could
+also see it taking more, but that feels like a realistic number to shoot
+for. that being because i have my tools, i know them well, i have a good idea
+for where they are. and they are pretty solid.
+
+designing the game will take a while. on the order of 3 months or more to get a
+rough cut. but a lot of that will happen with programming it and playing it. 
+
+i would want like a month to screen artists -- but this can be totally
+concurrent. and then i would expect 4-6 months for them to do the art. somewhat
+parallelizable, but i would certainly not want to hire an artist at the end of
+first draft stage because i know the game is going to change as i program
+it. that's something i would do around the end of "first programming draft". 
+
+then polishing it overlaps like 3 months with the artist. kind of a catch all
+for "make the game better", "alpha test", "integrate real art and fix bugs
+produced therefrom". you could spend 6 months polishing it methinks.
+
+promotion happens while you are programming it -- maybe on that tail end where
+you have the artist churning out concept art. promoting and polishing are kind
+of the same time slot.
+
+packaging it for sale i think would take like 3 weeks. 
+
+min / max
+1 / 1 (plot rough cut)
+6 / 8 (program rough cut)
+3 / 4 (design rough cut)
+1 / 1 (art screen)
+4 / 6 (art)
+6 / 6 (polish)
+6 / 6 (promotion)
+1 / 1 (packaging)
+
+1 + 6 + 3 + 6 + 1 = 17 months for a low estimate of all the serial work i am
+doing. if you're working an hour a day that's 500 hours. two hours a day, a
+thousand. 
+
+gonna set some dates for finishing rough plot/design and then once i get there
+break down the 'grammin. 
+
+ok, back to the regularly scheduled programming!
+
+so we've got barb and we've got bradshaw. i want to have the third character set
+in place here before i figure out what you have to do to get to the first
+dungeon. both characters are still very underdeveloped, but that's ok. 
+
+what about a character that is an artist? but like, a squidward kind of
+artist. a bruce who is also a talentless hack. a painter, call him, who died in
+middle age without having accomplished anything of note. the reason that he
+painted was not because he loved painting, but because he had some success with
+it as a child. it gave him a feeling of satisfaction and self worth. as he
+became older, he became depressed. his life felt empty and meaningless. (oh, by
+the way, we will call him bruce). he felt like his life had to have meaning, but
+he was too afraid of actual success and dedication to make his life had
+meaning. he was in love with the idea of life having meaning rather than the
+meaning itself. any meaning would do. so anyway, he "sets out" to paint this
+great painting. the most beautiful painting you've ever seen. to be a painter
+that could not be forgotten. but it is a false setting out. he never intends to
+accomplish anything. occasionally, he saw and felt glimpses of this. the hardest
+thing to overcome was: what have you accomplished? the important thing being:
+the way he chose to cope with suffering was by self-deception.
+
+he grew rounder, grew to middle age, and there was nothing in his life worth
+preserving. he died, of something stupid, a congenital heart defect or something
+pointless like that. and that was it. there was nothing.
+** 01/08/2020: 
+one thing i've been thinking about these characters: remember that this is a
+video game. this isn't an art movie. i have a certain disdain for self centered
+art movie style of thing, not that i watch a lot of art movies. but things that
+tell stories that don't mean very much to those watching it and are very
+specific to those who made it. so i'm writing this to say: don't worry so much
+about putting in tense scenes, don't worry so hard about what the characters
+represent or what their pain is. just focus on making them have interesting
+backstories or personalities and fit loosely into the story and themes and they
+will write themselves. you need to be excited about them.
+
+like barb. i am super excited about her. i have a good idea of how i want to
+write her, and i think it will be an awesome experience for the player to come
+to like and empathize with this person that you once hated or found annoying. i
+think that will be fun to write and fun to play.
+
+i also like the old man, because people get really emotional about old men. and
+i can see a lot of possibilities, a lot of ways to rope you into feeling
+something real for this pixelated character.
+
+not sure how i feel about bruce though. bruce just doesn't feel video game-y
+enough to me. barb and the old man are "big" personalities. better put, they are
+strong personalities. they have clearly defined traits. this is kind of the idea
+of why i like sans so much as a character and why i think he works so well. sans
+is so sans that it hurts. everything about him is himself. you need that in a
+video game -- any video game, but especially a 2D one. you lose a lot of modes
+of expression in a video game. tones of voice, facial expressions. so you need
+the character to be strong as a character. no people as just themes. and bruce
+feels more like a theme to me. 
+
+i also want to keep with the school theme a little more. altho i do like the
+idea of changing the old man to instead of someone who peaked in high school and
+that's why he returns here in death to an old teacher who died on the job. like,
+the kind of teacher who teaches until they're 80 and then just nods off in third
+period on day and kicks the fuckin bucket. and that would work a lot better with
+the school theme.
+
+here's another idea: a mom. a very bubbly woman, big hips and shoulder length
+hair. her elementary-aged son died. she puts on a face. she smiles, she's polite
+at PTA meetings, she goes for a drink with the gals at work occasionally. but
+she's just dead inside. kelly...
+
+how do i tie all of these characters together? the initial idea was to have
+oliver bring you to what is in essence a cantina -- because all good stories
+start at cantinas -- and then introduce you to a few characters who tell you
+what's going on. but maybe that's not the way to do it...? the problem is that
+characters scheming in the cantina against the enemy is a very _political_ kind
+of thing. for that to be really engaging, you want to have an involvde plot with
+plenty of room for twists and turns and backstabbing. you want a game of thrones
+situation. and this game is not that. this game is about simple characters and
+stories, but real characters and stories. real emotion and intrigue packed into
+each part of the game. so there shouldn't be a lot of main characters, and i
+think that by introducing all these characters at the start you're kind of
+setting yourself up for a game where you DO have a lot of main characters. these
+that you're developing should be the 'secondary characters'. 
+
+ok, so i'm gonna rock with that. now, there are two ways i could go with
+this. the first is that i could have all three characters be interchangable in
+their order. the second is that i could dictate the order. the former would be a
+little harder to program. maybe a lot harder to program, considering the
+connectedness component. as in, if you want all of the small characters in the
+hub to overlap, then you want these three secondary characters to be a key piece
+of that. but it gets hairy about how they handle these characters depending on
+if you have done their quest or not. of course, you could program it in, but it
+would be a lot of work to make sure that the game is not just coherent in every
+configuration but still keeps the same emotionality. makes the same emotional
+sense.
+
+another kind of problem i'm seeing is how you actually get to know these
+secondary characters if you're only with them for a short time. well, the
+interlude arcs are going to be like little vignettes. stories that are meant to
+be told quickly. 
+
+what if the third character was the mysterious librarian? the soul who knows
+more than he should? so he gets introduced early, you go talk to him as a part
+of the 
+
+ooohhhh
+
+ok, i got it
+
+so when you first land, ollie picks you up. he tells you that you should
+probably go talk to the librarian, because some strange things have been
+happening. you know -- this is kind of the guy who knows what's going on in the
+world. afterworld. nice and simple. so the librarian kind of points you in the
+right direction for the first interlude. ditto for the second interlude. and
+then, he IS the third interlude. 
+
+how does barb know how to get into the 
+** 01/09/2020:
+just wrote some plot today
+** 01/10/2020: [story] sidequests, connectedness
+just wrote some plot today
+
+BUT IN ADDITION TO THAT
+
+i will also work on some more stuff. i'll work on...the first vignette. real
+business time. ok, so the way i'm thinking this is set up is that the librarian
+gives you this talk
+
+and i'm just now realizing that i forgot that you are playing a game, and that
+you need to, you know, do some battling. and that the librarian needs to show
+you how to battle. so stick that in at the end.
+
+so the librarian gives you this talk where he gives you a little rundown on some
+metaphysics and the general situation in limbo and, loosely, what you need to do
+to not be there permanently. and he says: alright, that's all i know, you're
+gonna have to figure out the rest. this is part of the theme of the game here:
+fate happens, and then you must deal with it. this is definitely in part a kafka
+ripoff, and i'm not sure how it will come across in the game. it could very
+easily come across as "just meander around until something happens and then you
+can keep playing the game". maybe it's better to point them in a specific
+direction? 
+
+been thinking for a good minute, coming up a bit blank. so here's a thread to
+pull on: how do i create this small yet tight and complex world of people and
+things? i keep having this thought that maybe one character tells you to go talk
+to another one...not even really a conscious thought, just one of those things
+that pops up in my head. let me brainstorm. 
+
+
+different dialogue options pop up for the different characters you talk to
+depending on what you have learned about them. for example, maybe you walk into
+kristina's house and she tells you that she is pregnant. then later, when you're
+talking to jerry, that either directly or subtly alters the conversation you can
+have with him. 
+
+
+a large mystery to be unravelled? but one that is unrelated to the plot at
+hand. i'm looking for something here with just enough of a hook to pull you in,
+but no more than that. any less, and you wouldn't even realize there was a
+mystery there. certainly no quest marker shit. 
+
+
+lost shorts. something that starts out innocuous that grows out of hand.
+
+
+everyone in the town talks shit on crazy eddie. he was a homeless guy who, in
+life, liked to hang around the school and (genuinely) befriend the kids and
+sleep out behind the gym. 
+
+(hey, an aside: i'm kind of realizing that not every story in the game has to be
+connected to every other story. that would be massive and absurd. for one, focus
+on making all these sidequests punchy and poignant and chestaching.)
+
+so he sleeps out behind the gym, and day, crazy eddie just dies. in the way that
+homeless people do sometimes. back in limbo, crazy eddie is being
+annoying. he's been a real spiritual asshole, and wouldn't you go try to talk
+some sense in to him seeing as you're the new kid? so you go down and talk to
+crazy eddie and he doesn't really make a lot of sense -- but what you can
+surmise is that his normal haunt is, well, haunted. there are some
+less-than-kind spirits there. you knock 'em out, and then crazy eddie says to
+you: thank you. you're the first person that's been kind to me in longer than i
+can fathom. do you know hard it is to be crazy? actually -- being crazy is
+really easy. you live in your own personal reality. it's the brief moments where
+you snap back. that doesn't happen for everyone, but it happens for me. every
+once in a while, i'll come to, and i'll look at myself, my unwashed body, my
+tattered clothes, my stench, and i'll feel a self hatred that cuts through me
+like a hot knife. and i'll know that nobody could ever love me, and that i do
+not deserve kindness. and i'll tough it out until i lose myself again in my
+illness. it always comes back, thankfully, because then the hard part is over. 
+** 01/11/2020: 
+never tell the player to get you a soda. 
+
+i don't want to just tell the player to "go and talk to this person". that
+doesn't feel right in the spirit of this game -- the feyness, the
+surrealness. but also remember: this is a game. not a pixellated diary. it has
+to be fun. and especially in the beginning, the player is gonna want to play the
+game. is it fun for the player to go around talking to people? no, it is not --
+UNLESS they can pick up some quick adventures. get sucked into a story, or to a
+side dungeon. so maybe the librarian actually pushes you forward. 
+
+okay, but the librarian as the all-knower telling you to let fate lead you on is
+way more in line with what i want. i think the better option is to ok yea im
+just gonna write this in the plot section
+
+-- later
+
+okay, the problem now is that i want them to go to the cafeteria and get into
+some nonsense, but if i send them there without a plan then i have to figure out
+how to direct them to the right place given that they could talk to pretty much
+anyone there.
+
+i could have them go there but then have some of it blocked off. 
+
+i could have ollie suggest you get to a specific place within the cafeteria, but
+then that would kind of defeat the purpose. 
+
+i could have them go there but then some kind of barely-cutscene pulls them in
+the right direction.
+
+i could have them go there but all the people by the entrance have an extra
+dialogue option called "do you know how the fuck to get to sixth grade" and they
+point in some direction.
+
+i think i like that last one -- question is what that direction is. 
+
+well, remember. barb and the old man. you want to pull to barb first. so what if
+the first vignette is twofold: finding barb, then a mini dungeon to get to sixth
+grade. but you want to spend time with barb. they should be accompanying you on
+the vignettes. i think it would be a cool idea to have this hunt for barb. this
+guy said she was over here, that guy said she was over there. bust into the
+wrong place and get a cool battle. but also: they should be accompanying
+you. the whole point of barb is this character that you're stuck with, and you
+come to hate, and then you come to feel a deep empathy with. and ALSO ALSO, this
+first bit needs to be pretty combat intensive. lots of easier battles to get
+them used to the combat system. 
+
+so what if you ask around a bit and everyone says, yeah, there's this chick barb
+who hung around there a lot, but the last time we heard from her was ___. then
+you go there, just pretend it's a restaurant for metaphor's sake, you go to the
+restaurant and you hear a girl calling from the walk in. you walk in to
+investigate. and the door slams shut behind you. now you're both trapped. and
+now you've got to make your way out of here. 
 * plot
 ** an introduction!
 Open up in an everyday elementary school. Rows of particle board desks, wide
@@ -1362,9 +1680,9 @@ composed of spirit.
 
 next logical question: can i get back? oliver pauses. he's not entirely sure --
 he has never seen anyone like you come through here. but then again, there are a
-lot of weird things going on right now. maybe you should come talk to the
-others. 
-** talking to the others
+lot of weird things going on right now. maybe we should go talk to the
+librarian. he'll know what to do.
+** talking to the librarian
 you walk out of the janitor's closet into the lobby of a school. the lobby of
 your school, in fact. but just like the closet, something is off about
 it. moreover, it has a slight resemblance to a shanty town -- a place that's
@@ -1375,13 +1693,103 @@ we say high class souls are not who resides here.
 from the lobby, you can get to a couple places. the cafeteria has been co-opted
 into the town square. there are shops here, there are spots of congregation (do
 souls need to eat...?). there are a few rooms for the teachers that don't belong
-in any particular grade -- art, music. you can get to the library. the
-principal's office, which is the spot so to speak. the principal's office is
-where ollie and his group hang out -- the secretary's desk is like a bar, there
-are chairs set about, and there are two rooms: the principal's office and the
-vice principal's office. 
+in any particular grade -- art, music. the principal's office is there, and it
+looks extremely ominous, like how a ten year old imagines the principal's
+office. there's also a secretary's office, and the vice principal's office is
+attached to it. 
 
-he brings you into the secretary's office. 
+but you're headed to the library. the library isn't small per se, but it's kept
+more like the personal library of a wealthy man than an elementary school
+library. it's cozy, and (just like its keeper) it's refined. as you enter, the
+librarian is attending carefully to the goings of his library. he has his
+glasses pushed down to his nose, carefully reading the label on a book from a
+stack of unsorted books on a cart. he looks up as you come in.
+
+"well hello, oliver. did you bring us another new one?" he is neither an old man
+nor a young man, but he gives off an air of...more than wisdom or
+learnedness. when he says this to you, it seems as if he already has complete
+knowledge of the situation and what's going down. 
+
+"yes, sir. his name's boon. but, um, sir, he seems to still be..._alive_..."
+
+"alive, is that right? oliver, could you fetch my other pair of glasses from my
+desk?"
+
+"yes, sir!" oliver scampers quickly to his desk and returns with the
+glasses. the librarian puts them on and takes a few steps toward boon. 
+
+"open your mouth and say 'ahhhhh'," the librarian says. boon does so, and the
+librarian replies, "well i'll be had! you're right oliver, this young man is
+suffering from an acute case of hypervivitosis. in other words -- he's alive!"
+
+"well, lad, what are you doing here?" he asks boon
+
+boon looks down, quiet, and tells the librarian the story all the way up to him
+waking up and seeing oliver over him. "i didn't mean to tattle on them. i don't
+understand why they hurt me so bad. and now...i think i'm dying."
+
+the librarian takes a thoughtful step back. his voice grows more serious. "you
+were right to bring him here, oliver. things are not right in our realm. those
+two souls have warped the fabric of the two realities."
+
+he goes on to explain: two souls recently manifested here -- the souls of the
+two boys who beat you. but, like you, something was wrong with them. they were
+still, in part, alive. they quickly became powerful, and they've taken control
+of most of this realm. in fact, only the hub remains. and now that you have
+arrived, it seems that fate itself is pulling you together.
+
+"boon, do you know how to battle?" the librarian asks
+
+"i...i'm ten..." boon replies
+
+"right, and quick as a whip you are." the librarian goes onto explain: souls
+fracture when they come to this realm. more fractured ones are not as human as
+the ones you see, but are powerful in the way a feral animal is powerful. some
+may harness them and use them to battle. i have such a fragment here -- go ahead
+and try it. and you learn to battle, et. cetera. 
+
+after you've learned the battle mechanics, the librarian says, "hm, i'm not
+surprised that you're one of the ones who can control fractured souls. mother
+fate has special plans for you, boon."
+
+"i can't say what you need to do, son. i doubt you can return to your old life,
+but it is possible that you could return to your realm. figuring out how to get
+into the sixth grade hall isn't a bad place to start -- i'm sure if you find out
+what's going on there, you'll have some clue to getting back to your realm." the
+librarian says.
+
+"but i don't know anybody here. how will i figure out how to get there?"
+
+"i have a feeling that what is meant to be will find its way to you. why don't
+you investigate?"
+
+he gives you a brief rundown of the places in the hub. 
+
+"alright? try not to worry yourself too much, son. these things have a way of
+working themselves out." the librarian says
+
+"..."
+
+"..."
+
+(i'm not sure what boon says here. something kind of whimpering)
+** finding the portal
+boon and oliver step outside the library. they take a few steps, and oliver
+stops. 
+
+"you know, i'm like that soul you have"
+
+"what?" boon asks
+
+"feral. i'm not fractured like they are, but i once was. it's been so long i can
+barely remember it, but i was, and i never fully healed. you can battle with me,
+boon. i don't know why, but it feels like the right thing to do."
+
+"okay, oliver. i don't understand this world. but if you think it's the right
+thing to do, then i'll do it."
+
+"i do. look, i don't know how we're going to get to the sixth grade hall, but
+something in me tells me we have to try. why don't we go talk to people in 
 ** old notes
 Boon wakes up. He's in a place that looks like 
 
@@ -1487,8 +1895,14 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-01-11 Mon 22:29]--[2021-01-11 Mon 23:33] =>  1:04
+CLOCK: [2021-01-11 Mon 00:23]--[2021-01-11 Mon 00:52] =>  0:29
+CLOCK: [2021-01-10 Sun 10:20]--[2021-01-10 Sun 11:10] =>  0:50
+CLOCK: [2021-01-09 Sat 19:22]--[2021-01-09 Sat 19:57] =>  0:35
+CLOCK: [2021-01-08 Fri 20:54]--[2021-01-08 Fri 22:15] =>  1:21
+CLOCK: [2021-01-07 Thu 17:59]--[2021-01-07 Thu 18:56] =>  0:57
 CLOCK: [2021-01-06 Wed 23:27]--[2021-01-06 Wed 23:56] =>  0:29
-CLOCK: [2021-01-06 Wed 00:00]--[2021-01-06 Wed 00:35] =>  0:35
+CLOCK: [2021-01-05 Tue 11:59]--[2021-01-06 Wed 00:35] =>  0:36
 CLOCK: [2021-01-04 Mon 22:01]--[2021-01-04 Mon 23:10] =>  1:09
 CLOCK: [2021-01-04 Mon 12:54]--[2021-01-04 Mon 13:29] =>  0:35
 CLOCK: [2021-01-03 Sun 16:19]--[2021-01-03 Sun 17:06] =>  0:47
