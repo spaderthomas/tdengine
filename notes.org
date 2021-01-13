@@ -54,7 +54,26 @@ when bad things happen to you, you want desperately to return to your old
 life. but you can't -- not even if you solve the bad thing and return your
 external world to the same state as before. it changes you inside, permanently. 
 
-oliver calls boon sir even though he's only a week older than him
+oliver calls boon sir even though he's only a week older than him. "how old were
+you when you, um, you know..."
+
+a total happenstance sidequest that begins with you in an empty room, and if you
+venture to the right place you can hear something interesting through the wall
+-- maybe even a litle knocking/bumping animation around the correct spot, or a
+tiny hum that gets louder the closer you get.
+
+it has to have special sounds that play along with each character of the text,
+different for different characters. 
+
+even though gpt-3 is in some sense just recombining human patterns, it is still
+creating art. the strangeness of a genetic algorithm influencing art created by
+humans. 
+
+technofetishism: instead of beginning with the idea and using technology to
+express it, we often begin with technology and mold our expression around what
+it allows. 
+
+text that fades in for a new area (ni no kuni, the witness)
 * log
 ** 03/02/2020: [code] engine architecture
 @spader 3/2/2020: I want to avoid writing a lot of wrappers. Ideally, adding a
@@ -1234,7 +1253,7 @@ down into corn field flat plains. but what makes the player care about him if he
 is so flat? what is his motive for being in a pseudo political organization that
 knows things about the goings-on of the enemy? why would he do any of these
 tings if he derives no pleasure or pain from them?
-** 01/07/2020: 
+** 01/07/2020: [planning] schedule
 back at it. so the two threads i have to pull on now are: who are the main
 people who populate this world, and how do you get to the first dungeon? first,
 though, i want to do a little more meta planning. rough list of big things that
@@ -1543,6 +1562,42 @@ you go there, just pretend it's a restaurant for metaphor's sake, you go to the
 restaurant and you hear a girl calling from the walk in. you walk in to
 investigate. and the door slams shut behind you. now you're both trapped. and
 now you've got to make your way out of here. 
+** 01/12/2021
+school room. so barb used to hang out at the sixth grade hall, but we haven't
+heard from her -- as in, we're pretty sure that she isn't _there_, but we just
+don't know where she is. we saw her hanging around....where? 
+
+ok, here's an idea: we saw her hanging around the art room. when you get to the
+art room, she's trapped in a painting. and there's this short puzzle inside the
+art room to lead you to find the painting. 
+
+riddles?
+
+are there people in the art room? i want this to feel a little hazy. a little
+preordained. 
+
+you are being tied together with this person for a moment in time. linked to
+them -- but the link is against your will. a chain? and when you become tied to
+a person, it is in a sense forever. your experiences with that person do not
+leave you when they leave you. a chain is an ugly thing. i prefer a knot. 
+
+a knot that looks like ok yea
+
+sixth grade hall: 
+barb has a loose idea of what's going on from being trapped
+lots of henchmen
+a minor boss at the end who really clues you into what's going on. maybe he's
+kind of goofy?
+
+should you just be able to battle with barb oliver and boon? i think that even
+20 creatures is kind of tough to pack into a 3 dungeon game. like you have to be
+able to find all of them, have time to level them up...
+
+and should i have these interlude sections? the way the barb one is set up, it's
+pretty much like it's the dungeon itself. like i'm planning on having these
+little plot points scattered through the dungeon anyway, so is this really any
+different?
+
 * plot
 ** an introduction!
 Open up in an everyday elementary school. Rows of particle board desks, wide
@@ -1761,7 +1816,8 @@ librarian says.
 "but i don't know anybody here. how will i figure out how to get there?"
 
 "i have a feeling that what is meant to be will find its way to you. why don't
-you investigate?"
+you investigate? go talk to some people. i'm sure you will find something," he
+finishes with almost a smile and a wink about him. 
 
 he gives you a brief rundown of the places in the hub. 
 
@@ -1789,7 +1845,75 @@ boon. i don't know why, but it feels like the right thing to do."
 thing to do, then i'll do it."
 
 "i do. look, i don't know how we're going to get to the sixth grade hall, but
-something in me tells me we have to try. why don't we go talk to people in 
+something in me tells me we have to try! why don't we go talk to people in the
+cafeteria?"
+
+boon and oliver take the short walk over to the cafeteria. the cafeteria is a
+large room -- it's the hub of the hub, and it's really more like a town square
+than a room unto itself. it's laid out kind of like downtown mountain view. in
+the middle are a few lanes of long cafeteria tables and chairs, with different
+souls idling at them. the sides are lined with different kinds of shops -- the
+equivalent of the armory, the apothecary, places of hangout, houses. 
+
+the air is tense, slightly abuzz, with the air of an event that is not
+completely known. there are a few main clumps of people sitting at the tables. 
+
+the pair walk up to one of the clumps. there are a lot of people, and depending
+on who you talk to, you get a slightly different answer. the conversations are
+not long form here, but they are certainly not one liners. there are pieces of
+lore, pieces of humanity in all of these conversations. souls telling you how
+they died, souls bitching about their day to day problems, gossiping about the
+hall blockages. one soul tells you not to talk about getting into the halls too
+loudly. some people haven't heard anything about getting into sixth grade hall,
+one person mentions that it's a shame about that girl barbara, another says that
+it seems kind of fishy. 
+
+ultimately, boon and oliver take the hint.
+** the art room
+boon and oliver walk into the art room. it's tucked off in a far corner of the
+hub, and when you walk in it is clear that it has not been occupied in a long
+time. the lights have a low, ominous hum, and they occasionally flicker. there
+are easels and paint supplies lying around. the teacher's desk is in the front
+left corner, and is scattered with papers. there are two rows of three long
+desks, for students to work on, that are covered in half finished drawings. 
+
+"something doesn't feel right in here, sir!"
+
+"i'm not even dead and i can feel it," says boon. "and why is this place still
+an art class? the cafeteria here didn't look like the cafeteria in my world."
+
+"it's hard for me to remember, but things are different here...some things can
+change very quickly in this realm, but some things kind of, uhm, _push back_
+against change..." oliver replies
+
+"well, this place isn't very big. i can't see where this girl would be
+hiding. and besides, we don't even know if she's who we're looking for. maybe we
+should go back to the cafeteria?"
+
+"i have a funny feeling about this place! when i was alive, my daddy would tell
+me: if you want to have an adventure, keep your eyes open and be patient. well,
+let's keep our eyes open."
+
+"okay. well, let's look around then."
+
+they look around a bit. inspecting the teacher's desk shows the teacher's
+personal diary. they are dissatisfied with life. their students don't care,
+their parents don't care, they want to dedicate themselves to something real but
+the whole world just feels like bullshit. the drawings on the desks are strange,
+distorted things with the tone of words generated by gpt-3.
+
+and on the back wall, there is a large painting. it's a knot, worked in a finely
+detailed but impressionistic oil painting. the knot is loose, and it looks like
+there is a thread on the knot that would unravel the whole thing if you gave it
+a gentle tug. 
+
+boon reaches his hand out, half in a trance, and goes as if to pull on the
+knot. as he moves his hand down, the room begins to fuzz out. it pulses in and
+out like it has a beating heart of its own, and the knot on the painting
+actually begins to move down with boon's hand. but instead of pulling the knot
+loose, the knot cinches completely tight. the world fades out, and boon hears
+oliver yelling. but it's too late.
+
 ** old notes
 Boon wakes up. He's in a place that looks like 
 
@@ -1895,6 +2019,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-01-12 Tue 20:15]
 CLOCK: [2021-01-11 Mon 22:29]--[2021-01-11 Mon 23:33] =>  1:04
 CLOCK: [2021-01-11 Mon 00:23]--[2021-01-11 Mon 00:52] =>  0:29
 CLOCK: [2021-01-10 Sun 10:20]--[2021-01-10 Sun 11:10] =>  0:50
