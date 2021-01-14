@@ -22,11 +22,12 @@ Stop baking texture atlases, texture coordinates, etc on startup.
 - february 10th, 2021 :: rough plot
 - may 10th, 2021      :: rough design
 * ideas
-what if each wing of the school had a particular theme or feeling? it would be
-pretty funny to walk into the seventh grade hall, not knowing what to expect,
-only to find out that they theme themselves after the ultra-refined high society
-of victorian england. 
-
+** quests
+a total happenstance sidequest that begins with you in an empty room, and if you
+venture to the right place you can hear something interesting through the wall
+-- maybe even a litle knocking/bumping animation around the correct spot, or a
+tiny hum that gets louder the closer you get.
+** details
 a man who has nailed himself to the cross like christ, flayed his own skin raw
 because he believes himself to be in the christian version of hell. he can get
 down whenever he wants. 
@@ -36,35 +37,36 @@ souls swarthily introducing themselves by name, date of death, manner of death.
 telephone pole -- dad was such a mean drunk, and school was the only place i
 ever felt /safe/. and you?"
 
-souls are remarkably like ordinary people just trying to make it through their
-lives (or, well, afterlives)
-
-ollie, despite being ten, is a powerful and old soul who just happens to have
-been out of commission for a few decades. 
-
 "uncle rufus, were you worried about me??"
 "well of course not, young oliver. you know as well as i do that we souls lack
 hormonal and nervous systems in our body. i'm as cold and unfeeling as you are,
 my boy!"
 
-how do you replicate those long, tense, quiet scenes in NGE where it's just
-shinji and you can see the pain in his eyes?
+it has to have special sounds that play along with each character of the text,
+different for different characters. 
 
+text that fades in for a new area (ni no kuni, the witness)
+
+musical themes for players. barbara ann. 
+
+menu: you want it to squirt open or i'm not sure the right word for it. the
+really satisfying animation where you tab onto something, it hangs for a second,
+and then it expands. the menu should be really clear. one of the best parts of
+CSH for me is that it's so easy to see everything that you can do.
+** worldbuilding
+what if each wing of the school had a particular theme or feeling? it would be
+pretty funny to walk into the seventh grade hall, not knowing what to expect,
+only to find out that they theme themselves after the ultra-refined high society
+of victorian england. 
+
+souls are remarkably like ordinary people just trying to make it through their
+lives (or, well, afterlives)
+** themes
 when bad things happen to you, you want desperately to return to your old
 life. but you can't -- not even if you solve the bad thing and return your
 external world to the same state as before. it changes you inside, permanently. 
 
-oliver calls boon sir even though he's only a week older than him. "how old were
-you when you, um, you know..."
-
-a total happenstance sidequest that begins with you in an empty room, and if you
-venture to the right place you can hear something interesting through the wall
--- maybe even a litle knocking/bumping animation around the correct spot, or a
-tiny hum that gets louder the closer you get.
-
-it has to have special sounds that play along with each character of the text,
-different for different characters. 
-
+** tangents
 even though gpt-3 is in some sense just recombining human patterns, it is still
 creating art. the strangeness of a genetic algorithm influencing art created by
 humans. 
@@ -72,8 +74,34 @@ humans.
 technofetishism: instead of beginning with the idea and using technology to
 express it, we often begin with technology and mold our expression around what
 it allows. 
+* characters
+** boon
+boon is kind of a shinji figure. he is quiet, and well mannered, and
+angsty -- but he is not depressed.
 
-text that fades in for a new area (ni no kuni, the witness)
+he is someone who is meek and timid, and is afraid to assert his agency. he
+flinches. he has been broken at some point in his life, broken to where he
+believes that he cannot take what the world throws at him and that the only
+answer to life is to pre-emptively curl into the fetal position and pray that it
+doesn't irreparably harm you
+** barb
+** oliver
+the street urchin who has been trapped in limbo for over a hundred years. but
+what is the tone of his sentence? wisdom, resignation. he cannot get out of
+limbo there is no hope for him, but instead of becoming despondent he resigns
+himself to the situation. this is part of the theme of the game: how you handle
+the tide of life.
+
+ollie, despite being ten, is a powerful and old soul who just happens to have
+been out of commission for a few decades. 
+
+oliver calls boon sir even though he's only a week older than him. "how old were
+you when you, um, you know...". he calls everyone sir, because he has those old
+boarding school manners.
+
+he speaks with an almost-british accent. everything about him screams preparatory
+school.
+** the librarian
 * log
 ** 03/02/2020: [code] engine architecture
 @spader 3/2/2020: I want to avoid writing a lot of wrappers. Ideally, adding a
@@ -1227,7 +1255,7 @@ that fate laid on you, they don't just end. now that you're dead, they're just
 there, forever, morphing yes but so slowly that it is almost unbearable. 
 
 even the dead have to cope!
-** 01/06/2020: 
+** 01/06/2021: 
 i got a cat today :) here's some stuff i wrote while i was waiting for jonathan
 
 i'm excited for the barb character. one thing i was thinking about today is how
@@ -1253,7 +1281,7 @@ down into corn field flat plains. but what makes the player care about him if he
 is so flat? what is his motive for being in a pseudo political organization that
 knows things about the goings-on of the enemy? why would he do any of these
 tings if he derives no pleasure or pain from them?
-** 01/07/2020: [planning] schedule
+** 01/07/2021: [planning] schedule
 back at it. so the two threads i have to pull on now are: who are the main
 people who populate this world, and how do you get to the first dungeon? first,
 though, i want to do a little more meta planning. rough list of big things that
@@ -1348,7 +1376,7 @@ the way he chose to cope with suffering was by self-deception.
 he grew rounder, grew to middle age, and there was nothing in his life worth
 preserving. he died, of something stupid, a congenital heart defect or something
 pointless like that. and that was it. there was nothing.
-** 01/08/2020: 
+** 01/08/2021: 
 one thing i've been thinking about these characters: remember that this is a
 video game. this isn't an art movie. i have a certain disdain for self centered
 art movie style of thing, not that i watch a lot of art movies. but things that
@@ -1437,9 +1465,9 @@ right direction for the first interlude. ditto for the second interlude. and
 then, he IS the third interlude. 
 
 how does barb know how to get into the 
-** 01/09/2020:
+** 01/09/2021:
 just wrote some plot today
-** 01/10/2020: [story] sidequests, connectedness
+** 01/10/2021: [story] sidequests, connectedness
 just wrote some plot today
 
 BUT IN ADDITION TO THAT
@@ -1509,8 +1537,8 @@ tattered clothes, my stench, and i'll feel a self hatred that cuts through me
 like a hot knife. and i'll know that nobody could ever love me, and that i do
 not deserve kindness. and i'll tough it out until i lose myself again in my
 illness. it always comes back, thankfully, because then the hard part is over. 
-** 01/11/2020: 
-never tell the player to get you a soda. 
+** 01/11/2021: 
+i never tell the player to get you a soda. 
 
 i don't want to just tell the player to "go and talk to this person". that
 doesn't feel right in the spirit of this game -- the feyness, the
@@ -1562,7 +1590,7 @@ you go there, just pretend it's a restaurant for metaphor's sake, you go to the
 restaurant and you hear a girl calling from the walk in. you walk in to
 investigate. and the door slams shut behind you. now you're both trapped. and
 now you've got to make your way out of here. 
-** 01/12/2021
+** 01/12/2021: [story] art room, interludes?, creatures?
 school room. so barb used to hang out at the sixth grade hall, but we haven't
 heard from her -- as in, we're pretty sure that she isn't _there_, but we just
 don't know where she is. we saw her hanging around....where? 
@@ -1591,13 +1619,55 @@ kind of goofy?
 
 should you just be able to battle with barb oliver and boon? i think that even
 20 creatures is kind of tough to pack into a 3 dungeon game. like you have to be
-able to find all of them, have time to level them up...
+able to find all of them, have time to level them up...you can still have items
+be the result of sidequests. items, moves, abilities, anything like that. 
 
 and should i have these interlude sections? the way the barb one is set up, it's
 pretty much like it's the dungeon itself. like i'm planning on having these
 little plot points scattered through the dungeon anyway, so is this really any
-different?
+different? well, for barb, maybe it's not so different. because her thing is
+getting you _into_ the dungeon. but for #2 and #3, that doesn't have to
+necessarily be the case. i mean, even for barb, it could be something like:
+yeah, i've been sneaking into the sixth grade for a while now, and i could tell
+you how i do it, but first i need to get the fuck out of wherever we are now. so
+you do that, get her out, then return to talk to the librarian who lets you
+know:
+there are two personality wells that have collided and are tearing the realm
+apart
+you are one of them
+the world's internal rules are becoming un-self-consistent
 
+or phrased slightly differently
+
+all things are preordained
+boon was supposed to die in the closet
+but for some reason, he did not, which broke fate
+since all things are preordained, if the mechanism of preordaining breaks, then
+it threatens to tear apart the realm at the seams. 
+
+^^ that would kind of imply though that the villains took over after boon got
+his shit kicked in...? whereas i was kinda going for "alter-egos in spirit world
+become corrupted and infect their corporeal counterparts). it would be awesome
+though if boon had to die at the end. or maybe the breaking of fate was not at
+an instant, but a slow fracture, and the villains manifest as a part of that
+initial warping...and you have to defeat them before the whole thing cracks into
+a million pieces.
+
+also, side note: develop the main villains more. i think they are pretty boring
+now. well, you gotta have some interaction with them before the final
+boss. maybe after the seventh grade. 
+
+you should be able to hot swap anything on characters. no EV bullshit. 
+** 01/13/2021: 
+lol kind of phoning it in today but that's ok. 
+
+so yesterday i was kind of working on the big picture of the plot, especially as
+it relates to the first interlude. i was feeling pretty good too. i like this
+part.
+
+so yeah you go do the little arc with barb, you have your moment with her, you
+defeat the beastie or beasties that are keeping you trapped, and then you return
+to the hub to talk to the librarian. and he's gonna give you the rundown. 
 * plot
 ** an introduction!
 Open up in an everyday elementary school. Rows of particle board desks, wide
@@ -1907,13 +1977,102 @@ detailed but impressionistic oil painting. the knot is loose, and it looks like
 there is a thread on the knot that would unravel the whole thing if you gave it
 a gentle tug. 
 
-boon reaches his hand out, half in a trance, and goes as if to pull on the
-knot. as he moves his hand down, the room begins to fuzz out. it pulses in and
-out like it has a beating heart of its own, and the knot on the painting
-actually begins to move down with boon's hand. but instead of pulling the knot
-loose, the knot cinches completely tight. the world fades out, and boon hears
-oliver yelling. but it's too late.
+boon looks at the painting and says to himself, "oh? what's this?"
+he reaches his hand out, half in a trance, and goes as if to pull on the
+knot. "it's almost as if you could undo it..."
 
+as he moves his hand down, the room begins to fuzz out. oliver asks him a
+question in passing, but he can't hear it over the growing thrumming and pulsing
+of the room. it pulses in and out like it has a beating heart of its own.
+
+"...boon....wh....you.....ing?" oliver is almost completely inaudible now
+
+boon's hand comes all the way down on the painting. the world fades out, and
+boon hears oliver yelling. but it's too late.
+
+** come take my hand
+the world warps and turns and comes down to a point, and as quickly as it
+expanded it contracts back to normal size. when boon and oliver get their
+bearings, they realize that they are not in the room they were just in. they are
+in a closet of old, forgotten paintings. chief and largest among them is the
+painting that drew boon in -- but instead of a loosely knotted piece of rope, it
+is cinched completely tight. the room is small, dark, and dusty -- it is clearly
+a storage closet of sorts, not a gallery.
+
+"are you alright, sir?"
+
+"wh..where are we? and stop calling me sir! i don't even know how i got us here,
+and i'm barely ten years old!"
+
+"sorry, s--sorry."
+
+as they chat, they hear a knock on the door.
+
+"hey! hey! i can hear you in there! come out, i've been stuck here forever,
+please help me! i think your door is locked from the inside" a young, feminine
+voice calls from outside.
+
+"do you think that could be barbara?" oliver asks
+
+"it sounds like a girl...but what if it's a trap? we don't even know where we
+are right now! we should stay put until...someone comes to find us. or until
+we're ready to go out."
+
+"i think we're right jammed in this one, boon. a prep school boy should be self
+sufficient and extricate (/huff/) himself from all manner (huff) of ungainly
+(GAAAAAAASP)"
+
+"oliver? are you okay?"
+
+"oh yes, sir, yes (huff) sir. just a bit of the old asthma." oliver says, taking
+a deep breath.
+
+BANG, BANG, BANG. "what are you DOING in there? get out here and help me!"
+
+"okay, okay. here goes..." says boon.
+
+they walk out to find themselves in a room that is like a darker, twisted
+version of the art room they just came from. the paintings strewn through the
+room are surreal and slightly horrific -- ultra realistic oil paintings of a
+goat and a dog successfully sewn together at the abdomen, men in dark black
+robes melting their fingers like candlewax over tins of burning sage, sinister
+cities of fractals expanding in burnt orange in black. the black work desks are
+now covered in occult symbols and frantic writing. but it is not satanic and
+horrifying so much as it is _wrong_. the paint cups have names like "the
+rainslick summer dreams of our dead forefathers", and "two forks gently making
+love in the moonlight", and "the lord our god laying his tendrils unto
+us". something does not make sense about this space. the papers on the teacher's
+desk now reads like an entry from bots of new york. 
+
+and right by the door, there is a young woman. she looks to be about sixteen,
+and looks like she was a cheerleader in her past life: short, with a thin but
+muscular frame, blonde hair, washed out blue eyes, and a semipermanent pout on
+her face. she looks up and down the pair, and a look of horror creeps across her
+face.
+
+"oh, jesus christ! i've been stuck here for god knows how long and then send two
+_ten year olds_ to come get me?! have you guys even hit _puberty_ yet?"
+
+boon and oliver look at each other, surprised, and don't know what to say to
+this.
+
+"well? they sent you, right? my boyfriend johnny and my friends? are you going
+to save me or what?"
+
+"uhm, actually ma'am, nobody sent us. we were hoping to get into the sixth
+grade, and we heard you used to go there a lot. but nobody could find you...so
+we went to look in the art room." oliver says
+
+"and you got sucked into here, right?" she asks
+
+"well, yes, we're not sure how it happened, but here we are," oliver replies
+
+she pauses for a second, building a slow glare. she's still paused. the silence
+hangs until it's almost uncomfortable, and then she says
+
+"HERE YOU ARE?? i can't believe you idiots got stuck looking for me and now i
+have to take care of you" barb says
+** in knowledge, there is power
 ** old notes
 Boon wakes up. He's in a place that looks like 
 
@@ -2019,7 +2178,9 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-01-12 Tue 20:15]
+CLOCK: [2021-01-13 Wed 23:00]
+CLOCK: [2021-01-13 Wed 00:30]--[2021-01-13 Wed 00:57] =>  0:27
+CLOCK: [2021-01-12 Tue 20:15]--[2021-01-12 Tue 21:40] =>  1:25
 CLOCK: [2021-01-11 Mon 22:29]--[2021-01-11 Mon 23:33] =>  1:04
 CLOCK: [2021-01-11 Mon 00:23]--[2021-01-11 Mon 00:52] =>  0:29
 CLOCK: [2021-01-10 Sun 10:20]--[2021-01-10 Sun 11:10] =>  0:50
@@ -2034,7 +2195,6 @@ CLOCK: [2021-01-03 Sun 16:19]--[2021-01-03 Sun 17:06] =>  0:47
 CLOCK: [2021-01-02 Sat 22:58]--[2021-01-03 Sun 00:05] =>  1:07
 CLOCK: [2021-01-01 Fri 21:39]--[2021-01-01 Fri 22:40] =>  1:01
 :END:
-
 * other games
 https://store.steampowered.com/app/256460/Cosmic_Star_Heroine/
 cosmic star heroine. an RPG styled after chrono trigger with no random
