@@ -417,6 +417,3 @@ function tdengine.ray_cast(x, y)
    local id = tdengine.internal.ray_cast(x, y)
    return tdengine.entities[id]
 end
-
--- Stuff we jam in global scope for use in the console
-scene = tdengine.load_scene

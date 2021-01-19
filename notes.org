@@ -15,18 +15,51 @@ are tempting.
 RULE #6: your gut is an excellent performance tool
 
 RULE #7: anything is possible
+* tags
+@boon: places where i could expand on the main character
+@polish: places where i only drew a negative
+@quest: places in the story where quests occur
 * todo
 @render_refactor
 Stop baking texture atlases, texture coordinates, etc on startup. 
-* schedule
-- february 10th, 2021 :: rough plot
-- may 10th, 2021      :: rough design
+* pin
+** demo code tasks
+- a fade-in / depixelate shader (for waking up)
+- visual or auditory effect (for poking and prodding)
+- dialogue
+  - dialogue boxes
+  - chat heads
+  - dialogue options / trees
+  - italics?
+  - letter noises
+- some kind of cutscene / battle hybrid (for the intro battle)
+- ability to swap between levels / rooms
+- basic dialogue cutscene with a trigger (for random chats)
+- interactable items / NPCs (for the cafeteria)
+- quest state (for larry)
+- warp / contract shader (for teleporting)
+- basic mock of battles
+  - how they are triggered
+  - how data is stored for them
+  - battle loop
 * ideas
 ** quests
+*** domestic dispute
 a total happenstance sidequest that begins with you in an empty room, and if you
 venture to the right place you can hear something interesting through the wall
 -- maybe even a litle knocking/bumping animation around the correct spot, or a
 tiny hum that gets louder the closer you get.
+*** chickenshit larry
+chickenshit larry is the guard you meet in the twisted realm in the first
+interlude. he's hiding in a broom closet, because the twisted realm is just so
+twisted. if you kill him, that's it. he's done. you get a nice item in
+compensation. if you let him go, he's there for you later on in the sixth
+grade. maybe he gives you a heal, or some buffs, or an even better item, or
+assists in for a few rounds.
+
+larry also has friends in the hub. he was a vet of the korean war. didn't die
+there -- hell, the most action he got was on shore leave in seoul with some
+_kijichon_. 
 ** details
 a man who has nailed himself to the cross like christ, flayed his own skin raw
 because he believes himself to be in the christian version of hell. he can get
@@ -66,6 +99,7 @@ when bad things happen to you, you want desperately to return to your old
 life. but you can't -- not even if you solve the bad thing and return your
 external world to the same state as before. it changes you inside, permanently. 
 
+fate does not choose you, it's just that things have to happen to someone. 
 ** tangents
 even though gpt-3 is in some sense just recombining human patterns, it is still
 creating art. the strangeness of a genetic algorithm influencing art created by
@@ -84,7 +118,40 @@ flinches. he has been broken at some point in his life, broken to where he
 believes that he cannot take what the world throws at him and that the only
 answer to life is to pre-emptively curl into the fetal position and pray that it
 doesn't irreparably harm you
-** barb
+** barbara ann
+i've got a good idea for a character forming. i keep getting the image of desire
+from the sandman. someone overt, androgynous, charming, tantalizing,
+colorful. someone worried deeply about the superficial pleasures of life --
+seeing and being seen, checking, swiping, checking. someone whose personality is
+so big that you know it cannot be real. an overcompensation in the other
+direction. 
+
+you meet this person and you dislike them, they grate on your nerves. they feel
+so plastic. but you come to realize that you are truly the same as them. the
+mask you wear and the mask they wear are the same, differing in color and form
+but still to call the thin strip of plastic the person is flat wrong. and the
+person underneath is the same.
+
+she's an ex-cheerleader. her dad was a horrible alcoholic, but you wouldn't have
+known it to know her or be around her family. he was verbally abusive. he told
+her that no one would ever love her -- and do you know how hard it is to hear
+that from your own parent? even when you know it's untrue? she had an eating
+disorder, but not bad enough to kill her. just bad enough to keep her thin and
+beautiful and validate her. the pain of being at home grew to overwhelm
+her. 
+
+then, all of a sudden, it stopped. her father died, suddenly, in a car
+accident. barb couldn't get a hold on her emotions. she felt everything, relief,
+hurt, pain, emptiness, joy. she had nobody to tell these things to. there was
+nobody who wouldn't think her a freak for being joyful at her father's
+death. they didn't understand. all she really wanted to do was to not feel
+_anything_. not the good, not the bad. she just wanted to stop existing. 
+
+so she killed herself.
+
+i've written barb as mean in the storyboard. she's more like asuka, which isn't
+quite right, because asuka is mostly _cocky_. whereas barb should be vapid,
+plastic. 
 ** oliver
 the street urchin who has been trapped in limbo for over a hundred years. but
 what is the tone of his sentence? wisdom, resignation. he cannot get out of
@@ -1668,336 +1735,579 @@ part.
 so yeah you go do the little arc with barb, you have your moment with her, you
 defeat the beastie or beasties that are keeping you trapped, and then you return
 to the hub to talk to the librarian. and he's gonna give you the rundown. 
+** 01/14/2021: 
+having a lot of thoughts about the creature system in this game. about having
+the NPCs be the same as the creatures. it makes some things easier but other
+things harder. the thing i keep coming back to, though, is the fact that the
+game is too short to really have a fleshed out creature system. the doubt i was
+having was related to dialogue and such: if you have this fleshed out character
+like barb, how do you meaningfully make her a part of the story beyond her arc
+when she may or may not be a part of your party. 
+
+so what's good with this first interlude. remember -- short, simple, sweet. this
+isn't the first dungeon. it's mainly just a place where you can learn how to
+battle. not a lot of plot is going to happen here. 
+
+thinking you're basically gonna walk along, stop and talk with barb every once
+in a while. you overhear a guard saying something about a weird painting of a
+knot in a room at the end of the hall. when you get there, there's a lil mini
+boss -- just the captain for the squad that's patrolling this hall, not even
+enough to give him a name, really. and he takes barb half hostage. and boon has
+the choice to run through the painting or to save barb first (maybe this is an
+actual player choice, maybe it's just a choice that in game boon has that is noy
+role played)). something to make barb open up to them at the end.  
+
+what does the interlude section look like? 
+well, speaking outside of flavor, i'm thinking of it as mostly hallways with a
+few small places where it opens up. maybe it's a whole art themed thing? lol
+thinking of metaphysical justifications but i don't think i need them. what's
+the tone of it? it's a twisted projection of an art room. but not in a funhouse
+style, with oversized paintbrushes. it warbles. it is slightly eerie. it has the
+queer feeling of things not created in this world, things that are not quite
+right to our perception, like the paint cans i put in there. 
+
+i want the hallway to be shaped like a knot
+
+i keep getting this image of a room drenched in red light. not sure why an art
+house would be lit in red. 
+
+another cool idea is if instead of a hallway, it's a series of rooms. and each
+room is roughly the same, layout wise. but inside each of them is a battle or
+two, then the notes and drawings and such give you a clue for how to get to the
+next area. i think that sounds way more fun. 
+** 01/15/2021: 
+the first vignette needs to have more battles. it needs to have like 8
+to 10. the first two are three are training wheels. setting up the rooms like
+this with one opponent per room is a little too slow. there could be two per
+room. like chickenshit larry, hiding in a closet, except a little
+different. crouching under the teacher's desk. there are three identical art
+rooms, the first one has one, the second has two, the third has two (one of
+which is larry), that's four battles. that's good training wheels. what's the
+final little section of this mini dungeon? oh, that's cool: what if you go like
+this
+
+entrance -> room 1 -> room 2 -> room 3 -> room 2 (modified) -> room 1 (modified)
+-> entrance (modified). and then return from whence you came through the
+painting. 
+
+each room becomes a little more...hellish? more like a dungeon? maybe the souls
+in each room are the same people, with no memory of the last room where you just
+vanquished them? maybe there is a story that runs through different timelines in
+each of the rooms. the notes on the teacher's desk are about boon. but how are
+the rooms visually different? just a rearranging of the tables and chairs? that
+doesn't sound very satisfying. 
+
+maybe in the last room they go in the closet and walk downstairs to find a
+gallery. thinking of the factory in CSH, where it's this open thing but
+separated by walls to where it doesn't feel like you're just walking through a
+hallway. you're in this dank gallery of forgotten paintings, unused paints and
+oils and canvases from a hundred years ago, dead rats. you maneuver around it
+and you find the painting of the knot and as you're about to touch it this
+baddie swoops in.
+
+there's two parts to this that i'm missing. the first: the actual barb part of
+the subplot. but this is mostly going to be the conversations that happen
+between each room. so i'm ok with not writing the exact dialogue, because this
+is a storyboard, i just want the thrust of what they say. and the second is the
+tone of this. i feel like this is actually set out fairly well. warbling,
+twisted, dark, unreal. i guess the problem really is that when i got to charles
+(who is a great first henchman kind of guy), the tone kind of inadvertently
+changed into something goofy and very video gamey. not necessarily something
+that i want to avoid, though. this IS a video game. don't pretend that it's not,
+and don't get caught up too much in your own ass about the Feel and Tone of the
+game precisely. charles should be a little goofy. charles is huge and a little
+slow and lets secrets slip without thinking about it. and he has a huge evil
+belly laugh: BWA HA HA HA !!! (that's in italics, by the way) 
+
+why do souls do what they do? are they alive -- what is the difference between
+them, mentally and emotionally, and someone who is alive? perhaps fate is the
+difference: human beings get pulled and torn in opposing directions by fate, but
+at the end of the day they retain the agency to if not defeat it at least _fight
+back against it_. but these souls are hollow. they may look and act and feel
+like humans when you are in this world, but they are puppets of fate. the more
+you inspect them, the more you realize they are like intricate toy wind-up
+dolls, following some preset pattern of steps and hi's and ho's but without any
+of the decision that makes it meaningful. when souls come to you with their
+problems, you offer solution. but it is as if they do not hear you, as if they
+cannot hear you. the souls that surround boon being a little different, as if
+infused by his essence. and the librarian being a notable exception as a
+who-knows-the-fuck-what-but-definitely-not-dead. 
+** 01/16/2021: [story] big picture
+getting a late start...it's about one in the morning. but it must be done every
+day. 
+
+current state of ideas for the big plot:
+all events that ever were, are, or will be are woven into a fabric. the fabric's
+pattern is finely wrought, complex beyond belief, but it is still ultimately a
+pattern. the problem with disrupting a pattern is not the site of incident, it's
+everything that ever comes after it. and a thread has come loose in the
+fabric. time and causality are losing their integration. the disruption of the
+pattern centers around the main character, not for any particular reason but
+simply because things must happen to someone. he was intended to die a young,
+pointless death. but something broke, and he lived, and this is causing the
+universe to unravel. it tries to self-repair, to bring things to a steady and
+acceptable state, which naturally means that it tries to kill him. and it
+half-succeeds, but his soul cannot pass through to the realm of the
+dead. instead, it is stuck in limbo. he does not know this, though, and believes
+himself to be in a fight for his life. he travels through the version of his
+school in limbo, until he finds and defeats the spirits which did this to him
+and is faced with a choice: his life, or the self consistency of the universe as
+we know it.
+
+his foes are two corrupted spirits, byproducts of the death of causality, that
+have infected the boys in the physical world who kicked the shit out of
+him. they are not anthropomorphic spirits, like the rest of the cast. boon will
+come to find upon the final confrontation that they are manifestations of
+predestination. they cannot be spoken to, reasoned with, or overcome through
+force. through his journey, boon will believe them to be more or less regular
+souls, like the ones who populate the world. he will seek their motives, their
+whereabouts, their weaknesses. and he will find and defeat many souls: grunts,
+henchman, officers, the men women and children that have been lined up like
+dominos by these unseen forces to act out this elaborate play. but they are
+simple marionettes. 
+
+theme: fate does not choose you, it's just that things have to happen to
+someone. 
+
+random idea: what about one of the first two halls being about you tracking down
+some sage, or some friend of the librarian's, or someone along those lines who
+has been held hostage?
+
+ah feck. i'm having trouble figuring out the causality here. so fate starts to
+unravel around boon...does that cause him to have a near death experience? or
+was he ordained to die, and the universe is trying to self-repair the pattern to
+make sure that happens? or was he ordained to live, and the unraveling is
+causing him to die? or is the universe merely fighting him off like an antibody
+would a virus?
+
+1 is just kind of random and doesn't push the plot or ideas. like, yea, it gives
+you a reason to be down there: something shitty just happened to you. and even
+though that is in line with the themes i have, it's not compelling. i'm sure
+there's an entry for it on tv tropes, and i don't know what it's called, but
+it's basically: insert a fancy sounding but utterly meaningless cause for the
+events which are about to transpire.
+
+2 is cool because at the end of the game you can say: boon, you have to die, or
+else the whole world will unravel. but it's also weird, because: who knows this
+information? i guess the librarian could. that would be pretty sweet. 
+
+---
+
+ok so there's your big picture plot. so boon will gradually learn that the
+universe is unravelling, and that maybe he could have some part in fixing it --
+but not what fixing it entails for him. so then what you need is still the peaks
+of the plot. of course the first peak is the arrival in limbo. the last peak is
+the confrontation with the false villains. you need two peaks in between
+there. one for each hall. 
+
+...what if this isn't a school themed game? that's kind of a terrifying thought
+LOL i mean not much of the game is _dependent_ on it taking place in a
+school. the art room stuff would be kind of weird but really it's just a
+backdrop rather than an integral part. i am just unsure what else the backdrop
+would be. somewhere vaguely dank/dungeon-y? like an underground civilization?
+** 01/17/2021: [code] first look
+what code do i need to make part one happen? and how detailed does it have to
+be? because if it was "as detailed as the final product minus assets", that
+would be a ton of work. because you would have to iron out the battle system,
+the mechanics, moves, start designing creatures and enemies and dungeon layout
+and placement and all sorts of things. 
+
+here's a thought / decision. max told me earlier today: stick to your
+vision. you know what you want to make, so make it. well, playing CSH has been
+fun and i really like how each battle is kind of its own puzzle. but i want this
+game to be more than that: i want it to be a dungeon crawler. so there is the
+game itself of the individual battles, but there is also managing your resources
+through this long dungeon and figuring out how to preserve your health
+
+the problem with the battles is that it's pretty much all or nothing, right?
+either you have meaningful battles and you have to iron out all the things that
+make it meaningful, or you have totally pointless battles. there's no real
+halfway. i mean, maybe you don't need to have everything ironed out. somewhere
+in this file i have a lot of notes on what the battle system itself looks
+like. the basics of it. designing the battle system is different than balancing
+the dungeons, and what enemies go in them, and how you progress through
+them. but even if the system is set up, you have to have the creatures to have
+real battles. and if you want creatures then you're starting to design
+everything. i don't think i want to do that. 
+
+work:
+- a fade-in / depixelate shader (for waking up)
+- visual or auditory effect (for poking and prodding)
+- dialogue
+  - dialogue boxes
+  - chat heads
+  - dialogue options / trees
+  - italics?
+  - letter noises
+- some kind of cutscene / battle hybrid (for the intro battle)
+- ability to swap between levels / rooms
+- basic dialogue cutscene with a trigger (for random chats)
+- interactable items / NPCs (for the cafeteria)
+- quest state (for larry)
+- warp / contract shader (for teleporting)
+- basic mock of battles
+  - how they are triggered
+  - how data is stored for them
+  - battle loop
+
+i need to have cutscenes. so just these little scenes where there is no player
+control, but there is dialogue, and people can maybe walk around. 
+** 01/18/2021
+gonna skip making the intro intro aka the part in the physical world. gonna
+start coding from when you wake up in the closet. shader can wait. so i need to
+make a really simple cutscene. compose a few simple actions.
+- entities need to start in a given location (generalized to start in a given
+  state?)
+- then define actions (move this entity here, display this dialogue tree, wait
+  for this amount of time, play this sound)
+- then a condition for the cutscene to end
+- some subsystem that manages cutscenes, knows when they are happening, knows to
+  steal and relinquish inputs, etc.
+- some code path that i can take to begin a cutscene (probably this lives 100%
+  in lua -- you're just dealing with entities and data, which both live in lua)
+- easy way from the editor to start/restart/debug
+  - for simple cutscenes like the beginning, it may be sufficient to just load
+    up the level from a clean file and run the cut scene
+  - pretty quickly tho you're going to run into cases where cutscene behaves
+    differently depending on game state (simple example: you talked to X, so you
+    get a different dialogue tree). for that, you might want to have basically
+    save states. 
+
+quality of life stuff:
+- list out all commands baked into the console
 * plot
-** an introduction!
-Open up in an everyday elementary school. Rows of particle board desks, wide
-rectangular fluorescent lights, concrete painted white on all four sides. The
-kids are all sitting, faces down intently at their exams. They can't be more
-than ten or eleven years old. One boy nervously chews a pencil while he tries to
-work out how to add fractions for the hundredth time. All is as it should be.
-
-Except there is pre-pubescent trouble brewing. D. Boon, glasses thick as
-coasters, rail thin, slightly hunched shoulders, sits at his desk trying
-desperately to pretend that he hasn't finished his exam. He traces his pencil
-around the same section of the page, writing, erasing, leaned over in feigned
-concentration. But he's not doing a very good job of it, because he feels
-something damp stick against his shoulder. The dreaded spitball. It would seem
-like someone else is finished with their test too -- finished, or doesn't care.
+** intro
+*** an introduction!
+ Open up in an everyday elementary school. Rows of particle board desks, wide
+ rectangular fluorescent lights, concrete painted white on all four sides. The
+ kids are all sitting, faces down intently at their exams. They can't be more
+ than ten or eleven years old. One boy nervously chews a pencil while he tries to
+ work out how to add fractions for the hundredth time. All is as it should be.
+
+ Except there is pre-pubescent trouble brewing. D. Boon, glasses thick as
+ coasters, rail thin, slightly hunched shoulders, sits at his desk trying
+ desperately to pretend that he hasn't finished his exam. He traces his pencil
+ around the same section of the page, writing, erasing, leaned over in feigned
+ concentration. But he's not doing a very good job of it, because he feels
+ something damp stick against his shoulder. The dreaded spitball. It would seem
+ like someone else is finished with their test too -- finished, or doesn't care.
 
-"Lemme see your /answers/, Boon." It's O'Doyle. He's big for his age, already a
-solid five nine, and fat to boot. His face shows the promise of acne, his
-jawline the promise of coming in -- puberty is soon to come to him. But for now,
-his malice is merely that of a childhood bully. Nothing so insidious as the
-social schemes of high school. 
-
-O'Doyle is a regular thorn in Boon's side. He's smart enough to know how to push
-Boon's buttons -- not just some brainless mudslinger. And more importantly, he's
-physically imposing. He's always saying some shit to him, not just isolated
-incidents of violence. 
-
-"..." 
-
-Boon stares ahead intently, focused /hard/ on not reacting. He wants to get the
-teacher's attention, but she's slumped back in her chair, dozed off reading a
-novel with a well-oiled Scottish man on the cover.
-
-/Just don't say anything and he'll go away/
-
-"Come on Boon, if I don't pass the fifth grade my dad'll /beat/ me." He delivers
-it with the quality of a joke he knows is too black for someone his age.
-
-A soft poke comes from from Boon's other side. "Yeah, Boon, I need the answers
-too. Heh heh." Tweedle-dee and Tweedle-dum, O'Doyle and Levi. Dynamic duos for all
-time. Levi is a /lot/ dumber than O'Doyle, but also morbidly larger and
-decidedly meaner.
-
-POKE. The first one just got his attention, but the second one breaks
-skin. "STOP," Boon can't help but cry out in pain and frustration. The teacher
-snaps awake. 
-
-"WHAT is going ON? You're supposed to be taking a test!"
-
-Boon doesn't say anything -- he knows she won't punish him, but he doesn't want
-to deal with the two of them. He puts his head down and shrugs
-half-heartedly. O'Doyle and Levi find a sudden interest on the cement blocks on
-the other side of the room. Mrs. Miller sees their guilt and says, "Let me speak
-to the three of you. After class."
-
---- 3 PM
-
-A bell tolls as the scene is black. It's a school bell, but it's slightly
-dissonant.
-
-Cut out, cut back in. Mrs. Miller is finishing up some lesson, but the bell cuts
-her off before she has a chance to finish. Boon tries to slip out quickly, but
-she catches him. She sits the three of them down in the front row and starts
-asking questions. The story comes out -- she takes Boon's side, of course, as
-the sweet, bright boy. She asks to see Boon's side, and when she sees a prick of
-crusted over blood, she becomes serious. 
-
-"This is worse than I thought. You realize what this means, right? This means
-you committed a /violent act/. I have no choice but to suspend you both for a
-week."
-
-"A week?!", O'Doyle cries out. "But my dad's going to kill me! Please,
-Mrs. Miller, I'll do anything, I'll even apologize to Boon here. Watch: Boon,
-I'm sorry." 
-
-"I'm sorry, Richard, but there's nothing I can do. It's county policy. Now you
-kids go before the buses leave."
-
---- Outside the classroom
-
-Boon hangs back for just a minute, tying his shoe more slowly than he ever has
-before. He finally leaves, starts down the hallway, and almost makes it to the
-bus parking lot. But he gets stopped -- by who else? And they're mad, this
-time. 
-
-"I'm done screwing around. I'm gonna show you what happens when you screw with
-someone you shouldn't!"
-
-Levi sneers at him and pushes him in the locker. O'Doyle throws a sucker punch
-as Boon cowers back into the wall of lockers. Levi picks him up and disables
-him by putting him in a bear hug. They walk the way they came from, past a few
-classrooms, and stop before a janitor's closet.  
-
-"It's Friday. Let's see how you like being suspended this weekend."
-
-With that, he throws Boon into the closet. His vision is starting to fade. On
-the ground, he sees Levi walk up and loom over him. He didn't realize how big he
-was. He wonders if his dad is disappointed that he's not bigger. He wonders
-what's for dinner. How's he going to turn his homework in tomorrow? Wait, isn't
-tomorrow Saturday? Or is it Tuesday? He barely has time to realize that he's
-blacking out when Levi rears his heavy, booted foot back and and gives him
-
-One.
-
-Last.
-
-KICK.
-
-"Don't mess with me."
-
-** an indeterminate amount of time later
-when boon comes to, he's in a room that looks exactly like the janitor's closet
-that he blacked out in, but twisted. it's slightly degraded, it looks wrong, the
-music is droning and warbling. 
-
-there is  a young boy standing over him, prodding him and cooling his
-face with a damp rag. the boy looks to be younger than boon, about ten years
-old. he's dressed in an old time schoolboy's uniform -- jacket, necktie, tucked
-into shorts with a pair of black oxfords and long socks. he still has a child's
-chubbiness and red cheeks, and he speaks formally like someone of old money. he
-introduces himself as oliver. 
-
-he doesn't seem surprised to see you. you ask him where you are, and he replies
-that you are in limbo. souls who cannot pass into the afterlife live on this
-plane. in particular, souls who still have an unresolved connection to the
-school are trapped in this place, which is the mirrored version of the school in
-this realm. new such souls come through here pretty often, and this is the place
-where they land. it's kind of his job to man the station and usher through any
-new souls that come here.
-
-"does this mean that i'm dead," you ask. normally yes, he says, but something is
-different about you. your soul still has a physical component. even though the
-souls here have not fully moved to the spiritual realm, they are still fully
-composed of spirit. 
-
-next logical question: can i get back? oliver pauses. he's not entirely sure --
-he has never seen anyone like you come through here. but then again, there are a
-lot of weird things going on right now. maybe we should go talk to the
-librarian. he'll know what to do.
-** talking to the librarian
-you walk out of the janitor's closet into the lobby of a school. the lobby of
-your school, in fact. but just like the closet, something is off about
-it. moreover, it has a slight resemblance to a shanty town -- a place that's
-been co-opted for something beyond its original purpose. it's not like a favela,
-but it definitely has a thrown together vibe to it. you can tell that the, shall
-we say high class souls are not who resides here. 
-
-from the lobby, you can get to a couple places. the cafeteria has been co-opted
-into the town square. there are shops here, there are spots of congregation (do
-souls need to eat...?). there are a few rooms for the teachers that don't belong
-in any particular grade -- art, music. the principal's office is there, and it
-looks extremely ominous, like how a ten year old imagines the principal's
-office. there's also a secretary's office, and the vice principal's office is
-attached to it. 
-
-but you're headed to the library. the library isn't small per se, but it's kept
-more like the personal library of a wealthy man than an elementary school
-library. it's cozy, and (just like its keeper) it's refined. as you enter, the
-librarian is attending carefully to the goings of his library. he has his
-glasses pushed down to his nose, carefully reading the label on a book from a
-stack of unsorted books on a cart. he looks up as you come in.
-
-"well hello, oliver. did you bring us another new one?" he is neither an old man
-nor a young man, but he gives off an air of...more than wisdom or
-learnedness. when he says this to you, it seems as if he already has complete
-knowledge of the situation and what's going down. 
-
-"yes, sir. his name's boon. but, um, sir, he seems to still be..._alive_..."
-
-"alive, is that right? oliver, could you fetch my other pair of glasses from my
-desk?"
-
-"yes, sir!" oliver scampers quickly to his desk and returns with the
-glasses. the librarian puts them on and takes a few steps toward boon. 
-
-"open your mouth and say 'ahhhhh'," the librarian says. boon does so, and the
-librarian replies, "well i'll be had! you're right oliver, this young man is
-suffering from an acute case of hypervivitosis. in other words -- he's alive!"
-
-"well, lad, what are you doing here?" he asks boon
-
-boon looks down, quiet, and tells the librarian the story all the way up to him
-waking up and seeing oliver over him. "i didn't mean to tattle on them. i don't
-understand why they hurt me so bad. and now...i think i'm dying."
-
-the librarian takes a thoughtful step back. his voice grows more serious. "you
-were right to bring him here, oliver. things are not right in our realm. those
-two souls have warped the fabric of the two realities."
-
-he goes on to explain: two souls recently manifested here -- the souls of the
-two boys who beat you. but, like you, something was wrong with them. they were
-still, in part, alive. they quickly became powerful, and they've taken control
-of most of this realm. in fact, only the hub remains. and now that you have
-arrived, it seems that fate itself is pulling you together.
-
-"boon, do you know how to battle?" the librarian asks
-
-"i...i'm ten..." boon replies
-
-"right, and quick as a whip you are." the librarian goes onto explain: souls
-fracture when they come to this realm. more fractured ones are not as human as
-the ones you see, but are powerful in the way a feral animal is powerful. some
-may harness them and use them to battle. i have such a fragment here -- go ahead
-and try it. and you learn to battle, et. cetera. 
-
-after you've learned the battle mechanics, the librarian says, "hm, i'm not
-surprised that you're one of the ones who can control fractured souls. mother
-fate has special plans for you, boon."
-
-"i can't say what you need to do, son. i doubt you can return to your old life,
-but it is possible that you could return to your realm. figuring out how to get
-into the sixth grade hall isn't a bad place to start -- i'm sure if you find out
-what's going on there, you'll have some clue to getting back to your realm." the
-librarian says.
-
-"but i don't know anybody here. how will i figure out how to get there?"
-
-"i have a feeling that what is meant to be will find its way to you. why don't
-you investigate? go talk to some people. i'm sure you will find something," he
-finishes with almost a smile and a wink about him. 
-
-he gives you a brief rundown of the places in the hub. 
-
-"alright? try not to worry yourself too much, son. these things have a way of
-working themselves out." the librarian says
-
-"..."
-
-"..."
-
-(i'm not sure what boon says here. something kind of whimpering)
-** finding the portal
-boon and oliver step outside the library. they take a few steps, and oliver
-stops. 
-
-"you know, i'm like that soul you have"
-
-"what?" boon asks
-
-"feral. i'm not fractured like they are, but i once was. it's been so long i can
-barely remember it, but i was, and i never fully healed. you can battle with me,
-boon. i don't know why, but it feels like the right thing to do."
-
-"okay, oliver. i don't understand this world. but if you think it's the right
-thing to do, then i'll do it."
-
-"i do. look, i don't know how we're going to get to the sixth grade hall, but
-something in me tells me we have to try! why don't we go talk to people in the
-cafeteria?"
-
-boon and oliver take the short walk over to the cafeteria. the cafeteria is a
-large room -- it's the hub of the hub, and it's really more like a town square
-than a room unto itself. it's laid out kind of like downtown mountain view. in
-the middle are a few lanes of long cafeteria tables and chairs, with different
-souls idling at them. the sides are lined with different kinds of shops -- the
-equivalent of the armory, the apothecary, places of hangout, houses. 
-
-the air is tense, slightly abuzz, with the air of an event that is not
-completely known. there are a few main clumps of people sitting at the tables. 
-
-the pair walk up to one of the clumps. there are a lot of people, and depending
-on who you talk to, you get a slightly different answer. the conversations are
-not long form here, but they are certainly not one liners. there are pieces of
-lore, pieces of humanity in all of these conversations. souls telling you how
-they died, souls bitching about their day to day problems, gossiping about the
-hall blockages. one soul tells you not to talk about getting into the halls too
-loudly. some people haven't heard anything about getting into sixth grade hall,
-one person mentions that it's a shame about that girl barbara, another says that
-it seems kind of fishy. 
-
-ultimately, boon and oliver take the hint.
-** the art room
-boon and oliver walk into the art room. it's tucked off in a far corner of the
-hub, and when you walk in it is clear that it has not been occupied in a long
-time. the lights have a low, ominous hum, and they occasionally flicker. there
-are easels and paint supplies lying around. the teacher's desk is in the front
-left corner, and is scattered with papers. there are two rows of three long
-desks, for students to work on, that are covered in half finished drawings. 
-
-"something doesn't feel right in here, sir!"
-
-"i'm not even dead and i can feel it," says boon. "and why is this place still
-an art class? the cafeteria here didn't look like the cafeteria in my world."
-
-"it's hard for me to remember, but things are different here...some things can
-change very quickly in this realm, but some things kind of, uhm, _push back_
-against change..." oliver replies
-
-"well, this place isn't very big. i can't see where this girl would be
-hiding. and besides, we don't even know if she's who we're looking for. maybe we
-should go back to the cafeteria?"
-
-"i have a funny feeling about this place! when i was alive, my daddy would tell
-me: if you want to have an adventure, keep your eyes open and be patient. well,
-let's keep our eyes open."
-
-"okay. well, let's look around then."
-
-they look around a bit. inspecting the teacher's desk shows the teacher's
-personal diary. they are dissatisfied with life. their students don't care,
-their parents don't care, they want to dedicate themselves to something real but
-the whole world just feels like bullshit. the drawings on the desks are strange,
-distorted things with the tone of words generated by gpt-3.
-
-and on the back wall, there is a large painting. it's a knot, worked in a finely
-detailed but impressionistic oil painting. the knot is loose, and it looks like
-there is a thread on the knot that would unravel the whole thing if you gave it
-a gentle tug. 
-
-boon looks at the painting and says to himself, "oh? what's this?"
-he reaches his hand out, half in a trance, and goes as if to pull on the
-knot. "it's almost as if you could undo it..."
-
-as he moves his hand down, the room begins to fuzz out. oliver asks him a
-question in passing, but he can't hear it over the growing thrumming and pulsing
-of the room. it pulses in and out like it has a beating heart of its own.
-
-"...boon....wh....you.....ing?" oliver is almost completely inaudible now
-
-boon's hand comes all the way down on the painting. the world fades out, and
-boon hears oliver yelling. but it's too late.
-
-** come take my hand
-the world warps and turns and comes down to a point, and as quickly as it
-expanded it contracts back to normal size. when boon and oliver get their
-bearings, they realize that they are not in the room they were just in. they are
-in a closet of old, forgotten paintings. chief and largest among them is the
-painting that drew boon in -- but instead of a loosely knotted piece of rope, it
-is cinched completely tight. the room is small, dark, and dusty -- it is clearly
-a storage closet of sorts, not a gallery.
+ "Lemme see your /answers/, Boon." It's O'Doyle. He's big for his age, already a
+ solid five nine, and fat to boot. His face shows the promise of acne, his
+ jawline the promise of coming in -- puberty is soon to come to him. But for now,
+ his malice is merely that of a childhood bully. Nothing so insidious as the
+ social schemes of high school. 
+
+ O'Doyle is a regular thorn in Boon's side. He's smart enough to know how to push
+ Boon's buttons -- not just some brainless mudslinger. And more importantly, he's
+ physically imposing. He's always saying some shit to him, not just isolated
+ incidents of violence. 
+
+ "..." 
+
+ Boon stares ahead intently, focused /hard/ on not reacting. He wants to get the
+ teacher's attention, but she's slumped back in her chair, dozed off reading a
+ novel with a well-oiled Scottish man on the cover.
+
+ /Just don't say anything and he'll go away/
+
+ "Come on Boon, if I don't pass the fifth grade my dad'll /beat/ me." He delivers
+ it with the quality of a joke he knows is too black for someone his age.
+
+ A soft poke comes from from Boon's other side. "Yeah, Boon, I need the answers
+ too. Heh heh." Tweedle-dee and Tweedle-dum, O'Doyle and Levi. Dynamic duos for all
+ time. Levi is a /lot/ dumber than O'Doyle, but also morbidly larger and
+ decidedly meaner.
+
+ POKE. The first one just got his attention, but the second one breaks
+ skin. "STOP," Boon can't help but cry out in pain and frustration. The teacher
+ snaps awake. 
+
+ "WHAT is going ON? You're supposed to be taking a test!"
+
+ Boon doesn't say anything -- he knows she won't punish him, but he doesn't want
+ to deal with the two of them. He puts his head down and shrugs
+ half-heartedly. O'Doyle and Levi find a sudden interest on the cement blocks on
+ the other side of the room. Mrs. Miller sees their guilt and says, "Let me speak
+ to the three of you. After class."
+
+ --- 3 PM
+
+ A bell tolls as the scene is black. It's a school bell, but it's slightly
+ dissonant.
+
+ Cut out, cut back in. Mrs. Miller is finishing up some lesson, but the bell cuts
+ her off before she has a chance to finish. Boon tries to slip out quickly, but
+ she catches him. She sits the three of them down in the front row and starts
+ asking questions. The story comes out -- she takes Boon's side, of course, as
+ the sweet, bright boy. She asks to see Boon's side, and when she sees a prick of
+ crusted over blood, she becomes serious. 
+
+ "This is worse than I thought. You realize what this means, right? This means
+ you committed a /violent act/. I have no choice but to suspend you both for a
+ week."
+
+ "A week?!", O'Doyle cries out. "But my dad's going to kill me! Please,
+ Mrs. Miller, I'll do anything, I'll even apologize to Boon here. Watch: Boon,
+ I'm sorry." 
+
+ "I'm sorry, Richard, but there's nothing I can do. It's county policy. Now you
+ kids go before the buses leave."
+
+ --- Outside the classroom
+
+ Boon hangs back for just a minute, tying his shoe more slowly than he ever has
+ before. He finally leaves, starts down the hallway, and almost makes it to the
+ bus parking lot. But he gets stopped -- by who else? And they're mad, this
+ time. 
+
+ "I'm done screwing around. I'm gonna show you what happens when you screw with
+ someone you shouldn't!"
+
+ Levi sneers at him and pushes him in the locker. O'Doyle throws a sucker punch
+ as Boon cowers back into the wall of lockers. Levi picks him up and disables
+ him by putting him in a bear hug. They walk the way they came from, past a few
+ classrooms, and stop before a janitor's closet.  
+
+ "It's Friday. Let's see how you like being suspended this weekend."
+
+ With that, he throws Boon into the closet. His vision is starting to fade. On
+ the ground, he sees Levi walk up and loom over him. He didn't realize how big he
+ was. He wonders if his dad is disappointed that he's not bigger. He wonders
+ what's for dinner. How's he going to turn his homework in tomorrow? Wait, isn't
+ tomorrow Saturday? Or is it Tuesday? He barely has time to realize that he's
+ blacking out when Levi rears his heavy, booted foot back and and gives him
+
+ One.
+
+ Last.
+
+ KICK.
+
+ "Don't mess with me."
+
+*** an indeterminate amount of time later
+ when boon comes to, he's in a room that looks exactly like the janitor's closet
+ that he blacked out in, but twisted. it's slightly degraded, it looks wrong, the
+ music is droning and warbling. 
+
+ there is  a young boy standing over him, prodding him and cooling his
+ face with a damp rag. the boy looks to be younger than boon, about ten years
+ old. he's dressed in an old time schoolboy's uniform -- jacket, necktie, tucked
+ into shorts with a pair of black oxfords and long socks. he still has a child's
+ chubbiness and red cheeks, and he speaks formally like someone of old money. he
+ introduces himself as oliver. 
+
+ he doesn't seem surprised to see you. you ask him where you are, and he replies
+ that you are in limbo. souls who cannot pass into the afterlife live on this
+ plane. in particular, souls who still have an unresolved connection to the
+ school are trapped in this place, which is the mirrored version of the school in
+ this realm. new such souls come through here pretty often, and this is the place
+ where they land. it's kind of his job to man the station and usher through any
+ new souls that come here.
+
+ "does this mean that i'm dead," you ask. normally yes, he says, but something is
+ different about you. your soul still has a physical component. even though the
+ souls here have not fully moved to the spiritual realm, they are still fully
+ composed of spirit. 
+
+ next logical question: can i get back? oliver pauses. he's not entirely sure --
+ he has never seen anyone like you come through here. but then again, there are a
+ lot of weird things going on right now. maybe we should go talk to the
+ librarian. he'll know what to do.
+*** talking to the librarian
+ you walk out of the janitor's closet into the lobby of a school. the lobby of
+ your school, in fact. but just like the closet, something is off about
+ it. moreover, it has a slight resemblance to a shanty town -- a place that's
+ been co-opted for something beyond its original purpose. it's not like a favela,
+ but it definitely has a thrown together vibe to it. you can tell that the, shall
+ we say high class souls are not who resides here. 
+
+ from the lobby, you can get to a couple places. the cafeteria has been co-opted
+ into the town square. there are shops here, there are spots of congregation (do
+ souls need to eat...?). there are a few rooms for the teachers that don't belong
+ in any particular grade -- art, music. the principal's office is there, and it
+ looks extremely ominous, like how a ten year old imagines the principal's
+ office. there's also a secretary's office, and the vice principal's office is
+ attached to it. 
+
+ but you're headed to the library. the library isn't small per se, but it's kept
+ more like the personal library of a wealthy man than an elementary school
+ library. it's cozy, and (just like its keeper) it's refined. as you enter, the
+ librarian is attending carefully to the goings of his library. he has his
+ glasses pushed down to his nose, carefully reading the label on a book from a
+ stack of unsorted books on a cart. he looks up as you come in.
+
+ "well hello, oliver. did you bring us another new one?" he is neither an old man
+ nor a young man, but he gives off an air of...more than wisdom or
+ learnedness. when he says this to you, it seems as if he already has complete
+ knowledge of the situation and what's going down. 
+
+ "yes, sir. his name's boon. but, um, sir, he seems to still be..._alive_..."
+
+ "alive, is that right? oliver, could you fetch my other pair of glasses from my
+ desk?"
+
+ "yes, sir!" oliver scampers quickly to his desk and returns with the
+ glasses. the librarian puts them on and takes a few steps toward boon. 
+
+ "open your mouth and say 'ahhhhh'," the librarian says. boon does so, and the
+ librarian replies, "well i'll be had! you're right oliver, this young man is
+ suffering from an acute case of hypervivitosis. in other words -- he's alive!"
+
+ "well, lad, what are you doing here?" he asks boon
+
+ boon looks down, quiet, and tells the librarian the story all the way up to him
+ waking up and seeing oliver over him. "i didn't mean to tattle on them. i don't
+ understand why they hurt me so bad. and now...i think i'm dying."
+
+ the librarian takes a thoughtful step back. his voice grows more serious. "you
+ were right to bring him here, oliver. things are not right in our realm. those
+ two souls have warped the fabric of the two realities."
+
+ he goes on to explain: two souls recently manifested here -- the souls of the
+ two boys who beat you. but, like you, something was wrong with them. they were
+ still, in part, alive. they quickly became powerful, and they've taken control
+ of most of this realm. in fact, only the hub remains. and now that you have
+ arrived, it seems that fate itself is pulling you together.
+
+ "boon, do you know how to battle?" the librarian asks
+
+ "i...i'm ten..." boon replies
+
+ "right, and quick as a whip you are." the librarian goes onto explain: souls
+ fracture when they come to this realm. more fractured ones are not as human as
+ the ones you see, but are powerful in the way a feral animal is powerful. some
+ may harness them and use them to battle. i have such a fragment here -- go ahead
+ and try it. and you learn to battle, et. cetera. 
+
+ after you've learned the battle mechanics, the librarian says, "hm, i'm not
+ surprised that you're one of the ones who can control fractured souls. mother
+ fate has special plans for you, boon."
+
+ "i can't say what you need to do, son. i doubt you can return to your old life,
+ but it is possible that you could return to your realm. figuring out how to get
+ into the sixth grade hall isn't a bad place to start -- i'm sure if you find out
+ what's going on there, you'll have some clue to getting back to your realm." the
+ librarian says.
+
+ "but i don't know anybody here. how will i figure out how to get there?"
+
+ "i have a feeling that what is meant to be will find its way to you. why don't
+ you investigate? go talk to some people. i'm sure you will find something," he
+ finishes with almost a smile and a wink about him. 
+
+ he gives you a brief rundown of the places in the hub. 
+
+ "alright? try not to worry yourself too much, son. these things have a way of
+ working themselves out." the librarian says
+
+ "..."
+
+ "..."
+
+ (i'm not sure what boon says here. something kind of whimpering)
+** interlude 1: barbara ann
+*** finding the portal
+ boon and oliver step outside the library. they take a few steps, and oliver
+ stops. 
+
+ "you know, i'm like that soul you have"
+
+ "what?" boon asks
+
+ "feral. i'm not fractured like they are, but i once was. it's been so long i can
+ barely remember it, but i was, and i never fully healed. you can battle with me,
+ boon. i don't know why, but it feels like the right thing to do."
+
+ "okay, oliver. i don't understand this world. but if you think it's the right
+ thing to do, then i'll do it."
+
+ "i do. look, i don't know how we're going to get to the sixth grade hall, but
+ something in me tells me we have to try! why don't we go talk to people in the
+ cafeteria?"
+
+ boon and oliver take the short walk over to the cafeteria. the cafeteria is a
+ large room -- it's the hub of the hub, and it's really more like a town square
+ than a room unto itself. it's laid out kind of like downtown mountain view. in
+ the middle are a few lanes of long cafeteria tables and chairs, with different
+ souls idling at them. the sides are lined with different kinds of shops -- the
+ equivalent of the armory, the apothecary, places of hangout, houses. 
+
+ the air is tense, slightly abuzz, with the air of an event that is not
+ completely known. there are a few main clumps of people sitting at the tables. 
+
+ the pair walk up to one of the clumps. there are a lot of people, and depending
+ on who you talk to, you get a slightly different answer. the conversations are
+ not long form here, but they are certainly not one liners. there are pieces of
+ lore, pieces of humanity in all of these conversations. souls telling you how
+ they died, souls bitching about their day to day problems, gossiping about the
+ hall blockages. one soul tells you not to talk about getting into the halls too
+ loudly. some people haven't heard anything about getting into sixth grade hall,
+ one person mentions that it's a shame about that girl barbara, another says that
+ it seems kind of fishy. 
+
+ ultimately, boon and oliver take the hint.
+*** the art room
+ boon and oliver walk into the art room. it's tucked off in a far corner of the
+ hub, and when you walk in it is clear that it has not been occupied in a long
+ time. the lights have a low, ominous hum, and they occasionally flicker. there
+ are easels and paint supplies lying around. the teacher's desk is in the front
+ left corner, and is scattered with papers. there are two rows of three long
+ desks, for students to work on, that are covered in half finished drawings. 
+
+ "something doesn't feel right in here, sir!"
+
+ "i'm not even dead and i can feel it," says boon. "and why is this place still
+ an art class? the cafeteria here didn't look like the cafeteria in my world."
+
+ "it's hard for me to remember, but things are different here...some things can
+ change very quickly in this realm, but some things kind of, uhm, _push back_
+ against change..." oliver replies
+
+ "well, this place isn't very big. i can't see where this girl would be
+ hiding. and besides, we don't even know if she's who we're looking for. maybe we
+ should go back to the cafeteria?"
+
+ "i have a funny feeling about this place! when i was alive, my daddy would tell
+ me: if you want to have an adventure, keep your eyes open and be patient. well,
+ let's keep our eyes open."
+
+ "okay. well, let's look around then."
+
+ they look around a bit. inspecting the teacher's desk shows the teacher's
+ personal diary. they are dissatisfied with life. their students don't care,
+ their parents don't care, they want to dedicate themselves to something real but
+ the whole world just feels like bullshit @polish. there are childish and
+ innocent drawings scattered around the desks. but overall, nothing sticks out as
+ overly strange.
+
+ on the back wall, there is a large painting. it's a knot, worked in a finely
+ detailed but impressionistic oil painting. the knot is loose, and it looks like
+ there is a thread on the knot that would unravel the whole thing if you gave it
+ a gentle tug. 
+
+ boon looks at the painting and says to himself, "oh? what's this?"
+ he reaches his hand out, half in a trance, and goes as if to pull on the
+ knot. "it's almost as if you could undo it..."
+
+ as he moves his hand down, the room begins to fuzz out. oliver asks him a
+ question in passing, but he can't hear it over the growing thrumming and pulsing
+ of the room. it pulses in and out like it has a beating heart of its own.
+
+ "...boon....wh....you.....ing?" oliver is almost completely inaudible now
+
+ boon's hand comes all the way down on the painting. the world warps and turns
+ and contracts to a point. boon hears oliver yelling. but it's too late, and as
+ quickly as it expanded it contracts back to normal size.
+
+*** come take my hand
+when boon and oliver get their bearings, they realize that they are not in the
+room they were just in. they are in a closet of old, forgotten paintings. chief
+and largest among them is the painting that drew boon in -- but instead of a
+loosely knotted piece of rope, it is cinched completely tight. the room is
+small, dark, and dusty -- it is clearly a storage closet of sorts, not a
+gallery.
 
 "are you alright, sir?"
 
@@ -2018,8 +2328,9 @@ voice calls from outside.
 are right now! we should stay put until...someone comes to find us. or until
 we're ready to go out."
 
-"i think we're right jammed in this one, boon. a prep school boy should be self
-sufficient and extricate (/huff/) himself from all manner (huff) of ungainly
+"i think we're right jammed in this one, boon," oliver says nervously. "a prep
+school boy should be self sufficient," he says, panic rising and convincing
+himself, "and extricate (/huff/) himself from all manner (huff) of ungainly
 (GAAAAAAASP)"
 
 "oliver? are you okay?"
@@ -2042,7 +2353,15 @@ horrifying so much as it is _wrong_. the paint cups have names like "the
 rainslick summer dreams of our dead forefathers", and "two forks gently making
 love in the moonlight", and "the lord our god laying his tendrils unto
 us". something does not make sense about this space. the papers on the teacher's
-desk now reads like an entry from bots of new york. 
+desk now reads like an entry from bots of new york e.g.
+
+"My wife can make an omelette just like a king. You’re right. She’s a little
+scary. She likes to get a little scary. But not a little scary. A little scary
+but not a little scary. A little scary but not a little scary. A little like
+this: a homeless man sleeps on the curb. A drug lord guards the grave. And a
+little scary-- an arsonist sits on the bench. Now put the lunchbox away, because
+I’m gonna be the first to tell you—it doesn’t matter how much you pound this
+shit. If my wife says it matters, you’ll fucking live for three minutes."
 
 and right by the door, there is a young woman. she looks to be about sixteen,
 and looks like she was a cheerleader in her past life: short, with a thin but
@@ -2050,7 +2369,7 @@ muscular frame, blonde hair, washed out blue eyes, and a semipermanent pout on
 her face. she looks up and down the pair, and a look of horror creeps across her
 face.
 
-"oh, jesus christ! i've been stuck here for god knows how long and then send two
+"oh, jesus christ! i've been stuck here for god knows how long and they send two
 _ten year olds_ to come get me?! have you guys even hit _puberty_ yet?"
 
 boon and oliver look at each other, surprised, and don't know what to say to
@@ -2063,7 +2382,10 @@ to save me or what?"
 grade, and we heard you used to go there a lot. but nobody could find you...so
 we went to look in the art room." oliver says
 
-"and you got sucked into here, right?" she asks
+"and you got sucked into here, right?" she asks. "by the picture of the rope?"
+
+boon nods vigorously, glad that he hasn't gone insane, and says, "right! the
+picture of the half knot!"
 
 "well, yes, we're not sure how it happened, but here we are," oliver replies
 
@@ -2072,7 +2394,122 @@ hangs until it's almost uncomfortable, and then she says
 
 "HERE YOU ARE?? i can't believe you idiots got stuck looking for me and now i
 have to take care of you" barb says
-** in knowledge, there is power
+
+"i'm sorry ma'am, but if i could be so bold as to say that boon and i have some
+experience battling. we should be more than capable of taking care of
+ourselves!" oliver says
+
+"trading card battles don't count. how the hell am i supposed to get past all
+those thugs outside when i have to babysit at the same time?" barb replies
+
+"uhm, did you say _thugs_?" boon asks
+
+"i know you said you didn't come to rescue me, but are you really that stupid?
+everyone has heard about those thugs that took over the three grade halls. well,
+wherever we are, they're here, too."
+
+"i told you we should wait for someone to come find us, oliver!", boon says
+
+"er, pardon me, ma'am, but...where _are_ we?" oliver asks
+
+"well, if i knew, i wouldn't be here to explain it to you, now would i?" barb
+snaps back
+
+"i suppose so," oliver says, prompting a glare from barb.
+
+"we have to be somewhere in the school, because otherwise all those guards
+wouldn't be here. but i've never even heard of a place like this. everything
+feels so _wrong_ here. and that thing with the painting...this is so stupid!"
+
+"are you sure there isn't any way we can wait for someone to come find us?" boon
+asks 
+
+"what's wrong with you? why do you want to sit here like a log so bad? i've been
+here forever and no one else has come around yet. it's like my dad always told
+me: if you have a problem, go solve it. i just hope you don't slow me down
+getting out of here."
+
+"uhm, ma'am, have you considered the possibility of escaping by _stealth_?"
+oliver asks
+
+"of course i have! how stupid do you think i am? but there's nowhere to hide. i
+looked around a little bit already. besides, what do you think this is, metal
+gear solid?"
+
+the three finish making plans and set out.
+*** rockin' and a-rollin'
+they walk out the door and enter...a room that looks precisely like the one they
+were just in. they question among themselves: did we just walk through a
+non-euclidean door? but no, there was no entrance door into the last room. it's
+just like this. they walk out of the little entryway and are discovered by a
+guard. once he's dispatched, boon is pretty shaky. oliver consoles him by
+telling him that it's not like he _killed_ the guard or anything, and that what
+happens to defeated souls is a bit, erm, metaphysically difficult. barb
+complains that she broke a nail.
+
+they try the door, but they feel that it's locked. barb notices that the rooms
+are subtly different, having been stuck in hers for weeks. they look around,
+they find the clues, and they open the door.
+
+@quest(chickenshit larry)
+the second room is very similar. the third room as well, though in that room
+there is a guard hiding in the broom closet. if you open it, he yells in
+terror. you can talk to him -- he's stuck here, and he can't say where here is
+exactly, but the place feels so wrong and he's _heard_ what the boss told him
+about souls who get killed twice and he's so chickenshit terrified and -- and
+you can choose to fight him or let him go (but you get experience both ways).
+
+either way, chickenshit larry tells you: these rooms go on forever. the way to
+get back is via the supply closets. they all have a special switch you can pull
+that open you back up to the portal room. he shows you the switch, whether you
+dispatch him or not. 
+
+the switch opens up a set of stairs. you walk down, and come to a large room
+that looks almost like a larger version of the storage closet you were
+in. except, instead of containing just a few put-away supplies, this looks like
+it has everything that ever passed unused through this art room. there are dusty
+canvases, paints and oils from the early ninteen hundreds, tarps over what
+appear to be huge scupltures, stacks and stacks of old paint cans. the room
+feels open, but is ultimately a long rectangle with a path through loosely
+defined by the gaps between the shit. there are three more battles here. 
+
+at the far end of the warehouse, the trio spots it: the knot painting. a third
+loop has been added to it, and it is cinched completely tight. 
+
+"well, i guess that's our way out..." boon says
+
+they walk over to the painting. but as they approach it, someone drops down as
+if from the rafters. he is a huge man, with skinny legs and a giant barrel of a
+torso. he wears a workman's clothes: overall styled dungarees, suspenders, white
+t-shirt, boots. he has a scraggly, thick mustache that peeks over his upper lip,
+and his head is shaved. his face is hard and worn. when he speaks, he booms over
+everyone and everything. his name is Charles van der Meulen, dutch immigrant
+from the thirties, took up a job working construction on 'scrapers but met an
+untimely death at the hands of a loose crane boom and several hundred feet of
+air time. @polish(could his name symbolise something? the ties that have begun
+to bind them)
+
+"i knew i'd catch you little fuckers here!"
+
+"we're just trying to get back to our realm, sir!", oliver says
+
+"right, which is how you ended up in this little honeypot we set up. the only
+way you could have ended up here is by using the fake portal to sixth grade that
+we put up over the real one", charles says
+
+the group shares a look. 
+
+"i guess you're not going to let us go, then?" boon asks
+
+"HELL NO! I'M GONNA HAMMER JACK YOU LITTLE BUGS INTO THE GROUND!! BWA HA HA HA
+HA !!!"
+
+so you battle, and the trio wins (of course). and after you battle, you get one
+of those scenes where the newly-vanquished villain speaks to you to advance the
+plot forward a bit before he keels over for good. and charles swears up and down
+that he won't open his lips about a single thing, 
+** dungeon 1: sixth grade
+*** in knowledge, there is power
 ** old notes
 Boon wakes up. He's in a place that looks like 
 
@@ -2178,7 +2615,14 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-01-13 Wed 23:00]
+CLOCK: [2021-01-18 Mon 20:12]
+CLOCK: [2021-01-17 Sun 22:20]--[2021-01-17 Sun 22:54] =>  0:34
+CLOCK: [2021-01-17 Sun 00:54]--[2021-01-17 Sun 01:55] =>  1:01
+CLOCK: [2021-01-15 Fri 16:46]--[2021-01-15 Fri 17:10] =>  0:24
+CLOCK: [2021-01-15 Fri 15:26]--[2021-01-15 Fri 16:07] =>  0:41
+CLOCK: [2021-01-15 Fri 00:25]--[2021-01-15 Fri 00:56] =>  0:31
+CLOCK: [2021-01-14 Thu 20:43]--[2021-01-14 Thu 22:07] =>  1:24
+CLOCK: [2021-01-13 Wed 23:00]--[2021-01-14 Thu 00:08] =>  1:08
 CLOCK: [2021-01-13 Wed 00:30]--[2021-01-13 Wed 00:57] =>  0:27
 CLOCK: [2021-01-12 Tue 20:15]--[2021-01-12 Tue 21:40] =>  1:25
 CLOCK: [2021-01-11 Mon 22:29]--[2021-01-11 Mon 23:33] =>  1:04
