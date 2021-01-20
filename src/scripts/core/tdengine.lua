@@ -64,12 +64,48 @@ function on_component_destroyed(cpp_ref)
 end
 
 -- Class stuff
-local function _create_class(name)
+local function include_mixin(class, mixin)
+  assert(type(mixin) == 'table', "mixin must be a table")
+
+  for name, method in pairs(mixin) do
+    if name ~= "static" then
+	  class[name] = method
+	end
+  end
+
+  for name,method in pairs(mixin.static or {}) do
+    class.static[name] = method
+  end
+
+  return class
+end
+
+local function create_class(name)
   local class = {
 	 name = name,
 	 static = {},
 	 __methods = {},
   }
+
+  -- 'self' is the class table
+  class.static.new = function(self, ...)
+	  -- Create the table we'll return to the user
+	  local instance = {}
+
+	  -- Give it a metatable
+	  local metatable = {}
+	  metatable.__index = function(tbl, key)
+		return self.__methods[key]
+	  end
+      setmetatable(instance, metatable)
+
+      return instance
+    end
+
+    class.static.include = function(self, ...)
+      for _, mixin in ipairs({...}) do include_mixin(self, mixin) end
+      return self
+    end
 
   -- Set up the class to look in its methods if it calls something that isn't a static method
   on_static_method_not_found = function(_, key)
@@ -90,48 +126,6 @@ local function _create_class(name)
 
   return class
 end
-
-local function _includeMixin(class, mixin)
-  assert(type(mixin) == 'table', "mixin must be a table")
-
-  for name, method in pairs(mixin) do
-    if name ~= "static" then
-	  class[name] = method
-	end
-  end
-
-  for name,method in pairs(mixin.static or {}) do
-    class.static[name] = method
-  end
-
-  return class
-end
-
-local class_mixin = {
-  __tostring = function(self) return 'Entity Name: ' .. tostring(self.class) end,
-   
-  static = {
-    new = function(self, ...)
-	  -- Inject the instance with basic data needed to exist as a class
-	  local instance = { class = self }
-
-	  -- Give it a metatable
-	  local metatable = self.__methods
-	  metatable.__index = function(tbl, key)
-		return self.__methods[key]
-	  end
-      setmetatable(instance, metatable)
-	  
-      return instance
-    end,
-
-    include = function(self, ...)
-      for _, mixin in ipairs({...}) do _includeMixin(self, mixin) end
-      return self
-    end
-  }
-  
-}
 
 -- tdengine functions we're injecting in for sugar
 local entity_mixin = {
@@ -198,8 +192,7 @@ local entity_mixin = {
 }
 
 function tdengine.entity(name)
-  local class = _create_class(name)
-  _includeMixin(class, class_mixin)
+  local class = create_class(name)
   class:include(entity_mixin)
   return class
 end
@@ -225,8 +218,7 @@ local component_mixin = {
 }
 
 function tdengine.component(name)
-   local class = _create_class(name)
-   _includeMixin(class, class_mixin)
+   local class = create_class(name)
    class:include(component_mixin)
    return class
 end
@@ -248,8 +240,7 @@ local action_mixin = {
 }
 
 function tdengine.action(name)
-   local class = _create_class(name)
-   _includeMixin(class, class_mixin)
+   local class = create_class(name)
    class:include(action_mixin)
    return class
 end

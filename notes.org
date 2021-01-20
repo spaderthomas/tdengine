@@ -41,7 +41,6 @@ Player = tdengine.entity('Player')
 __index is the metamethod that gets called when you key into a table but the key
 does not exist.
 *** tdengine class system
-here's how the object stuff works in lua:
 you create a class using the function _create_class(). this returns an object
 that has some metamethods that let you easily include mixins and look for
 methods. 
