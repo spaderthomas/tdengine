@@ -52,6 +52,7 @@ int LuaState::init() {
 	script_dir(RelativePath("entities"));
 	script_dir(RelativePath("components"));
 	script_dir(RelativePath("scenes"));
+	script_dir(RelativePath("actions"));
 
 	return 0;
 }

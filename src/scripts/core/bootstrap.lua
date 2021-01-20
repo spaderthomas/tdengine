@@ -9,7 +9,9 @@ function tdengine.bootstrap()
    -- Set up globals
    tdengine.entities = {}
    tdengine.components = {}
+   tdengine.actions = {}
    tdengine.loaded_scene = ''
+   tdengine.active_cutscene = nil
 
    -- Set up console shortcuts
    tdengine.console_pipe = ''
@@ -17,6 +19,10 @@ function tdengine.bootstrap()
 	  scene = {
 		 help = 'load a scene from a file located in src/scripts/scenes',
 		 proc = tdengine.load_scene
+	  },
+	  cutscene = {
+		 help = 'load and begin a cutscene from a file located in src/scripts/cutscenes',
+		 proc = tdengine.begin_cutscene
 	  }
    }
    console_shortcuts.list = {

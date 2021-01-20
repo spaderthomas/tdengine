@@ -53,3 +53,8 @@ struct ComponentManager {
 	void destroy_component(int id);
 };
 ComponentManager& get_component_manager();
+
+struct CutsceneManager {
+	void update(float dt);
+};
+CutsceneManager& get_cutscene_manager();

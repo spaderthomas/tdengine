@@ -230,3 +230,18 @@ void EntityManager::destroy_entity(int id) {
 
 	entities.erase(id);
 }
+
+CutsceneManager& get_cutscene_manager() {
+	static CutsceneManager manager;
+	return manager;
+}
+
+void CutsceneManager::update(float dt) {
+	sol::protected_function update_cutscene = Lua.state["tdengine"]["update_cutscene"];
+	auto result = update_cutscene(dt);
+	if (!result.valid()) {
+		sol::error error = result;
+		tdns_log.write("Failed to update cutscene."); // @log
+		tdns_log.write(error.what());
+	}
+}

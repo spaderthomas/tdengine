@@ -246,8 +246,10 @@ void  Console::ExecCommand(char* command_line)
 	try {
 		Lua.state.safe_script(command_line);
 		std::string result = Lua.state["tdengine"]["console_pipe"];
-		std::cout << "got result: " << result << std::endl;
-		AddLog(result.c_str());
+		if (!result.empty()) {
+			AddLog(result.c_str());
+		}
+		Lua.state["tdengine"]["console_pipe"] = "";
 	} catch (const sol::error& error) {
 		AddLog("Command failed; check the terminal or the log for more information");
 		tdns_log.write(error.what());

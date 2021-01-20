@@ -16,12 +16,55 @@ RULE #6: your gut is an excellent performance tool
 
 RULE #7: anything is possible
 * tags
+Tags in the plot stuff
 @boon: places where i could expand on the main character
 @polish: places where i only drew a negative
 @quest: places in the story where quests occur
+
+Tags in my notes about code
+@render_refactor
+@lua_init: how globals get setup
+
+Tags in the code itself
+@bootstrap: places i can clean up initialization
+@log: places i can improve or even just DO logging
 * todo
 @render_refactor
 Stop baking texture atlases, texture coordinates, etc on startup. 
+
+@lua_init
+Stop storing entity classes as part of the global table, e.g:
+Player = tdengine.entity('Player')
+* learn
+** lua
+*** metamethods
+__index is the metamethod that gets called when you key into a table but the key
+does not exist.
+*** tdengine class system
+here's how the object stuff works in lua:
+you create a class using the function _create_class(). this returns an object
+that has some metamethods that let you easily include mixins and look for
+methods. 
+
+the table it returns has three fields:
+1. static, which contains class static methods
+2. __methods, which contains any user defined methods (...or members)
+3. name
+
+the metatable has three metamethods:
+1. __newindex, which says that any new keys (i.e. anything you the class-writer
+   add) goes into the field __methods. we do this so we have one consolidated
+   place where all user fields go, for if we need to look em up.
+2. __index, which says to check the static methods table first
+3. __tostring
+
+the last important thing: if the class' __index says to look in static methods,
+how do we ever call a user-defined method? the answer is that the class' static
+method table also has a metatable, which says simply that if you can't find the
+static method, look in the user-defined message. so if a method is called, we
+assume it is a static method, and if it is not we check the user defined
+methods.
+
 * pin
 ** demo code tasks
 - a fade-in / depixelate shader (for waking up)
@@ -1952,7 +1995,7 @@ work:
 
 i need to have cutscenes. so just these little scenes where there is no player
 control, but there is dialogue, and people can maybe walk around. 
-** 01/18/2021
+** 01/18/2021: [code] cutscenes 1
 gonna skip making the intro intro aka the part in the physical world. gonna
 start coding from when you wake up in the closet. shader can wait. so i need to
 make a really simple cutscene. compose a few simple actions.
@@ -1975,6 +2018,44 @@ make a really simple cutscene. compose a few simple actions.
 
 quality of life stuff:
 - list out all commands baked into the console
+
+ok so for the cutscenes, just having it as data is pretty silly. i'm going to be
+writing them all by hand (not in the editor like i would dragging stuff around
+and making bounding boxes). it needs to be defined as a graph of actions --
+that's a really simple way to put it and also accurate. a directed graph of
+actions. if a node is your parent, then it must finish before you can begin. i
+don't think you need coroutines to make it nice. 
+
+so actually. maybe data isn't so silly after all? so 90% of my stuff is going to
+be dialogue, playing sounds, playing animations, and walking around. those can
+be controlled very easily with basic parameters. what entity, what sound, where
+to, how long, et cetera. and then you can have another basic action type to
+compound stuff together, plus delay, that's seriously 95% of the stuff i can
+think of right now. you can have parallel things by a simple flag that says
+'don't block', you can have parallel with sync points with a compound
+action. and if you need a custom action, just write a class like you write all
+the "built in" ones and add it the same way in the cutscene
+** 01/18/2021: [code] cutscenes 2
+data data data. it's the same thing as code anyway, just sugar that works from
+the editor. so today i need to start writing the infra to run the cutscenes. 
+
+- a class in lua, like the entity class, that actions will use. 
+- generic update code, that looks at the current cutscene and runs the next
+  actions etc. 
+
+where does the generic update code go? everything updates thru the engines in
+C++ now. physics, entities, renderer. do i need any of this stuff to live in
+C++? i was actually thinking whether actions need to be entities. the only thing
+"being an entity" does for you:
+- you have a unique ID
+- you can attach components
+- you are updated every frame
+
+i don't care if the actions have an ID. i don't want them to attach
+components. i do want to update them, but in the context of a different kind of
+logic -- not just for each { update(); }. think i just wanna call into some lua
+function. 
+
 * plot
 ** intro
 *** an introduction!
@@ -2615,7 +2696,9 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-01-18 Mon 20:12]
+CLOCK: [2021-01-19 Tue 21:55]
+CLOCK: [2021-01-18 Mon 23:02]--[2021-01-19 Tue 00:19] =>  1:17
+CLOCK: [2021-01-18 Mon 20:30]--[2021-01-18 Mon 21:39] =>  1:09
 CLOCK: [2021-01-17 Sun 22:20]--[2021-01-17 Sun 22:54] =>  0:34
 CLOCK: [2021-01-17 Sun 00:54]--[2021-01-17 Sun 01:55] =>  1:01
 CLOCK: [2021-01-15 Fri 16:46]--[2021-01-15 Fri 17:10] =>  0:24

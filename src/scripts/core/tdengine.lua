@@ -63,7 +63,6 @@ function on_component_destroyed(cpp_ref)
    tdengine.components[cpp_ref:get_id()] = nil
 end
 
-
 -- Class stuff
 local function _create_class(name)
   local class = {
@@ -92,37 +91,34 @@ local function _create_class(name)
   return class
 end
 
-local function _includeMixin(aClass, mixin)
+local function _includeMixin(class, mixin)
   assert(type(mixin) == 'table', "mixin must be a table")
 
   for name, method in pairs(mixin) do
-    if name ~= "included" and name ~= "static" then
-	  aClass[name] = method
+    if name ~= "static" then
+	  class[name] = method
 	end
   end
 
   for name,method in pairs(mixin.static or {}) do
-    aClass.static[name] = method
+    class.static[name] = method
   end
 
-  if type(mixin.included)=="function" then
-	mixin:included(aClass)
-  end
-  return aClass
+  return class
 end
 
 local class_mixin = {
-  __tostring   = function(self) return 'Entity Name: ' .. tostring(self.class) end,
-  
+  __tostring = function(self) return 'Entity Name: ' .. tostring(self.class) end,
+   
   static = {
     new = function(self, ...)
 	  -- Inject the instance with basic data needed to exist as a class
 	  local instance = { class = self }
 
-	  -- Give it a 
+	  -- Give it a metatable
 	  local metatable = self.__methods
 	  metatable.__index = function(tbl, key)
-		return _G[self.name].__methods[key]
+		return self.__methods[key]
 	  end
       setmetatable(instance, metatable)
 	  
@@ -232,6 +228,29 @@ function tdengine.component(name)
    local class = _create_class(name)
    _includeMixin(class, class_mixin)
    class:include(component_mixin)
+   return class
+end
+
+local action_mixin = {
+  add_imgui_ignore = function(self, member_name)
+	 self.imgui_ignore[member_name] = true
+  end,
+  remove_imgui_ignore = function(self, member_name)
+	 self.imgui_ignore[member_name] = false
+  end,
+  block = true,
+  done = false,
+  imgui_ignore = {
+	 class = true,
+	 parent = true,
+	 imgui_ignore = true
+  }
+}
+
+function tdengine.action(name)
+   local class = _create_class(name)
+   _includeMixin(class, class_mixin)
+   class:include(action_mixin)
    return class
 end
 
@@ -416,4 +435,51 @@ end
 function tdengine.ray_cast(x, y)
    local id = tdengine.internal.ray_cast(x, y)
    return tdengine.entities[id]
+end
+
+function tdengine.begin_cutscene(name)
+   print('begin_cutscene(): start')
+   local module_path = 'cutscenes/' .. name
+   package.loaded[module_path] = nil
+   local cutscene = require(module_path)
+
+   print('begin_cutscene(): boutta loop')
+   tdengine.active_cutscene = {
+	  name = name,
+	  actions = {}
+   }
+   for index, data in pairs(cutscene) do
+	  ActionType = tdengine.actions[data.name]
+	  if ActionType ~= nil then
+		 print('begin_cutscene(): boutta new')
+		 local action = ActionType:new()
+		 print('begin_cutscene(): boutta init')
+		 print(inspect(action))
+		 action:init(data)
+		 tdengine.active_cutscene.actions[index] = action
+	  end
+   end
+end
+
+function tdengine.update_cutscene(dt)
+   if tdengine.active_cutscene == nil then
+	  return
+   end
+
+   local updated = false
+   for index, action in pairs(tdengine.active_cutscene.actions) do
+	  if not action.done then
+		 action:update(dt)
+		 updated = true
+		 
+		 if action.block then
+			break
+		 end
+	  end
+   end
+
+   if not updated then
+	  print('update_cutscene(): finished ' .. tdengine.active_cutscene.name)
+	  tdengine.active_cutscene = nil
+   end
 end
