@@ -15,7 +15,7 @@ return {
 	      'spader_walk_down6.png'
 		}
 	  },
-	  current = 'spader_walk_down'
+	  current = 'spader_stand'
 	},
 	Physics = {},
 	Position = {},

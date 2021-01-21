@@ -40,6 +40,9 @@ Player = tdengine.entity('Player')
 *** metamethods
 __index is the metamethod that gets called when you key into a table but the key
 does not exist.
+*** nil
+important: Lua tables make no distinction between a table value being nil and
+the corresponding key not existing in the table
 *** tdengine class system
 you create a class using the function _create_class(). this returns an object
 that has some metamethods that let you easily include mixins and look for
@@ -57,13 +60,26 @@ the metatable has three metamethods:
 2. __index, which says to check the static methods table first
 3. __tostring
 
+calling a method through dot syntax:
 the last important thing: if the class' __index says to look in static methods,
 how do we ever call a user-defined method? the answer is that the class' static
 method table also has a metatable, which says simply that if you can't find the
 static method, look in the user-defined message. so if a method is called, we
 assume it is a static method, and if it is not we check the user defined
 methods.
+**** what does new() do?
+instances are created with new(), which is a static method on the class. 
 
+all this function does is return a table that has a custom __index
+metamethod. the index function says to look inside the class table's __methods
+table when you cannot find a key on the class.
+**** where are members stored?
+members defined on the class (like methods) will be stored on the class table's
+__methods. they are not visible through inspect, since they are found and called
+through metafunctions.
+
+members defined on instances (like doing self.key = value) will be stored on the
+instance table itself.
 * pin
 ** demo code tasks
 - a fade-in / depixelate shader (for waking up)
@@ -2034,7 +2050,7 @@ think of right now. you can have parallel things by a simple flag that says
 'don't block', you can have parallel with sync points with a compound
 action. and if you need a custom action, just write a class like you write all
 the "built in" ones and add it the same way in the cutscene
-** 01/18/2021: [code] cutscenes 2
+** 01/19/2021: [code] cutscenes 2
 data data data. it's the same thing as code anyway, just sugar that works from
 the editor. so today i need to start writing the infra to run the cutscenes. 
 
@@ -2055,6 +2071,34 @@ components. i do want to update them, but in the context of a different kind of
 logic -- not just for each { update(); }. think i just wanna call into some lua
 function. 
 
+random notes:
+dialogue -- store each node as its own lua file and then the trees are very easy
+to compose
+cutscenes are triggered by simple entities with a bounding box that, when
+collided with, calls begin_cutscene()
+begin_cutscene needs to redirect input
+** 01/20/2021: [code] cutscenes 3
+workflow. making a new scene here. here's what i'm doing:
+- create a 1920 x 1080 background image
+- create a scene file with a background
+- draw geometry on the background
+- save the background
+- manually add other kinds of entities by hand-editing the file
+
+need to be able to undo adding geometry
+adding entities through the editor would be quite nice
+
+do...all the olivers need to be the same? like in a cutscene...i want to have
+"oliver" in the sense that it has his sprite, but like any of the "oliver"
+behavior do i really want that? what does an oliver even mean? does it make
+sense to have one script that is "oliver" -- i guess that would just contain his
+animations? 
+
+- saving doesn't work -- it nulled out a bunch of fields for the
+  background. guessing that some component doesn't have save implemented
+  correctly. 
+- i really need to be able to drag around arbitrary entities. i can already
+  select them, so this should be pretty easy. 
 * plot
 ** intro
 *** an introduction!
@@ -2695,7 +2739,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-01-19 Tue 21:55]
+CLOCK: [2021-01-20 Wed 22:00]--[2021-01-20 Wed 23:57] =>  1:57
+CLOCK: [2021-01-19 Tue 21:55]--[2021-01-20 Wed 00:01] =>  2:06
 CLOCK: [2021-01-18 Mon 23:02]--[2021-01-19 Tue 00:19] =>  1:17
 CLOCK: [2021-01-18 Mon 20:30]--[2021-01-18 Mon 21:39] =>  1:09
 CLOCK: [2021-01-17 Sun 22:20]--[2021-01-17 Sun 22:54] =>  0:34

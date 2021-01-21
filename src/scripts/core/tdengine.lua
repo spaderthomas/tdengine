@@ -428,40 +428,40 @@ function tdengine.ray_cast(x, y)
    return tdengine.entities[id]
 end
 
+function tdengine.create_action(name, params)
+   ActionType = tdengine.actions[name]
+   if ActionType ~= nil then
+	  local action = ActionType:new()
+	  action:init(params)
+	  return action
+   else
+	  print('create_action(): could not find action: ' .. name)
+   end
+
+   return nil
+end
+
 function tdengine.begin_cutscene(name)
-   print('begin_cutscene(): start')
    local module_path = 'cutscenes/' .. name
    package.loaded[module_path] = nil
    local cutscene = require(module_path)
 
-   print('begin_cutscene(): boutta loop')
    tdengine.active_cutscene = {
 	  name = name,
 	  actions = {}
    }
    for index, data in pairs(cutscene) do
-	  ActionType = tdengine.actions[data.name]
-	  if ActionType ~= nil then
-		 print('begin_cutscene(): boutta new')
-		 local action = ActionType:new()
-		 print('begin_cutscene(): boutta init')
-		 print(inspect(action))
-		 action:init(data)
-		 tdengine.active_cutscene.actions[index] = action
-	  end
+	  local action = tdengine.create_action(data.name, data)
+	  tdengine.active_cutscene.actions[index] = action
    end
 end
 
-function tdengine.update_cutscene(dt)
-   if tdengine.active_cutscene == nil then
-	  return
-   end
-
-   local updated = false
-   for index, action in pairs(tdengine.active_cutscene.actions) do
+function tdengine.update_actions(dt, actions)
+   local done = true
+   for index, action in pairs(actions) do
 	  if not action.done then
 		 action:update(dt)
-		 updated = true
+		 done = false
 		 
 		 if action.block then
 			break
@@ -469,7 +469,16 @@ function tdengine.update_cutscene(dt)
 	  end
    end
 
-   if not updated then
+   return done
+end
+
+function tdengine.update_cutscene(dt)
+   if tdengine.active_cutscene == nil then
+	  return
+   end
+
+   local done = tdengine.update_actions(dt, tdengine.active_cutscene.actions)
+   if done then
 	  print('update_cutscene(): finished ' .. tdengine.active_cutscene.name)
 	  tdengine.active_cutscene = nil
    end

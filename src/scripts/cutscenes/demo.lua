@@ -6,15 +6,15 @@ return {
    },
    {
 	  name = 'Delay',
-	  time = 1000
+	  time = 1
    },
    {
 	  name = 'FadeIn',
-	  time = 3000
+	  time = 3
    },
    {
 	  name = 'Delay',
-	  time = 3000
+	  time = 1
    },
    {
 	  name = 'Compound',

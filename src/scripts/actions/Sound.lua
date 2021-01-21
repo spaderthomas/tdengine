@@ -1,13 +1,11 @@
 local Sound = tdengine.action('Sound')
 
 function Sound:init(params)
-   print('sound:init()')
-   print('sound is: ' .. params.sound)
-   self.wait = params.wait or false
+   self.loop = params.loop or false
 end
 
 function Sound:update(dt)
-   print('sound:update()')
+   self.done = true
 end
 
 tdengine.actions.Sound = Sound
