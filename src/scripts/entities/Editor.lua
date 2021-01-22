@@ -24,11 +24,13 @@ function Editor:init()
 	 show_framerate = false
   }
   
-  self.selected = nil
   self.state = EditState.Idle
+  
+  self.selected = nil
+  self.position_when_selected = { x = 0, y = 0 }
 
   -- Stored as screen coordinates, converted to world when we submit the geometry
-  self.geometry_start = { x = 0, y = 0 }
+  self.last_click = { x = 0, y = 0 }
   
   self.filter = imgui.TextFilter.new()
   self.id_filter = imgui.TextFilter.new()
@@ -70,30 +72,26 @@ function Editor:update(dt)
   self:do_geometry()
 
   local input = self:get_component('Input')
+  
+  -- In Idle, we check for any clicks that would select an entity
   if self.state == EditState.Idle then
-	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
-		print('click')
-		local cursor = { x = tdengine.get_cursor_x(), y = tdengine.get_cursor_y() }
-		cursor = tdengine.screen_to_world(cursor)
-		
-		self.selected = tdengine.ray_cast(cursor.x, cursor.y)
-		if self.selected ~= nil then
-		   print('you selected ' .. selected:get_name())
-		   self.state = EditState.HoldingSelection
-		   
-		   local graphic = self.selected:get_component('Graphic')
-		   if graphic ~= nil then
-			  graphic.flags = 1
-		   end
-		end
-	 end
+	 self:check_for_new_selection()
+  -- In Selected, we also check for any clicks that would select an entity
+  elseif self.state == EditState.Selected then
+	 self:check_for_new_selection()
+  -- If we're holding the selection, try to drag it
   elseif self.state == EditState.HoldingSelection then
-	 if not input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
+	 if input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
+		local diff = self:get_mouse_vector()
+		local new_position = {
+		   x = self.position_when_selected.x + diff.x,
+		   y = self.position_when_selected.y + diff.y
+		}
+		tdengine.teleport_entity(self.selected:get_id(), new_position.x, new_position.y)
+	 else
 		self.state = EditState.Selected
 		print('You let go of the left mouse button')
 	 end
-  elseif self.state == EditState.Selected then
-	 
   end
 end
 
@@ -102,17 +100,17 @@ function Editor:do_geometry()
 
    if self.state == EditState.ReadyToDrawGeometry then
   	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
-	 	self.geometry_start.x = tdengine.get_cursor_x()
-	 	self.geometry_start.y = tdengine.get_cursor_y()
+	 	self.last_click.x = tdengine.get_cursor_x()
+	 	self.last_click.y = tdengine.get_cursor_y()
 		self.state = EditState.DrawingGeometry
 	 end
   elseif self.state == EditState.DrawingGeometry then
      if input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
-	    local rect = self:get_rect()
+	    local rect = self:get_mouse_rect()
 	    tdengine.draw.rect_outline_screen(rect, tdengine.colors.red)
   	 else
 		local box = self:create_entity('Box')
-		local rect = self:get_rect()
+		local rect = self:get_mouse_rect()
 		
 		local aabb = box:get_component('BoundingBox')
 		aabb.extents = rect.extents
@@ -122,8 +120,8 @@ function Editor:do_geometry()
 		tdengine.teleport_entity(box:get_id(), position.x, position.y)
 		
 		self.state = EditState.Idle
-		self.geometry_start.x = 0
-		self.geometry_start.y = 0
+		self.last_click.x = 0
+		self.last_click.y = 0
 	 end
   end
 end
@@ -182,6 +180,45 @@ function Editor:adjust_camera()
   tdengine.move_camera(offset.x, offset.y)
 end
 
+function Editor:check_for_new_selection()
+   local input = self:get_component('Input')
+
+   if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
+	  local cursor = tdengine.cursor()
+	  cursor = tdengine.screen_to_world(cursor)
+
+	  -- Deselect whatever is already selected, whether this click hit anything
+	  -- or not
+	  if self.selected ~= nil then
+		 local graphic = self.selected:get_component('Graphic')
+		 if graphic ~= nil then
+			graphic.flags = 0
+		 end
+	  end
+
+	  self.selected = tdengine.ray_cast(cursor.x, cursor.y)
+	  if self.selected ~= nil then
+		 self.state = EditState.HoldingSelection
+		 self.last_click = tdengine.cursor()
+
+		 -- Mark down where it was when we clicked it, so we can drag it
+		 local position = self.selected:get_component('Position')
+		 if position ~= nil then
+			self.position_when_selected = {
+			   x = position.world.x,
+			   y = position.world.y
+			}
+		 end
+
+		 -- Highlight it (should use bitwise ops to toggle this)
+		 local graphic = self.selected:get_component('Graphic')
+		 if graphic ~= nil then
+			graphic.flags = 1
+		 end
+	  end
+   end
+end
+
 function Editor:draw_tools()
   if imgui.Button("Add Geometry") then
   	 local input = self:get_component('Input')
@@ -218,15 +255,22 @@ function Editor:draw_selected_view()
    end
 end
 
-function Editor:get_rect()
+function Editor:get_mouse_rect()
    return {
       extents = {
-	     x = math.abs(tdengine.get_cursor_x() - self.geometry_start.x),
-		 y = math.abs(tdengine.get_cursor_y() - self.geometry_start.y)
+	     x = math.abs(tdengine.get_cursor_x() - self.last_click.x),
+		 y = math.abs(tdengine.get_cursor_y() - self.last_click.y)
 	  },
 	  origin = {
-	     x = (tdengine.get_cursor_x() + self.geometry_start.x) / 2,
-	     y = (tdengine.get_cursor_y() + self.geometry_start.y) / 2
+	     x = (tdengine.get_cursor_x() + self.last_click.x) / 2,
+	     y = (tdengine.get_cursor_y() + self.last_click.y) / 2
 	  }
+   }
+end
+
+function Editor:get_mouse_vector()
+   return {
+	  x = tdengine.get_cursor_x() - self.last_click.x,
+	  y = tdengine.get_cursor_y() - self.last_click.y
    }
 end

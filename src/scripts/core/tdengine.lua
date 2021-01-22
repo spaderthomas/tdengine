@@ -466,6 +466,13 @@ function tdengine.ray_cast(x, y)
    return tdengine.entities[id]
 end
 
+function tdengine.cursor()
+   return {
+	  x = tdengine.get_cursor_x(),
+	  y = tdengine.get_cursor_y()
+   }
+end
+
 function tdengine.create_action(name, params)
    ActionType = tdengine.actions[name]
    if ActionType ~= nil then
