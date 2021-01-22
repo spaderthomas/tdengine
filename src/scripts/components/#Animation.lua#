@@ -3,7 +3,7 @@ local DEFAULT_FRAME_TIME = 8 / 60
 Animation = tdengine.component('Animation')
 function Animation:load(data)
    self.animations = data.animations or {}
-   self:batch_add(self.animations)
+   self:batch_add(self.xnimations)
 
    self.current = ''
    local current = data.current or nil

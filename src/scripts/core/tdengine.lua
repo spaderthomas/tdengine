@@ -324,11 +324,22 @@ function tdengine.save_scene(name)
 	  for index, entity in pairs(tdengine.entities) do
 		 do_not_save = entity.tdengine_do_not_save or false
 		 if not do_not_save then
+			-- Insert some basic fields that every entity has
 			local saved = {
 			   name = entity:get_name(),
 			   components = {}
 			}
-			
+
+			-- If the entity has some custom save logic, call it first. It will
+			-- return a table which we merge into the main table for this entity
+			if entity.save then
+			   local extra = entity:save()
+			   for key, value in pairs(extra) do
+				  saved[key] = value
+			   end
+			end
+
+			-- Save out all components
 			local components = entity:all_components()
 			for index, component in pairs(components) do
 			   if component.save then

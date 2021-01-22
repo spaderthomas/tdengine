@@ -3,19 +3,19 @@ return {
 	Graphic = {},
     Animation = {
 	  animations = {
-	    spader_stand = {
-		  'spader_stand_1.png'
+	    boon_stand = {
+		  'boon_stand_001.png'
 		},
-		spader_walk_down = {
-		  'spader_walk_down1.png',
-	      'spader_walk_down2.png',
-	      'spader_walk_down3.png',
-	      'spader_walk_down4.png',
-	      'spader_walk_down5.png',
-	      'spader_walk_down6.png'
+		boon_walk_down = {
+		  'boon_walkdown_001.png',
+	      'boon_walkdown_002.png',
+	      'boon_walkdown_003.png',
+	      'boon_walkdown_004.png',
+	      'boon_walkdown_005.png',
+	      'boon_walkdown_006.png'
 		}
 	  },
-	  current = 'spader_stand'
+	  current = 'boon_stand'
 	},
 	Physics = {},
 	Position = {},

@@ -1,21 +1,19 @@
 return {
-  entities = {
-    {
+   entities = {
+   {
       components = {
-        Animation = {
-          animations = {
-            bg_intro = {
-              "bg_intro.png"
-            }
-          },
-          current = "bg_intro"
-        },
         Position = {
           world = {
             x = 3,
             y = 3
           }
-        }
+        },
+		Animation = {
+		   animations = {
+			  bg_intro = { 'bg_intro.png' }
+		   },
+		   current = 'bg_intro'
+		}
       },
       name = "Background"
     },
@@ -80,14 +78,14 @@ return {
         },
         Position = {
           world = {
-            x = 0.1874813437461853,
-            y = 0.41932055354118347
+            x = 0.19848126173019409,
+            y = 0.20032094419002533
           }
         }
       },
       name = "Player"
     },
-    {
+	{
       components = {
         BoundingBox = {
           extents = {
