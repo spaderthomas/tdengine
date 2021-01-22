@@ -80,14 +80,22 @@ local function include_mixin(class, mixin)
   return class
 end
 
-local function create_class(name)
-  local class = {
-	 name = name,
-	 static = {},
-	 __methods = {},
-  }
-
-  -- 'self' is the class table
+-- Goal: When you update a method and save it, make it so that re-scripting the file
+-- will automatically update the method in all instances.
+-- To do this, we need to have __index route all method calls to the most current
+-- version of the class. That could be in a couple of places, depending on the class
+-- type: _G for entities and components, and tdengine.actions for actions.
+local function add_new_to_class(class, class_parent)
+   local parent = {}
+   if class_parent == 'Entity' then
+	  parent = _G
+   end
+   if class_parent == 'Component' then
+	  parent = _G
+   end
+   if class_parent == 'Action' then
+	  parent = tdengine.actions
+   end
   class.static.new = function(self, ...)
 	  -- Create the table we'll return to the user
 	  local instance = {}
@@ -95,17 +103,31 @@ local function create_class(name)
 	  -- Give it a metatable
 	  local metatable = {}
 	  metatable.__index = function(tbl, key)
-		return self.__methods[key]
+		 -- It's important that we look this up in the global namespace, because
+		 -- whenever we save the file and re-script it, it will show back up there.
+		 -- If we just used 'class' or 'self', that change wouldn't propagate.
+		 return parent[self.name].__methods[key]
 	  end
       setmetatable(instance, metatable)
 
       return instance
     end
+end
 
-    class.static.include = function(self, ...)
-      for _, mixin in ipairs({...}) do include_mixin(self, mixin) end
-      return self
-    end
+local function create_class(name)
+  local class = {
+	 name = name,
+	 static = {},
+	 __methods = {},
+  }
+
+  -- Allow the class to include mixins. Do not use 'class' as the parameter, because
+  -- this will be called like ClassName:include(), and could be called multiple
+  -- times
+  class.static.include = function(class_table, ...)
+	 for _, mixin in ipairs({...}) do include_mixin(class_table, mixin) end
+	 return self
+  end
 
   -- Set up the class to look in its methods if it calls something that isn't a static method
   on_static_method_not_found = function(_, key)
@@ -120,7 +142,9 @@ local function create_class(name)
   local metatable = {
 	__index = class.static,
 	__tostring = function(self) return self.name end,
-	__newindex = function(class, method_name, method) class.__methods[method_name] = method end
+	__newindex = function(class, method_name, method)
+	   class.__methods[method_name] = method
+	end
   }
   setmetatable(class, metatable)
 
@@ -193,6 +217,7 @@ local entity_mixin = {
 
 function tdengine.entity(name)
   local class = create_class(name)
+  add_new_to_class(class, 'Entity')
   class:include(entity_mixin)
   return class
 end
@@ -218,9 +243,10 @@ local component_mixin = {
 }
 
 function tdengine.component(name)
-   local class = create_class(name)
-   class:include(component_mixin)
-   return class
+  local class = create_class(name)
+  add_new_to_class(class, 'Component')
+  class:include(component_mixin)
+  return class
 end
 
 local action_mixin = {
@@ -241,6 +267,7 @@ local action_mixin = {
 
 function tdengine.action(name)
    local class = create_class(name)
+   add_new_to_class(class, 'Action')
    class:include(action_mixin)
    return class
 end

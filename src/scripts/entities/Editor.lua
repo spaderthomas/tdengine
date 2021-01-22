@@ -3,9 +3,8 @@ local inspect = require('inspect')
 
 local EditState = {
   Idle = 'Idle',
-  Insert = 'Insert',
-  Edit = 'Edit',
-  Drag = 'Drag',
+  Selected = 'Selected',
+  HoldingSelection = 'HoldingSelection', 
   RectangleSelect = 'RectangleSelect',
   ReadyToDrawGeometry = 'ReadyToDrawGeometry',
   DrawingGeometry = 'DrawingGeometry',
@@ -73,16 +72,28 @@ function Editor:update(dt)
   local input = self:get_component('Input')
   if self.state == EditState.Idle then
 	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
-		local rect = { x = tdengine.get_cursor_x(), y = tdengine.get_cursor_y() }
-		rect = tdengine.screen_to_world(rect)
-		self.selected = tdengine.ray_cast(rect.x, rect.y)
+		print('click')
+		local cursor = { x = tdengine.get_cursor_x(), y = tdengine.get_cursor_y() }
+		cursor = tdengine.screen_to_world(cursor)
+		
+		self.selected = tdengine.ray_cast(cursor.x, cursor.y)
 		if self.selected ~= nil then
+		   print('you selected ' .. selected:get_name())
+		   self.state = EditState.HoldingSelection
+		   
 		   local graphic = self.selected:get_component('Graphic')
 		   if graphic ~= nil then
 			  graphic.flags = 1
 		   end
 		end
 	 end
+  elseif self.state == EditState.HoldingSelection then
+	 if not input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
+		self.state = EditState.Selected
+		print('You let go of the left mouse button')
+	 end
+  elseif self.state == EditState.Selected then
+	 
   end
 end
 
@@ -116,6 +127,7 @@ function Editor:do_geometry()
 	 end
   end
 end
+
 function Editor:calculate_framerate()
    local framerate = tdengine.framerate or 0
    self.average_framerate = self.average_framerate * .5
