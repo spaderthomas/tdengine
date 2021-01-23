@@ -9,6 +9,22 @@ function update_component(id, dt)
    component:update(dt)
 end
 
+function tdengine.find_entity(name)
+   for id, entity in pairs(tdengine.entities) do
+	  if entity:get_name() == name then
+		 return entity
+	  end
+   end
+
+   return nil
+end
+
+function tdengine.find_entity_by_id(name)
+end
+
+function tdengine.find_entity_by_descriptor(name)
+end
+
 function on_entity_created(cpp_ref)
    -- Find the matching type in Lua
    EntityType = _G[cpp_ref:get_name()]
@@ -229,6 +245,11 @@ local component_mixin = {
   get_id = function(self)
 	return Component["get_id"](self.cpp_ref)
   end,
+  do_if_parent_is = function(self, parent, f, ...)
+	 if self.parent:get_name() == parent then
+		f(...)
+	 end
+  end,
   add_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = true
   end,
@@ -379,7 +400,6 @@ function tdengine.save_scene(name)
 	  end
 
 	  local serpent = require('serpent')
-	  print(serpent.block(save, { comment = false }))
 	  file:write('return ')
 	  file:write(serpent.block(save, { comment = false }))
    end
@@ -473,10 +493,22 @@ function tdengine.cursor()
    }
 end
 
+function contains(t, k)
+   return t[k] ~= nil
+end
+
+function ternary(cond, a, b)
+   if cond then return a else return b end
+end
+
 function tdengine.create_action(name, params)
    ActionType = tdengine.actions[name]
    if ActionType ~= nil then
 	  local action = ActionType:new()
+	  if contains(params, 'block') then
+		 action.block = params.block
+	  end
+	  
 	  action:init(params)
 	  return action
    else
@@ -507,7 +539,7 @@ function tdengine.update_actions(dt, actions)
 	  if not action.done then
 		 action:update(dt)
 		 done = false
-		 
+
 		 if action.block then
 			break
 		 end

@@ -5,10 +5,15 @@ function Animation:load(data)
    self.animations = data.animations or {}
    self:batch_add(self.animations)
 
+   self.loop = true
+   self.done = false
+
    self.current = ''
+   self.last = ''
    local current = data.current or nil
    if current then
 	  self.current = current
+	  self.last = current
 	  self:begin(self.current)
    end
 end
@@ -31,7 +36,27 @@ end
 function Animation:update(dt)
    self.time_to_next = self.time_to_next - dt
    if self.time_to_next <= 0 then
-	  self:advance_frame()
+	  local frames = tdengine.get_frames(self.current)
+	  if self.loop then
+		 if (self.frame + 1) >= #frames then
+			-- Not sure if this is totally correct...? This is here because I need
+			-- a way to signal to the action that triggers it that it can unblock.
+			self.done = true
+		 end
+		 self.frame = (self.frame + 1) % #frames
+	  else
+		 -- We finished; reset to the last animation and loop it
+		 self.frame = self.frame + 1
+		 if self.frame >= #frames then
+			self.frame = 0
+			self.current = self.last
+
+			-- Maybe it makes more sense to hang on the last frame rather than
+			-- remember the last animation?
+			self.loop = true
+			self.done = true
+		 end
+	  end
 	  self.time_to_next = DEFAULT_FRAME_TIME
    end
 end
@@ -46,12 +71,10 @@ function Animation:batch_add(animations)
    end
 end
 
-function Animation:begin(name)
+function Animation:begin(name, params)
+   params = params or {}
+   self.loop = ternary(params.loop, true, false)
+   self.done = false
    self.current = name
-end
-
-function Animation:advance_frame()
-   local frames = tdengine.get_frames(self.current)
-   self.frame = (self.frame + 1) % #frames
-   self.time_to_next = DEFAULT_FRAME_TIME
+   self.frame = 0
 end

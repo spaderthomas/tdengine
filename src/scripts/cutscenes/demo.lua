@@ -2,7 +2,8 @@ return {
    {
 	  name = 'Sound',
 	  sound = 'intro_theme_001',
-	  loop = true
+	  loop = true,
+	  block = false
    },
    {
 	  name = 'Delay',
@@ -21,8 +22,16 @@ return {
 	  actions = {
 		 {
 			name = 'Animation',
-			entity = 'Boon',
-			animation = 'intro_surprise',
+			entity = 'Player',
+			animation = 'boon_surprise',
+			loop = false,
+			--block = false
+		 },
+		 {
+			name = 'Animation',
+			entity = 'Oliver',
+			animation = 'oliver_walkdown',
+			loop = false,
 			block = false
 		 },
 		 {
