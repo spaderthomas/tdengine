@@ -7,7 +7,7 @@ return {
    },
    {
 	  name = 'Delay',
-	  time = 1
+	  time = 0
    },
    {
 	  name = 'FadeIn',
@@ -15,7 +15,7 @@ return {
    },
    {
 	  name = 'Delay',
-	  time = 1
+	  time = 0
    },
    {
 	  name = 'Compound',
@@ -25,7 +25,6 @@ return {
 			entity = 'Player',
 			animation = 'boon_surprise',
 			loop = false,
-			--block = false
 		 },
 		 {
 			name = 'Animation',

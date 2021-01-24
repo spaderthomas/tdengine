@@ -2142,7 +2142,27 @@ descriptor. descriptors have to be unique. it's...pretty much like a name. but
 anyway, you just specify it in the save file (not the prefab, because the prefab
 is the 'generic' one). that way you don't have to make a new file or class for
 every god damn box you want to access. but no need to do that now. 
- 
+** 01/23/2021: [code] dialogue 1
+dialogue is basically a graph. that's why the idea of defining all the nodes in
+one file was appealing to me -- you're just stitching up graph nodes. but that's
+way, way too many files. you wanna have one file per dialogue scene -- in other
+words, they map up one to one with actions in cutscenes. 
+
+need to have a way to record what choices were taken, maybe a way to set game
+state based on it. maybe add this as a flag on choice nodes?
+
+what are the cases i want to handle?
+- sections of different characters speaking in turn, linearly. ABCABCAABCCB.
+- dialogue options
+  - conditionally present based on game state
+- branches that return to the original choice that set them off (but with that
+  branch grayed out). loops in the graph.
+> what about A?
+> but what does B have to do with it?
+> tell me more about C?
+picking any of these gives you info on A, B, or C, and then returns you to the
+> top so you can ask aout all three if you want
+- change dialogue based on game state
 * plot
 ** intro
 *** an introduction!
@@ -2783,7 +2803,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-01-22 Fri 23:57]
+CLOCK: [2021-01-23 Sat 23:36]--[2021-01-24 Sun 00:27] =>  0:51
+CLOCK: [2021-01-22 Fri 23:57]--[2021-01-23 Sat 01:25] =>  1:28
 CLOCK: [2021-01-22 Fri 22:27]--[2021-01-22 Fri 22:57] =>  0:30
 CLOCK: [2021-01-21 Thu 20:37]--[2021-01-21 Thu 23:10] =>  2:33
 CLOCK: [2021-01-20 Wed 22:00]--[2021-01-20 Wed 23:57] =>  1:57
