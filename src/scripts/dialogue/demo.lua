@@ -22,7 +22,7 @@ local first_questions = {
    choices = {
 	  'do you know about A?',
 	  'do you know about B?'
-   }
+   },
 }
 
 return {
