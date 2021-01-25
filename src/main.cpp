@@ -74,6 +74,7 @@ int main() {
 
 		// MEAT
 		ImGui_ImplGlfwGL3_NewFrame();
+		ShowExampleAppCustomNodeGraph(nullptr);
 		if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
 		if (show_console) { console.Draw("tdengine"); }
 		
