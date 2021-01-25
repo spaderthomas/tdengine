@@ -274,3 +274,4 @@ function Editor:get_mouse_vector()
 	  y = tdengine.get_cursor_y() - self.last_click.y
    }
 end
+

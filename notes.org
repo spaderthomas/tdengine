@@ -2163,6 +2163,21 @@ what are the cases i want to handle?
 picking any of these gives you info on A, B, or C, and then returns you to the
 > top so you can ask aout all three if you want
 - change dialogue based on game state
+- markup in the text for text effects (new text box, shake, delay like for .
+  .   .)
+** 01/24/2020
+hm...it's not a graph
+
+but it really is lol
+
+https://i.imgur.com/fPdez9X.png
+
+i want this so badly. dialogue needs to be a little more powerful than i've
+conceived it -- but not much. thinking of it in a similar way to how the actions
+are conceived. simple data that maps onto lua objects. have a set number of node
+types, stitch them together. the big difference is that actions are one hundred
+percent serial -- sure, you have the compound actions that run in sequence, but
+at the end of the day it's serial. there's no branching. 
 * plot
 ** intro
 *** an introduction!
