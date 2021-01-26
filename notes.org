@@ -2184,6 +2184,39 @@ ok:
 - this is how nodes are stored for both editing and running
 - when a node changes, re-hash it and update all references to the old hash for
   development, just leave in the metadata for the nodes (e.g. position)
+** 01/25/2020: ded
+pretty much just moving the node graph stuff over from CPP to lua. had to port
+over a few functions, but nothing too serious -- actually dug into how those
+bindings work a little bit and -- perhaps i learned something about lua. it's
+going quite smoothly so far. effectively solving problems, feel really good,
+feel like a problem solver today instead of a problem haver. that is always
+nice. a day or two more like this and all the infra will be done. it will need
+some tweaking, of course. stuff to remember:
+- store the gui info for each dialogue in a separate file (don't pollute)
+- maybe it's a good time to make a SLIGHTLY complicated imgui config save
+  store. cuz it would be nice to do something like this:
+tdengine.layout('dialogue') -- open up the dialogue editor, maximize it
+tdengine.layout('battle') -- show all the widgets for battle data in the right
+place
+blah blah blah
+then just have it like
+~/config/layouts
+~/config/dialogue_nodes
+~/config/dialogue_nodes/demo
+~/config/dialogue_nodes/intro
+~/config/dialogue_nodes/library
+...
+- need some kind of simple text editor in-engine (probably something already in
+  imgui or on the 'net), because if all dialogue is gonna be edited in
+  engine...or else find a way to have unique but semantically meaningful IDs for
+  each dialogue node so you know what they are by looking at them? on the one
+  hand, i want to see all the dialogue every time i look at it to see how it
+  flows. OTOH, my mental map is pretty much gonna be a semantically meaningful
+  ID -- it's just whatever part of the dialogue is actually displayed at any
+  given time. idk.
+** 01/25/2020: ded 2
+- don't use sha...sha can change. just generate a unique id for each node on
+  startup and save it out.
 
 * plot
 ** intro
@@ -2825,6 +2858,10 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-01-26 Tue 16:35]
+CLOCK: [2021-01-26 Tue 12:05]--[2021-01-26 Tue 14:07] =>  2:02
+CLOCK: [2021-01-26 Tue 00:52]--[2021-01-26 Tue 02:04] =>  1:12
+CLOCK: [2021-01-25 Mon 20:58]--[2021-01-25 Mon 22:48] =>  1:50
 CLOCK: [2021-01-24 Sun 21:17]--[2021-01-24 Sun 23:17] =>  2:00
 CLOCK: [2021-01-23 Sat 23:36]--[2021-01-24 Sun 00:27] =>  0:51
 CLOCK: [2021-01-22 Fri 23:57]--[2021-01-23 Sat 01:25] =>  1:28

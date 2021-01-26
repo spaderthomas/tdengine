@@ -70,7 +70,7 @@ const char * RunString(const char* szLua) {
   return NULL;
 }
 
-
+// Define the ImGui API
 #define IMGUI_FUNCTION_DRAW_LIST(name) \
 static int impl_draw_list_##name(lua_State *L) { \
   int max_args = lua_gettop(L); \
@@ -224,6 +224,9 @@ static int impl_##name(lua_State *L) { \
 #define DRAW_LIST_CALL_FUNCTION_NO_RET(name, ...) \
   ImGui::GetWindowDrawList()->name(__VA_ARGS__);
 
+#define RETURN_MEMBER(name) \
+  auto ret = ImGui::GetIO().name;
+
 #define PUSH_STRING(name) \
   lua_pushstring(L, name); \
   stackval++;
@@ -284,6 +287,22 @@ static void ImEndStack(int type) { \
 #define END_ENUM(name)
 
 #include "imgui_iterator.inl"
+
+IMGUI_FUNCTION(IsItemHovered)
+CALL_FUNCTION(IsItemHovered, bool)
+PUSH_BOOL(ret)
+END_IMGUI_FUNC
+
+IMGUI_FUNCTION(MouseDelta)
+RETURN_MEMBER(MouseDelta)
+PUSH_NUMBER(ret.x)
+PUSH_NUMBER(ret.y)
+END_IMGUI_FUNC
+
+IMGUI_FUNCTION(IsMouseHoveringWindow)
+CALL_FUNCTION(IsMouseHoveringWindow, bool)
+PUSH_BOOL(ret)
+END_IMGUI_FUNC
 
 
 static const struct luaL_Reg imguilib [] = {
@@ -378,7 +397,9 @@ static const struct luaL_Reg imguilib [] = {
 
 #include "imgui_iterator.inl"
   {"Button", impl_Button},
-  {NULL, NULL}
+  {"MouseDelta", impl_MouseDelta},
+  {"IsMouseHoveringWindow", impl_IsMouseHoveringWindow},
+  {NULL, NULL},
 };
 
 static void PushImguiEnums(lua_State* lState, const char* tableName) {
@@ -488,6 +509,7 @@ static void PushImguiEnums(lua_State* lState, const char* tableName) {
   lua_rawset(Lua.state.get_raw(), -3);
 };
 
+// For some shit that doesn't work with the binding generator
 namespace ImGuiWrapper {
 	void SetNextWindowSize(float x, float y) {
 		ImGui::SetNextWindowSize(ImVec2(x, y), ImGuiCond_FirstUseEver);
@@ -497,6 +519,10 @@ namespace ImGuiWrapper {
 		ImGui::Text(text);
 	}
 
+	bool IsItemHovered() {
+		return ImGui::IsItemHovered();
+	}
+
 	struct TextFilter {
 		ImGuiTextFilter filter;
 
@@ -504,7 +530,9 @@ namespace ImGuiWrapper {
 		bool Draw(const char* label) { return filter.Draw(label); }
 		bool PassFilter(const char* text) { return filter.PassFilter(text); }
 	};
+
 }
+
 void LoadImguiBindings() {
   if (!Lua.state.get_raw()) {
     fprintf(stderr, "You didn't assign the global Lua.state.get_raw(), either assign that or refactor LoadImguiBindings and RunString\n");
@@ -516,11 +544,11 @@ void LoadImguiBindings() {
 
   Lua.state["imgui"]["Text"] = &ImGuiWrapper::Text;
   Lua.state["imgui"]["SetNextWindowSize"] = &ImGuiWrapper::SetNextWindowSize;
+  Lua.state["imgui"]["IsItemHovered"] = &ImGuiWrapper::IsItemHovered;
 
   sol::usertype<ImGuiWrapper::TextFilter> filter_type = Lua.state.new_usertype<ImGuiWrapper::TextFilter>("TextFilter");
   filter_type["Draw"] = &ImGuiWrapper::TextFilter::Draw;
   filter_type["PassFilter"] = &ImGuiWrapper::TextFilter::PassFilter;
   Lua.state["imgui"]["TextFilter"] = filter_type;
-  
-
+ 
 }

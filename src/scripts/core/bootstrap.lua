@@ -23,6 +23,13 @@ function tdengine.bootstrap()
 	  cutscene = {
 		 help = 'load and begin a cutscene from a file located in src/scripts/cutscenes',
 		 proc = tdengine.begin_cutscene
+	  },
+	  dload = {
+		 help = 'load a scene into the dialogue editor',
+		 proc = function(name)
+			local editor = tdengine.find_entity('Editor')
+			editor:ded_load(name)
+		 end
 	  }
    }
    console_shortcuts.list = {

@@ -102,16 +102,6 @@ end
 -- version of the class. That could be in a couple of places, depending on the class
 -- type: _G for entities and components, and tdengine.actions for actions.
 local function add_new_to_class(class, class_parent)
-   local parent = {}
-   if class_parent == 'Entity' then
-	  parent = _G
-   end
-   if class_parent == 'Component' then
-	  parent = _G
-   end
-   if class_parent == 'Action' then
-	  parent = tdengine.actions
-   end
   class.static.new = function(self, ...)
 	  -- Create the table we'll return to the user
 	  local instance = {}
@@ -122,7 +112,7 @@ local function add_new_to_class(class, class_parent)
 		 -- It's important that we look this up in the global namespace, because
 		 -- whenever we save the file and re-script it, it will show back up there.
 		 -- If we just used 'class' or 'self', that change wouldn't propagate.
-		 return parent[self.name].__methods[key]
+		 return class_parent[self.name].__methods[key]
 	  end
       setmetatable(instance, metatable)
 
@@ -233,7 +223,7 @@ local entity_mixin = {
 
 function tdengine.entity(name)
   local class = create_class(name)
-  add_new_to_class(class, 'Entity')
+  add_new_to_class(class, _G)
   class:include(entity_mixin)
   return class
 end
@@ -265,7 +255,7 @@ local component_mixin = {
 
 function tdengine.component(name)
   local class = create_class(name)
-  add_new_to_class(class, 'Component')
+  add_new_to_class(class, _G)
   class:include(component_mixin)
   return class
 end
@@ -288,7 +278,7 @@ local action_mixin = {
 
 function tdengine.action(name)
    local class = create_class(name)
-   add_new_to_class(class, 'Action')
+   add_new_to_class(class, tdengine.actions)
    class:include(action_mixin)
    return class
 end
@@ -410,6 +400,7 @@ tdengine.colors = {}
 tdengine.colors.red =   { r = 1, g = 0, b = 0, a = 1 }
 tdengine.colors.green = { r = 0, g = 1, b = 0, a = 1 }
 tdengine.colors.blue =  { r = 0, g = 0, b = 1, a = 1 }
+tdengine.colors.grid_bg =  { r = .25, g = .25, b = .3, a = .8 }
 
 function table.shallow_copy(t)
   local t2 = {}
@@ -493,12 +484,77 @@ function tdengine.cursor()
    }
 end
 
+function tdengine.uuid()
+   local random = math.random
+    local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+   local sub = function (c)
+	  local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
+	  return string.format('%x', v)
+   end
+   return string.gsub(template, '[xy]', sub)
+end
+
+function tdengine.color(r, g, b, a)
+   return { r = r, g = g, b = b, a = a }
+end
+
+function tdengine.color32(r, g, b, a)
+   a = a * math.pow(2, 24)
+   b = b * math.pow(2, 16)
+   g = g * math.pow(2, 8)
+   return r + g + b + a
+end
+
 function contains(t, k)
    return t[k] ~= nil
 end
 
 function ternary(cond, a, b)
    if cond then return a else return b end
+end
+
+local vec2_mixin = {
+   unpack = function(self)
+	  return self.x, self.y
+   end,
+   add = function(self, other)
+	  return tdengine.vec2(self.x + other.x, self.y + other.y)
+   end,
+   scale = function(self, scalar)
+	  return tdengine.vec2(self.x * scalar, self.y * scalar)
+   end
+}
+tdengine.vec2_impl = create_class('vec2_impl')
+add_new_to_class(tdengine.vec2_impl, tdengine)
+tdengine.vec2_impl:include(vec2_mixin)
+tdengine.vec2 = function(x, y)
+   local vec = tdengine.vec2_impl:new()
+   vec.x = x
+   vec.y = y
+   return vec
+end
+
+tdengine.op_or, tdengine.op_xor, tdengine.op_and = 1, 3, 4
+
+function bitwise(oper, a, ...)
+   -- base case 1: the parameter pack is empty. return nil to signal.
+   if a == nil then
+	  return nil
+   end
+
+   local b = bitwise(oper, ...)
+
+   -- base case 2: we're at the end of the parameter pack. just return yourself.
+   if b == nil then
+	  return a
+   end
+   
+   local r, m, s = 0, 2^31
+   repeat
+      s,a,b = a+b+m, a%m, b%m
+      r,m = r + m*oper%(s-a-b), m/2
+   until m < 1
+   return r
 end
 
 function tdengine.create_action(name, params)
