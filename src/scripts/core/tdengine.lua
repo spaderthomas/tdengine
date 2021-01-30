@@ -506,6 +506,28 @@ function tdengine.color32(r, g, b, a)
    return r + g + b + a
 end
 
+function delete(array, value)
+   local len = #array
+   
+   for index, v in pairs(array) do
+	  if v == value then
+		 array[index] = nil
+	  end
+   end
+
+   local next_available = 0
+   for check = 1, len do
+	  if array[check] ~= nil then
+		 next_available = next_available + 1
+		 array[next_available] = array[check]
+	  end
+   end
+
+   for remove = next_available + 1, len do
+	  array[remove] = nil
+   end
+end
+
 function contains(t, k)
    return t[k] ~= nil
 end

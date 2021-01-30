@@ -28,7 +28,8 @@ function Editor:init()
   
   self.selected = nil
   self.position_when_selected = { x = 0, y = 0 }
-
+  self.hovered = nil
+  
   self.ded = {
 	 editor = imgui.InputTextMultiline.new(),
 	 nodes = {},
@@ -36,6 +37,7 @@ function Editor:init()
 	 loaded = '',
 	 selected = nil,
 	 connecting = nil,
+	 disconnecting = nil,
 	 scrolling = tdengine.vec2(0, 0),
 	 window_position = tdengine.vec2(0, 0)
   }
@@ -343,9 +345,20 @@ function Editor:ded_full_path()
    return 'no file loaded'
 end
 
-function Editor:input_slot(node)
-   local ay = average(node_rect_max.y, node_rect_min.y)
-   local out_slot = tdengine.vec2(node_rect_max.x, ay)
+function Editor:input_slot(id)
+   local gnode = self.ded.layout_data[id]
+   local canvas_world = tdengine.vec2(
+	  gnode.position.x,
+	  gnode.position.y + (gnode.size.y / 2))
+   return self:canvas_world_to_window_screen(canvas_world)
+end
+
+function Editor:output_slot(id)
+   local gnode = self.ded.layout_data[id]
+   local canvas_world = tdengine.vec2(
+	  gnode.position.x + gnode.size.x,
+	  gnode.position.y + (gnode.size.y / 2))
+   return self:canvas_world_to_window_screen(canvas_world)
 end
 
 function Editor:dialogue_editor()
@@ -495,8 +508,10 @@ function Editor:dialogue_editor()
    end
 
    -- Draw nodes
+   self.hovered = nil
    local node_padding = tdengine.vec2(8, 8)
-   imgui.DrawList_ChannelsSplit(2)
+   
+   imgui.DrawList_ChannelsSplit(3)
 
    for id, node in pairs(self.ded.nodes) do
 	  imgui.PushID(id)
@@ -509,7 +524,7 @@ function Editor:dialogue_editor()
 	  local node_contents_cursor = node_rect_min:add(node_padding)
 	  
 	  -- Draw the node contents
-	  imgui.DrawList_ChannelsSetCurrent(1)
+	  imgui.DrawList_ChannelsSetCurrent(2)
 
 	  local old_any_active = imgui.IsAnyItemActive()
 
@@ -543,6 +558,21 @@ function Editor:dialogue_editor()
 		 local text = ternary(node.text, node.text, node.variable)
 		 self.ded.editor:SetContents(text)
 
+		 -- If someone left clicked us, check whether they're trying to
+		 -- (dis)connect themselves to you
+		 if imgui.IsMouseClicked(0) then
+			if self.ded.connecting then
+			   local parent = self.ded.nodes[self.ded.connecting]
+			   table.insert(parent.children, id)
+			   self.ded.connecting = nil
+			end
+			if self.ded.disconnecting then
+			   local parent = self.ded.nodes[self.ded.disconnecting]
+			   delete(parent.children, id)
+			   self.ded.disconnecting = nil
+			end
+		 end
+		 
 		 -- Pressed with left click? Drag
 		 if imgui.IsMouseDragging(0) then
 			local delta = tdengine.vec2(imgui.MouseDelta())
@@ -561,6 +591,10 @@ function Editor:dialogue_editor()
 		 if imgui.MenuItem('Connect') then
 			self.ded.connecting = id
 		 end
+		 if imgui.MenuItem('Disconnect') then
+			self.ded.disconnecting = id
+		 end
+
 		 imgui.EndPopup()
 	  end
 	  imgui.PopStyleVar()
@@ -570,21 +604,25 @@ function Editor:dialogue_editor()
 		 hovered = true
 	  end
 	  hovered = hovered or node_hovered_in_list == id
+	  
+	  if hovered then
+		 self.hovered = id
+	  end
 
 	  -- Draw node background and slots
-	  imgui.DrawList_ChannelsSetCurrent(0)
+	  imgui.DrawList_ChannelsSetCurrent(1)
 
    
-	  -- Slotz
+	  -- Slots
 	  local radius = 8
 	  local ay = average(node_rect_max.y, node_rect_min.y)
 
-	  local in_slot_color = tdengine.color32(0, 255, 0, 150)
-	  local in_slot = tdengine.vec2(node_rect_min.x, ay)
+	  local in_slot_color = tdengine.color32(255, 100, 255, 255)
+	  local in_slot = self:input_slot(id)
 	  imgui.DrawList_AddCircleFilled(in_slot.x, in_slot.y, radius, in_slot_color)
 
-	  local out_slot_color = tdengine.color32(255, 0, 0, 150)
-	  local out_slot = tdengine.vec2(node_rect_max.x, ay)
+	  local out_slot_color = tdengine.color32(100, 0, 200, 255)
+	  local out_slot = self:output_slot(id)
 	  imgui.DrawList_AddCircleFilled(out_slot.x, out_slot.y, radius, out_slot_color)
 	  
 	  -- Draw a rectangle for the node's background
@@ -596,29 +634,47 @@ function Editor:dialogue_editor()
 	  local rounding = 4
 	  imgui.DrawList_AddRectFilled(node_rect_min.x, node_rect_min.y, node_rect_max.x, node_rect_max.y, color, rounding)
 
-	  if node.who == 'Asuka' then
-		 self.inslot = in_slot
-		 self.pos = gnode.position
-	  end
-
 	  imgui.PopID() -- Unique node ID
    end
 
-   -- Draw the links
-   for id, node in pairs({}) do
-	  local color = tdengine.color32(200, 200, 100, 255)
+   -- Draw the links between nodes
+   imgui.DrawList_ChannelsSetCurrent(0)
 
-	  local p0x, p0y = out_slot.x, out_slot.y
-	  local c0x, c0y  = p0x, p0y + 50
+   local link_color = tdengine.color32(200, 200, 200, 255)
+   local disconnect_color = tdengine.color32(255, 0, 0, 255)
+   local thickness = 2
+
+   for id, node in pairs(self.ded.nodes) do
+	  local p0 = self:output_slot(id)
+	  local use_dc_prompt_color = self.ded.disconnecting == id
 	  
 	  local children = node.children
 	  for index, child_id in pairs(children) do
-		 local child = self.ded.layout_data[child_id]
-		 local p1, p1 = self:canvas_world_to_window_screen(child.position)
-		 local c1x, c1y  = p1x, p1y - 50
-		 imgui.DrawList_AddBezierCurve(p0x, p0y, c0x, c0y, c1x, c1y, p1.x, p1.y, color, 3)
+		 local p1 = self:input_slot(child_id)
+
+		 use_dc_prompt_color = use_dc_prompt_color and self.hovered == child_id
+		 color = ternary(use_dc_prompt_color, disconnect_color, link_color)
+		 imgui.DrawList_AddBezierCurve(
+			p0.x, p0.y,
+			p0.x + 50, p0.y,
+			p1.x - 50, p1.y,
+			p1.x, p1.y,
+			color, thickness)
 	  end
    end
+
+   if self.ded.connecting then
+	  local p0 = self:output_slot(self.ded.connecting)
+	  local cursor = tdengine.vec2(imgui.GetMousePos())
+
+	  imgui.DrawList_AddBezierCurve(
+		 p0.x, p0.y,
+		 p0.x + 50, p0.y + 50,
+		 cursor.x - 50, cursor.y - 50,
+		 cursor.x, cursor.y,
+		 link_color, thickness)
+   end
+
    imgui.DrawList_ChannelsMerge()
 
    -- Right clicking in window background brings up a menu.
