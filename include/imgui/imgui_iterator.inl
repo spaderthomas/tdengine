@@ -705,25 +705,12 @@ END_IMGUI_FUNC
 // Unsupported arg type  bool(*items_getter)(void* data
 // Unsupported arg type  const char** out_text)
 // Unsupported arg type  void* data
-//    IMGUI_API bool          DragFloat(const char* label, float* v, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", float power = 1.0f);     // If v_min >= v_max we have no bound
-IMGUI_FUNCTION(DragFloat)
-LABEL_ARG(label)
-FLOAT_POINTER_ARG(v)
-OPTIONAL_NUMBER_ARG(v_speed, 1.0f)
-OPTIONAL_NUMBER_ARG(v_min, 0.0f)
-OPTIONAL_NUMBER_ARG(v_max, 0.0f)
-LABEL_ARG(format)
-OPTIONAL_NUMBER_ARG(power, 1.0f)
-CALL_FUNCTION(DragFloat, bool, label, v, v_speed, v_min, v_max, format, power)
-PUSH_BOOL(ret)
-END_FLOAT_POINTER(v)
-END_IMGUI_FUNC
-//    IMGUI_API bool          DragFloat2(const char* label, float v[2], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", float power = 1.0f);
-// Unsupported arg type  float v[2]
-//    IMGUI_API bool          DragFloat3(const char* label, float v[3], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", float power = 1.0f);
-// Unsupported arg type  float v[3]
-//    IMGUI_API bool          DragFloat4(const char* label, float v[4], float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", float power = 1.0f);
-// Unsupported arg type  float v[4]
+
+// @deleted DragFloat
+// @unsupported DragFloat2
+// @unsupported DragFloat3
+// @unsupported DragFloat4
+
 //    IMGUI_API bool          DragFloatRange2(const char* label, float* v_current_min, float* v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", const char* format_max = NULL, float power = 1.0f);
 IMGUI_FUNCTION(DragFloatRange2)
 LABEL_ARG(label)
@@ -783,24 +770,11 @@ END_IMGUI_FUNC
 // Unsupported arg type  void* v
 // Unsupported arg type  const void* v_min = NULL
 // Unsupported arg type  const void* v_max = NULL
-//    IMGUI_API bool          SliderFloat(const char* label, float* v, float v_min, float v_max, const char* format = "%.3f", float power = 1.0f);     // adjust format to decorate the value with a prefix or a suffix for in-slider labels or unit display. Use power!=1.0 for power curve sliders
-IMGUI_FUNCTION(SliderFloat)
-LABEL_ARG(label)
-FLOAT_POINTER_ARG(v)
-NUMBER_ARG(v_min)
-NUMBER_ARG(v_max)
-LABEL_ARG(format)
-OPTIONAL_NUMBER_ARG(power, 1.0f)
-CALL_FUNCTION(SliderFloat, bool, label, v, v_min, v_max, format, power)
-PUSH_BOOL(ret)
-END_FLOAT_POINTER(v)
-END_IMGUI_FUNC
-//    IMGUI_API bool          SliderFloat2(const char* label, float v[2], float v_min, float v_max, const char* format = "%.3f", float power = 1.0f);
-// Unsupported arg type  float v[2]
-//    IMGUI_API bool          SliderFloat3(const char* label, float v[3], float v_min, float v_max, const char* format = "%.3f", float power = 1.0f);
-// Unsupported arg type  float v[3]
-//    IMGUI_API bool          SliderFloat4(const char* label, float v[4], float v_min, float v_max, const char* format = "%.3f", float power = 1.0f);
-// Unsupported arg type  float v[4]
+
+// @deleted SliderFloat
+// @unsupported SliderFloat2
+// @unsupported SliderFloat3
+// @unsupported SliderFloat4
 //    IMGUI_API bool          SliderAngle(const char* label, float* v_rad, float v_degrees_min = -360.0f, float v_degrees_max = +360.0f, const char* format = "%.0f deg");
 IMGUI_FUNCTION(SliderAngle)
 LABEL_ARG(label)
@@ -1211,13 +1185,9 @@ IMGUI_FUNCTION(EndPopup)
 CALL_FUNCTION_NO_RET(EndPopup)
 POP_END_STACK(11)
 END_IMGUI_FUNC
-//    IMGUI_API bool          OpenPopupOnItemClick(const char* str_id = NULL, int mouse_button = 1);                                  // helper to open popup when clicked on last item (note: actually triggers on the mouse _released_ event to be consistent with popup behaviors). return true when just opened.
-IMGUI_FUNCTION(OpenPopupOnItemClick)
-OPTIONAL_LABEL_ARG(str_id)
-OPTIONAL_INT_ARG(mouse_button, 1)
-CALL_FUNCTION(OpenPopupOnItemClick, bool, str_id, mouse_button)
-PUSH_BOOL(ret)
-END_IMGUI_FUNC
+
+// @removed OpenPopupOnItemClick: return type changed to void
+
 //    IMGUI_API bool          IsPopupOpen(const char* str_id);                                    // return true if the popup is open
 IMGUI_FUNCTION(IsPopupOpen)
 LABEL_ARG(str_id)
@@ -1298,11 +1268,13 @@ END_IMGUI_FUNC
 // Unsupported arg type  ImGuiCond cond = 0
 //    IMGUI_API void          SetNextWindowDockFamily(const ImGuiDockFamily* dock_family);        // set next window user type (docking filters by same user_type)
 // Unsupported arg type const ImGuiDockFamily* dock_family
-//    IMGUI_API ImGuiID       GetWindowDockId();
-IMGUI_FUNCTION(GetWindowDockId)
-CALL_FUNCTION(GetWindowDockId, unsigned int)
+
+//    IMGUI_API ImGuiID       GetWindowDockID();
+IMGUI_FUNCTION(GetWindowDockID)
+CALL_FUNCTION(GetWindowDockID, unsigned int)
 PUSH_NUMBER(ret)
 END_IMGUI_FUNC
+
 //    IMGUI_API bool          IsWindowDocked();                                                   // is current window docked into another window? 
 IMGUI_FUNCTION(IsWindowDocked)
 CALL_FUNCTION(IsWindowDocked, bool)
@@ -1909,20 +1881,16 @@ END_ENUM(ComboFlags)
 START_ENUM(TabBarFlags)
 //    ImGuiTabBarFlags_None                           = 0,
 MAKE_ENUM(ImGuiTabBarFlags_None,None)
-//    ImGuiTabBarFlags_Reorderable                    = 1 << 0,   // Allow manually dragging tabs to re-order them + New tabs are appended at the end of list
-MAKE_ENUM(ImGuiTabBarFlags_Reorderable,Reorderable)
-//    ImGuiTabBarFlags_AutoSelectNewTabs              = 1 << 1,   // Automatically select new tabs when they appear
-MAKE_ENUM(ImGuiTabBarFlags_AutoSelectNewTabs,AutoSelectNewTabs)
-//    ImGuiTabBarFlags_NoCloseWithMiddleMouseButton   = 1 << 2,   // Disable behavior of closing tabs (that are submitted with p_open != NULL) with middle mouse button. You can still repro this behavior on user's side with if (IsItemHovered() && IsMouseClicked(2)) *p_open = false.
+MAKE_ENUM(ImGuiTabBarFlags_Reorderable, Reorderable)
+MAKE_ENUM(ImGuiTabBarFlags_AutoSelectNewTabs, AutoSelectNewTabs)
+MAKE_ENUM(ImGuiTabBarFlags_TabListPopupButton, TabListPopupButton)
 MAKE_ENUM(ImGuiTabBarFlags_NoCloseWithMiddleMouseButton,NoCloseWithMiddleMouseButton)
-//    ImGuiTabBarFlags_NoTabListPopupButton           = 1 << 3,
-MAKE_ENUM(ImGuiTabBarFlags_NoTabListPopupButton,NoTabListPopupButton)
-//    ImGuiTabBarFlags_NoTabListScrollingButtons      = 1 << 4,
-MAKE_ENUM(ImGuiTabBarFlags_NoTabListScrollingButtons,NoTabListScrollingButtons)
-//    ImGuiTabBarFlags_FittingPolicyResizeDown        = 1 << 5,   // Resize tabs when they don't fit
-MAKE_ENUM(ImGuiTabBarFlags_FittingPolicyResizeDown,FittingPolicyResizeDown)
-//    ImGuiTabBarFlags_FittingPolicyScroll            = 1 << 6,   // Add scroll buttons when tabs don't fit
-MAKE_ENUM(ImGuiTabBarFlags_FittingPolicyScroll,FittingPolicyScroll)
+MAKE_ENUM(ImGuiTabBarFlags_NoTabListScrollingButtons, NoTabListScrollingButtons)
+MAKE_ENUM(ImGuiTabBarFlags_NoTooltip, NoTooltip)
+MAKE_ENUM(ImGuiTabBarFlags_FittingPolicyResizeDown, FittingPolicyResizeDown)
+MAKE_ENUM(ImGuiTabBarFlags_FittingPolicyScroll, FittingPolicyScroll)
+MAKE_ENUM(ImGuiTabBarFlags_FittingPolicyMask_, FittingPolicyMask)
+MAKE_ENUM(ImGuiTabBarFlags_FittingPolicyDefault_, FittingPolicyDefault)
 END_ENUM(TabBarFlags)
 //enum ImGuiTabItemFlags_
 
@@ -1938,24 +1906,20 @@ MAKE_ENUM(ImGuiTabItemFlags_NoCloseWithMiddleMouseButton,NoCloseWithMiddleMouseB
 //    ImGuiTabItemFlags_NoPushId                      = 1 << 3    // Don't call PushID(tab->ID)/PopID() on BeginTabItem()/EndTabItem()
 MAKE_ENUM(ImGuiTabItemFlags_NoPushId,NoPushId)
 END_ENUM(TabItemFlags)
+
 //enum ImGuiDockNodeFlags_
 
 START_ENUM(DockNodeFlags)
-//    ImGuiDockNodeFlags_None                         = 0,
-MAKE_ENUM(ImGuiDockNodeFlags_None,None)
-//    ImGuiDockNodeFlags_KeepAliveOnly                = 1 << 0,   // Don't display the dockspace node but keep it alive. Windows docked into this dockspace node won't be undocked.
-MAKE_ENUM(ImGuiDockNodeFlags_KeepAliveOnly,KeepAliveOnly)
-//    ImGuiDockNodeFlags_NoSplit                      = 1 << 1,   // Disable splitting the node into smaller nodes. Useful e.g. when embedding dockspaces into a main root one (the root one may have splitting disabled to reduce confusion)
-MAKE_ENUM(ImGuiDockNodeFlags_NoSplit,NoSplit)
-//    ImGuiDockNodeFlags_NoDockingInCentralNode       = 1 << 3,   // Disable docking inside the Central Node, which will be always kept empty.
-MAKE_ENUM(ImGuiDockNodeFlags_NoDockingInCentralNode,NoDockingInCentralNode)
-//    ImGuiDockNodeFlags_NoResize                     = 1 << 5,   // Disable resizing child nodes using the splitter/separators. Useful with programatically setup dockspaces. 
-MAKE_ENUM(ImGuiDockNodeFlags_NoResize,NoResize)
-//    ImGuiDockNodeFlags_PassthruDockspace            = 1 << 6    // 1) DockSpace() will render a ImGuiCol_WindowBg background covering everything excepted the Central Node when empty. Meaning the host window should probably use SetNextWindowBgAlpha(0.0f) prior to Begin() when using this. 2) When Central Node is empty: let inputs pass-through + won't display a DockingEmptyBg background.
-MAKE_ENUM(ImGuiDockNodeFlags_PassthruDockspace,PassthruDockspace)
+MAKE_ENUM(ImGuiDockNodeFlags_None, None)
+MAKE_ENUM(ImGuiDockNodeFlags_KeepAliveOnly, KeepAliveOnly)
+MAKE_ENUM(ImGuiDockNodeFlags_NoDockingInCentralNode, NoDockingInCentralNode)
+MAKE_ENUM(ImGuiDockNodeFlags_PassthruCentralNode, PassthruCentralNode)
+MAKE_ENUM(ImGuiDockNodeFlags_NoSplit, NoSplit)
+MAKE_ENUM(ImGuiDockNodeFlags_NoResize, NoResize)
+MAKE_ENUM(ImGuiDockNodeFlags_AutoHideTabBar, AutoHideTabBar)
 END_ENUM(DockNodeFlags)
-//enum ImGuiFocusedFlags_
 
+//enum ImGuiFocusedFlags_
 START_ENUM(FocusedFlags)
 //    ImGuiFocusedFlags_None                          = 0,
 MAKE_ENUM(ImGuiFocusedFlags_None,None)
@@ -2138,42 +2102,24 @@ MAKE_ENUM(ImGuiNavInput_TweakFast,TweakFast)
 //    ImGuiNavInput_COUNT,
 MAKE_ENUM(ImGuiNavInput_COUNT,COUNT)
 END_ENUM(NavInput)
-//enum ImGuiConfigFlags_
 
+//enum ImGuiConfigFlags_
 START_ENUM(ConfigFlags)
-//    ImGuiConfigFlags_None                   = 0,
-MAKE_ENUM(ImGuiConfigFlags_None,None)
-//    ImGuiConfigFlags_NavEnableKeyboard      = 1 << 0,   // Master keyboard navigation enable flag. NewFrame() will automatically fill io.NavInputs[] based on io.KeysDown[].
+MAKE_ENUM(ImGuiConfigFlags_None, None)
 MAKE_ENUM(ImGuiConfigFlags_NavEnableKeyboard,NavEnableKeyboard)
-//    ImGuiConfigFlags_NavEnableGamepad       = 1 << 1,   // Master gamepad navigation enable flag. This is mostly to instruct your imgui back-end to fill io.NavInputs[]. Back-end also needs to set ImGuiBackendFlags_HasGamepad.
 MAKE_ENUM(ImGuiConfigFlags_NavEnableGamepad,NavEnableGamepad)
-//    ImGuiConfigFlags_NavEnableSetMousePos   = 1 << 2,   // Instruct navigation to move the mouse cursor. May be useful on TV/console systems where moving a virtual mouse is awkward. Will update io.MousePos and set io.WantSetMousePos=true. If enabled you MUST honor io.WantSetMousePos requests in your binding, otherwise ImGui will react as if the mouse is jumping around back and forth.
 MAKE_ENUM(ImGuiConfigFlags_NavEnableSetMousePos,NavEnableSetMousePos)
-//    ImGuiConfigFlags_NavNoCaptureKeyboard   = 1 << 3,   // Instruct navigation to not set the io.WantCaptureKeyboard flag when io.NavActive is set.
 MAKE_ENUM(ImGuiConfigFlags_NavNoCaptureKeyboard,NavNoCaptureKeyboard)
-//    ImGuiConfigFlags_NoMouse                = 1 << 4,   // Instruct imgui to clear mouse position/buttons in NewFrame(). This allows ignoring the mouse information set by the back-end.
 MAKE_ENUM(ImGuiConfigFlags_NoMouse,NoMouse)
-//    ImGuiConfigFlags_NoMouseCursorChange    = 1 << 5,   // Instruct back-end to not alter mouse cursor shape and visibility. Use if the back-end cursor changes are interfering with yours and you don't want to use SetMouseCursor() to change mouse cursor. You may want to honor requests from imgui by reading GetMouseCursor() yourself instead.
 MAKE_ENUM(ImGuiConfigFlags_NoMouseCursorChange,NoMouseCursorChange)
-//    ImGuiConfigFlags_DockingEnable          = 1 << 6,   // Docking enable flags. Use SHIFT to dock window into another (or without SHIFT if io.ConfigDockingWithShift = false).
 MAKE_ENUM(ImGuiConfigFlags_DockingEnable,DockingEnable)
-//    ImGuiConfigFlags_ViewportsEnable        = 1 << 10,  // Viewport enable flags (require both ImGuiConfigFlags_PlatformHasViewports + ImGuiConfigFlags_RendererHasViewports set by the respective back-ends)
 MAKE_ENUM(ImGuiConfigFlags_ViewportsEnable,ViewportsEnable)
-//    ImGuiConfigFlags_ViewportsNoTaskBarIcon = 1 << 11,  // Disable task bars icons for all secondary viewports (will set ImGuiViewportFlags_NoTaskBarIcon on them)
-MAKE_ENUM(ImGuiConfigFlags_ViewportsNoTaskBarIcon,ViewportsNoTaskBarIcon)
-//    ImGuiConfigFlags_ViewportsNoMerge       = 1 << 12,  // All floating windows will always create their own viewport and platform window.
-MAKE_ENUM(ImGuiConfigFlags_ViewportsNoMerge,ViewportsNoMerge)
-//    ImGuiConfigFlags_ViewportsDecoration    = 1 << 13,  // FIXME [Broken] Enable platform decoration for all secondary viewports (will not set ImGuiViewportFlags_NoDecoration on them). This currently doesn't behave well in Windows because 1) By default the new window animation get in the way of our transitions, 2) It enable a minimum window size which tends to breaks resizing. You can workaround the later by setting style.WindowMinSize to a bigger value.
-MAKE_ENUM(ImGuiConfigFlags_ViewportsDecoration,ViewportsDecoration)
-//    ImGuiConfigFlags_DpiEnableScaleViewports= 1 << 14,  // FIXME-DPI: Reposition and resize imgui windows when the DpiScale of a viewport changed (mostly useful for the main viewport hosting other window). Note that resizing the main window itself is up to your application.
 MAKE_ENUM(ImGuiConfigFlags_DpiEnableScaleViewports,DpiEnableScaleViewports)
-//    ImGuiConfigFlags_DpiEnableScaleFonts    = 1 << 15,  // FIXME-DPI: Request bitmap-scaled fonts to match DpiScale. This is a very low-quality workaround. The correct way to handle DPI is _currently_ to replace the atlas and/or fonts in the Platform_OnChangedViewport callback, but this is all early work in progress.
 MAKE_ENUM(ImGuiConfigFlags_DpiEnableScaleFonts,DpiEnableScaleFonts)
-//    ImGuiConfigFlags_IsSRGB                 = 1 << 20,  // Application is SRGB-aware.
 MAKE_ENUM(ImGuiConfigFlags_IsSRGB,IsSRGB)
-//    ImGuiConfigFlags_IsTouchScreen          = 1 << 21   // Application is using a touch screen instead of a mouse.
 MAKE_ENUM(ImGuiConfigFlags_IsTouchScreen,IsTouchScreen)
 END_ENUM(ConfigFlags)
+
 //enum ImGuiBackendFlags_
 
 START_ENUM(BackendFlags)
@@ -2724,14 +2670,19 @@ END_IMGUI_FUNC
 IMGUI_FUNCTION_DRAW_LIST(AddDrawCmd)
 DRAW_LIST_CALL_FUNCTION_NO_RET(AddDrawCmd)
 END_IMGUI_FUNC
+
+// @removed Clear: cannot find a mention of this in API reference
 //    IMGUI_API void  Clear();
-IMGUI_FUNCTION_DRAW_LIST(Clear)
-DRAW_LIST_CALL_FUNCTION_NO_RET(Clear)
-END_IMGUI_FUNC
+// IMGUI_FUNCTION_DRAW_LIST(Clear)
+// DRAW_LIST_CALL_FUNCTION_NO_RET(Clear)
+// END_IMGUI_FUNC
+
+// @removed ClearFreeMemory: maybe renamed to _ClearFreeMemory?
 //    IMGUI_API void  ClearFreeMemory();
-IMGUI_FUNCTION_DRAW_LIST(ClearFreeMemory)
-DRAW_LIST_CALL_FUNCTION_NO_RET(ClearFreeMemory)
-END_IMGUI_FUNC
+// IMGUI_FUNCTION_DRAW_LIST(ClearFreeMemory)
+// DRAW_LIST_CALL_FUNCTION_NO_RET(ClearFreeMemory)
+// END_IMGUI_FUNC
+
 //    IMGUI_API void  PrimReserve(int idx_count, int vtx_count);
 IMGUI_FUNCTION_DRAW_LIST(PrimReserve)
 INT_ARG(idx_count)
@@ -2769,14 +2720,19 @@ DRAW_LIST_CALL_FUNCTION_NO_RET(PrimQuadUV, a, b, c, d, uv_a, uv_b, uv_c, uv_d, c
 END_IMGUI_FUNC
 //    inline    void  PrimVtx(const ImVec2& pos, const ImVec2& uv, ImU32 col)     { PrimWriteIdx((ImDrawIdx)_VtxCurrentIdx); PrimWriteVtx(pos, uv, col); }
 // Unsupported arg type  ImU32 col)     { PrimWriteIdx((ImDrawIdx)_VtxCurrentIdx
+
+// @deleted UpdateClipRect: no idea
 //    IMGUI_API void  UpdateClipRect();
-IMGUI_FUNCTION_DRAW_LIST(UpdateClipRect)
-DRAW_LIST_CALL_FUNCTION_NO_RET(UpdateClipRect)
-END_IMGUI_FUNC
+// IMGUI_FUNCTION_DRAW_LIST(UpdateClipRect)
+// DRAW_LIST_CALL_FUNCTION_NO_RET(UpdateClipRect)
+// END_IMGUI_FUNC
+
+// @deleted UpdateTextureID: no idea
 //    IMGUI_API void  UpdateTextureID();
-IMGUI_FUNCTION_DRAW_LIST(UpdateTextureID)
-DRAW_LIST_CALL_FUNCTION_NO_RET(UpdateTextureID)
-END_IMGUI_FUNC
+// IMGUI_FUNCTION_DRAW_LIST(UpdateTextureID)
+// DRAW_LIST_CALL_FUNCTION_NO_RET(UpdateTextureID)
+// END_IMGUI_FUNC
+
 //struct ImDrawData
 
 //struct ImFontConfig

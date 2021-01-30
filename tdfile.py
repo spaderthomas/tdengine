@@ -14,6 +14,7 @@ build_options = {
         os.path.join('imgui', 'imgui_demo.cpp'),
         os.path.join('imgui', 'imgui_draw.cpp'),
         os.path.join('imgui', 'imgui_widgets.cpp'),
+        os.path.join('imgui', 'imgui_tables.cpp'),
         'glad.c',
         'main.cpp'
     ],
@@ -130,3 +131,45 @@ class Builder(tdbuild.base_builder):
     def prebuild(self):
         pass
     
+if __name__ == '__main__':
+    import os, shutil
+    import glob
+
+    header_names = [
+        'imstb_rectpack.h',
+        'imstb_textedit.h',
+        'imstb_truetype.h',
+        'imconfig.h',
+        'imgui.h',
+        'imgui_internal.h',
+    ]
+    imgui_dir = os.path.abspath(os.path.join('..', 'imgui'))
+    
+    tdengine_imgui_include = os.path.abspath(os.path.join('.', 'include', 'imgui'))
+    headers = glob.glob(os.path.join(imgui_dir, '*.h'))
+    for header in headers:
+        shutil.copy(header, tdengine_imgui_include)
+        print(header)
+
+    tdengine_imgui_src = os.path.abspath(os.path.join('.', 'src', 'imgui'))
+    sources = glob.glob(os.path.join(imgui_dir, '*.cpp'))
+    for source in sources:
+        shutil.copy(source, tdengine_imgui_src)
+        print(source)
+
+    print('fixin up sources')
+    sources = glob.glob(os.path.join(tdengine_imgui_src, '*.cpp'))
+    for source in sources:
+        with open(source, 'r+') as f:
+            lines = f.readlines()
+            for i, line in enumerate(lines):
+                for header_name in header_names:
+                    include = f'#include "{header_name}"'
+                    if include in line:
+                        lines[i] = f'#include "imgui/{header_name}"\n'
+                        print(source)
+                        print(line)
+
+            f.seek(0)
+            f.write(''.join(lines))
+

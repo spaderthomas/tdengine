@@ -20,7 +20,7 @@ struct Console {
 	void Draw(const char* title);
 	void ExecCommand(char* command_line);
 	
-	static int TextEditCallbackStub(ImGuiTextEditCallbackData* data); 
-	int TextEditCallback(ImGuiTextEditCallbackData* data);
+	static int TextEditCallbackStub(ImGuiInputTextCallbackData* data); 
+	int TextEditCallback(ImGuiInputTextCallbackData* data);
 };
 Console console;

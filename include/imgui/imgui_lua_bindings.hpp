@@ -300,7 +300,7 @@ PUSH_NUMBER(ret.y)
 END_IMGUI_FUNC
 
 IMGUI_FUNCTION(IsMouseHoveringWindow)
-CALL_FUNCTION(IsMouseHoveringWindow, bool)
+bool ret = ImGui::IsWindowHovered(ImGuiHoveredFlags_AllowWhenBlockedByPopup | ImGuiHoveredFlags_AllowWhenBlockedByActiveItem);
 PUSH_BOOL(ret)
 END_IMGUI_FUNC
 

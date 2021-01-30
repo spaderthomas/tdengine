@@ -973,7 +973,7 @@ static inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return Im
 static inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y); }
 static void ShowExampleAppCustomNodeGraph(bool* opened)
 {
-	ImGui::SetNextWindowSize(ImVec2(700, 600), ImGuiSetCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(700, 600), ImGuiCond_FirstUseEver);
 	if (!ImGui::Begin("Example: Custom Node Graph", opened))
 	{
 		ImGui::End();
@@ -1068,7 +1068,7 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 	ImGui::Checkbox("Show grid", &show_grid);
 	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(1, 1));
 	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::PushStyleColor(ImGuiCol_ChildWindowBg, IM_COL32(60, 60, 70, 200));
+	ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(60, 60, 70, 200));
 	ImGui::BeginChild("scrolling_region", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
 	ImGui::PushItemWidth(120.0f);
 	
@@ -1150,11 +1150,13 @@ static void ShowExampleAppCustomNodeGraph(bool* opened)
 	draw_list->ChannelsMerge();
 	
 	// Open context menu
+	/*
 	if (!ImGui::IsAnyItemHovered() && ImGui::IsMouseHoveringWindow() && ImGui::IsMouseClicked(1))
 	{
 		node_selected = node_hovered_in_list = node_hovered_in_scene = -1;
 		open_context_menu = true;
 	}
+	*/
 	if (open_context_menu)
 	{
 		ImGui::OpenPopup("context_menu");

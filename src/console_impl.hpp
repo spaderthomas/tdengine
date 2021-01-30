@@ -117,12 +117,12 @@ void  Console::Draw(const char* title)
 	
 	ImGui::End();
 }
-int   Console::TextEditCallbackStub(ImGuiTextEditCallbackData* data) // In C++11 you are better off using lambdas for this sort of forwarding callbacks
+int   Console::TextEditCallbackStub(ImGuiInputTextCallbackData* data) // In C++11 you are better off using lambdas for this sort of forwarding callbacks
 {
 	Console* console = (Console*)data->UserData;
 	return console->TextEditCallback(data);
 }
-int   Console::TextEditCallback(ImGuiTextEditCallbackData* data)
+int   Console::TextEditCallback(ImGuiInputTextCallbackData* data)
 {
 	//AddLog("cursor: %d, selection: %d-%d", data->CursorPos, data->SelectionStart, data->SelectionEnd);
 	switch (data->EventFlag)
