@@ -104,23 +104,34 @@ build_options = {
 }
 
 # I really hate having this file in my project
+def find_devenv_script():
+    potential_devenv_scripts = [
+        "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Auxiliary/Build/vcvars32.bat",
+        "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/Build/vcvars32.bat"
+    ]
+    for script in potential_devenv_scripts:
+        if os.path.exists(os.path.normpath(script)):
+            print('Found devenv setup script at {}'.format(script))
+            return script
+
+    return None
 setup_devenv = '''@echo off
 if not defined DevEnvDir (
-   call "C:/Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars32.bat"
+   call "{}"
 )'''
-setup_devenv = 'echo imascript'
 
 class Builder(tdbuild.base_builder):
     def __init__(self):
         super().__init__()
 
     def build(self):
-        if platform.system() == 'Windows':
-            devenv_script = tempfile.NamedTemporaryFile('w')
-            devenv_script.write(setup_devenv)
-            subprocess.run([devenv_script.name], stdout=subprocess.PIPE)
-            devent_script.close()
         super().build()
+        # if platform.system() == 'Windows':
+        #     devenv_script = tempfile.NamedTemporaryFile('w')
+        #     devenv_script.write(setup_devenv)
+        #     subprocess.run([devenv_script.name], stdout=subprocess.PIPE)
+        #     devent_script.close()
+        # super().build()
         
     def run(self):
         super().run()
@@ -130,46 +141,13 @@ class Builder(tdbuild.base_builder):
         
     def prebuild(self):
         pass
-    
-if __name__ == '__main__':
-    import os, shutil
-    import glob
-
-    header_names = [
-        'imstb_rectpack.h',
-        'imstb_textedit.h',
-        'imstb_truetype.h',
-        'imconfig.h',
-        'imgui.h',
-        'imgui_internal.h',
-    ]
-    imgui_dir = os.path.abspath(os.path.join('..', 'imgui'))
-    
-    tdengine_imgui_include = os.path.abspath(os.path.join('.', 'include', 'imgui'))
-    headers = glob.glob(os.path.join(imgui_dir, '*.h'))
-    for header in headers:
-        shutil.copy(header, tdengine_imgui_include)
-        print(header)
-
-    tdengine_imgui_src = os.path.abspath(os.path.join('.', 'src', 'imgui'))
-    sources = glob.glob(os.path.join(imgui_dir, '*.cpp'))
-    for source in sources:
-        shutil.copy(source, tdengine_imgui_src)
-        print(source)
-
-    print('fixin up sources')
-    sources = glob.glob(os.path.join(tdengine_imgui_src, '*.cpp'))
-    for source in sources:
-        with open(source, 'r+') as f:
-            lines = f.readlines()
-            for i, line in enumerate(lines):
-                for header_name in header_names:
-                    include = f'#include "{header_name}"'
-                    if include in line:
-                        lines[i] = f'#include "imgui/{header_name}"\n'
-                        print(source)
-                        print(line)
-
-            f.seek(0)
-            f.write(''.join(lines))
-
+        # print("fuckkkkkk")
+        # import subprocess
+        # if platform.system() == 'Windows':
+        #     devenv_script = tempfile.NamedTemporaryFile('w')
+        #     command = ['call', find_devenv_script()]
+        #     prog = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        #     out, err = prog.communicate()
+        #     print(out)
+        #     print(err)
+        #     devenv_script.close()

@@ -129,7 +129,7 @@ Component* Entity::add_component(std::string name, sol::table data) {
 
 void Entity::remove_component(std::string name) {
 	if (!has_component(name)) return;
-	assert(!"remove_component() is unimplemented");
+	tdns_log.write("remove_component() is unimplemented");
 }
 
 bool Entity::has_component(std::string name)
