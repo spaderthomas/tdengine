@@ -304,6 +304,10 @@ CALL_FUNCTION(IsMouseHoveringWindow, bool)
 PUSH_BOOL(ret)
 END_IMGUI_FUNC
 
+IMGUI_FUNCTION(IsWindowHovered)
+CALL_FUNCTION(IsWindowHovered, bool)
+PUSH_BOOL(ret)
+END_IMGUI_FUNC
 
 static const struct luaL_Reg imguilib [] = {
 #undef IMGUI_FUNCTION
@@ -399,6 +403,7 @@ static const struct luaL_Reg imguilib [] = {
   {"Button", impl_Button},
   {"MouseDelta", impl_MouseDelta},
   {"IsMouseHoveringWindow", impl_IsMouseHoveringWindow},
+  {"IsWindowHovered", impl_IsWindowHovered},
   {NULL, NULL},
 };
 
@@ -531,6 +536,21 @@ namespace ImGuiWrapper {
 		bool PassFilter(const char* text) { return filter.PassFilter(text); }
 	};
 
+	struct InputTextMultiline {
+		static constexpr int buf_size = 512;
+		char buffer[buf_size] = { 0 };
+
+		bool Draw(float sx, float sy) {
+			ImVec2 size(sx, sy);
+			return ImGui::InputTextMultiline("##label", buffer, buf_size, size);
+		}
+		const char* Contents() {
+			return buffer;
+		}
+		void SetContents(const char* contents) {
+			strncpy(buffer, contents, buf_size - 1);
+		}
+	};
 }
 
 void LoadImguiBindings() {
@@ -547,8 +567,14 @@ void LoadImguiBindings() {
   Lua.state["imgui"]["IsItemHovered"] = &ImGuiWrapper::IsItemHovered;
 
   sol::usertype<ImGuiWrapper::TextFilter> filter_type = Lua.state.new_usertype<ImGuiWrapper::TextFilter>("TextFilter");
-  filter_type["Draw"] = &ImGuiWrapper::TextFilter::Draw;
+  filter_type["Draw"]      = &ImGuiWrapper::TextFilter::Draw;
   filter_type["PassFilter"] = &ImGuiWrapper::TextFilter::PassFilter;
   Lua.state["imgui"]["TextFilter"] = filter_type;
- 
+  
+  sol::usertype<ImGuiWrapper::InputTextMultiline> inputtext_type = Lua.state.new_usertype<ImGuiWrapper::InputTextMultiline>("InputTextMultiline");
+  inputtext_type["Draw"]     = &ImGuiWrapper::InputTextMultiline::Draw;
+  inputtext_type["Contents"] = &ImGuiWrapper::InputTextMultiline::Contents;
+  inputtext_type["SetContents"] = &ImGuiWrapper::InputTextMultiline::SetContents;
+  Lua.state["imgui"]["InputTextMultiline"] = inputtext_type; 
+
 }

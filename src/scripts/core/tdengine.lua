@@ -485,8 +485,9 @@ function tdengine.cursor()
 end
 
 function tdengine.uuid()
+   math.randomseed(os.time())
    local random = math.random
-    local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
+   local template ='xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'
    local sub = function (c)
 	  local v = (c == 'x') and random(0, 0xf) or random(8, 0xb)
 	  return string.format('%x', v)
@@ -513,12 +514,19 @@ function ternary(cond, a, b)
    if cond then return a else return b end
 end
 
+function average(a, b)
+   return (a + b) / 2
+end
+
 local vec2_mixin = {
    unpack = function(self)
 	  return self.x, self.y
    end,
    add = function(self, other)
 	  return tdengine.vec2(self.x + other.x, self.y + other.y)
+   end,
+   subtract = function(self, other)
+	  return tdengine.vec2(self.x - other.x, self.y - other.y)
    end,
    scale = function(self, scalar)
 	  return tdengine.vec2(self.x * scalar, self.y * scalar)

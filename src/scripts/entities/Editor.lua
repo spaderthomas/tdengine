@@ -29,65 +29,16 @@ function Editor:init()
   self.selected = nil
   self.position_when_selected = { x = 0, y = 0 }
 
-  -- Text, Choice, Set, (Branch)
-  self.ded_nodes = {
-	 sha0 = {
-		kind = 'Text',
-		text = 'hi n_n',
-		who = 'player',
-		children = { 'sha1' },
-	 },
-	 sha1 = {
-		kind = 'Set',
-		variable = 'variable',
-		value = true,
-		children = { 'sha2' },
-	 },
-	 sha2 = {
-		kind = 'Choice',
-		text = 'best dead album?',
-		who = 'player',
-		children = { 'sha3', 'sha4' },
-	 },
-	 sha3 = {
-		kind = 'Text',
-		text = 'europe 72',
-		who = 'player',
-		children = {},
-	 },
-	 sha4 = {
-		kind = 'Text',
-		text = 'american beauty',
-		who = 'player',
-		children = {},
-	 }
+  self.ded = {
+	 editor = imgui.InputTextMultiline.new(),
+	 nodes = {},
+	 layout_data = {},
+	 loaded = '',
+	 selected = nil,
+	 connecting = nil,
+	 scrolling = tdengine.vec2(0, 0),
+	 window_position = tdengine.vec2(0, 0)
   }
-  
-  self.ded_gui = {
-	 sha0 = {
-		position = { x = 0, y = 0 },
-		size = { x = 0, y = 0 }
-	 },
-	 sha1 = {
-		position = { x = 100, y = 0 },
-		size = { x = 0, y = 0 }
-	 },
-	 sha2 = {
-		position = { x = 250, y = 0 },
-		size = { x = 0, y = 0 }
-	 },
-	 sha3 = {
-		position = { x = 400, y = 0 },
-		size = { x = 0, y = 0 }
-	 },
-	 sha4 = {
-		position = { x = 400, y = 74 },
-		size = { x = 0, y = 0 }
-	 }
-  }
-
-  self.ded_selected = ''
-  self.ded_scrolling = { x = 0, y = 0 }
   
   -- Stored as screen coordinates, converted to world when we submit the geometry
   self.last_click = { x = 0, y = 0 }
@@ -337,16 +288,168 @@ function Editor:get_mouse_vector()
    }
 end
 
-function Editor:ded_load(name)
-   print('ded load: ' .. name)
+-- Take a coordinate in canvas' world space and convert it to
+-- the window's screen space (for DrawList)
+function Editor:canvas_world_to_window_screen(canvas_world)
+   local canvas_screen = canvas_world:add(self.ded.scrolling)
+   local window_screen = canvas_screen:add(self.ded.window_position)
+   return window_screen
 end
 
-function Editor:ded_save()
+-- Take a coordinate in the canvas' screen space and convert it to
+-- the window's screen space
+function Editor:canvas_screen_to_window_screen(canvas_screen)
+   local window_screen = canvas_screen:add(self.ded.window_position)
+   return window_screen
+end
+
+function Editor:ded_load(name)
+   self.ded.loaded = name
+   self.ded.selected = nil
+   self.ded.scrolling = tdengine.vec2(0, 0)
+   self.ded.editor:SetContents('')
+   
+   -- Load the dialogue data itself
+   local filepath = 'dialogue/' .. name
+   package.loaded[filepath] = nil
+   self.ded.nodes = require(filepath)
+
+   -- Load the GUI data
+   filepath = 'layouts/dialogue/' .. name
+   package.loaded[filepath] = nil
+   self.ded.layout_data = require(filepath)
+end
+
+function Editor:ded_short_text(node)
+   local max_size = 32
+   if node.kind == 'Text' or node.kind == 'Choice' then
+	  if string.len(node.text) < max_size then
+		 return string.sub(node.text, 0, max_size)
+	  else
+		 return string.sub(node.text, 0, max_size - 3) .. '...'
+	  end
+   elseif node.kind == 'Set' then
+	  return 'set ' .. node.variable
+   else
+	  print('forgot to add new node type to Editor:ded_short_text(): ' .. node.kind)
+   end
+end
+
+function Editor:ded_full_path()
+   if string.len(self.ded.loaded) > 0 then
+	  return 'src/scripts/dialogue/' .. self.ded.loaded .. '.lua'
+   end
+
+   return 'no file loaded'
+end
+
+function Editor:input_slot(node)
+   local ay = average(node_rect_max.y, node_rect_min.y)
+   local out_slot = tdengine.vec2(node_rect_max.x, ay)
 end
 
 function Editor:dialogue_editor()
    imgui.Begin('Dialogue Editor', true)
 
+   -- Draw the sidebar
+   imgui.BeginChild('sidebar', 500, 0)
+   
+   imgui.Text(self:ded_full_path())
+
+   -- Save button
+   if imgui.Button('Save') then
+	  local serpent = require('serpent')
+
+	  -- Save out the engine data
+	  local data_path = 'src/scripts/dialogue/' .. self.ded.loaded .. '.lua'
+	  data_path = tdengine.paths.absolute_path(data_path)
+	  local data_file = io.open(data_path, 'w')
+	  if data_file then
+		 data_file:write('return ')
+		 data_file:write(serpent.block(self.ded.nodes, { comment = false }))
+	  else
+		 print('could not open data file: ' .. data_path)
+	  end
+
+	  -- Save out the layout data
+	  local layout_path = 'src/scripts/layouts/dialogue/' .. self.ded.loaded .. '.lua'
+	  layout_path = tdengine.paths.absolute_path(layout_path)
+	  local layout_file = io.open(layout_path, 'w')
+	  if layout_file then
+		 layout_file:write('return ')
+		 layout_file:write(serpent.block(self.ded.layout_data, { comment = false }))
+	  else
+		 print('could not open gui node data: ' .. layout_path)		 
+	  end
+   end
+
+   imgui.Separator()
+
+   -- Detail view
+   local selected = self.ded.nodes[self.ded.selected]
+   if selected then
+	  imgui.extensions.VariableName('Kind')
+	  imgui.SameLine()
+	  imgui.Text(selected.kind)
+
+	  imgui.extensions.VariableName('Entity')
+	  imgui.SameLine()
+	  imgui.Text(selected.who)
+
+	  imgui.PushTextWrapPos(0)
+	  imgui.Text(self.ded.editor:Contents())
+	  imgui.PopTextWrapPos()
+   end
+   
+   imgui.Separator()
+
+   -- A list of all nodes, just using their short names
+   local node_hovered_in_list = nil
+   if imgui.TreeNode('Nodes') then
+	  for id, node in pairs(self.ded.nodes) do
+		 local imid = id .. 'list_view'
+		 imgui.PushID(imid)
+
+		 -- Write the selected node in a different color
+		 local pushed_color = false
+		 if self.ded.selected == id then
+			local hl_color = tdengine.color32(0, 255, 0, 255)
+			imgui.PushStyleColor(imgui.constant.Col.Text, hl_color)
+			pushed_color = true
+		 end
+
+		 -- Display the node, and if clicked select it
+		 if imgui.MenuItem(self:ded_short_text(node)) then
+			self.ded.selected = node.uuid
+		 end
+
+		 -- Pop the color we pushed for the selected node!
+		 if pushed_color then
+			imgui.PopStyleColor()
+		 end
+		 
+		 if imgui.IsItemHovered() then
+			node_hovered_in_list = node.uuid
+		 end
+
+		 imgui.PopID()
+	  end
+	  imgui.TreePop()
+   end
+
+   imgui.Text('scroll: ' .. self.ded.scrolling.x .. ', ' .. self.ded.scrolling.y)
+   if self.inslot then
+	  imgui.Text('inslot: ' .. self.inslot.x .. ', ' .. self.inslot.y)
+   end
+   if self.pos then
+	  imgui.Text('pos: ' .. self.pos.x .. ', ' .. self.pos.y)
+   end   
+
+   imgui.EndChild() -- Sidebar
+
+   imgui.SameLine()
+
+   -- Canvas!
    imgui.BeginGroup()
    
    -- Set up the canvas
@@ -357,55 +460,52 @@ function Editor:dialogue_editor()
    imgui.PushStyleColor(imgui.constant.Col.ChildBg, bg_color)
    
    local flags = bitwise(tdengine.op_or, imgui.constant.WindowFlags.NoScrollbar, imgui.constant.WindowFlags.NoMove)
-   imgui.BeginChild('scrolling_region', 0, 0, true, flags)
-   
-   imgui.PushItemWidth(120)
+    
+   imgui.BeginChild('scrolling_region', 0, -200, true, flags)
+   self.ded.window_position = tdengine.vec2(imgui.GetCursorScreenPos())
 
    -- Draw the grid
    local cursor_x, cursor_y = imgui.GetCursorScreenPos()
    local offset = tdengine.vec2(
-	  self.ded_scrolling.x + cursor_x,
-	  self.ded_scrolling.y + cursor_y)
-   --local lclr = 0xc6c6c6028
-   local lclr = tdengine.color32(200, 200, 200, 40)--0x28c6c6c6
+	  self.ded.scrolling.x + cursor_x,
+	  self.ded.scrolling.y + cursor_y)
+   local line_color = tdengine.color32(200, 200, 200, 40)
    local grid_size = 64
    local wsx, wsy = imgui.GetWindowSize()
-   local wpx, wpy = imgui.GetCursorScreenPos() -- Cursor doesn't mean your mouse. It's the ImGui widget cursor.
 
-   for off_x = math.modf(self.ded_scrolling.x, grid_size), wsx, grid_size do
-	  -- Bottom
-	  local a = {
-		 x = wpx + off_x,
-		 y = wpy }
-	  -- Top
-	  local b = {
-		 x = wpx + off_x,
-		 y = wpy + wsy }		 
-	  imgui.DrawList_AddLine(a.x, a.y, b.x, b.y, lclr)
+   for off_x = math.fmod(self.ded.scrolling.x, grid_size), wsx, grid_size do
+	  local top = tdengine.vec2(off_x, 0)
+	  top = self:canvas_screen_to_window_screen(top)
+	  
+	  local bottom = tdengine.vec2(off_x, wsy)
+	  bottom = self:canvas_screen_to_window_screen(bottom)
+	  
+	  imgui.DrawList_AddLine(top.x, top.y, bottom.x, bottom.y, line_color)
    end
 
-   for off_y = math.modf(self.ded_scrolling.y, grid_size), wsy, grid_size do
-	  -- Left
-	  local a = {
-		 x = wpx,
-		 y = wpy + off_y }
-	  -- Right
-	  local b = {
-		 x = wpx + wsx,
-		 y = wpy + off_y }		 
-	  imgui.DrawList_AddLine(a.x, a.y, b.x, b.y, lclr)
+   for off_y = math.fmod(self.ded.scrolling.y, grid_size), wsy, grid_size do
+	  -- 
+	  local left = tdengine.vec2(0, off_y)
+	  left = self:canvas_screen_to_window_screen(left)
+	  
+	  local right = tdengine.vec2(wsx, off_y)
+	  right = self:canvas_screen_to_window_screen(right)
+
+	  imgui.DrawList_AddLine(left.x, left.y, right.x, right.y, line_color)
    end
 
    -- Draw nodes
    local node_padding = tdengine.vec2(8, 8)
    imgui.DrawList_ChannelsSplit(2)
-   for sha, node in pairs(self.ded_nodes) do
-	  -- GUI data stored separately from actual game data
-	  local gnode = self.ded_gui[sha]
-	  
-	  imgui.PushID(sha)
 
-	  local node_rect_min = offset:add(gnode.position)
+   for id, node in pairs(self.ded.nodes) do
+	  imgui.PushID(id)
+
+	  -- GUI data stored separately from actual game data
+	  local gnode = self.ded.layout_data[id]
+	  local canvas_position = tdengine.vec2(gnode.position.x, gnode.position.y)
+
+	  local node_rect_min = self:canvas_world_to_window_screen(canvas_position)
 	  local node_contents_cursor = node_rect_min:add(node_padding)
 	  
 	  -- Draw the node contents
@@ -417,7 +517,7 @@ function Editor:dialogue_editor()
 	  imgui.BeginGroup()
 	  imgui.Text(node.kind)
 	  if node.kind == 'Text' then
-		 imgui.Text(node.text)
+		 imgui.Text(self:ded_short_text(node))
 	  elseif node.kind == 'Set' then
 		 --imgui.extensions.VariableName(node.variable)
 		 --imgui.SameLine()
@@ -432,22 +532,18 @@ function Editor:dialogue_editor()
 	  gnode.size = contents_size:add(padding_size)
 	  local node_rect_max = node_rect_min:add(gnode.size)
 	  
-	  -- Draw the node background
-	  imgui.DrawList_ChannelsSetCurrent(0)
+	  -- Set up the 'button' that makes up the node
 	  imgui.SetCursorScreenPos(node_rect_min:unpack())
 	  imgui.InvisibleButton('node', gnode.size:unpack())
-	  
-	  local hovered = false
-	  if imgui.IsItemHovered() then
-		 hovered = true
-		 open_context_menu = true
-	  end
-	  
+
+	  -- Figure out whether we're pressed, hovered, or dragged
 	  local pressed = imgui.IsItemActive()
 	  if pressed then
-		 self.ded_selected = sha
+		 self.ded.selected = id
 		 local text = ternary(node.text, node.text, node.variable)
-		 
+		 self.ded.editor:SetContents(text)
+
+		 -- Pressed with left click? Drag
 		 if imgui.IsMouseDragging(0) then
 			local delta = tdengine.vec2(imgui.MouseDelta())
 			local last_position = tdengine.vec2(gnode.position.x, gnode.position.y)
@@ -455,14 +551,74 @@ function Editor:dialogue_editor()
 		 end
 	  end
 
-	  local node_color = tdengine.color32(75, 75, 75, 255)
-	  local hl_node_color = tdengine.color32(60, 60, 60, 255)
-	  local color = ternary(hovered, node_color, hl_node_color)
-	  imgui.DrawList_AddRectFilled(node_rect_min.x, node_rect_min.y, node_rect_max.x, node_rect_max.y, color, 4)
+	  -- Pressed with right click? Context menu
+	  if imgui.IsItemClicked(1) then
+		 imgui.OpenPopup('node_context_menu')
+	  end
+
+	  imgui.PushStyleVar_2(imgui.constant.StyleVar.WindowPadding, 8, 8)
+	  if imgui.BeginPopup('node_context_menu') then
+		 if imgui.MenuItem('Connect') then
+			self.ded.connecting = id
+		 end
+		 imgui.EndPopup()
+	  end
+	  imgui.PopStyleVar()
+
+	  local hovered = false
+	  if imgui.IsItemHovered() then
+		 hovered = true
+	  end
+	  hovered = hovered or node_hovered_in_list == id
+
+	  -- Draw node background and slots
+	  imgui.DrawList_ChannelsSetCurrent(0)
+
+   
+	  -- Slotz
+	  local radius = 8
+	  local ay = average(node_rect_max.y, node_rect_min.y)
+
+	  local in_slot_color = tdengine.color32(0, 255, 0, 150)
+	  local in_slot = tdengine.vec2(node_rect_min.x, ay)
+	  imgui.DrawList_AddCircleFilled(in_slot.x, in_slot.y, radius, in_slot_color)
+
+	  local out_slot_color = tdengine.color32(255, 0, 0, 150)
+	  local out_slot = tdengine.vec2(node_rect_max.x, ay)
+	  imgui.DrawList_AddCircleFilled(out_slot.x, out_slot.y, radius, out_slot_color)
+	  
+	  -- Draw a rectangle for the node's background
+	  local hl_node_color = tdengine.color32(75, 75, 75, 255)
+	  local node_color = tdengine.color32(60, 60, 60, 255)
+	  
+	  local highlight = hovered or node.uuid == self.ded.selected
+	  local color = ternary(highlight, hl_node_color, node_color)
+	  local rounding = 4
+	  imgui.DrawList_AddRectFilled(node_rect_min.x, node_rect_min.y, node_rect_max.x, node_rect_max.y, color, rounding)
+
+	  if node.who == 'Asuka' then
+		 self.inslot = in_slot
+		 self.pos = gnode.position
+	  end
 
 	  imgui.PopID() -- Unique node ID
    end
 
+   -- Draw the links
+   for id, node in pairs({}) do
+	  local color = tdengine.color32(200, 200, 100, 255)
+
+	  local p0x, p0y = out_slot.x, out_slot.y
+	  local c0x, c0y  = p0x, p0y + 50
+	  
+	  local children = node.children
+	  for index, child_id in pairs(children) do
+		 local child = self.ded.layout_data[child_id]
+		 local p1, p1 = self:canvas_world_to_window_screen(child.position)
+		 local c1x, c1y  = p1x, p1y - 50
+		 imgui.DrawList_AddBezierCurve(p0x, p0y, c0x, c0y, c1x, c1y, p1.x, p1.y, color, 3)
+	  end
+   end
    imgui.DrawList_ChannelsMerge()
 
    -- Right clicking in window background brings up a menu.
@@ -475,7 +631,6 @@ function Editor:dialogue_editor()
 
    imgui.PushStyleVar_2(imgui.constant.StyleVar.WindowPadding, 8, 8)
    if imgui.BeginPopup('context_menu') then
-	  imgui.Text('sup')
 	  if imgui.TreeNode('Add Node') then
 		 local node = nil
 		 if imgui.MenuItem('Text') then
@@ -507,8 +662,8 @@ function Editor:dialogue_editor()
 		 end
 
 		 if node then
-			self.ded_nodes[node.uuid] = node
-			self.ded_gui[node.uuid] = {
+			self.ded.nodes[node.uuid] = node
+			self.ded.layout_data[node.uuid] = {
 			   position = tdengine.vec2(100, 100),
 			   size = tdengine.vec2(0, 0)
 			}
@@ -519,21 +674,31 @@ function Editor:dialogue_editor()
 	  imgui.EndPopup()
    end
    imgui.PopStyleVar()
-   
+
+   local canvas_hovered = imgui.IsWindowHovered()
+   local middle_click = imgui.IsMouseDragging(2, 0)
+   local clicked_on_node = imgui.IsAnyItemActive()
+
+   if canvas_hovered and middle_click and not clicked_on_node then
+	  local delta = tdengine.vec2(imgui.MouseDelta())
+	  self.ded.scrolling = self.ded.scrolling:add(delta)
+   end
+
    imgui.EndChild()
+
+   -- @hack: 0 doesn't infer like I'd expect it to
+   self.ded.editor:Draw(-1, -1)
+   if self.ded.selected then
+	  local selected = self.ded.nodes[self.ded.selected]
+      selected.text = self.ded.editor:Contents()
+   end
+
+
    imgui.PopStyleVar() -- FramePadding
    imgui.PopStyleVar() -- WindowPadding
    imgui.PopStyleColor() -- ChildBg
-   imgui.EndGroup()
-   imgui.End()
+   imgui.EndGroup() -- Canvas
 
-   -- Draw the detail view for the selected node
-   imgui.Begin('ded', true)
-   local selected = self.ded_nodes[self.ded_selected]
-   if selected then
-	  imgui.Text(selected.kind)
-   end
    imgui.End()
-
 end
 
