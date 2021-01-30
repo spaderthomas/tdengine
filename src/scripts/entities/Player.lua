@@ -11,16 +11,16 @@ function Player:handle_movement()
   local movement = self:get_component('Movement')
 
   if input:is_down(GLFW.Keys.I) then
-	movement:move(0, .3)
+	movement:move(0, .5)
   end
   if input:is_down(GLFW.Keys.J) then
-	movement:move(-.3, 0)
+	movement:move(-.5, 0)
   end
   if input:is_down(GLFW.Keys.K) then
-	movement:move(0, -.3)
+	movement:move(0, -.5)
   end
   if input:is_down(GLFW.Keys.L) then
-	movement:move(.3, 0)
+	movement:move(.5, 0)
   end
 end
 

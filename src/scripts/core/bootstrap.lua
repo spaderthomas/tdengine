@@ -30,7 +30,21 @@ function tdengine.bootstrap()
 			local editor = tdengine.find_entity('Editor')
 			editor:ded_load(name)
 		 end
-	  }
+	  },
+	  layout = {
+		 help = 'use a predefined imgui layout',
+		 proc = function(name)
+			local editor = tdengine.find_entity('Editor')
+			editor:use_layout(name)
+		 end
+	  },
+	  save_layout = {
+		 help = 'save current imgui configuration as a layout',
+		 proc = function(name)
+			local editor = tdengine.find_entity('Editor')
+			editor:save_layout(name)
+		 end
+	  },	  
    }
    console_shortcuts.list = {
 	  help = 'list all commands and their help messages',

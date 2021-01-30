@@ -477,6 +477,10 @@ function tdengine.ray_cast(x, y)
    return tdengine.entities[id]
 end
 
+function tdengine.paths.script(relative)
+   return tdengine.paths.absolute_path('src/scripts/' .. relative)
+end
+
 function tdengine.cursor()
    return {
 	  x = tdengine.get_cursor_x(),

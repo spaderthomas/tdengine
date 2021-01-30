@@ -270,6 +270,19 @@ function Editor:draw_selected_view()
    end
 end
 
+function Editor:use_layout(name)
+   local path = 'layouts/' .. name .. '.ini'
+   path = tdengine.paths.script(path)
+   print(path)
+   imgui.LoadIniSettingsFromDisk(path)
+end
+
+function Editor:save_layout(name)
+   local path = 'layouts/' .. name .. '.ini'
+   path = tdengine.paths.script(path)
+   imgui.SaveIniSettingsToDisk(path)
+end
+
 function Editor:get_mouse_rect()
    return {
       extents = {
