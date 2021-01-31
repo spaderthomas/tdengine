@@ -41,6 +41,8 @@ function on_entity_created(cpp_ref)
    tdengine.load_prefab(entity)
 
    EntityType.init(entity)
+
+   return 0
 end
 
 function on_entity_destroyed(cpp_ref)

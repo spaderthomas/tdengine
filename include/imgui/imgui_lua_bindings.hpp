@@ -33,20 +33,20 @@ static void ImEndStack(int type);
 // Example lua run string function
 // returns NULL on success and error string on error
 const char * RunString(const char* szLua) {
-  if (!Lua.state.get_raw()) {
+  if (!Lua.raw_state) {
     fprintf(stderr, "You didn't assign the global lState, either assign that or refactor LoadImguiBindings and RunString\n");
   }
 
-  int iStatus = luaL_loadstring(Lua.state.get_raw(), szLua);
+  int iStatus = luaL_loadstring(Lua.raw_state, szLua);
   if(iStatus) {
-    return lua_tostring(Lua.state.get_raw(), -1);
-    //fprintf(stderr, "Lua syntax error: %s\n", lua_tostring(Lua.state.get_raw(), -1));
+    return lua_tostring(Lua.raw_state, -1);
+    //fprintf(stderr, "Lua syntax error: %s\n", lua_tostring(Lua.raw_state, -1));
     //return;
   }
 #ifdef ENABLE_IM_LUA_END_STACK
   endStack.clear();
 #endif
-  iStatus = lua_pcall( Lua.state.get_raw(), 0, 0, 0 );
+  iStatus = lua_pcall( Lua.raw_state, 0, 0, 0 );
 
 #ifdef ENABLE_IM_LUA_END_STACK
   bool wasEmpty = endStack.empty();
@@ -58,8 +58,8 @@ const char * RunString(const char* szLua) {
 #endif
   if( iStatus )
   {
-      return lua_tostring(Lua.state.get_raw(), -1);
-      //fprintf(stderr, "Error: %s\n", lua_tostring( Lua.state.get_raw(), -1 ));
+      return lua_tostring(Lua.raw_state, -1);
+      //fprintf(stderr, "Error: %s\n", lua_tostring( Lua.raw_state, -1 ));
       //return;
   }
 #ifdef ENABLE_IM_LUA_END_STACK
@@ -408,24 +408,24 @@ static const struct luaL_Reg imguilib [] = {
 };
 
 static void PushImguiEnums(lua_State* lState, const char* tableName) {
-  lua_pushstring(Lua.state.get_raw(), tableName);
-  lua_newtable(Lua.state.get_raw());
+  lua_pushstring(Lua.raw_state, tableName);
+  lua_newtable(Lua.raw_state);
 
 #undef START_ENUM
 #undef MAKE_ENUM
 #undef END_ENUM
 #define START_ENUM(name) \
-  lua_pushstring(Lua.state.get_raw(), #name); \
-  lua_newtable(Lua.state.get_raw()); \
+  lua_pushstring(Lua.raw_state, #name); \
+  lua_newtable(Lua.raw_state); \
   { \
     int i = 1;
 #define MAKE_ENUM(c_name,lua_name) \
-  lua_pushstring(Lua.state.get_raw(), #lua_name); \
-  lua_pushnumber(Lua.state.get_raw(), c_name); \
-  lua_rawset(Lua.state.get_raw(), -3);
+  lua_pushstring(Lua.raw_state, #lua_name); \
+  lua_pushnumber(Lua.raw_state, c_name); \
+  lua_rawset(Lua.raw_state, -3);
 #define END_ENUM(name) \
   } \
-  lua_rawset(Lua.state.get_raw(), -3);
+  lua_rawset(Lua.raw_state, -3);
 // These defines are just redefining everything to nothing so
 // we get only the enums.
 #undef IMGUI_FUNCTION
@@ -511,7 +511,7 @@ static void PushImguiEnums(lua_State* lState, const char* tableName) {
 
 #include "imgui_iterator.inl"
 
-  lua_rawset(Lua.state.get_raw(), -3);
+  lua_rawset(Lua.raw_state, -3);
 };
 
 // For some shit that doesn't work with the binding generator
@@ -554,13 +554,13 @@ namespace ImGuiWrapper {
 }
 
 void LoadImguiBindings() {
-  if (!Lua.state.get_raw()) {
-    fprintf(stderr, "You didn't assign the global Lua.state.get_raw(), either assign that or refactor LoadImguiBindings and RunString\n");
+  if (!Lua.raw_state) {
+    fprintf(stderr, "You didn't assign the global Lua.raw_state, either assign that or refactor LoadImguiBindings and RunString\n");
   }
-  lua_newtable(Lua.state.get_raw());
-  luaL_setfuncs(Lua.state.get_raw(), imguilib, 0);
-  PushImguiEnums(Lua.state.get_raw(), "constant");
-  lua_setglobal(Lua.state.get_raw(), "imgui");
+  lua_newtable(Lua.raw_state);
+  luaL_setfuncs(Lua.raw_state, imguilib, 0);
+  PushImguiEnums(Lua.raw_state, "constant");
+  lua_setglobal(Lua.raw_state, "imgui");
 
   Lua.state["imgui"]["Text"] = &ImGuiWrapper::Text;
   Lua.state["imgui"]["SetNextWindowSize"] = &ImGuiWrapper::SetNextWindowSize;

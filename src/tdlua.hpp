@@ -1,7 +1,9 @@
 struct Component;
 struct LuaState {
-	sol::state state;
+	lua_State* raw_state;
+	sol::state_view state;
 
+	LuaState();
 	int init();
 	int require(std::string script_name);
 	void require_all();

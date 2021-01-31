@@ -1,3 +1,8 @@
+LuaState::LuaState() :
+	raw_state(luaL_newstate()),
+	state(raw_state)
+{}
+
 void LuaState::prepend_to_search_path(std::string directory) {
 	directory = absolute_path(directory);
 	directory += "/?.lua";

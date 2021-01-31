@@ -19,9 +19,9 @@ extern "C" {
 #include FT_FREETYPE_H  
 }
 
-#include "lua_includes.hpp"
+#include "lua/lua.hpp"
 
-#include "sol.hpp"
+#include "sol/sol.hpp"
 
 #include "imgui/imgui.h"
 #include "imgui_impl_glfw_gl3.hpp"

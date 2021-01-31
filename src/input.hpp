@@ -260,7 +260,9 @@ int init_glfw() {
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
-	
+
+	glfwSetErrorCallback(GLFW_Error_Callback);
+
 	g_window = glfwCreateWindow((int)screen_x, (int)screen_y, "tdengine", NULL, NULL);
 	if (g_window == NULL) {
 		tdns_log.write("Failed to create GLFW window");
@@ -274,7 +276,6 @@ int init_glfw() {
 		return -1;
 	}
 	
-	glfwSetErrorCallback(GLFW_Error_Callback);
 	glfwSetCursorPosCallback(g_window, GLFW_Cursor_Pos_Callback);
 	glfwSetMouseButtonCallback(g_window, GLFW_Mouse_Button_Callback);
 	glfwSetKeyCallback(g_window, GLFW_Key_Callback);
