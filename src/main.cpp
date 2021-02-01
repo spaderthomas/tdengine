@@ -1,5 +1,4 @@
 #include "libs.hpp"
-#include "stl.hpp"
 
 #include "machine_conf.hpp"
 #include "log.hpp"

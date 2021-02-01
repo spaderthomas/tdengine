@@ -15,8 +15,8 @@
 #include "stb/stb_truetype.h"
 
 extern "C" {
-#include <ft2build.h>
-#include FT_FREETYPE_H  
+  #include "freetype/ft2build.h"
+  #include "freetype/freetype.h"
 }
 
 #include "lua/lua.hpp"
@@ -25,3 +25,23 @@ extern "C" {
 
 #include "imgui/imgui.h"
 #include "imgui_impl_glfw_gl3.hpp"
+
+// STL
+#include <stdlib.h>
+#include <iostream>
+#include <fstream>
+#include <vector>
+#include <unordered_map>
+#include <map>
+#include <queue>
+#include <string>
+#include <sstream>
+#include <algorithm>
+#include <cmath>
+#include <typeindex>
+#include <optional>
+#include <iomanip>
+#include <limits>
+#include <typeinfo>
+#include <filesystem>
+using namespace std::filesystem;

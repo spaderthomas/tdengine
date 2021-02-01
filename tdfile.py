@@ -5,7 +5,8 @@ build_options = {
     'source_dir': 'src',
     'include_dirs': [
         'include',
-        os.path.join('include', 'lua'),
+        os.path.join('include', 'lua'), # symlinked to /usr/include on linux
+        os.path.join('include', 'freetype'), # symlinked to /usr/include on linux
         os.path.join('include', 'sol')
     ],
     'lib_dir': 'lib',
@@ -86,8 +87,8 @@ build_options = {
         'compiler': 'g++',
         'user_libs': [
             'freetype',
-            'glfw3',
-            'luajit'
+            'glfw',
+            'luajit-5.1'
         ],
         'system_libs':[
             #'z',
