@@ -24,7 +24,7 @@ function tdengine.bootstrap()
 		 help = 'load and begin a cutscene from a file located in src/scripts/cutscenes',
 		 proc = tdengine.begin_cutscene
 	  },
-	  dload = {
+	  ded = {
 		 help = 'load a scene into the dialogue editor',
 		 proc = function(name)
 			local editor = tdengine.find_entity('Editor')
@@ -33,17 +33,11 @@ function tdengine.bootstrap()
 	  },
 	  layout = {
 		 help = 'use a predefined imgui layout',
-		 proc = function(name)
-			local editor = tdengine.find_entity('Editor')
-			editor:use_layout(name)
-		 end
+		 proc = tdengine.use_layout
 	  },
 	  save_layout = {
 		 help = 'save current imgui configuration as a layout',
-		 proc = function(name)
-			local editor = tdengine.find_entity('Editor')
-			editor:save_layout(name)
-		 end
+		 proc = tdengine.save_layout
 	  },	  
    }
    console_shortcuts.list = {

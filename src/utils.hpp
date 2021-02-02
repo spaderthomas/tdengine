@@ -167,7 +167,6 @@ glm::vec2 vec_divide(glm::vec2 vec, float by) {
 
 // Colors
 namespace Colors {
-	glm::vec4 Hannah = glm::vec4(.82f, .77f, 0.57f, 1.0f); // Note: Hannah's favorite three floating point numbers.
 	glm::vec4 Red = glm::vec4(1.f, 0.f, 0.f, 1.f);
 	glm::vec4 Green = glm::vec4(0.f, 1.f, 0.f, 1.f);
 	glm::vec4 Blue = glm::vec4(0.f, 0.f, 1.f, 1.f);
@@ -521,67 +520,17 @@ std::string get_default_font_path() {
 }
 
 
-/* ImGui options */
-
+// Global options
 bool debug_show_aabb = false;
 bool debug_show_minkowski = false;
 bool show_imgui_demo = false;
-bool show_fsm_debugger = false;
 bool show_console = false;
 bool print_framerate = false;
-bool dialogue_mode = false;
-
-bool show_tile_selector = true;
-bool show_script_selector = true;
-bool show_level_selector = true;
-bool show_state_tweaker = true;
-bool show_task_editor = false;
 bool send_kill_signal = false;
+const char* layout_to_load = nullptr; // Set this string to pick up a new layout next tick
+
 
 float framerate = 0.f;
-
-const std::string ACTIONS_KEY              = "actions";
-const std::string ANIMATIONS_KEY           = "Animations";
-const std::string BOUNDING_BOX_KEY         = "bounding_box";
-const std::string CENTER_KEY               = "center";
-const std::string CH_STATE_KEY             = "character_state";
-const std::string COMPONENTS_KEY           = "components";
-const std::string CONFIG_KEY               = "config";
-const std::string CUTSCENES_KEY            = "cutscenes";
-const std::string DEFAULT_ANIMATION_KEY    = "default_animation";
-const std::string DIALOGUE_KEY             = "dialogue";
-const std::string EDITOR_KEY               = "editor";
-const std::string ENTITY_KEY               = "entity";
-const std::string ENTITIES_KEY             = "entities";
-const std::string EXTENTS_KEY              = "extents";
-const std::string FONTS_KEY                = "fonts";
-const std::string GAME_STATE_KEY           = "game_state";
-const std::string HEALTH_KEY               = "health";
-const std::string HEIGHT_KEY               = "height";
-const std::string HERO_KEY                 = "boon";
-const std::string KIND_KEY                 = "kind";
-const std::string LEVEL_KEY                = "level";
-const std::string LEVELS_KEY               = "levels";
-const std::string MOVES_KEY                = "moves";
-const std::string NAME_KEY                 = "name";
-const std::string NAMES_KEY                = "names";
-const std::string NEXT_STATE_KEY           = "next_state";
-const std::string PAN_KEY                  = "pan";
-const std::string POS_KEY                  = "pos";
-const std::string SCALE_KEY                = "scale";
-const std::string SCRIPTS_KEY              = "scripts";
-const std::string SPEED_KEY                = "speed";
-const std::string STATE_KEY                = "State_Machine";
-const std::string TEXT_KEY                 = "text";
-const std::string TILES_KEY                = "tiles";
-const std::string TRANSITIONS_KEY          = "transitions";
-const std::string VARS_KEY                 = "vars";
-const std::string WIDTH_KEY                = "width";
-const std::string WHICH_KEY                = "which";
-const std::string X_KEY                    = "x";
-const std::string Y_KEY                    = "y";
-const std::string Z_KEY                    = "z";
-
 
 /* Random shit */
 void __stdcall gl_debug_callback(GLenum source, GLenum type, GLuint id, GLenum severity, GLsizei length, const GLchar* message, const void *userParam) {
@@ -1215,90 +1164,20 @@ void init_imgui() {
 
 	imgui.IniFilename = nullptr;
 
-	auto default_layout = ScriptPath(RelativePath("layouts/default.ini"));
-	ImGui::LoadIniSettingsFromDisk(default_layout.path.c_str());
-	tdns_log.write("Loading Imgui configuration from: " + default_layout.path, Log_Flags::File);	
-
+	// Engine will pick this up on the first tick (before ImGui renders, so no flickering)
+	layout_to_load = "default";
 }
 
-std::string capitalize_component_name(std::string name_from_path) {
-	// Always capitalize the first character
-	name_from_path[0] = toupper(name_from_path[0]);
-	
-	// Also capitalize everything after an underscore
-	bool capitalize_next_char = false;
-	for (auto& c : name_from_path) {
-		if (c == '_') {
-			capitalize_next_char = true;
-			continue;
-		}
+void load_imgui_layout() {
+	if (!layout_to_load) return;
 
-		if (capitalize_next_char) {
-			c -= 32; // Would like to use toupper here...
-			capitalize_next_char = false;
-		}
+	auto relative = RelativePath(std::string("layouts/") + layout_to_load + ".ini");
+	auto layout = ScriptPath(relative);
+	ImGui::LoadIniSettingsFromDisk(layout.path.c_str());
+	tdns_log.write("Loading Imgui configuration from: " + layout.path, Log_Flags::File);
 
-	}
-
-	return name_from_path;
+	layout_to_load = nullptr;
 }
-
-std::vector<std::string> all_component_types() {
-	std::vector<std::string> ignore = {
-        "component_includes",
-		"component_impl_includes"
-	};
-	std::string impl = "_impl";
-
-	std::vector<std::string> names;
-	
-	auto component_dir = path_join({root_dir, "src", "components"});
-	for (const auto& entry : directory_iterator(component_dir)) {
-		std::string filename = entry.path().filename().replace_extension().string();
-		if (tdns_find(ignore, filename)) continue;
-		if (does_string_contain_substr(filename, impl)) continue;
-		
-		auto component_name = capitalize_component_name(filename);
-		component_name += "_Component";
-		names.push_back(component_name);
-	}
-	
-	return names;
-}
-
-std::vector<std::string> tile_size_descriptions = {
-	"-1.5 tiles",
-	"-1.25 tiles",
-	"-1 tiles",
-	"-.5 tiles",
-	"0 tiles",
-	".5 tiles",
-	"1 tile",
-	"1.25 tiles",
-	"1.5 tiles",
-	"2 tiles",
-	"3 tiles",
-	"4 tiles",
-	"5 tiles",
-	"6 tiles",
-};
-
-std::vector<double> tile_sizes = {
-	-0.0666,
-	-0.0555,
-	-0.0444,
-	-0.0222,
-	0, 
-	0.0222,
-	0.0444,
-	0.0555,
-	0.0666,
-	0.0888,
-	0.1333,
-	0.1777,
-	0.2222,
-	0.2666,
-};
 
 template <typename F>
 struct Defer {

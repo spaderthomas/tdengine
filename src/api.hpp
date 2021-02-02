@@ -53,6 +53,7 @@ void imgui_add_circle_filled(); lazy
 */
 
 void toggle_console();
-void save_imgui_layout();
+void use_layout(const char* name);
+void save_layout(const char* name);
 
 void register_lua_api();

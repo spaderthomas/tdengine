@@ -160,6 +160,11 @@ life. but you can't -- not even if you solve the bad thing and return your
 external world to the same state as before. it changes you inside, permanently. 
 
 fate does not choose you, it's just that things have to happen to someone. 
+
+people cannot fundamentally change themselves (powerlessness, fate, determinism)
+-- they can become different, but they cannot change their own nature. perhaps
+earth shattering events can change a person's nature, but a person cannot cause
+these events or harness their power. 
 ** tangents
 even though gpt-3 is in some sense just recombining human patterns, it is still
 creating art. the strangeness of a genetic algorithm influencing art created by
@@ -168,6 +173,8 @@ humans.
 technofetishism: instead of beginning with the idea and using technology to
 express it, we often begin with technology and mold our expression around what
 it allows. 
+
+a scientific phenomenon that cannot be observed
 * characters
 ** boon
 boon is kind of a shinji figure. he is quiet, and well mannered, and
@@ -2283,8 +2290,87 @@ libc
 dl
 x
 gl
+** 01/31/2020
+** 02/01/2020
+i made it a month!
 
+something to run dialogue? i only really have the text and choice options right
+now.
 
+ok, brief reprise to finish the layout stuff i started. funny to think that i
+started that on saturday or something and that led me through the whole library
+nonsense i was thinking about. so, it's time to finish up the dialogue action
+(then, maybe move into openal). 
+
+it's just an action, right? as far as figuring out whether inputs should be
+stopped (like how i had a dialogue mode before) or anything boils down to: it's
+just an action. 
+
+ok, what's the api look like? like, what part of this lives in C++ and what part
+of it lives in lua?
+
+-- c++
+- render the text box
+  - of course, the actual rendering is done in c++. but is the text box rendered
+    generically, or is there an api for it specifically?
+- render the avatar
+  - ditto above: special text box api?
+
+-- lua
+- store the dialogue tree
+- store the current text block
+- calculate which text should be rendered
+- render said text
+- figure out when voices need to be played
+- play voices
+- specify animation for text
+- animate text
+
+ok, so here's what keeps coming up: is there a special text box api in the
+engine, or do i just build it out of primitives on the lua end? as in, "render
+this image here", there's your text box. "render this text on the screen",
+there's your text. need wrapping? gotta calculate it in lua. 
+
+as i write more of this game, it's almost like i want EVERYTHING to be in lua
+except for a very few things (i mean, this is basically true now)
+- graphics
+- physics
+- entities
+- input
+
+lotsa benefits to doing it that way. never recompile. mostly never recompile
+lol. it's almost like there is a secondary api in some sense, the lua api. 
+
+here's another thing: there's no good place in lua to put something like this
+(persistent, updated every frame, not an entity). there's no main update
+function for lua. to do something like this, you have to either:
+- stick it in an entity
+- make a special struct + api in c++
+
+i feel like that's...kind of by design, right? when you model your game such
+that everything in it is an entity, don't be surprised when it's hard to add
+things in the game that are not entities. maybe making it an entity is not a bad
+idea? or -- they're just getting triggered through cutscenes. so maybe
+everything lives in the action. 
+
+also i already have all this code in C++. maybe i just bind the class?
+
+---
+
+k, just gonna make a decision. 
+
+the engine has a text box that lives somewhere. "display text in a box" is one
+of the core features that the engine provides. from lua, you're just gonna send
+it some configurations (voices? avatar? text chunk?), and then you can query
+every frame whether it's done with the text chunk or not. 
+
+need a way to get inputs (must be force-fed? read directly from input? if so,
+which channel?)
+
+not sure where exactly it lives
+
+dialogue action just keeps current node, traverses the graph using input, calls
+into text box api when it inits or needs a new chunk rendered
 * plot
 ** intro
 *** an introduction!
@@ -2925,6 +3011,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-01 Mon 21:48]--[2021-02-01 Mon 22:36] =>  0:48
+CLOCK: [2021-02-01 Mon 20:41]--[2021-02-01 Mon 21:17] =>  0:36
 CLOCK: [2021-01-31 Sun 12:00]--[2021-01-30 Sat 13:00] =>  1:00
 CLOCK: [2021-01-30 Sat 15:00]--[2021-01-30 Sat 16:20] =>  1:20
 CLOCK: [2021-01-30 Sat 12:49]--[2021-01-30 Sat 14:25] =>  1:36

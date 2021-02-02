@@ -277,6 +277,18 @@ void rect_outline_world(sol::table rect, sol::table color) {
 void toggle_console() {
 	show_console = !show_console;
 }
+
+void use_layout(const char* name) {
+	layout_to_load = name;
+}
+
+void save_layout(const char* name) {
+	auto relative = RelativePath(std::string("layouts/") + name + ".ini");
+	auto layout = ScriptPath(relative);
+	ImGui::SaveIniSettingsToDisk(layout.path.c_str());
+	tdns_log.write("Saved Imgui configuration: " + layout.path, Log_Flags::File);
+}
+
 void save_imgui_layout() {
 	ImGui::SaveIniSettingsToDisk(ImGui::GetIO().IniFilename);
 }
@@ -300,27 +312,22 @@ void register_lua_api() {
 	state["tdengine"]["get_camera_x"] = &get_camera_x;
 	state["tdengine"]["get_camera_y"] = &get_camera_y;
 	state["tdengine"]["move_camera"] = &move_camera;
-	state["tdengine"]["draw_entity"] = &draw_entity;
-	state.set_function("tdengine.log", &Log::write, &tdns_log);
-	
+	state["tdengine"]["draw_entity"] = &draw_entity;	
 	state["tdengine"]["draw"] = state.create_table();
 	state["tdengine"]["draw"]["line_screen"] = &line_screen;
 	state["tdengine"]["draw"]["rect_filled_screen"] = &rect_filled_screen;
 	state["tdengine"]["draw"]["rect_outline_screen"] = &rect_outline_screen;
-	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;
-	
+	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
 	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;
 	state["tdengine"]["InputChannel"]["Editor"] = INPUT_MASK_EDITOR;
 	state["tdengine"]["InputChannel"]["Game"] = INPUT_MASK_GAME;
 	state["tdengine"]["InputChannel"]["All"] = INPUT_MASK_ALL;
-	
 	state["tdengine"]["paths"] = state.create_table();
 	state["tdengine"]["paths"]["root"] = root_dir;
 	state["tdengine"]["paths"]["join"] = &path_join;
-	state["tdengine"]["paths"]["absolute_path"] = &absolute_path;
-	
+	state["tdengine"]["paths"]["absolute_path"] = &absolute_path;	
     state["tdengine"]["internal"] = state.create_table();
 	state["tdengine"]["internal"]["move_entity"] = &move_entity;
 	state["tdengine"]["teleport_entity"] = &teleport_entity;
@@ -330,11 +337,11 @@ void register_lua_api() {
 	state["tdengine"]["internal"]["screen_1080"] = &use_1080p;
 	state["tdengine"]["internal"]["screen_1440"] = &use_1440p;
 	state["tdengine"]["internal"]["toggle_console"] = &toggle_console;
-	state["tdengine"]["internal"]["save_imgui_layout"] = &save_imgui_layout;
-
+	state["tdengine"]["save_layout"] = &save_layout;
+	state["tdengine"]["use_layout"] = &use_layout;
 	// This one's internal because we want the Lua version to return a table
 	state["tdengine"]["internal"]["ray_cast"] = &ray_cast;
-
 	state["imgui"]["extensions"] = state.create_table();
 	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;
+	state.set_function("tdengine.log", &Log::write, &tdns_log);
 }

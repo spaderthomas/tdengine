@@ -69,9 +69,6 @@ function Editor:update(dt)
   imgui.Begin("tded v2.0", true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
-  if imgui.Button("save imgui.ini") then
-  	 tdengine.internal.save_imgui_layout()
-  end
 
   imgui.Begin("scene", true)
   self:draw_entity_viewer()
@@ -268,19 +265,6 @@ function Editor:draw_selected_view()
 		 imgui.extensions.Entity(self.selected)
 	  end
    end
-end
-
-function Editor:use_layout(name)
-   local path = 'layouts/' .. name .. '.ini'
-   path = tdengine.paths.script(path)
-   print(path)
-   imgui.LoadIniSettingsFromDisk(path)
-end
-
-function Editor:save_layout(name)
-   local path = 'layouts/' .. name .. '.ini'
-   path = tdengine.paths.script(path)
-   imgui.SaveIniSettingsToDisk(path)
 end
 
 function Editor:get_mouse_rect()

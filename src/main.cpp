@@ -66,8 +66,9 @@ int main() {
 		// Call all GLFW callbacks
 		glfwPollEvents();
 		
-		// Pass all inputs to ImGui BEFORE ImGui::NewFrame
+		// These have to happen before ImGui::NewFrame
 		fill_imgui_input();
+		load_imgui_layout();
 		
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
