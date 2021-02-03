@@ -32,18 +32,19 @@ build_options = {
             'Kernel32.lib'
         ],
         'user_libs': [
-            'freetyped.lib',
             'glfw3.lib',
-            'lua51.lib'
+            'lua51.lib',
+            'freetyped.lib',
         ],
         'dlls': [
+            'freetyped.dll',
             'lua51.dll'
         ],
         'ignore': [
             '4099',
             '4068'   # unknown pragma
         ],
-        'machine': 'X86',
+        'machine': 'X64',
         'out': 'tdengine.exe',
         'runtime_library': 'MDd',
         'warnings': [
@@ -108,8 +109,8 @@ build_options = {
 # I really hate having this file in my project
 def find_devenv_script():
     potential_devenv_scripts = [
-        "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Auxiliary/Build/vcvars32.bat",
-        "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/Build/vcvars32.bat"
+        "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Auxiliary/Build/vcvars64.bat",
+        "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Auxiliary/Build/vcvars64.bat"
     ]
     for script in potential_devenv_scripts:
         if os.path.exists(os.path.normpath(script)):
