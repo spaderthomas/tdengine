@@ -30,6 +30,8 @@ Tags in my notes about code
 Tags in the code itself
 @bootstrap: places i can clean up initialization
 @log: places i can improve or even just DO logging
+@maybe_bug: either too lazy to fix now, or not a problem now
+@paths: i hate paths
 * todo
 @render_refactor
 Stop baking texture atlases, texture coordinates, etc on startup. 
@@ -237,6 +239,13 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/02/2020
+ok, all the piping stuff is done. time to:
+- fix the asset for the text box
+- read inputs in the action and control the text box
+- walk the node tree
+- handle different kinds of nodes
+- reset the text box when done
 ** 02/01/2020
 i made it a month!
 
@@ -272,6 +281,7 @@ of it lives in lua?
 - store the dialogue tree
 - specify which voice will be used
 - specify animation for text
+- specify full text block
 
 ok, so here's what keeps coming up: is there a special text box api in the
 engine, or do i just build it out of primitives on the lua end? as in, "render
@@ -3011,7 +3021,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-02-02 Tue 20:20]
+CLOCK: [2021-02-02 Tue 20:20]--[2021-02-02 Tue 21:46] =>  1:26
 CLOCK: [2021-02-01 Mon 21:48]--[2021-02-01 Mon 22:36] =>  0:48
 CLOCK: [2021-02-01 Mon 20:41]--[2021-02-01 Mon 21:17] =>  0:36
 CLOCK: [2021-01-31 Sun 12:00]--[2021-01-30 Sat 13:00] =>  1:00

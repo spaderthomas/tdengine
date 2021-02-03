@@ -224,9 +224,6 @@ void init_assets() {
 
 		asset_manager.add_asset<Sprite>(name, sprite);
 	}
-
-
-
 }
 
 void bind_sprite_buffers() {

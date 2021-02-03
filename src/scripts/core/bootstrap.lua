@@ -27,6 +27,7 @@ function tdengine.bootstrap()
 	  ded = {
 		 help = 'load a scene into the dialogue editor',
 		 proc = function(name)
+			tdengine.use_layout('ded')
 			local editor = tdengine.find_entity('Editor')
 			editor:ded_load(name)
 		 end

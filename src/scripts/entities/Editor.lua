@@ -302,6 +302,27 @@ function Editor:canvas_screen_to_window_screen(canvas_screen)
    return window_screen
 end
 
+function Editor:make_dialogue_node(kind)
+   local node = {
+	  kind = kind,
+	  is_entry_point = false,
+	  children = {},
+	  uuid = tdengine.uuid()
+   }
+   if kind == 'Text' then
+	  node.text = 'im a text node!'
+	  node.who = ''
+   end
+   if kind == 'Choice' then
+	  node.text = 'im a choice node!'
+   end
+   if kind == 'Set' then
+	  node.variable = 'buns'
+	  node.value = true
+   end
+   return node
+
+end
 function Editor:ded_load(name)
    self.ded.loaded = name
    self.ded.selected = nil
@@ -587,6 +608,9 @@ function Editor:dialogue_editor()
 		 if imgui.MenuItem('Disconnect') then
 			self.ded.disconnecting = id
 		 end
+		 if imgui.MenuItem('Set as entry point') then
+			node.is_entry_point = true
+		 end
 
 		 imgui.EndPopup()
 	  end
@@ -683,31 +707,13 @@ function Editor:dialogue_editor()
 	  if imgui.TreeNode('Add Node') then
 		 local node = nil
 		 if imgui.MenuItem('Text') then
-			node = {
-			   kind = 'Text',
-			   text = 'lorem',
-			   who = 'jerry',
-			   children = {},
-			   uuid = tdengine.uuid()
-			}
+			node = make_dialogue_node('Text')
 		 end
 		 if imgui.MenuItem('Choice') then
-			node = {
-			   kind = 'Choice',
-			   text = 'ipsum',
-			   who = 'pigpen',
-			   children = {},
-			   uuid = tdengine.uuid()
-			}
+			node = make_dialogue_node('Choice')
 		 end
 		 if imgui.MenuItem('Set') then
-			node = {
-			   kind = 'Set',
-			   variable = 'variable',
-			   value = true,
-			   children = {},
-			   uuid = tdengine.uuid()
-			}
+			node = make_dialogue_node('Set')
 		 end
 
 		 if node then

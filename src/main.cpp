@@ -13,6 +13,7 @@
 #include "draw.hpp"
 #include "shader.hpp"
 #include "physics.hpp"
+#include "text_box.hpp"
 #include "imgui/imgui_lua_bindings.hpp"
 #include "api.hpp"
 
@@ -24,6 +25,7 @@
 #include "lua_impl.hpp"
 #include "physics_impl.hpp"
 #include "shader_impl.hpp"
+#include "text_box_impl.hpp"
 #include "transform_impl.hpp"
 
 int main() {
@@ -39,6 +41,7 @@ int main() {
 	auto& entity_manager   = get_entity_manager();
 	auto& cutscene_manager = get_cutscene_manager();
 	auto& physics_engine   = get_physics_engine();
+	auto& text_box         = get_text_box();
 	
 	init_shaders();
 	init_mesh();
@@ -80,8 +83,10 @@ int main() {
 		entity_manager.update(seconds_per_update);
 		cutscene_manager.update(seconds_per_update);
 		physics_engine.update(seconds_per_update);
+		text_box.update(seconds_per_update);
 
 		render_engine.render();
+		text_box.render();
 
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());

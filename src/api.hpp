@@ -57,3 +57,10 @@ void use_layout(const char* name);
 void save_layout(const char* name);
 
 void register_lua_api();
+
+void text_box_begin(std::string text);
+bool text_box_is_done();
+bool text_box_is_active();
+bool text_box_is_waiting();
+void text_box_resume();
+void text_box_skip();

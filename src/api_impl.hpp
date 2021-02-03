@@ -293,6 +293,31 @@ void save_imgui_layout() {
 	ImGui::SaveIniSettingsToDisk(ImGui::GetIO().IniFilename);
 }
 
+void text_box_begin(std::string text) {
+	auto& text_box = get_text_box();
+	text_box.begin(std::move(text));
+}
+bool text_box_is_done() {
+	auto& text_box = get_text_box();
+	return text_box.is_done();
+}
+bool text_box_is_active() {
+	auto& text_box = get_text_box();
+	return text_box.active;
+}
+bool text_box_is_waiting() {
+	auto& text_box = get_text_box();
+	return text_box.waiting;
+}
+void text_box_resume() {
+	auto& text_box = get_text_box();
+	text_box.resume();	
+}
+void text_box_skip() {
+	auto& text_box = get_text_box();
+	text_box.skip();	
+}
+
 
 void register_lua_api() {
 	auto& state = Lua.state;
@@ -318,6 +343,13 @@ void register_lua_api() {
 	state["tdengine"]["draw"]["rect_filled_screen"] = &rect_filled_screen;
 	state["tdengine"]["draw"]["rect_outline_screen"] = &rect_outline_screen;
 	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
+	state["tdengine"]["text_box"] = state.create_table();	
+	state["tdengine"]["text_box"]["begin"] = &text_box_begin;	
+	state["tdengine"]["text_box"]["is_done"] = &text_box_is_done;	
+	state["tdengine"]["text_box"]["is_active"] = &text_box_is_active;	
+	state["tdengine"]["text_box"]["is_waiting"] = &text_box_is_waiting;	
+	state["tdengine"]["text_box"]["resume"] = &text_box_resume;	
+	state["tdengine"]["text_box"]["skip"] = &text_box_skip;	
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
 	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;

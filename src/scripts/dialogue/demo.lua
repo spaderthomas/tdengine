@@ -10,6 +10,7 @@ return {
     children = {
       "d94a87f4-c8c6-4e45-be1f-813ae510713f"
     },
+    is_entry_point = true,
     kind = "Text",
     text = "EVANGELION UNIT-00 (REI AYANAMI)",
     uuid = "d6cce35c-487a-458f-bab2-9032c2621f38",
