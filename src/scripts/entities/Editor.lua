@@ -308,11 +308,7 @@ function Editor:ded_load(name)
    self.ded.scrolling = tdengine.vec2(0, 0)
    self.ded.editor:SetContents('')
    
-   -- Load the dialogue data itself
-   local filepath = 'dialogue/' .. name
-   package.loaded[filepath] = nil
-   self.ded.nodes = require(filepath)
-
+   self.ded.nodes = tdengine.load_dialogue(name)
    -- Load the GUI data
    filepath = 'layouts/dialogue/' .. name
    package.loaded[filepath] = nil

@@ -652,3 +652,10 @@ function tdengine.update_cutscene(dt)
 	  tdengine.active_cutscene = nil
    end
 end
+
+function tdengine.load_dialogue(name)
+   -- Load the dialogue data itself
+   local filepath = 'dialogue/' .. name
+   package.loaded[filepath] = nil
+   return require(filepath)
+end
