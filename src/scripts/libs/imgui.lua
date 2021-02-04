@@ -8,7 +8,8 @@ imgui.extensions.Component = function(component)
    
    if imgui.TreeNode(component:get_name()) then
 	  imgui.extensions.VariableName('id')
-	  imgui.extensions.RightAlignedString(tostring(component:get_id()))
+	  imgui.SameLine()
+	  imgui.Text(tostring(component:get_id()))
 	  imgui.extensions.TableMembers(component:get_name(), component)
 	  imgui.TreePop()
    end
@@ -20,7 +21,8 @@ imgui.extensions.Entity = function(entity)
    imgui.PushID(entity:get_id())
    if imgui.TreeNode(entity:get_name()) then
 	  imgui.extensions.VariableName('id')
-	  imgui.extensions.RightAlignedString(tostring(entity:get_id()))
+	  imgui.SameLine()
+	  imgui.Text(tostring(entity:get_id()))
 
 	  local components = entity:all_components()
 	  for index, component in pairs(components) do
@@ -43,15 +45,17 @@ imgui.extensions.TableMembers = function(name, tbl, ignore, imgui_id)
 		 local next_imgui_id = imgui_id .. '__' .. member
 		 
 		 if value_type == 'string' then
-   		   imgui.extensions.VariableName(member)
-   		   imgui.extensions.RightAlignedString(value)
+			imgui.extensions.VariableName(member)
+			imgui.SameLine()
+			imgui.Text(value)
 		 elseif value_type == 'number' then
 			imgui.extensions.VariableName(member)
-			imgui.extensions.RightAlignedString(tostring(value))
+			imgui.SameLine()
+			imgui.Text(tostring(value))
 		 elseif value_type == 'boolean' then
 			imgui.extensions.VariableName(member)
-			imgui.SameLine(imgui.GetWindowWidth() - 30)
-			draw, new = imgui.Checkbox(next_imgui_id, value)
+			imgui.SameLine()
+			imgui.Text(tostring(value))
 			tbl[member] = new
 		 elseif value_type == 'table' then
 			imgui.extensions.Table(member, value, {}, next_imgui_id)
@@ -92,10 +96,8 @@ end
 
 imgui.extensions.VariableName = function(name)
    imgui.PushStyleColor_2(imgui.constant.Col.Text, .1, .2, .7, 1)
-   imgui.Text(name)
+   imgui.Text(name .. ':')
    imgui.PopStyleColor()
-   imgui.SameLine()
-   imgui.Text(': ')
 end
 
 imgui.extensions.RightAlignedString = function(str)

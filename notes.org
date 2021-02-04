@@ -26,19 +26,28 @@ Tags in the plot stuff
 Tags in my notes about code
 @render_refactor
 @lua_init: how globals get setup
+@layer: stuff about graphics layers
 
 Tags in the code itself
 @bootstrap: places i can clean up initialization
 @log: places i can improve or even just DO logging
 @maybe_bug: either too lazy to fix now, or not a problem now
 @paths: i hate paths
-* todo
+* code
 @render_refactor
 Stop baking texture atlases, texture coordinates, etc on startup. 
+Font rendering API
+Stop rendering primitives with vector<std::function> probably
+Initialize font VAOs and stuff in init_gl(), not init_fonts()
 
 @lua_init
 Stop storing entity classes as part of the global table, e.g:
 Player = tdengine.entity('Player')
+
+@layer
+0  :: background
+1  :: default for all entities
+10 :: text box
 * learn
 ** lua
 *** metamethods
@@ -239,6 +248,26 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/03/2020
+ok, so here's the deal:
+text box renders itself now. it uses its own vao. it assumes that the text box
+is loaded in as a Special Texture. but that's not gonna be the case. it's going
+to be baked into a font atlas, and we're going to render it with texture
+coordinates using the same VAO as everything else.
+
+that would imply that we want to render it using the same code path as
+everything else -- make a render element, submit it, let the renderer pick it
+up. problem: render elements use entity IDs to grab position (because update
+loop is entity_update -> physics resolve -> render, and you make requests in (1)
+but you cannot know the new position until (2)). so basically, i can't render
+anything through the render engine unless it's an entity.  
+
+- make the text box an entity?
+  - prefab would work perfectly here
+  - action looks up the entity at runtime
+  - just use existing api to render the text (altho you will eventually need a
+    full text-rendering API)
+  - use a high layer
 ** 02/02/2020
 ok, all the piping stuff is done. time to:
 - fix the asset for the text box
@@ -3021,6 +3050,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-03 Wed 20:11]--[2021-02-03 Wed 21:12] =>  1:01
 CLOCK: [2021-02-02 Tue 20:20]--[2021-02-02 Tue 21:46] =>  1:26
 CLOCK: [2021-02-01 Mon 21:48]--[2021-02-01 Mon 22:36] =>  0:48
 CLOCK: [2021-02-01 Mon 20:41]--[2021-02-01 Mon 21:17] =>  0:36
@@ -3073,3 +3103,16 @@ cosmic star heroine. an RPG styled after chrono trigger with no random
 encounters. 
 
 https://store.steampowered.com/app/251150/The_Legend_of_Heroes_Trails_in_the_Sky/
+* artists
+** /u/skeddles
+excellent colors, some cool landscape ones. also some goofy pokemon-esque
+creature sprites.
+https://www.reddit.com/r/PixelArt/comments/lbumn0/oc_crisp_mountain_air/
+https://www.reddit.com/r/PixelArt/comments/hnjglo/rhacos_rider/
+https://www.reddit.com/r/PixelArt/comments/bjx0yg/some_pokemon_sprites_i_made_out_of_drawings_from/
+** /u/iviqrr
+very cool style...saturated colors, some really really cool creature-like large
+sprites. seems quite prolific.
+https://www.reddit.com/r/PixelArt/comments/jps2bv/oc_shieldbearer/
+https://www.reddit.com/r/PixelArt/comments/l64x73/oc_chatternose/
+https://www.reddit.com/r/PixelArt/comments/l2ro3v/oc_cursed_tiki/

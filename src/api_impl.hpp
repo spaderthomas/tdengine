@@ -12,7 +12,7 @@ void destroy_entity(int entity) {
 	entity_manager.destroy_entity(entity);
 }
 
-void draw_entity(int entity, int flags) {
+void draw_entity(int entity) {
 	auto& entity_manager = get_entity_manager();
 	auto entity_ptr = entity_manager.get_entity(entity);
 	
@@ -36,7 +36,7 @@ void draw_entity(int entity, int flags) {
 
 	// Fill out the RenderElement
 	Render_Element r;
-	r.flags = static_cast<Render_Flags>(flags);
+	r.flags = static_cast<Render_Flags>(graphic["flags"]);
 	r.layer = graphic["layer"];
 	r.entity = entity;
 
@@ -342,6 +342,12 @@ void register_lua_api() {
 	state["tdengine"]["draw"]["line_screen"] = &line_screen;
 	state["tdengine"]["draw"]["rect_filled_screen"] = &rect_filled_screen;
 	state["tdengine"]["draw"]["rect_outline_screen"] = &rect_outline_screen;
+	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
+	state["tdengine"]["render_flags"]= state.create_table();	
+	state["tdengine"]["render_flags"]["none"] = Render_Flags::None;	
+	state["tdengine"]["render_flags"]["highlighted"] = Render_Flags::Highlighted;	
+	state["tdengine"]["render_flags"]["screen_position"] = Render_Flags::ScreenPosition;	
+	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
 	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
 	state["tdengine"]["text_box"] = state.create_table();	
 	state["tdengine"]["text_box"]["begin"] = &text_box_begin;	

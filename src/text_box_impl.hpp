@@ -129,56 +129,12 @@ void Text_Box::resume() {
 	}
 }
 void Text_Box::render() {
-	if (is_done() || !active) { return; }
-	
-	// Draw the box
-	/*
-	glBindVertexArray(text_box_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
-	auto& asset_manager = get_asset_manager();
-	auto texture = asset_manager.get_asset<Texture>("text_box.png");
-	glActiveTexture(GL_TEXTURE0);
-	glBindTexture(GL_TEXTURE_2D, texture->handle);
-	
-	textured_shader.begin();*/
-	
+	if (!active) { return; }
+		
 	gl_unit size_x = 1.8f, size_y = .5f;
 	gl_unit bottom = -.9f, left = -.9f;
 	gl_unit top = bottom + size_y;
 	gl_unit right = left + size_x;
-	
-	GLfloat vertices[12][2] = {
-		// Vertices 
-		{ left,  top },
-		{ left,  bottom },
-		{ right, bottom },
-		
-		{ left,  top },
-		{ right, bottom },
-		{ right, top },
-		
-		// Texture coordinates
-		{ 0.f, 0.f },
-		{ 0.f, 1.f },
-		{ 1.f, 1.f },
-		
-		{ 0.f, 0.f },
-		{ 1.f, 1.f },
-		{ 1.f, 0.f }
-	};
-	/*glBufferData(GL_ARRAY_BUFFER, 24 * sizeof(float), vertices, GL_STATIC_DRAW);
-	
-	SRT transform = SRT::no_transform();
-	auto transform_mat = mat3_from_transform(transform);
-	textured_shader.set_mat3("transform", transform_mat);
-	
-	textured_shader.set_int("sampler", 0);
-	
-	textured_shader.check();
-	glDrawArrays(GL_TRIANGLES, 0, 6);
-	textured_shader.end();
-	*/
-	
 	
 	// Draw the text
 	// Start the text at the top left of the text box, padded

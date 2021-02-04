@@ -17,6 +17,7 @@ struct Camera {
 enum Render_Flags {
 	None = 0,
 	Highlighted = 1 << 0,
+	ScreenPosition = 1 << 1
 };
 struct Render_Element {
 	int layer;

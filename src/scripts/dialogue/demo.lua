@@ -12,7 +12,7 @@ return {
     },
     is_entry_point = true,
     kind = "Text",
-    text = "EVANGELION UNIT-00 (REI AYANAMI)",
+    text = "EVANGELION UNIT-00 (REI AYANAMI). Rei has short, pale blue hair with bangs centered to the middle, and has red eyes. At the beginning of the series, she would wear bandages such as her arm and her eye one. She wears the same school uniform but with white loafers and black ankle socks.",
     uuid = "d6cce35c-487a-458f-bab2-9032c2621f38",
     who = "Asuka"
   },

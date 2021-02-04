@@ -271,7 +271,9 @@ void RenderEngine::render() {
                 collider->origin.x,
                 collider->origin.y
 			});
-			transform.translate += camera_translation;
+			if (!(r.flags & Render_Flags::ScreenPosition)) {
+				transform.translate += camera_translation;
+			}
 			auto transform_mat = mat3_from_transform(transform);
 			shader->set_mat3("transform", transform_mat);
 

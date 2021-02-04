@@ -330,7 +330,15 @@ function tdengine.load_entity(entity, data)
 end
 
 function tdengine.load_prefab(entity)
-   local data = require('prefabs/' .. entity:get_name())
+   local filepath = 'prefabs/' .. entity:get_name()
+   package.loaded[filepath] = nil
+   local status, data = pcall(require, filepath)
+   if not status then
+	  local message = 'tdengine.load_prefab() :: could not find prefab. '
+	  message = message .. 'requested prefab was: ' .. name
+	  print(message)
+   end
+
 
    local components = data.components
    if not components then return end

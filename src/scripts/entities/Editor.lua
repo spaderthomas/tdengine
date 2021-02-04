@@ -464,7 +464,12 @@ function Editor:dialogue_editor()
 	  imgui.TreePop()
    end
 
-   imgui.Text('scroll: ' .. self.ded.scrolling.x .. ', ' .. self.ded.scrolling.y)
+   local waiting = tdengine.text_box.is_waiting()
+   local done = tdengine.text_box.is_done()
+
+   imgui.Text('waiting: ' .. tostring(waiting))
+   imgui.Text('done: ' .. tostring(done))
+   
    if self.inslot then
 	  imgui.Text('inslot: ' .. self.inslot.x .. ', ' .. self.inslot.y)
    end

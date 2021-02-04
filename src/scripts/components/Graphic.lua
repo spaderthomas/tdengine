@@ -10,5 +10,5 @@ function Graphic:init()
 end
 
 function Graphic:update(dt)
-   tdengine.draw_entity(self.parent:get_id(), self.flags)
+   tdengine.draw_entity(self.parent:get_id())
 end
