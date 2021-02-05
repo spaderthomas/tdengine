@@ -64,3 +64,5 @@ bool text_box_is_active();
 bool text_box_is_waiting();
 void text_box_resume();
 void text_box_skip();
+void text_box_highlight_line(int line);
+void text_box_add_choice(std::string choice);

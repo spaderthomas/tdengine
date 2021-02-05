@@ -27,6 +27,7 @@ Tags in my notes about code
 @render_refactor
 @lua_init: how globals get setup
 @layer: stuff about graphics layers
+@reload: never have to quit the game and restart it
 
 Tags in the code itself
 @bootstrap: places i can clean up initialization
@@ -48,6 +49,12 @@ Player = tdengine.entity('Player')
 0  :: background
 1  :: default for all entities
 10 :: text box
+
+@reload
+- 02/04/21: needed to re-load bootstrap code
+- 02/04/21: spawned a new text box every frame
+- 02/04/21: lua exception caused imgui stack to be uneven
+- 02/04/21: lua exception caused imgui stack to be uneven
 * learn
 ** lua
 *** metamethods
@@ -247,8 +254,39 @@ boarding school manners.
 he speaks with an almost-british accent. everything about him screams preparatory
 school.
 ** the librarian
-* log
-** 02/03/2020
+* logself.data[id].te
+** 02/04/2021
+handle set nodes
+handle choice nodes
+
+yet another api question...what part of the api lives where. right now, here's
+the apis i need to add:
+- have the text box display several choices
+- store which choice is active
+- render active choice in a different color
+
+basically, do i store all this in C++? or do i store it in lua? the intent of
+lua is to stitch together low level API calls. what is a low level api? "render
+some text at this location"? or "add a choice to a text box"? problem is i feel
+like having a bona fide text box API in C++ is a solid idea, that's a prety core
+thing my game needs, but that means some game state has to live in C++ that i
+don't want it to. like the active choice -- i want to grab that in lua. i don't
+give a shit about it in c++ except to render it a different color
+
+"" right "" thing to do: 
+- remove the text box class from C++
+- text box entity stores all the members and methods on shit there
+- C++ has an API that lets you draw fonts
+  - has an option for wrap
+
+"" wrong "" thing to do:
+- add member on text box to store choices
+- add member on text box to store active
+- call that shit from lua
+- leave a comment :) 
+
+today is a solve problems day.
+** 02/03/2021
 ok, so here's the deal:
 text box renders itself now. it uses its own vao. it assumes that the text box
 is loaded in as a Special Texture. but that's not gonna be the case. it's going
@@ -268,14 +306,14 @@ anything through the render engine unless it's an entity.
   - just use existing api to render the text (altho you will eventually need a
     full text-rendering API)
   - use a high layer
-** 02/02/2020
+** 02/02/2021
 ok, all the piping stuff is done. time to:
 - fix the asset for the text box
 - read inputs in the action and control the text box
 - walk the node tree
 - handle different kinds of nodes
 - reset the text box when done
-** 02/01/2020
+** 02/01/2021
 i made it a month!
 
 something to run dialogue? i only really have the text and choice options right
@@ -357,8 +395,8 @@ not sure where exactly it lives
 
 dialogue action just keeps current node, traverses the graph using input, calls
 into text box api when it inits or needs a new chunk rendered
-** 01/31/2020
-** 01/30/2020
+** 01/31/2021
+** 01/30/2021
 pros of static linking:
 - i don't have to include any libraries with the game
 - linux-flavor-agnostic? dude on stack says this makes binaries LESS agnostic,
@@ -376,7 +414,7 @@ libc
 dl
 x
 gl
-** 01/29/2020: ded 6
+** 01/29/2021: ded 6
 - run a dialogue
 - edit entity in ded
 - delete node in ded
@@ -398,7 +436,7 @@ gl
 all things reveal themselves
 fear is the mind killer
 do not let vagueness overwhelm your mind
-** 01/28/2020: ded 5
+** 01/28/2021: ded 5
 gamestop makes the game stop
 
 - put bezier curves in the right place -- might need to do a second loop for
@@ -407,9 +445,9 @@ gamestop makes the game stop
 - hook up connect logic: when you click connect, the next thing you click on
   will be added to your children, or if you click on the BG it gets cleared
 
-** 01/27/2020: ded 4
+** 01/27/2021: ded 4
 la la la
-** 01/26/2020: ded 3
+** 01/26/2021: ded 3
 - sloppy code in dialogue_editor() about different node kinds
 - make sure two way bindings with the textedit are ok
 - connections
@@ -424,10 +462,10 @@ la la la
   - select in sidebar selects node
   - scrolling
   - sidebar shows what node is highlighted
-** 01/25/2020: ded 2
+** 01/25/2021: ded 2
 - don't use sha...sha can change. just generate a unique id for each node on
   startup and save it out.
-** 01/25/2020: ded
+** 01/25/2021: ded
 pretty much just moving the node graph stuff over from CPP to lua. had to port
 over a few functions, but nothing too serious -- actually dug into how those
 bindings work a little bit and -- perhaps i learned something about lua. it's
@@ -457,7 +495,7 @@ then just have it like
   flows. OTOH, my mental map is pretty much gonna be a semantically meaningful
   ID -- it's just whatever part of the dialogue is actually displayed at any
   given time. idk.
-** 01/24/2020
+** 01/24/2021
 hm...it's not a graph
 
 but it really is lol
@@ -3050,6 +3088,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-04 Thu 19:07]
 CLOCK: [2021-02-03 Wed 20:11]--[2021-02-03 Wed 21:12] =>  1:01
 CLOCK: [2021-02-02 Tue 20:20]--[2021-02-02 Tue 21:46] =>  1:26
 CLOCK: [2021-02-01 Mon 21:48]--[2021-02-01 Mon 22:36] =>  0:48

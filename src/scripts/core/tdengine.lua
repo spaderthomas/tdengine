@@ -665,11 +665,15 @@ function tdengine.load_dialogue(name)
    -- Load the dialogue data itself
    local filepath = 'dialogue/' .. name
    package.loaded[filepath] = nil
+   
    local status, dialogue = pcall(require, filepath)
    if not status then
 	  local message = 'tdengine.load_dialogue() :: could not find dialogue. '
 	  message = message .. 'requested dialogue was: ' .. name
 	  print(message)
+
+	  return nil
    end
+   
    return dialogue
 end

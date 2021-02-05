@@ -11,16 +11,19 @@ struct Line_Set {
 
 struct Text_Box {
 	std::string text;
+	
 	bool waiting = false;
 	bool active = false;
 	float scale = 1.f;
 	float time_since_last_update = 0.0f;
 	float time_per_update = 4 * seconds_per_update;
+	int line_to_highlight = -1;
 	
 	std::vector<Line_Set> sets;
 	uint index_current_line_set;
-	
-	void begin(std::string text);
+
+	void begin(std::string choice);
+	void clear();
 	void update(float dt);
 	void resume();
 	void skip();
@@ -28,6 +31,10 @@ struct Text_Box {
 	void reset_and_hide();
 	bool is_current_set_displayed();
 	bool is_done();
+
+	// Choice bullshit
+	void add_choice(std::string text);
+
 	Line_Set& current_set();
 };
 

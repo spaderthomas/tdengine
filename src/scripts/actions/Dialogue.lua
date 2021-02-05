@@ -6,6 +6,7 @@ function Dialogue:init(params)
    self.data = tdengine.load_dialogue(self.name)
    self.waiting = false
    self.choosing = false
+   self.choice = nil
 
    self.current = nil
    for id, node in pairs(self.data) do
@@ -15,8 +16,16 @@ function Dialogue:init(params)
 	  end
    end
 
+   -- Error checking
+   local message = nil
    if not self.current then
-	  local message = 'actions/Dialogue:init() :: no entry point node found. '
+	  message = 'actions/Dialogue:init() :: no entry point node found. '
+   end
+   if self.current and self.current.kind == 'Choice' then
+	  message = 'Choice nodes cannot be entry points'
+   end
+   
+   if message then
 	  message = message .. 'Dialogue was: ' .. self.name
 	  print(message)
 	  
@@ -24,11 +33,7 @@ function Dialogue:init(params)
 	  return
    end
 
-   self.text_box = tdengine.find_entity('text_box')
-   if not text_box then
-	  tdengine.create_entity('TextBox')
-	  self.text_box = tdengine.find_entity('text_box')
-   end
+
 
    
    -- tdengine.text_box.use_avatar(self.current.who)
@@ -43,63 +48,94 @@ function Dialogue:update(dt)
 	  --print('setting ' .. self.current.variable)
 	  --self.current = self.data[self.current.children[0]]
    --end
-   
-   local cleanup = function()
+
+   local process_until_text = function() end
+   local next_node = function()
+	  local num_children = #self.current.children
+	  
+	  -- We're done with the whole tree.
+	  if num_children == 0 then
+		 tdengine.text_box.resume() -- This will hide it and mark it inactive
+		 
+		 local text_box = tdengine.find_entity('TextBox')
+		 tdengine.destroy_entity(text_box:get_id())
+		 
+		 self.done = true
+		 
+		 return
+		 -- Not done with the whole tree, but can just do next node serially
+	  elseif num_children == 1 then
+		 self.current = self.data[self.current.children[1]]
+		 
+		 -- Right now, just perform all Set nodes until we have plain text
+		 process_until_text()
+		 
+		 -- There is a next node. Display it.
+		 if self.current then
+			tdengine.text_box.begin(self.current.text)
+		 end
+		 -- Choice, branching, etc
+	  else
+		 self.choosing = true
+		 self.choice = 1
+		 
+		 tdengine.text_box.clear()
+		 
+		 local children = {}
+		 for index, id in pairs(self.current.children) do
+			table.insert(children, self.data[id])
+			tdengine.text_box.add_choice(self.data[id].text)
+		 end
+		 
+		 self.current = children
+		 
+		 tdengine.text_box.begin('')
+	  end
    end
    
    -- The case where we're giving the text box text for the first time
    if not tdengine.text_box.is_active() then
-	  print('begin: ' .. self.current.text)
+	  tdengine.create_entity('TextBox')
+	  self.text_box = tdengine.find_entity('TextBox')
 	  tdengine.text_box.begin(self.current.text)
+   end
+
+   -- must be before next block, because next block sets choosing but when we
+   -- set it we only wanna process it on the next frame
+   if self.choosing then
+	  if tdengine.was_pressed(GLFW.Keys.DOWN, tdengine.InputChannel.Game) then
+		 self.choice = math.min(self.choice + 1, #self.current)
+	  end
+	  if tdengine.was_pressed(GLFW.Keys.UP, tdengine.InputChannel.Game) then
+		 self.choice = math.max(self.choice - 1, 1)
+	  end
+	  tdengine.text_box.highlight_line(self.choice - 1)
+
+	  if tdengine.was_pressed(GLFW.Keys.ENTER, tdengine.InputChannel.Game) then
+		 self.current = self.current[self.choice]
+		 tdengine.text_box.highlight_line(-1)
+		 self.choosing = false
+		 next_node()
+	  end
    end
 
    local waiting = tdengine.text_box.is_waiting()
    local done_with_node = tdengine.text_box.is_done()
 
    if tdengine.was_pressed(GLFW.Keys.ENTER, tdengine.InputChannel.Game) then
+	  -- If it's in the middle of some text, skip to the end
 	  if not waiting then
 		 tdengine.text_box.skip()
 	  end
-	  if waiting and done_with_node then
-		 print('updating current...' .. inspect(self.current))
-		 self.current = self.data[self.current.children[1]]
-		 if not self.current then
-			tdengine.text_box.resume()
-			
-			local text_box = tdengine.find_entity('TextBox')
-			tdengine.destroy_entity(text_box:get_id())
-			
-			self.done = true
-			
-			return
-		 end
-		 
-		 tdengine.text_box.begin(self.current.text)
-	  end
+	  -- The text box is full, but the text we submitted isn't done yet
 	  if waiting and not done_with_node then
 		 tdengine.text_box.resume()
 	  end
+	  -- All text we submitted in begin() has been displayed. Next node.
+	  if waiting and done_with_node then
+		 next_node()
+	  end
    end
-
-   tdengine.do_once(function(a)
-		 tdengine.text_box.resume()
-   end)
-   --if tdengine.text_box.is_done() or not tdengine.text_box.is_active() then
-	  --print('begin')
-   --end
-   
-   --if tdengine.was_pressed(GLFW.Keys.ENTER) then
-	  --if tdengine.text_box.is_waiting() then
-		 --tdengine.text_box.resume()
-	  --else
-		 --tdengine.text_box.skip()
-	  --end
-   --end
-
-   --if tdengine.text_box.is_waiting() then
-	  -- advance to next node
-	  --tdengine.text_box.add_choice()
-   --end
 
 end
 

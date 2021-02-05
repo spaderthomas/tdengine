@@ -295,7 +295,12 @@ void save_imgui_layout() {
 
 void text_box_begin(std::string text) {
 	auto& text_box = get_text_box();
-	text_box.begin(std::move(text));
+	// hack to get choices working with minimal code changes
+	if (text.empty()) {
+		text_box.begin(text_box.text);
+	} else {
+		text_box.begin(std::move(text));
+	}
 }
 bool text_box_is_done() {
 	auto& text_box = get_text_box();
@@ -317,7 +322,18 @@ void text_box_skip() {
 	auto& text_box = get_text_box();
 	text_box.skip();	
 }
-
+void text_box_highlight_line(int line) {
+	auto& text_box = get_text_box();
+	text_box.line_to_highlight = line;	
+}
+void text_box_add_choice(std::string choice) {
+	auto& text_box = get_text_box();
+	text_box.add_choice(choice);
+}
+void text_box_clear() {
+	auto& text_box = get_text_box();
+	text_box.clear();	
+}
 
 void register_lua_api() {
 	auto& state = Lua.state;
@@ -356,6 +372,9 @@ void register_lua_api() {
 	state["tdengine"]["text_box"]["is_waiting"] = &text_box_is_waiting;	
 	state["tdengine"]["text_box"]["resume"] = &text_box_resume;	
 	state["tdengine"]["text_box"]["skip"] = &text_box_skip;	
+	state["tdengine"]["text_box"]["highlight_line"] = &text_box_highlight_line;	
+	state["tdengine"]["text_box"]["add_choice"] = &text_box_add_choice;	
+	state["tdengine"]["text_box"]["clear"] = &text_box_clear;	
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
 	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;

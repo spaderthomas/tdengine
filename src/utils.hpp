@@ -174,6 +174,7 @@ namespace Colors {
 	glm::vec4 Black = glm::vec4(0.f, 0.f, 0.f, 1.f);
 	glm::vec4 White4 = glm::vec4(1.f, 1.f, 1.f, 1.f);
 	glm::vec3 TextWhite = glm::vec3(1.f, 1.f, 1.f);
+	glm::vec3 TextHighlighted = glm::vec3(1.f, 0.f, 0.f);
 }
 #define ImGuiColor_Red ImVec4(1.f, 0.f, 0.f, 1.f)
 #define ImGuiColor_Green ImVec4(0.f, 1.f, 0.f, 1.f)

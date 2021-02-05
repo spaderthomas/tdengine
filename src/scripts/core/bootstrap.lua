@@ -39,7 +39,20 @@ function tdengine.bootstrap()
 	  save_layout = {
 		 help = 'save current imgui configuration as a layout',
 		 proc = tdengine.save_layout
-	  },	  
+	  },
+	  q = {
+		 help = 'run a script as defined in src/scripts/layouts/console',
+		 proc = function(name)
+			local module_path = 'layouts/console/' .. name
+			package.loaded[module_path] = nil
+			local status = pcall(require, module_path)
+			if not status then
+			   local message = 'console() :: could not find console script.'
+			   message = message .. 'requested script was: ' .. name
+			   print(message)
+			end
+		 end
+	  }
    }
    console_shortcuts.list = {
 	  help = 'list all commands and their help messages',

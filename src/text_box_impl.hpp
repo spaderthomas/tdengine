@@ -100,6 +100,7 @@ void Text_Box::begin(std::string text) {
 	set.set_max_point();
 	sets.push_back(set);
 }
+
 void Text_Box::update(float dt) {
 	if (!active) { 
 		time_since_last_update = 0.0f;
@@ -117,17 +118,8 @@ void Text_Box::update(float dt) {
 		}
 	}
 }
-void Text_Box::resume() {
-	if (!waiting) { return; }
-	
-	// Try to advance to the next line set. If it doesn't exist, hide the text box.
-	index_current_line_set++;
-	waiting = false;
-	if (index_current_line_set >= (int)sets.size()) {
-		index_current_line_set = -1;
-		reset_and_hide();
-	}
-}
+
+
 void Text_Box::render() {
 	if (!active) { return; }
 		
@@ -160,8 +152,11 @@ void Text_Box::render() {
 		SRT transform = SRT::no_transform();
 		glm::mat3 mat = mat3_from_transform(transform);
 		text_shader.set_mat3("transform", mat);
-		text_shader.set_vec3("text_color", Colors::TextWhite);
 		text_shader.set_int("sampler", 0);
+
+		auto color = Colors::TextWhite;
+		if (line_to_highlight == iline) { color = Colors::TextHighlighted; }
+		text_shader.set_vec3("text_color", color);
 		
 		// We can render text at floating point pixel levels, so explicitly cast
 		float cur_subpixel_x = (float)text_start_px.x;
@@ -224,26 +219,53 @@ void Text_Box::render() {
 	// Label so we can break to this from the inner loop
 	end: text_shader.end();
 }
+
 void Text_Box::reset_and_hide() {
 	waiting = false;
 	active = false;
 	text = "";
 	sets.clear();
+	line_to_highlight = -1;
 }
+
+void Text_Box::resume() {
+	if (!waiting) { return; }
+	
+	// Try to advance to the next line set. If it doesn't exist, hide the text box.
+	index_current_line_set++;
+	line_to_highlight = -1;
+	waiting = false;
+	if (index_current_line_set >= (int)sets.size()) {
+		index_current_line_set = -1;
+		reset_and_hide();
+	}
+}
+
+void Text_Box::skip() {
+	if (!active || sets.empty()) return;
+
+	auto& set = current_set();
+	set.point = set.max_point;
+	waiting = true;
+}
+
 bool Text_Box::is_done() {
 	bool on_last_set = (index_current_line_set + 1 == sets.size());
 	return on_last_set && waiting;
 }
+
 bool Text_Box::is_current_set_displayed() {
 	Line_Set& set = current_set();
 	return (set.point == set.max_point) && waiting;
 }
-void Text_Box::skip() {
-	if (!active || sets.empty()) return;
 
-	// @spader @maybe_bug: Might introduce a few frames of delay between when you ask to skip and when it actually skips (because we're just gonna wait until enough time elapses so the text box updates again). Also could be a problem with the waiting flag?
-	auto& set = current_set();
-	set.point = set.max_point;
+void Text_Box::clear() {
+	text.clear();
+}
+
+void Text_Box::add_choice(std::string choice) {
+	if (text.size()) { text += "\n"; }
+	text += choice;
 }
 
 Text_Box& get_text_box() {

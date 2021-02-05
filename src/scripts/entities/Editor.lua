@@ -38,6 +38,7 @@ function Editor:init()
 	 selected = nil,
 	 connecting = nil,
 	 disconnecting = nil,
+	 deleting = nil,
 	 scrolling = tdengine.vec2(0, 0),
 	 window_position = tdengine.vec2(0, 0)
   }
@@ -330,6 +331,11 @@ function Editor:ded_load(name)
    self.ded.editor:SetContents('')
    
    self.ded.nodes = tdengine.load_dialogue(name)
+   if not self.ded.nodes then
+	  self.ded.nodes = {}
+	  return
+   end
+   
    -- Load the GUI data
    filepath = 'layouts/dialogue/' .. name
    package.loaded[filepath] = nil
@@ -419,13 +425,15 @@ function Editor:dialogue_editor()
 	  imgui.SameLine()
 	  imgui.Text(selected.kind)
 
-	  imgui.extensions.VariableName('Entity')
-	  imgui.SameLine()
-	  imgui.Text(selected.who)
-
 	  imgui.PushTextWrapPos(0)
 	  imgui.Text(self.ded.editor:Contents())
 	  imgui.PopTextWrapPos()
+
+	  if selected.kind == 'Text' then
+		 imgui.extensions.VariableName('Entity')
+		 imgui.SameLine()
+		 imgui.Text(selected.who)
+	  end
    end
    
    imgui.Separator()
@@ -464,9 +472,11 @@ function Editor:dialogue_editor()
 	  imgui.TreePop()
    end
 
+   local active = tdengine.text_box.is_active()
    local waiting = tdengine.text_box.is_waiting()
    local done = tdengine.text_box.is_done()
 
+   imgui.Text('active: ' .. tostring(active))
    imgui.Text('waiting: ' .. tostring(waiting))
    imgui.Text('done: ' .. tostring(done))
    
@@ -557,7 +567,7 @@ function Editor:dialogue_editor()
 		 --imgui.SameLine()
 		 --imgui.Text(tostring(node.value))
 	  elseif node.kind == 'Choice' then
-		 --imgui.Text(node.text)
+		 imgui.Text(self:ded_short_text(node))
 	  end
 	  imgui.EndGroup()
 
@@ -616,7 +626,9 @@ function Editor:dialogue_editor()
 		 if imgui.MenuItem('Set as entry point') then
 			node.is_entry_point = true
 		 end
-
+		 if imgui.MenuItem('Delete') then
+			self.ded.deleting = id
+		 end
 		 imgui.EndPopup()
 	  end
 	  imgui.PopStyleVar()
@@ -699,6 +711,20 @@ function Editor:dialogue_editor()
 
    imgui.DrawList_ChannelsMerge()
 
+   if self.ded.deleting then
+	  for id, node in pairs(self.ded.nodes) do
+		 delete(node.children, self.ded.deleting)
+	  end
+	  
+	  self.ded.selected = ternary(self.ded.selected == self.ded.deleting, nil, self.ded.selected)
+	  self.ded.connecting = ternary(self.ded.connecting == self.ded.deleting, nil, self.ded.selected)
+	  self.ded.disconnecting = ternary(self.ded.disconnecting == self.ded.deleting, nil, self.ded.selected)
+
+	  self.ded.nodes[self.ded.deleting] = nil
+	  self.ded.deleting = nil
+   end
+   
+
    -- Right clicking in window background brings up a menu.
    local rclick = imgui.IsMouseClicked(1)
    local in_window = imgui.IsMouseHoveringWindow()
@@ -712,13 +738,13 @@ function Editor:dialogue_editor()
 	  if imgui.TreeNode('Add Node') then
 		 local node = nil
 		 if imgui.MenuItem('Text') then
-			node = make_dialogue_node('Text')
+			node = self:make_dialogue_node('Text')
 		 end
 		 if imgui.MenuItem('Choice') then
-			node = make_dialogue_node('Choice')
+			node = self:make_dialogue_node('Choice')
 		 end
 		 if imgui.MenuItem('Set') then
-			node = make_dialogue_node('Set')
+			node = self:make_dialogue_node('Set')
 		 end
 
 		 if node then
