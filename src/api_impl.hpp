@@ -103,6 +103,19 @@ int ray_cast(float x, float y) {
 	return -1;
 }
 
+sol::object sprite_size(std::string name) {
+	auto& asset_manager = get_asset_manager();
+	auto sprite = asset_manager.get_asset<Sprite>(name);
+	if (sprite) {
+		auto size = Lua.state.create_table();
+		size["x"] = sprite->width / internal_resolution_width;
+		size["y"] = sprite->height / internal_resolution_height;
+		return size;
+	}
+
+	return sol::make_object(Lua.raw_state, sol::lua_nil);
+}
+
 void move_entity(int entity) {
 	auto box = Lua.get_component(entity, "BoundingBox");
 	auto movement = Lua.get_component(entity, "Movement");
@@ -353,6 +366,7 @@ void register_lua_api() {
 	state["tdengine"]["get_camera_x"] = &get_camera_x;
 	state["tdengine"]["get_camera_y"] = &get_camera_y;
 	state["tdengine"]["move_camera"] = &move_camera;
+	state["tdengine"]["sprite_size"] = &sprite_size;	
 	state["tdengine"]["draw_entity"] = &draw_entity;	
 	state["tdengine"]["draw"] = state.create_table();
 	state["tdengine"]["draw"]["line_screen"] = &line_screen;
@@ -396,6 +410,11 @@ void register_lua_api() {
 	state["tdengine"]["internal"]["toggle_console"] = &toggle_console;
 	state["tdengine"]["save_layout"] = &save_layout;
 	state["tdengine"]["use_layout"] = &use_layout;
+	state["tdengine"]["frame_time"] = seconds_per_update;
+
+	
+	state["tdengine"]["font"] = state.create_table();
+	state["tdengine"]["font"]["advance"] = &advance;
 	// This one's internal because we want the Lua version to return a table
 	state["tdengine"]["internal"]["ray_cast"] = &ray_cast;
 	state["imgui"]["extensions"] = state.create_table();

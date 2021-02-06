@@ -22,6 +22,7 @@
 #include "console_impl.hpp"
 #include "draw_impl.hpp"
 #include "entity_impl.hpp"
+#include "font_impl.hpp"
 #include "lua_impl.hpp"
 #include "physics_impl.hpp"
 #include "shader_impl.hpp"

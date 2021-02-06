@@ -50,6 +50,7 @@ void Text_Box::begin(std::string text) {
 		if (is_newline(c)) {
 			cur_line += word;
 			set.add(cur_line);
+			std::cout << cur_line << std::endl;
 			if (set.count() == 3) {
 				set.set_max_point();
 				sets.push_back(set);
@@ -72,6 +73,7 @@ void Text_Box::begin(std::string text) {
 			else {
 				cur_line.pop_back(); // remove trailing space
 				set.add(cur_line);
+				std::cout << cur_line << std::endl;
 				if (set.count() == 3) {
 					set.set_max_point();
 					sets.push_back(set);
@@ -97,6 +99,7 @@ void Text_Box::begin(std::string text) {
 	// Add the last trailing lineset
 	cur_line += word;
 	set.add(cur_line);
+	std::cout << cur_line << std::endl;
 	set.set_max_point();
 	sets.push_back(set);
 }

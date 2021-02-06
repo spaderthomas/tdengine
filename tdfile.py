@@ -46,7 +46,7 @@ build_options = {
         ],
         'machine': 'X64',
         'out': 'tdengine.exe',
-        'runtime_library': 'MDd',
+        'runtime_library': 'MD',
         'warnings': [
             '4530',
             '4201',

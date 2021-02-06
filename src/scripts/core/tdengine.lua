@@ -554,6 +554,14 @@ function average(a, b)
    return (a + b) / 2
 end
 
+function is_newline(c)
+   return c == '\n'
+end
+
+function is_space(c)
+   return c == ' '
+end
+
 local vec2_mixin = {
    unpack = function(self)
 	  return self.x, self.y

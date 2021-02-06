@@ -27,6 +27,7 @@ Tags in my notes about code
 @render_refactor
 @lua_init: how globals get setup
 @layer: stuff about graphics layers
+@physics: yeah
 @reload: never have to quit the game and restart it
 
 Tags in the code itself
@@ -40,6 +41,7 @@ Stop baking texture atlases, texture coordinates, etc on startup.
 Font rendering API
 Stop rendering primitives with vector<std::function> probably
 Initialize font VAOs and stuff in init_gl(), not init_fonts()
+I'm generating a unique texture for every character?
 
 @lua_init
 Stop storing entity classes as part of the global table, e.g:
@@ -55,6 +57,9 @@ Player = tdengine.entity('Player')
 - 02/04/21: spawned a new text box every frame
 - 02/04/21: lua exception caused imgui stack to be uneven
 - 02/04/21: lua exception caused imgui stack to be uneven
+
+@physics
+Needing to register a collider to render something is jank
 * learn
 ** lua
 *** metamethods
@@ -100,6 +105,21 @@ through metafunctions.
 
 members defined on instances (like doing self.key = value) will be stored on the
 instance table itself.
+*** c api
+#+BEGIN_SRC c
+auto state = Lua.raw_state;
+int max_args = lua_gettop(L);
+int arg = 1;
+int stackval = 0;
+
+lua_newtable(state);
+lua_pushnumber(state, 6);
+lua_setfield(state, -2, "x");
+lua_pushnumber(state, 9);
+lua_setfield(state, -2, "9");
+
+return 1;
+#+END_SRC
 * pin
 ** demo code tasks
 - a fade-in / depixelate shader (for waking up)

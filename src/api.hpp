@@ -5,6 +5,7 @@ void move_entity(int entity);
 void teleport_entity(int entity, float x, float y);
 void register_collider(int entity);
 int ray_cast(float x, float y);
+sol::object sprite_size(std::string name);
 
 void register_animation(std::string name, std::vector<std::string> frames);
 std::vector<std::string> get_frames(std::string animation_name);
@@ -27,30 +28,6 @@ void line_screen(sol::table p1, sol::table p2, sol::table color);
 void rect_filled_screen(sol::table rect, sol::table color);
 void rect_outline_screen(sol::table rect, sol::table color);
 void rect_outline_world(sol::table rect, sol::table color);
-
-/*
-// show grid
-float imgui_cursor_pos_x();
-float imgui_cursor_pos_y();
-float imgui_window_size_x();
-float imgui_window_size_y(); 
-void imgui_add_line(float xb, float yb, float xe, float ye);
-void imgui_channels_split(int count);
-void imgui_set_current_channel(int which);
-void imgui_add_bezier_curve(sol::table p0, sol::table cp0, sol::table p1, sol::table cp1, sol::table color, float thickness);
-ImGui::IsAnyItemActive();
-ImGui::SetCursorScreenPos(node_rect_min + NODE_WINDOW_PADDING);
-ImGui::BeginGroup();
-ImGui::Text("%s", node->Name);
-ImGui::SliderFloat("##value", &node->Value, 0.0f, 1.0f, "Alpha %.2f");
-ImGui::ColorEdit3("##color", &node->Color.x);
-ImGui::EndGroup();
-ImGui::GetItemRectSize();
-ImGui::SetCursorScreenPos(node_rect_min);
-float imgui_mouse_delta_x();
-float imgui_mouse_delta_y();
-void imgui_add_circle_filled(); lazy
-*/
 
 void toggle_console();
 void use_layout(const char* name);

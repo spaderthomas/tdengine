@@ -62,6 +62,8 @@ end
 
 function Editor:update(dt)
   local dbg = self:get_component('Debug')
+  dbg:print_once(inspect(tdengine.sprite_size('text_box.png')))
+   
   self:calculate_framerate()
   
   self:handle_input()
