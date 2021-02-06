@@ -8,6 +8,8 @@ function TextBox:init()
    self.active = false
    self.time_accumulated = 0
    self.time_per_update = 4 * tdengine.frame_time
+   self.line_index = 0
+   self.point = 0
 end
 
 function TextBox:begin(text)
@@ -16,9 +18,13 @@ function TextBox:begin(text)
    self.waiting = false
    self.active = true
 
+   -- Calculate the length of the text area, in pixels, for wrapping purposes
    local text_area = tdengine.sprite_size('text_box.png').x
-   text_area = text_area * 320
+   local padding = .075
+   local screen = tdengine.screen_dimensions()
+   text_area = screen.x * (text_area - padding)
 
+   -- Split the text into lines
    local line = ''
    local line_size = 0
    local word = ''
@@ -65,4 +71,27 @@ function TextBox:begin(text)
 end
 
 function TextBox:update(dt)
+   self.time_accumulated = self.time_accumulated + dt
+   if not self.waiting and self.time_accumulated >= self.time_per_update then
+	  self.time_accumulated = 0
+
+	  -- get text position from combination of: your position, padding
+	  -- text rendering position rn uses bottom left
+	  local text_area = tdengine.sprite_size('text_box.png')
+	  local padding = .075
+	  local where = tdengine.vec2(text_area.x + padding, 
+		 
+	  local point = self.point
+	  local index = self.line_index
+	  while point do
+		 local line = self.lines[index]
+		 local len = line:len()
+		 if point >= len then
+			
+			point = point - len
+		 else
+			
+		 end
+	  end
+   end
 end

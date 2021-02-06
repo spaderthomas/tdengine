@@ -225,6 +225,12 @@ float get_cursor_y() {
 	auto& manager = get_input_manager();
 	return manager.screen_pos.y;
 }
+sol::object screen_dimensions() {
+	auto out = Lua.state.create_table();
+	out["x"] = screen_x;
+	out["y"] = screen_y;
+	return out;
+}
 
 float get_camera_x() {
 	auto& render_engine = get_render_engine();
@@ -411,10 +417,12 @@ void register_lua_api() {
 	state["tdengine"]["save_layout"] = &save_layout;
 	state["tdengine"]["use_layout"] = &use_layout;
 	state["tdengine"]["frame_time"] = seconds_per_update;
+	state["tdengine"]["screen_dimensions"] = &screen_dimensions;
 
 	
 	state["tdengine"]["font"] = state.create_table();
 	state["tdengine"]["font"]["advance"] = &advance;
+	
 	// This one's internal because we want the Lua version to return a table
 	state["tdengine"]["internal"]["ray_cast"] = &ray_cast;
 	state["imgui"]["extensions"] = state.create_table();
