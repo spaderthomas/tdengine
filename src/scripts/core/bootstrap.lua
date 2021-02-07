@@ -65,7 +65,6 @@ function tdengine.bootstrap()
 		 tdengine.console_pipe = message
 	  end
    }
-
    
    for name, data in pairs(console_shortcuts) do
 	  _G[name] = data.proc

@@ -354,6 +354,12 @@ void text_box_clear() {
 	text_box.clear();	
 }
 
+void lua_draw_text(std::string text, float x, float y, int flags) {
+	glm::vec2 point(x, y);
+	draw_text(text, point, static_cast<Text_Flags>(flags));
+}
+	
+
 void register_lua_api() {
 	auto& state = Lua.state;
 	
@@ -383,7 +389,6 @@ void register_lua_api() {
 	state["tdengine"]["render_flags"]["none"] = Render_Flags::None;	
 	state["tdengine"]["render_flags"]["highlighted"] = Render_Flags::Highlighted;	
 	state["tdengine"]["render_flags"]["screen_position"] = Render_Flags::ScreenPosition;	
-	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
 	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
 	state["tdengine"]["text_box"] = state.create_table();	
 	state["tdengine"]["text_box"]["begin"] = &text_box_begin;	
@@ -420,8 +425,14 @@ void register_lua_api() {
 	state["tdengine"]["screen_dimensions"] = &screen_dimensions;
 
 	
+	state["tdengine"]["draw_text"] = &lua_draw_text;
+	state["tdengine"]["text_flags"] = state.create_table();
+	state["tdengine"]["text_flags"]["none"] = Text_Flags::None;
+	state["tdengine"]["text_flags"]["highlighted"] = Text_Flags::Highlighted;
+	
 	state["tdengine"]["font"] = state.create_table();
 	state["tdengine"]["font"]["advance"] = &advance;
+	
 	
 	// This one's internal because we want the Lua version to return a table
 	state["tdengine"]["internal"]["ray_cast"] = &ray_cast;

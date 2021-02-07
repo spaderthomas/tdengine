@@ -1,23 +1,25 @@
 TextBox = tdengine.entity('TextBox')
 function TextBox:init()
    tdengine.register_collider(self:get_id())
+   self:reset()
+end
 
+function TextBox:reset()
    self.text = nil
    self.lines = {}
    self.waiting = false
    self.active = false
+   self.done = false
    self.time_accumulated = 0
    self.time_per_update = 4 * tdengine.frame_time
-   self.line_index = 0
+   self.line_point = 0
    self.point = 0
 end
 
 function TextBox:begin(text)
+   self:reset()
    self.text = text
-   self.lines = {}
-   self.waiting = false
-   self.active = true
-
+   
    -- Calculate the length of the text area, in pixels, for wrapping purposes
    local text_area = tdengine.sprite_size('text_box.png').x
    local padding = .075
@@ -64,34 +66,46 @@ function TextBox:begin(text)
 
    line = line .. word
    table.insert(self.lines, line)
-
-   for index, line in pairs(self.lines) do
-	  print(line)
-   end
 end
 
 function TextBox:update(dt)
    self.time_accumulated = self.time_accumulated + dt
    if not self.waiting and self.time_accumulated >= self.time_per_update then
+	  self.point = self.point + 1
 	  self.time_accumulated = 0
+   end
 
-	  -- get text position from combination of: your position, padding
-	  -- text rendering position rn uses bottom left
-	  local text_area = tdengine.sprite_size('text_box.png')
-	  local padding = .075
-	  local where = tdengine.vec2(text_area.x + padding, 
-		 
-	  local point = self.point
-	  local index = self.line_index
-	  while point do
-		 local line = self.lines[index]
-		 local len = line:len()
-		 if point >= len then
-			
-			point = point - len
-		 else
-			
-		 end
+   local lines_to_draw = {}
+   local line_point = self.line_point
+   local point = self.point
+   while point do
+	  local line = self.lines[line_point]
+	  if line:len() <= point then
+		 table.insert(lines_to_draw, line)
+		 point = point - line:len()
+	  else
+		 table.insert(lines_to_draw, line:strsub(1, point))
+		 point = 0
 	  end
+   end
+
+   print(inspect(lines_to_draw))
+
+   -- get text position from combination of: your position, padding
+   -- text rendering position rn uses bottom left
+   local position = tdengine.vec2(self:get_component('Position').world)
+   --tdengine.teleport_entity(self:get_id(), position.x, .125)
+   
+   local text_area = tdengine.vec2(tdengine.sprite_size('text_box.png'))
+   local extents = text_area:scale(.5)
+   local padding = tdengine.vec2(.02, 0.04)
+   local text_start = tdengine.vec2(
+	  position.x - extents.x + padding.x,
+	  position.y + extents.y - padding.y)
+
+   for index, line in pairs(lines_to_draw) do
+	  tdengine.draw_text(line, text_start.x, text_start.y, 0)
+	  text_start.y = text_start.y + .05
+	  
    end
 end

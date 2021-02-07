@@ -275,6 +275,8 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/06/2021
+** 02/05/2021
 ** 02/04/2021
 handle set nodes
 handle choice nodes
@@ -392,7 +394,7 @@ function for lua. to do something like this, you have to either:
 - make a special struct + api in c++
 
 i feel like that's...kind of by design, right? when you model your game such
-that everything in it is an entity, don't be surprised when it's hard to add
+that everything in it is an entity, don't be surprised when it's hard to add
 things in the game that are not entities. maybe making it an entity is not a bad
 idea? or -- they're just getting triggered through cutscenes. so maybe
 everything lives in the action. 
@@ -3106,8 +3108,10 @@ two solid feet and make it in life. they're just grabbing at whatever they can.
  
 the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
-* clock
+* cloc k
 :LOGBOOK:
+CLOCK: [2021-02-06 Sat 18:11]--[2021-02-06 Sat 19:01] =>  0:50
+CLOCK: [2021-02-06 Sat 12:55]--[2021-02-06 Sat 14:45] =>  1:50
 CLOCK: [2021-02-05 Fri 16:00]--[2021-02-05 Fri 17:32] =>  1:32
 CLOCK: [2021-02-04 Thu 19:30]--[2021-02-04 Thu 21:58] =>  2:28
 CLOCK: [2021-02-03 Wed 20:11]--[2021-02-03 Wed 21:12] =>  1:01

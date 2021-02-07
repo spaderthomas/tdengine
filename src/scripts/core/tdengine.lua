@@ -581,9 +581,16 @@ add_new_to_class(tdengine.vec2_impl, tdengine)
 tdengine.vec2_impl:include(vec2_mixin)
 tdengine.vec2 = function(x, y)
    local vec = tdengine.vec2_impl:new()
-   vec.x = x
-   vec.y = y
-   return vec
+
+   if type(x) == 'table' then
+	  vec.x = x.x
+	  vec.y = x.y
+	  return vec
+   else
+	  vec.x = x
+	  vec.y = y
+	  return vec
+   end
 end
 
 tdengine.op_or, tdengine.op_xor, tdengine.op_and = 1, 3, 4
@@ -609,6 +616,11 @@ function bitwise(oper, a, ...)
    return r
 end
 
+function truncate(float, digits)
+   local mult = 10 ^ digits
+   return math.modf(float * mult) / mult
+end
+  
 function tdengine.create_action(name, params)
    ActionType = tdengine.actions[name]
    if ActionType ~= nil then

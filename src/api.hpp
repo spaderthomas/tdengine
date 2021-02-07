@@ -29,6 +29,7 @@ void line_screen(sol::table p1, sol::table p2, sol::table color);
 void rect_filled_screen(sol::table rect, sol::table color);
 void rect_outline_screen(sol::table rect, sol::table color);
 void rect_outline_world(sol::table rect, sol::table color);
+void lua_draw_text(std::string text, float x, float y, int flags);
 
 void toggle_console();
 void use_layout(const char* name);

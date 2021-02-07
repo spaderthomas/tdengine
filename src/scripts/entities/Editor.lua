@@ -58,6 +58,8 @@ function Editor:init()
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
   input:enable()
+
+  tdengine.internal.screen_1080()
 end
 
 function Editor:update(dt)
@@ -72,6 +74,13 @@ function Editor:update(dt)
   imgui.Begin("tded v2.0", true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
+
+  local screen_size = tdengine.screen_dimensions()
+  imgui.Text('screen size: (' .. screen_size.x .. ', ' .. screen_size.y .. ')')
+
+
+  local cursor = tdengine.vec2(truncate(tdengine.get_cursor_x(), 3), truncate(tdengine.get_cursor_y(), 3))
+  imgui.Text('cursor: (' .. tostring(cursor.x) .. ', ' .. tostring(cursor.y) .. ')')
 
   imgui.Begin("scene", true)
   self:draw_entity_viewer()
