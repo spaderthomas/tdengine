@@ -12,13 +12,15 @@ function TextBox:reset()
    self.done = false
    self.time_accumulated = 0
    self.time_per_update = 4 * tdengine.frame_time
-   self.line_point = 0
+   self.line_point = 1
    self.point = 0
+   self.max_point = 0
 end
 
 function TextBox:begin(text)
    self:reset()
    self.text = text
+   self.active = true
    
    -- Calculate the length of the text area, in pixels, for wrapping purposes
    local text_area = tdengine.sprite_size('text_box.png').x
@@ -32,6 +34,8 @@ function TextBox:begin(text)
    local word = ''
    local word_size = 0
    for i = 1, #self.text do
+	  self.max_point = self.max_point + 1
+	  
 	  local c = self.text:sub(i,i)
 	  
 	  -- On a newline, you're done with whatever line you were working on.
@@ -66,30 +70,15 @@ function TextBox:begin(text)
 
    line = line .. word
    table.insert(self.lines, line)
+
+   print(inspect(self.lines))
 end
 
 function TextBox:update(dt)
    self.time_accumulated = self.time_accumulated + dt
    if not self.waiting and self.time_accumulated >= self.time_per_update then
-	  self.point = self.point + 1
 	  self.time_accumulated = 0
    end
-
-   local lines_to_draw = {}
-   local line_point = self.line_point
-   local point = self.point
-   while point do
-	  local line = self.lines[line_point]
-	  if line:len() <= point then
-		 table.insert(lines_to_draw, line)
-		 point = point - line:len()
-	  else
-		 table.insert(lines_to_draw, line:strsub(1, point))
-		 point = 0
-	  end
-   end
-
-   print(inspect(lines_to_draw))
 
    -- get text position from combination of: your position, padding
    -- text rendering position rn uses bottom left
@@ -103,9 +92,12 @@ function TextBox:update(dt)
 	  position.x - extents.x + padding.x,
 	  position.y + extents.y - padding.y)
 
-   for index, line in pairs(lines_to_draw) do
+   for index, line in pairs(self.lines) do
 	  tdengine.draw_text(line, text_start.x, text_start.y, 0)
 	  text_start.y = text_start.y + .05
-	  
    end
+end
+
+function TextBox:skip()
+   print('skipping to end...')
 end

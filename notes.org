@@ -24,11 +24,13 @@ Tags in the plot stuff
 @quest: places in the story where quests occur
 
 Tags in my notes about code
-@render_refactor
+@ded
+@editor
 @lua_init: how globals get setup
 @layer: stuff about graphics layers
 @physics: yeah
 @reload: never have to quit the game and restart it
+@render_refactor
 
 Tags in the code itself
 @bootstrap: places i can clean up initialization
@@ -42,6 +44,8 @@ Font rendering API
 Stop rendering primitives with vector<std::function> probably
 Initialize font VAOs and stuff in init_gl(), not init_fonts()
 I'm generating a unique texture for every character?
+Use the shader uniform to translate character instead of generating new vertices
+every time?
 
 @lua_init
 Stop storing entity classes as part of the global table, e.g:
@@ -60,6 +64,15 @@ Player = tdengine.entity('Player')
 
 @physics
 Needing to register a collider to render something is jank
+
+@ded 
+save as
+
+@editor
+need a way to stop having messages spam the fuck out of me -- like when
+something is F'd in entity update. maybe reserve console output for prints and
+write lua errors to the log? maybe keep a cache of messages we print out every
+frame and don't double print them (unless a file is reloaded...?)
 * learn
 ** lua
 *** metamethods
@@ -275,6 +288,11 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/07/2021
+code hard
+
+- store indices into the text to denote lines instead of splitting it literally
+  into separate lines
 ** 02/06/2021
 ** 02/05/2021
 ** 02/04/2021
@@ -3108,8 +3126,9 @@ two solid feet and make it in life. they're just grabbing at whatever they can.
  
 the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
-* cloc k
+* clock
 :LOGBOOK:
+CLOCK: [2021-02-07 Sun 21:25]--[2021-02-07 Sun 22:25] =>  1:00
 CLOCK: [2021-02-06 Sat 18:11]--[2021-02-06 Sat 19:01] =>  0:50
 CLOCK: [2021-02-06 Sat 12:55]--[2021-02-06 Sat 14:45] =>  1:50
 CLOCK: [2021-02-05 Fri 16:00]--[2021-02-05 Fri 17:32] =>  1:32
@@ -3118,7 +3137,7 @@ CLOCK: [2021-02-03 Wed 20:11]--[2021-02-03 Wed 21:12] =>  1:01
 CLOCK: [2021-02-02 Tue 20:20]--[2021-02-02 Tue 21:46] =>  1:26
 CLOCK: [2021-02-01 Mon 21:48]--[2021-02-01 Mon 22:36] =>  0:48
 CLOCK: [2021-02-01 Mon 20:41]--[2021-02-01 Mon 21:17] =>  0:36
-CLOCK: [2021-01-31 Sun 12:00]--[2021-01-30 Sat 13:00] =>  1:00
+CLOCK: [2021-01-31 Sun 12:00]--[2021-01-31 Sun 13:00] =>  1:00
 CLOCK: [2021-01-30 Sat 15:00]--[2021-01-30 Sat 16:20] =>  1:20
 CLOCK: [2021-01-30 Sat 12:49]--[2021-01-30 Sat 14:25] =>  1:36
 CLOCK: [2021-01-29 Fri 20:08]--[2021-01-29 Fri 22:48] =>  2:40
@@ -3167,6 +3186,9 @@ cosmic star heroine. an RPG styled after chrono trigger with no random
 encounters. 
 
 https://store.steampowered.com/app/251150/The_Legend_of_Heroes_Trails_in_the_Sky/
+
+https://indie-fund.com/games/hyper-light-drifter
+gorgeous pixel art.
 * artists
 ** /u/skeddles
 excellent colors, some cool landscape ones. also some goofy pokemon-esque

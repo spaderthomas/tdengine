@@ -42,7 +42,7 @@ return {
    },
    {
 	  name = 'Dialogue',
-	  dialogue = 'demo'
+	  dialogue = 'text_only'
    },
    {
 	  name = 'MyCustomBullshit',
