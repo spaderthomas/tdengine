@@ -15,7 +15,7 @@ function TextBox:reset()
    self.max_point = 0
 
    -- If there is a line break at character i, that means that you want the
-   -- first character of the next line to be text[i]
+   -- last character of this line to be text[i]
    self.line_breaks = {}
 end
 
@@ -26,9 +26,9 @@ function TextBox:print_lines()
    local line_start = 1
    for index, line_break in pairs(self.line_breaks) do
 	  local message = '(' .. tostring(line_start) .. ', ' .. tostring(line_break) .. '): '
-	  message = message .. '"' .. self.text:sub(line_start, line_break - 1) .. '"'
+	  message = message .. '"' .. self.text:sub(line_start, line_break ) .. '"'
 	  print(message)
-	  line_start = line_break
+	  line_start = line_break + 1
    end
    print('print_lines(): lines end')
 
@@ -64,7 +64,7 @@ function TextBox:begin(text)
 		 if line_size + word_size <= content_width then
 			-- If the word fits, just add it to the line
 			line_size = line_size + word_size + (tdengine.font.advance(' ') / 64)
-			last_word_point = point + 1
+			last_word_point = point
 		 else
 			-- The word would make us spill over. Line break before this word, and
 			-- add this word's length to the next line
@@ -87,7 +87,6 @@ function TextBox:begin(text)
    end
    
    table.sort(ordered_line_breaks)
-   self:print_lines()
 end
 
 function TextBox:update(dt)
@@ -110,22 +109,21 @@ function TextBox:update(dt)
    local line_start = 1
    local remaining = self.point
    for index, line_break in pairs(self.line_breaks) do
-
-	  if not remaining then break end
+	  if not (remaining > 0) then break end
 	  
-	  local len = line_break - line_start + 1
+	  local len = line_break - line_start
 	  local line = nil
 	  if len <= remaining then
-		 line = self.text:sub(line_start, line_break - 1)
+		 line = self.text:sub(line_start, line_break)
 		 remaining = remaining - len
 	  else
-		 line = self.text:sub(line_start, line_start + remaining - 1)
+		 line = self.text:sub(line_start, line_start + remaining)
 		 remaining = 0
 	  end
 
 	  tdengine.draw_text(line, text_start.x, text_start.y, 0)
 	  text_start.y = text_start.y - .02
-	  line_start = line_break
+	  line_start = line_break + 1
    end
 
    tdengine.do_once(function() self:print_lines() end)
