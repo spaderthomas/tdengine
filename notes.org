@@ -3128,6 +3128,9 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-09 Tue 17:19]
+CLOCK: [2021-02-08 Mon 16:52]--[2021-02-08 Mon 17:13] =>  0:21
+CLOCK: [2021-02-08 Mon 14:02]--[2021-02-08 Mon 14:31] =>  0:29
 CLOCK: [2021-02-07 Sun 21:25]--[2021-02-07 Sun 22:25] =>  1:00
 CLOCK: [2021-02-06 Sat 18:11]--[2021-02-06 Sat 19:01] =>  0:50
 CLOCK: [2021-02-06 Sat 12:55]--[2021-02-06 Sat 14:45] =>  1:50

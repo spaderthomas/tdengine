@@ -67,10 +67,10 @@ function Dialogue:process_text(node)
 end
 
 function Dialogue:foo()
-   print('foo')
+   print('advance_until_input_needed(): begin')
    local is_input_needed = false
    while not is_input_needed do
-	  print('loop: (' .. tostring(self.done) .. ', ' .. tostring(is_input_needed) .. ')')
+	  print('advance_until_input_needed(): loop: (' .. tostring(self.done) .. ', ' .. tostring(is_input_needed) .. ')')
 	  if not self.current then
 		 print('advance_until_input_needed(): processing first node')
 		 self.current = self:find_entry_node()
@@ -106,11 +106,11 @@ function Dialogue:foo()
 		 is_input_needed = true
 	  end
 
-	  print('current: ' .. inspect(self.current))
-	  print('input needed: ' .. tostring(is_input_needed))
+	  print('advance_until_input_needed(): current node is ' .. inspect(self.current))
+	  print('advance_until_input_needed(): input needed: ' .. tostring(is_input_needed))
    end
 
-   print('input is needed!')
+   print('advance_until_input_needed():  input is needed!')
 end
 
 function Dialogue:update(dt)
@@ -149,7 +149,10 @@ function Dialogue:update(dt)
 	  end
 	  -- All text we submitted in begin() has been displayed. Next node.
 	  if waiting and done_with_node then
-		 self:foo()
+		 print('Dialogue:update() :: moving to next node')
+		 self.current = self.data[self.current.children[1]]
+		 self.text_box:begin(node.text)
+		 --self:foo()
 	  end
    end
 

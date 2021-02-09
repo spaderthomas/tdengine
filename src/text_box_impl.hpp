@@ -43,7 +43,7 @@ void Text_Box::begin(std::string text) {
 	std::string word;
 	std::string cur_line;
 	subpixel_unit this_word_x = 0;
-	subpixel_unit this_line_x = 0;
+	subpixel_unit this_lne_x = 0;
 	Character space = characters[' '];
 	fox_for(ichar, text.size()) {
 		char c = text[ichar];
