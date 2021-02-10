@@ -78,7 +78,7 @@ function TextBox:begin(text)
 		 word_size = word_size + (tdengine.font.advance(c) / 64)
 	  end
    end
-   
+
    if line_size + word_size <= content_width then
 	  table.insert(self.line_breaks, #self.text)
    else
@@ -86,7 +86,8 @@ function TextBox:begin(text)
 	  table.insert(self.line_breaks, #self.text)
    end
    
-   table.sort(ordered_line_breaks)
+   table.sort(self.line_breaks)
+
 end
 
 function TextBox:update(dt)
@@ -96,6 +97,7 @@ function TextBox:update(dt)
    end
 
    self.point = math.min(self.point + 1, self.max_point)
+   self.waiting = self.point == self.max_point
 
    local position = self:get_component('Position').world
    
@@ -125,10 +127,8 @@ function TextBox:update(dt)
 	  text_start.y = text_start.y - .02
 	  line_start = line_break + 1
    end
-
-   tdengine.do_once(function() self:print_lines() end)
 end
 
 function TextBox:skip()
-   print('skipping to end...')
+   self.point = self.max_point
 end

@@ -75,6 +75,7 @@ function Dialogue:foo()
 		 print('advance_until_input_needed(): processing first node')
 		 self.current = self:find_entry_node()
 		 self:process(self.current)
+		 print('advance_until_input_needed(): processed first node')
 		 
 		 is_input_needed = self.current.kind == 'Text'
 	  elseif #self.current.children == 0 then
