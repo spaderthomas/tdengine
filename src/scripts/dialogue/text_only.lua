@@ -3,7 +3,7 @@ return {
     children = {},
     is_entry_point = false,
     kind = "Text",
-    text = "this should also be something long enough to wrap. wrap wrap wrap. it's made of fine chrome alloy; find him on the grind he's the rhinestone cowboy.",
+    text = "this should also be something long enough to wrap. wrap wrap wrap. it's made of fine chrome alloy; find him on the grind he's the rhinestone cowboy. overthrow it like throwing rover a biscuit.",
     uuid = "4a430420-68cc-4ab9-a94c-143e35f83491",
     who = ""
   },

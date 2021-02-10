@@ -36,18 +36,18 @@ end
 function Animation:update(dt)
    self.time_to_next = self.time_to_next - dt
    if self.time_to_next <= 0 then
-	  local frames = tdengine.get_frames(self.current)
+	  local count = tdengine.count_frames(self.current)
 	  if self.loop then
-		 if (self.frame + 1) >= #frames then
+		 if (self.frame + 1) >= count then
 			-- Not sure if this is totally correct...? This is here because I need
 			-- a way to signal to the action that triggers it that it can unblock.
 			self.done = true
 		 end
-		 self.frame = (self.frame + 1) % #frames
+		 self.frame = (self.frame + 1) % count
 	  else
 		 -- We finished; reset to the last animation and loop it
 		 self.frame = self.frame + 1
-		 if self.frame >= #frames then
+		 if self.frame >= count then
 			self.frame = 0
 			self.current = self.last
 

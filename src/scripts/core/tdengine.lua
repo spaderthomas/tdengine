@@ -361,7 +361,7 @@ end
 
 function tdengine.save_scene(name)
    local relative = 'src/scripts/scenes/' .. name .. '.lua'
-   local filepath = tdengine.paths.absolute_path(relative)
+   local filepath = tdengine.paths.absolute(relative)
    local file = assert(io.open(filepath, 'w'))
    if file then
 	  local scene = require('scenes/' .. name)
@@ -476,26 +476,13 @@ function tdengine.scandir(dir)
 end
 
 function tdengine.screen_to_world(screen)
-   return {
-      x = screen.x - tdengine.get_camera_x(),
-      y = screen.y - tdengine.get_camera_y()
-   }
+   local camera = tdengine.vec2(tdengine.camera())
+   local screen = tdengine.vec2(screen)
+   return screen:subtract(camera)
 end		 
 
-function tdengine.ray_cast(x, y)
-   local id = tdengine.internal.ray_cast(x, y)
-   return tdengine.entities[id]
-end
-
 function tdengine.paths.script(relative)
-   return tdengine.paths.absolute_path('src/scripts/' .. relative)
-end
-
-function tdengine.cursor()
-   return {
-	  x = tdengine.get_cursor_x(),
-	  y = tdengine.get_cursor_y()
-   }
+   return tdengine.paths.absolute('src/scripts/' .. relative)
 end
 
 function tdengine.uuid()
@@ -574,6 +561,9 @@ local vec2_mixin = {
    end,
    scale = function(self, scalar)
 	  return tdengine.vec2(self.x * scalar, self.y * scalar)
+   end,
+   truncate = function(self, digits)
+	  return tdengine.vec2(truncate(self.x, digits), truncate(self.y, digits))
    end
 }
 tdengine.vec2_impl = create_class('vec2_impl')

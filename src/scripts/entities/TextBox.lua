@@ -123,7 +123,7 @@ function TextBox:update(dt)
 		 remaining = 0
 	  end
 
-	  tdengine.draw_text(line, text_start.x, text_start.y, 0)
+	  tdengine.draw.text(line, text_start.x, text_start.y, 0)
 	  text_start.y = text_start.y - .02
 	  line_start = line_break + 1
    end

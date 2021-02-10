@@ -12,10 +12,6 @@ struct LuaState {
 	void script_dir(ScriptPath path);
 	void script_file(ScriptPath path);
 
-	// purely for testing stuff
-	void test();
-	void update(float dt);
-
 	sol::table get_entity(int id);
 	sol::table get_component(int id);
 	sol::table get_component(Component* component);

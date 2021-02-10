@@ -26,8 +26,9 @@ Tags in the plot stuff
 Tags in my notes about code
 @ded
 @editor
-@lua_init: how globals get setup
 @layer: stuff about graphics layers
+@logging
+@lua_init: how globals get setup
 @physics: yeah
 @reload: never have to quit the game and restart it
 @render_refactor
@@ -73,6 +74,9 @@ need a way to stop having messages spam the fuck out of me -- like when
 something is F'd in entity update. maybe reserve console output for prints and
 write lua errors to the log? maybe keep a cache of messages we print out every
 frame and don't double print them (unless a file is reloaded...?)
+
+@logging
+log channels
 * learn
 ** lua
 *** metamethods
@@ -3128,6 +3132,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-09 Tue 23:15]
 CLOCK: [2021-02-09 Tue 17:19]--[2021-02-09 Tue 18:29] =>  1:10
 CLOCK: [2021-02-08 Mon 16:52]--[2021-02-08 Mon 17:13] =>  0:21
 CLOCK: [2021-02-08 Mon 14:02]--[2021-02-08 Mon 14:31] =>  0:29

@@ -6,13 +6,6 @@
 #define EXIT_IF_ERROR(return_code) if ((return_code)) { return -1; }
 #define rand_float(max) (static_cast<float>(rand()) / static_cast<float>(RAND_MAX / (max)))
 
-#define is_newline(c) ((c) == '\n' || (c) == '\r')
-#define is_space(c) ((c) == ' ')
-
-#define dont_care false
-
-#define tdapi
-	
 typedef unsigned int uint;
 typedef int8_t int8;
 typedef int32_t int32;
@@ -21,13 +14,9 @@ typedef unsigned char tdbyte;
 
 #if  defined(__APPLE__) || defined(__linux__)
 #pragma GCC diagnostic ignored "-Wunused-variable"
-#endif
-
-#define NULL_ENTITY { -1, nullptr }
-
-#if  defined(__APPLE__) || defined(__linux__)
 #define __stdcall
 #endif
+
 //Assert
 #ifdef _MSC_VER
 #	ifdef assert
@@ -111,56 +100,6 @@ bool does_string_contain_substr(std::string& str, std::string& substr) {
 #define tdns_find(vector, item) (find((vector).begin(), (vector).end(), (item)) != (vector).end()) 
 #define are_strings_equal(a, b) (!(a).compare((b)))
 
-// @note @spader 9/4/2019 Realllllllyyyyyyy need a better way of making paths good
-#ifdef WIN32
-void normalize_path(std::string& str) {
-	string_replace(str, "/", "\\");
-}
-#else
-void normalize_path(std::string& str) {
-	return;
-}
-#endif
-
-// shamelessly copped from
-// https://stackoverflow.com/questions/14265581/parse-split-a-string-in-c-using-string-delimiter-standard-c
-// also this doesn't work lol
-bool are_paths_equal(std::string a, std::string b) {
-	auto tokenize = [](auto& str) {
-		size_t pos = 0;
-		std::string delimiter = "\\";
-		std::vector<std::string> out;
-		while ((pos = str.find(delimiter)) != std::string::npos) {
-			out.push_back(str.substr(0, pos));
-			str.erase(0, pos + delimiter.length());
-		}
-
-		return out;
-	};
-
-	auto tokens_a = tokenize(a);
-	auto tokens_b = tokenize(b);
-
-	if (tokens_a.size() != tokens_b.size()) return false;
-
-	for (int i = 0; i < tokens_a.size(); i++) {
-		if (!are_strings_equal(tokens_a[i], tokens_b[i])) return false;
-	}
-
-	return true;
-}
-
-
-// shamelessly copped from
-// https://stackoverflow.com/questions/447206/c-isfloat-function
-bool is_float(std::string mystring ) {
-    std::istringstream iss(mystring);
-    float f;
-    iss >> std::noskipws >> f; // noskipws considers leading whitespace invalid
-	
-    // Check the entire std::string was consumed and if either failbit or badbit is set
-    return iss.eof() && !iss.fail(); 
-}
 
 glm::vec2 tdns_normalize(glm::vec2 vec) {
 	if (vec.x == 0.f && vec.y == 0.f) {
@@ -177,12 +116,12 @@ glm::vec3 tdns_normalize(glm::vec3 vec) {
 	return glm::normalize(vec);
 }
 
-#define DEFAULT_FLOAT_TOLERANCE .005
+#define TDENGINE_FLOATEQ_EPSILON .005
 bool float_almost_equals(float a, float b) {
-	return glm::abs(a - b) < DEFAULT_FLOAT_TOLERANCE;
+	return glm::abs(a - b) < TDENGINE_FLOATEQ_EPSILON;
 }
 bool vec_almost_equals(glm::vec2 vec, glm::vec2 target) {
-	return glm::length(vec - target) < DEFAULT_FLOAT_TOLERANCE;
+	return glm::length(vec - target) < TDENGINE_FLOATEQ_EPSILON;
 }
 
 glm::vec2 vec_divide(glm::vec2 vec, float by) {
@@ -290,7 +229,6 @@ conversions which use our typedefs, so conversions that take GLM vectors and sin
 points are defined
 */
 typedef int pixel_unit;
-typedef float subpixel_unit;
 typedef float screen_unit;
 typedef float gl_unit;
 
@@ -301,32 +239,32 @@ float screen_y = 180;
 
 // Screen size definitions
 void use_640_360() {
-	screen_x = (subpixel_unit)640.f;
-	screen_y = (subpixel_unit)360.f;
+	screen_x = 640.f;
+	screen_y = 360.f;
 	glfwSetWindowSize(g_window, 640, 360);
 	glViewport(0, 0, (int)screen_x, (int)screen_y);
 }
 void use_720p() {
-	screen_x = (subpixel_unit)1280.f;
-	screen_y = (subpixel_unit)720.f;
+	screen_x = 1280.f;
+	screen_y = 720.f;
 	glfwSetWindowSize(g_window, 1280, 720);
 	glViewport(0, 0, (int)screen_x, (int)screen_y);
 }
 void use_1080p() {
-	screen_x = (subpixel_unit)1920.f;
-	screen_y = (subpixel_unit)1080.f;
+	screen_x = 1920.f;
+	screen_y = 1080.f;
 	glfwSetWindowSize(g_window, 1920, 1080);
 	glViewport(0, 0, (int)screen_x, (int)screen_y);
 }
 void use_1440p() {
-	screen_x = (subpixel_unit)2560.f;
-	screen_y = (subpixel_unit)1440.f;
+	screen_x = 2560.f;
+	screen_y = 1440.f;
 	glfwSetWindowSize(g_window, 2560, 1440);
 	glViewport(0, 0, (int)screen_x, (int)screen_y);
 }
 void use_arbitrary_screen_size(int height, int width) {
-	screen_x = (subpixel_unit)width;
-	screen_y = (subpixel_unit)height;
+	screen_x = width;
+	screen_y = height;
 	glViewport(0, 0, (int)screen_x, (int)screen_y);	
 }
 void change_window_size(std::string size) {
@@ -377,7 +315,19 @@ glm::ivec2 px_from_screen(glm::vec2 screen) {
 	return glm::ivec2(floor(screen.x * screen_x), floor(screen.y * screen_y));
 }
 
+
 /* Some utilities for dealing with files, directories, and paths */
+// @note @spader 9/4/2019 Realllllllyyyyyyy need a better way of making paths good
+#ifdef WIN32
+void normalize_path(std::string& str) {
+	string_replace(str, "/", "\\");
+}
+#else
+void normalize_path(std::string& str) {
+	return;
+}
+#endif
+
 // Takes in a directory or file -- returns everything after the first slash
 std::string name_from_full_path(std::string path) {
 	std::string asset_name;
@@ -420,11 +370,11 @@ bool is_alphanumeric(std::string& str) {
 bool is_valid_filename(std::string& str) {
 	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
 	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
-	auto is_misc_valid = [](char c) -> bool { return (c == '_') || c == '.'; };
+	auto is_misc = [](char c) -> bool { return (c == '_') || c == '.'; };
 	
 	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
 		char c = str.at(ichar);
-		if (!(is_numeric(c) || is_alpha(c) || is_misc_valid(c))) {
+		if (!(is_numeric(c) || is_alpha(c) || is_misc(c))) {
 			return false;
 		}
 	}
@@ -456,22 +406,9 @@ std::string path_join(std::vector<std::string> items) {
 	return path.substr(0, path.size() - 1);
 }
 
-// Are these good to have?
-struct Paths {
-	std::string character_texture_path;
-	std::string other_texture_path;
-	std::string script_path;
-};
-Paths g_paths;
-
-void init_path_constants() {
-	g_paths.character_texture_path = absolute_path(path_join({"textures", "src", "characters"}));
-	g_paths.other_texture_path = absolute_path(path_join({"textures", "src", "other"}));
-	g_paths.script_path = absolute_path(path_join({"src", "scripts"}));
-}
-
 std::string script_path(std::string script) {
-	auto path = path_join({ g_paths.script_path, script });
+	auto script_dir = absolute_path(path_join({"src", "scripts"}));
+	auto path = path_join({ script_dir, script });
 	normalize_path(path);
 	return path;
 }
@@ -519,20 +456,11 @@ struct AbsolutePath {
 	std::string path;
 };
 	
-
-
 // @hack I'm sure there are PNG headers I could try parsing, but this works!
 bool is_png(std::string& asset_path) {
 	if (asset_path.size() < 5) { return false; } // "x.png" is the shortest name
 	std::string should_be_png_extension = asset_path.substr(asset_path.size() - 4, 4);
 	if (should_be_png_extension.compare(".png")) return false;
-	return true;
-}
-
-bool is_tds(std::string& path) {
-	if (path.size() < 5) { return false; } // "x.tds" is the shortest name
-	std::string should_be_tds_extension = path.substr(path.size() - 4, 4);
-	if (should_be_tds_extension.compare(".tds")) return false;
 	return true;
 }
 
@@ -543,15 +471,13 @@ bool is_lua(std::string& path) {
 	return true;
 }
 
-std::string get_default_font_path() {
-	// @hack use pathjoin
-	return absolute_path("asset/fonts/Inconsolata-Regular.ttf");
+const char* default_font_path() {
+	static std::string path = absolute_path("asset/fonts/Inconsolata-Regular.ttf");
+	return path.c_str();
 }
-
 
 // Global options
 bool debug_show_aabb = false;
-bool debug_show_minkowski = false;
 bool show_imgui_demo = false;
 bool show_console = false;
 bool print_framerate = false;
@@ -681,505 +607,6 @@ float Sine_Func::eval_at(float point) {
 }
 
 
-// POOL DECLS
-struct pool_entry_info {
-	bool available : 1;
-};
-#define DEFAULT_POOL_SIZE 100000
-
-template<typename Data_Type>
-struct pool_handle;
-
-// A templated, fixed size pool of objects which stores them in continuous memory and uses handles to interface with the data elements 
-template<typename Data_Type, int num_elements>
-struct Pool {
-	Data_Type* entries;
-	pool_entry_info* info;
-	
-	void init();
-	pool_handle<Data_Type> next_available();
-	inline Data_Type* get(pool_handle<Data_Type> handle);
-	inline void mark_available(pool_handle<Data_Type> handle);
-	inline void mark_unavailable(pool_handle<Data_Type> handle);
-};
-
-// POOL DEFNS
-template<typename Data_Type, int num_elements>
-void Pool<Data_Type, num_elements>::init() {
-	entries = (Data_Type*)calloc(sizeof(Data_Type), num_elements);
-	fox_for(indx, num_elements) {
-		Data_Type* entry = entries + indx;
-		new (entry) Data_Type;
-	}
-
-	// Allocate some memory for the infos and set 
-	info = (pool_entry_info*)calloc(sizeof(pool_entry_info), num_elements);
-	memset(info, 1, sizeof(pool_entry_info) * num_elements);
-}
-
-// A handle to an element in a pool. Wrapper around an int with convenient operators.
-template<typename Data_Type>
-struct pool_handle {
-	int handlecito = -1;
-	Pool<Data_Type, DEFAULT_POOL_SIZE>* pool = nullptr;
-	
-	// These get the actual entity
-	Data_Type* deref() {
-		return pool->get(*this);
-	}
-	Data_Type* operator->() {
-		return pool->get(*this);
-	}
-	Data_Type* operator()() {
-		if (!*this) return nullptr;
-		return pool->get(*this);
-	}
-	// This gets the handle (i.e. table index)
-	int operator*() {
-		return handlecito;
-	}
-	bool operator==(pool_handle<Data_Type> other) {
-		return handlecito == other.handlecito;
-	}
-	bool operator==(int other) {
-		return handlecito == other;
-	}
-	bool operator!=(pool_handle<Data_Type> other) {
-		return !(*this == other);
-	}
-	bool operator!=(int other) {
-		return !(*this == other);
-	}
-	operator bool() {
-		return (handlecito != -1) && (pool != nullptr);
-	}
-};
-
-//@slow
-template<typename Data_Type, int num_elements>
-pool_handle<Data_Type> Pool<Data_Type, num_elements>::next_available() {
-	for (int handlecito = 0; handlecito < num_elements; handlecito++) {
-		pool_entry_info entry = info[handlecito];
-		if (entry.available) {
-			pool_handle<Data_Type> handle = { handlecito, this };
-			mark_unavailable(handle);
-			return handle;
-		}
-	}
-	
-	tdns_log.write("Ran out of handles!");
-	fox_assert(false);
-	return { -1, nullptr }; // for the compiler
-};
-
-template<typename Data_Type, int num_elements>
-inline Data_Type* Pool<Data_Type, num_elements>::get(pool_handle<Data_Type> handle) {
-	fox_assert(handle);
-	fox_assert(*handle >= 0);
-	fox_assert(*handle < num_elements);
-	fox_assert(this);
-	return entries + *handle;
-}
-
-template<typename Data_Type, int num_elements>
-inline void Pool<Data_Type, num_elements>::mark_available(pool_handle<Data_Type> handle) {
-	info[*handle].available = true;
-	memset(entries + *handle, 0, sizeof(Data_Type));
-}
-
-template<typename Data_Type, int num_elements>
-void Pool<Data_Type, num_elements>::mark_unavailable(pool_handle<Data_Type> handle) {
-	info[*handle].available = false;
-}
-
-
-struct Circle_Buffer {
-	int* data = nullptr;
-	int head = 0;
-	int capacity = 0;
-	int len = 0;
-	
-	void push_back(int elem);
-	std::optional<int> pop_front();
-	void clear();
-};
-
-void Circle_Buffer::push_back(int elem) {
-	fox_assert(len <= capacity);
-	fox_assert(head >= 0 && head < capacity);
-	if (len == capacity) { return; }
-	data[(head + len) % capacity] = elem;
-	len++;
-}
-std::optional<int> Circle_Buffer::pop_front() {
-	fox_assert(len <= capacity);
-	fox_assert(head >= 0 && head < capacity);
-	if (len) {
-		int ret = data[head];
-		head = (head + 1) % capacity;
-		len--;
-		return ret;
-	}
-	return {};
-}
-void Circle_Buffer::clear() {
-	memset(data, 0, capacity * sizeof(data));
-	head = 0;
-	len = 0;
-}
-
-// two ways you can use a vector:
-// 1 (more common): always push to the back of the vector. linearly assing. this means there are no holes
-// 2: push to random indices and remove things from it. problem with this is that you have holes in your memory
-// so if you have something like [ FULL | FULL | EMPTY | FULL | ...empty rest of array... ], where would you push back?
-// is it to the first bucket past the last element (which is kind of what you expect, but leads to holes and then 
-// things like for loops don't work with your vector because every so often you hit the damn hold
-// or is it the first empty slot? i feel like this is better because there are no holes, your vector works with for loops, 
-// but you still have to handle deletes
-// just shift everything back on vector delete? sounds pretty good to me. 
-#define ARR_INITIAL_CAPACITY 8
-template<typename T>
-struct tdvec {
-	T* data;
-	bool* present;
-	int count;
-	int capacity;
-	
-	tdvec() {
-		data = (T*)calloc(ARR_INITIAL_CAPACITY, sizeof(T));
-		present = (bool*)calloc(ARR_INITIAL_CAPACITY, sizeof(bool));
-		capacity = ARR_INITIAL_CAPACITY;
-		count = 0;
-	}
-	~tdvec() {
-		free(data);
-		free(present);
-	}
-	
-	void maybe_grow(int new_size) {
-		if (new_size > capacity) {
-			data = (T*)realloc(data, sizeof(T) * new_size);
-			present = (bool*)realloc(present, sizeof(bool) * new_size);
-			fox_assert(data);
-			fox_assert(present);
-			memset(data + capacity, 0, sizeof(T) * (new_size - capacity));
-			memset(present + capacity, 0, sizeof(bool) * (new_size - capacity));
-			capacity = new_size;
-		}
-	}
-	
-	T* push(T item) {
-		if (count == capacity) maybe_grow(capacity * 2);
-		data[count] = item;
-		present[count] = true;
-		
-		count++;
-		
-		return back();
-	}
-	T* push_at(int i, T item) {
-		maybe_grow(i + 1); // i is an index, so we need capacity = i + 1
-		data[i] = item;
-		return &data[i];
-	}
-	
-	T* elem_at(int i) {
-		return &data[i];
-	}
-	T* back() {
-		return elem_at(count - 1);
-	}
-	
-	void erase(int i) {
-		if (i > capacity - 1) return;
-		
-		// Only have to memcpy if we're not erasing from the back
-		else if (i != (capacity - 1)) {
-			memcpy(data + i, data + i + 1, capacity - i - 1);
-			memcpy(present + i, present + i + 1, capacity - i - 1);
-		} 
-		
-		// Always zero out the last element
-		data[capacity - 1] = 0;
-		present[capacity - 1] = 0;
-		count--;
-	}
-	
-};
-
-
-struct Hasher {
-	static int hash(const int key) {
-		return key;
-	}
-} hasher;
-
-#define MAP_INITIAL_CAPACITY 8
-template<typename Key, typename Value>
-struct tdmap {
-	tdvec<tdbyte> present;
-	tdvec<Key> keys;
-	tdvec<Value> values;
-	
-	tdmap() {
-		keys.maybe_grow(MAP_INITIAL_CAPACITY);
-		values.maybe_grow(MAP_INITIAL_CAPACITY);
-		present.maybe_grow(MAP_INITIAL_CAPACITY);
-	}
-	
-	void map(Key key, Value val) {
-		int index = hasher.hash(key);
-		while (*present.elem_at(index)) {
-			index = (index + 1) % present.capacity;
-		}
-		keys.push_at(index, key);
-		values.push_at(index, val);
-		present.push_at(index, 1);
-		
-		if (((float)keys.count / (float)keys.capacity) > .6) {
-			keys.maybe_grow(2 * keys.capacity);
-			values.maybe_grow(2 * values.capacity);
-			present.maybe_grow(2 * values.capacity);
-		}
-	}
-};
-
-
-
-#include <math.h> // fmodf
-static inline ImVec2 operator+(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x + rhs.x, lhs.y + rhs.y); }
-static inline ImVec2 operator-(const ImVec2& lhs, const ImVec2& rhs) { return ImVec2(lhs.x - rhs.x, lhs.y - rhs.y); }
-static void ShowExampleAppCustomNodeGraph(bool* opened)
-{
-	ImGui::SetNextWindowSize(ImVec2(700, 600), ImGuiCond_FirstUseEver);
-	if (!ImGui::Begin("Example: Custom Node Graph", opened))
-	{
-		ImGui::End();
-		return;
-	}
-	
-	// Dummy
-	struct Node
-	{
-		int     ID;
-		char    Name[32];
-		ImVec2  Pos, Size;
-		float   Value;
-		ImVec4  Color;
-		int     InputsCount, OutputsCount;
-		
-		Node(int id, const char* name, const ImVec2& pos, float value, const ImVec4& color, int inputs_count, int outputs_count) { 
-			ID = id; 
-			strncpy(Name, name, 31); 
-			Name[31] = 0; 
-			Pos = pos; 
-			Value = value; 
-			Color = color; 
-			InputsCount = inputs_count; 
-			OutputsCount = outputs_count; }
-		
-		ImVec2 GetInputSlotPos(int slot_no) const { 
-			float x = Pos.x + Size.x * ((float)slot_no + 1) / ((float)InputsCount + 1);
-			float y = Pos.y + Size.y;
-			return ImVec2(x, y); 
-		}
-		ImVec2 GetOutputSlotPos(int slot_no) const {
-			float x = Pos.x + Size.x * ((float)slot_no + 1) / ((float)InputsCount + 1);
-			float y = Pos.y;
-			return ImVec2(x, y); }
-	};
-	struct NodeLink
-	{
-		int     InputIdx, InputSlot, OutputIdx, OutputSlot;
-		
-		NodeLink(int input_idx, int input_slot, int output_idx, int output_slot) { InputIdx = input_idx; InputSlot = input_slot; OutputIdx = output_idx; OutputSlot = output_slot; }
-	};
-	
-	static ImVector<Node> nodes;
-	static ImVector<NodeLink> links;
-	static bool inited = false;
-	static ImVec2 scrolling = ImVec2(0.0f, 0.0f);
-	static bool show_grid = true;
-	static int node_selected = -1;
-	if (!inited)
-	{
-		nodes.push_back(Node(0, "MainTex", ImVec2(40, 50), 0.5f, ImColor(255, 100, 100), 1, 1));
-		nodes.push_back(Node(1, "BumpMap", ImVec2(40, 150), 0.42f, ImColor(200, 100, 200), 1, 1));
-		nodes.push_back(Node(2, "Combine", ImVec2(270, 80), 1.0f, ImColor(0, 200, 100), 2, 2));
-		links.push_back(NodeLink(0, 0, 2, 0));
-		links.push_back(NodeLink(1, 0, 2, 1));
-		inited = true;
-	}
-	
-	// Draw a list of nodes on the left side
-	bool open_context_menu = false;
-	int node_hovered_in_list = -1;
-	int node_hovered_in_scene = -1;
-	ImGui::BeginChild("node_list", ImVec2(100, 0));
-	ImGui::Text("Nodes");
-	ImGui::Separator();
-	for (int node_idx = 0; node_idx < nodes.Size; node_idx++)
-	{
-		Node* node = &nodes[node_idx];
-		ImGui::PushID(node->ID);
-		if (ImGui::Selectable(node->Name, node->ID == node_selected))
-			node_selected = node->ID;
-		if (ImGui::IsItemHovered())
-		{
-			node_hovered_in_list = node->ID;
-			open_context_menu |= ImGui::IsMouseClicked(1);
-		}
-		ImGui::PopID();
-	}
-	ImGui::EndChild();
-	
-	ImGui::SameLine();
-	ImGui::BeginGroup();
-	
-	const float NODE_SLOT_RADIUS = 4.0f;
-	const ImVec2 NODE_WINDOW_PADDING(8.0f, 8.0f);
-	
-	// Create our child canvas
-	ImGui::Text("%f, %f", ImGui::GetCursorScreenPos().x, ImGui::GetCursorScreenPos().y);
-	ImGui::Text("Hold middle mouse button to scroll (%.2f,%.2f)", scrolling.x, scrolling.y);
-	ImGui::SameLine(ImGui::GetWindowWidth() - 100);
-	ImGui::Checkbox("Show grid", &show_grid);
-	ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(1, 1));
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
-	ImGui::PushStyleColor(ImGuiCol_WindowBg, IM_COL32(60, 60, 70, 200));
-	ImGui::BeginChild("scrolling_region", ImVec2(0, 0), true, ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoMove);
-	ImGui::PushItemWidth(120.0f);
-	
-	ImVec2 offset = ImGui::GetCursorScreenPos() + scrolling;
-	ImDrawList* draw_list = ImGui::GetWindowDrawList();
-	// Display grid
-	if (show_grid)
-	{
-		ImU32 GRID_COLOR = IM_COL32(200, 200, 200, 40);
-		float GRID_SZ = 64.0f;
-		ImVec2 win_pos = ImGui::GetCursorScreenPos();
-		ImVec2 canvas_sz = ImGui::GetWindowSize();
-		for (float x = fmodf(scrolling.x, GRID_SZ); x < canvas_sz.x; x += GRID_SZ)
-			draw_list->AddLine(ImVec2(x, 0.0f) + win_pos, ImVec2(x, canvas_sz.y) + win_pos, GRID_COLOR);
-		for (float y = fmodf(scrolling.y, GRID_SZ); y < canvas_sz.y; y += GRID_SZ)
-			draw_list->AddLine(ImVec2(0.0f, y) + win_pos, ImVec2(canvas_sz.x, y) + win_pos, GRID_COLOR);
-	}
-	
-	// Display links
-	draw_list->ChannelsSplit(2);
-	draw_list->ChannelsSetCurrent(0); // Background
-	for (int link_idx = 0; link_idx < links.Size; link_idx++)
-	{
-		NodeLink* link = &links[link_idx];
-		Node* node_inp = &nodes[link->InputIdx];
-		Node* node_out = &nodes[link->OutputIdx];
-		ImVec2 p1 = offset + node_inp->GetOutputSlotPos(link->InputSlot);
-		ImVec2 p2 = offset + node_out->GetInputSlotPos(link->OutputSlot);
-		draw_list->AddBezierCurve(p1, p1 + ImVec2(+50, 0), p2 + ImVec2(-50, 0), p2, IM_COL32(200, 200, 100, 255), 3.0f);
-	}
-	
-	// Display nodes
-	for (int node_idx = 0; node_idx < nodes.Size; node_idx++)
-	{
-		Node* node = &nodes[node_idx];
-		ImGui::PushID(node->ID);
-		ImVec2 node_rect_min = offset + node->Pos;
-		
-		// Display node contents first
-		draw_list->ChannelsSetCurrent(1); // Foreground
-		bool old_any_active = ImGui::IsAnyItemActive();
-		ImGui::SetCursorScreenPos(node_rect_min + NODE_WINDOW_PADDING);
-		ImGui::BeginGroup(); // Lock horizontal position
-		ImGui::Text("%s", node->Name);
-		ImGui::SliderFloat("##value", &node->Value, 0.0f, 1.0f, "Alpha %.2f");
-		ImGui::ColorEdit3("##color", &node->Color.x);
-		ImGui::EndGroup();
-		
-		// Save the size of what we have emitted and whether any of the widgets are being used
-		bool node_widgets_active = (!old_any_active && ImGui::IsAnyItemActive());
-		node->Size = ImGui::GetItemRectSize() + NODE_WINDOW_PADDING + NODE_WINDOW_PADDING;
-		ImVec2 node_rect_max = node_rect_min + node->Size;
-		
-		// Display node box
-		draw_list->ChannelsSetCurrent(0); // Background
-		ImGui::SetCursorScreenPos(node_rect_min);
-		ImGui::InvisibleButton("node", node->Size);
-		if (ImGui::IsItemHovered())
-		{
-			node_hovered_in_scene = node->ID;
-			open_context_menu |= ImGui::IsMouseClicked(1);
-		}
-		bool node_moving_active = ImGui::IsItemActive();
-		if (node_widgets_active || node_moving_active)
-			node_selected = node->ID;
-		if (node_moving_active && ImGui::IsMouseDragging(0))
-			node->Pos = node->Pos + ImGui::GetIO().MouseDelta;
-		
-		ImU32 node_bg_color = (node_hovered_in_list == node->ID || node_hovered_in_scene == node->ID || (node_hovered_in_list == -1 && node_selected == node->ID)) ? IM_COL32(75, 75, 75, 255) : IM_COL32(60, 60, 60, 255);
-		draw_list->AddRectFilled(node_rect_min, node_rect_max, node_bg_color, 4.0f);
-		//draw_list->AddRect(node_rect_min, node_rect_max, IM_COL32(100, 100, 100, 255), 4.0f);
-		for (int slot_idx = 0; slot_idx < node->InputsCount; slot_idx++)
-			draw_list->AddCircleFilled(offset + node->GetInputSlotPos(slot_idx), NODE_SLOT_RADIUS, IM_COL32(150, 150, 150, 150));
-		for (int slot_idx = 0; slot_idx < node->OutputsCount; slot_idx++)
-			draw_list->AddCircleFilled(offset + node->GetOutputSlotPos(slot_idx), NODE_SLOT_RADIUS, IM_COL32(150, 150, 150, 150));
-		
-		ImGui::PopID();
-	}
-	draw_list->ChannelsMerge();
-	
-	// Open context menu
-	/*
-	if (!ImGui::IsAnyItemHovered() && ImGui::IsMouseHoveringWindow() && ImGui::IsMouseClicked(1))
-	{
-		node_selected = node_hovered_in_list = node_hovered_in_scene = -1;
-		open_context_menu = true;
-	}
-	*/
-	if (open_context_menu)
-	{
-		ImGui::OpenPopup("context_menu");
-		if (node_hovered_in_list != -1)
-			node_selected = node_hovered_in_list;
-		if (node_hovered_in_scene != -1)
-			node_selected = node_hovered_in_scene;
-	}
-	
-	// Draw context menu
-	ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(8, 8));
-	if (ImGui::BeginPopup("context_menu"))
-	{
-		Node* node = node_selected != -1 ? &nodes[node_selected] : NULL;
-		ImVec2 scene_pos = ImGui::GetMousePosOnOpeningCurrentPopup() - offset;
-		if (node)
-		{
-			ImGui::Text("Node '%s'", node->Name);
-			ImGui::Separator();
-			if (ImGui::MenuItem("Rename..", NULL, false, false)) {}
-			if (ImGui::MenuItem("Delete", NULL, false, false)) {}
-			if (ImGui::MenuItem("Copy", NULL, false, false)) {}
-		}
-		else
-		{
-			if (ImGui::MenuItem("Add")) { nodes.push_back(Node(nodes.Size, "New node", scene_pos, 0.5f, ImColor(100, 100, 200), 2, 2)); }
-			if (ImGui::MenuItem("Paste", NULL, false, false)) {}
-		}
-		ImGui::EndPopup();
-	}
-	ImGui::PopStyleVar();
-	
-	// Scrolling
-	if (ImGui::IsWindowHovered() && !ImGui::IsAnyItemActive() && ImGui::IsMouseDragging(2, 0.0f))
-		scrolling = scrolling + ImGui::GetIO().MouseDelta;
-	
-	ImGui::PopItemWidth();
-	ImGui::EndChild();
-	ImGui::PopStyleColor();
-	ImGui::PopStyleVar(2);
-	ImGui::EndGroup();
-	
-	ImGui::End();
-}
-
 void init_imgui() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -1189,7 +616,7 @@ void init_imgui() {
 	imgui.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::StyleColorsDark();
 
-	auto imgui_font = imgui.Fonts->AddFontFromFileTTF(get_default_font_path().c_str(), 16.0);
+	auto imgui_font = imgui.Fonts->AddFontFromFileTTF(default_font_path(), 16.0);
 
 	imgui.IniFilename = nullptr;
 

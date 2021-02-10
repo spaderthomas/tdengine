@@ -70,7 +70,6 @@ function Dialogue:foo()
    print('advance_until_input_needed(): begin')
    local is_input_needed = false
    while not is_input_needed do
-	  print('advance_until_input_needed(): loop: (' .. tostring(self.done) .. ', ' .. tostring(is_input_needed) .. ')')
 	  if not self.current then
 		 print('advance_until_input_needed(): processing first node')
 		 self.current = self:find_entry_node()

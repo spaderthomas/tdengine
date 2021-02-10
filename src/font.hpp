@@ -14,7 +14,7 @@ std::map<GLchar, Character> characters;
 
 FT_Library freetype;
 FT_Face face;
-GLuint font_vao, font_vert_buffer, text_box_vao, text_box_vert_buffer;
+GLuint font_vao, font_vert_buffer;
 #define PX_FONT_SIZE 20
 
 uint advance(char c);

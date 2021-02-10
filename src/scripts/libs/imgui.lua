@@ -107,3 +107,7 @@ imgui.extensions.RightAlignedString = function(str)
    imgui.SameLine(width - text_size - padding)
    imgui.Text(str)
 end
+
+imgui.extensions.Vec2 = function(name, v)
+   imgui.Text(name .. ': (' .. tostring(v.x) .. ', ' .. tostring(v.y) .. ')')
+end

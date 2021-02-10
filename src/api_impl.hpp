@@ -1,3 +1,4 @@
+namespace API {
 int create_entity(std::string name) {
 	auto& entity_manager = get_entity_manager();
 	return entity_manager.create_entity(name);
@@ -40,9 +41,24 @@ void draw_entity(int entity) {
 	r.layer = graphic["layer"];
 	r.entity = entity;
 
+	// Get the sprite for the requested frame
 	std::string animation_name = animation["current"];
 	int frame = animation["frame"];
-	Sprite* sprite = get_frame(animation_name, frame);
+
+	auto& asset_manager = get_asset_manager();
+	Animation* animation_p = asset_manager.get_asset<Animation>(animation_name);
+	if (!animation_p) {
+		tdns_log.write("Could not find animation: " + animation_name);
+		return;
+	}
+
+	auto sprite_name = animation_p->get_frame(frame);
+	auto sprite = asset_manager.get_asset<Sprite>(sprite_name);
+	if (!sprite) {
+		tdns_log.write("Could not find sprite: " + sprite_name);
+		return;
+	}
+
 	if (!sprite) {
 		tdns_log.write("Trying to render, but sprite returned was invalid (nullptr).");
 		tdns_log.write("Animation was: " + animation_name);
@@ -87,20 +103,18 @@ void register_collider(int entity) {
 	
 	auto& physics_engine = get_physics_engine();
 	physics_engine.add_collider(entity, collider);
-
-	tdns_log.write("Registered collider for EntityID " + entity_ptr->debug_string());
 }
 
-int ray_cast(float x, float y) {
+sol::object ray_cast(float x, float y) {
 	auto& physics_engine = get_physics_engine();
 
 	for (const auto& [entity, collider] : physics_engine.colliders) {
 		if (point_inside_collider(x, y, collider)) {
-			return entity;
+			return Lua.state["tdengine"]["entities"][entity];
 		}
 	}
 
-	return -1;
+	return sol::make_object(Lua.state, sol::lua_nil);
 }
 
 sol::object sprite_size(std::string name) {
@@ -141,33 +155,7 @@ void teleport_entity(int entity, float x, float y) {
 	physics_engine.requests.push_back(request);	
 }
 
-Sprite* get_frame(std::string animation, int frame) {
-	if (animation.empty()) {
-		tdns_log.write("Component asked for current frame but no active animation was set!");
-		return (Sprite*)nullptr;
-	}
-	if (frame < 0) {
-		std::string msg = "Frame index less than 0 for animation " + animation;
-		tdns_log.write(msg);
-		return (Sprite*)nullptr;
-	}
 
-	auto& asset_manager = get_asset_manager();
-	Animation* animation_p = asset_manager.get_asset<Animation>(animation);
-	if (!animation_p) {
-		tdns_log.write("Could not find animation: " + animation);
-		return (Sprite*)nullptr;
-	}
-
-	auto sprite_name = animation_p->get_frame(frame);
-	auto frame_p = asset_manager.get_asset<Sprite>(sprite_name);
-	if (!frame_p) {
-		tdns_log.write("Could not find sprite: " + sprite_name);
-		return (Sprite*)nullptr;
-	}
-
-	return frame_p;
-}
 
 void register_animation(std::string name, std::vector<std::string> frames) {
 	tdns_log.write("Registering animation: " + name, Log_Flags::File);
@@ -181,16 +169,16 @@ void register_animation(std::string name, std::vector<std::string> frames) {
 	asset_manager.add_asset<Animation>(name, animation);
 }
 
-std::vector<std::string> get_frames(std::string animation_name) {
+int count_frames(std::string animation) {
 	auto& asset_manager = get_asset_manager();
-	Animation* animation = asset_manager.get_asset<Animation>(animation_name);
-	if (!animation) {
+	Animation* asset = asset_manager.get_asset<Animation>(animation);
+	if (!asset) {
 		tdns_log.write("Asked for animation's frames, but could not find that animation");
-		tdns_log.write("Animation name: " + animation_name);
-		return {};
+		tdns_log.write("Animation name: " + animation);
+		return 0;
 	}
 	
-	return animation->frames;
+	return asset->frames.size();
 }
 
 void enable_input_channel(int channel) {
@@ -225,10 +213,29 @@ float get_cursor_y() {
 	auto& manager = get_input_manager();
 	return manager.screen_pos.y;
 }
+
+sol::object cursor() {
+	auto& manager = get_input_manager();
+	
+	auto out = Lua.state.create_table();
+	out["x"] = manager.screen_pos.x;
+	out["y"] = manager.screen_pos.y;
+	return out;
+}
+
 sol::object screen_dimensions() {
 	auto out = Lua.state.create_table();
 	out["x"] = screen_x;
 	out["y"] = screen_y;
+	return out;
+}
+
+sol::object camera() {
+	auto& renderer = get_render_engine();
+	
+	auto out = Lua.state.create_table();
+	out["x"] = renderer.camera.x;
+	out["y"] = renderer.camera.y;
 	return out;
 }
 
@@ -308,135 +315,77 @@ void save_layout(const char* name) {
 	tdns_log.write("Saved Imgui configuration: " + layout.path, Log_Flags::File);
 }
 
-void save_imgui_layout() {
-	ImGui::SaveIniSettingsToDisk(ImGui::GetIO().IniFilename);
-}
-
-void text_box_begin(std::string text) {
-	auto& text_box = get_text_box();
-	// hack to get choices working with minimal code changes
-	if (text.empty()) {
-		text_box.begin(text_box.text);
-	} else {
-		text_box.begin(std::move(text));
-	}
-}
-bool text_box_is_done() {
-	auto& text_box = get_text_box();
-	return text_box.is_done();
-}
-bool text_box_is_active() {
-	auto& text_box = get_text_box();
-	return text_box.active;
-}
-bool text_box_is_waiting() {
-	auto& text_box = get_text_box();
-	return text_box.waiting;
-}
-void text_box_resume() {
-	auto& text_box = get_text_box();
-	text_box.resume();	
-}
-void text_box_skip() {
-	auto& text_box = get_text_box();
-	text_box.skip();	
-}
-void text_box_highlight_line(int line) {
-	auto& text_box = get_text_box();
-	text_box.line_to_highlight = line;	
-}
-void text_box_add_choice(std::string choice) {
-	auto& text_box = get_text_box();
-	text_box.add_choice(choice);
-}
-void text_box_clear() {
-	auto& text_box = get_text_box();
-	text_box.clear();	
-}
-
-void lua_draw_text(std::string text, float x, float y, int flags) {
+void draw_text(std::string text, float x, float y, int flags) {
 	glm::vec2 point(x, y);
 	draw_text(text, point, static_cast<Text_Flags>(flags));
 }
+}
 	
-
 void register_lua_api() {
 	auto& state = Lua.state;
 	
+	using namespace API;
     state["tdengine"] = state.create_table();
 	state["tdengine"]["create_entity"] = &create_entity;
 	state["tdengine"]["destroy_entity"] = &destroy_entity;
 	state["tdengine"]["register_animation"] = &register_animation;
-	state["tdengine"]["get_frames"] = &get_frames;
+	state["tdengine"]["count_frames"] = &count_frames;
 	state["tdengine"]["enable_input_channel"] = &enable_input_channel;
 	state["tdengine"]["disable_input_channel"] = &disable_input_channel;
 	state["tdengine"]["is_down"] = &is_down;
 	state["tdengine"]["was_pressed"] = &was_pressed;
 	state["tdengine"]["was_chord_pressed"] = &was_chord_pressed;
-	state["tdengine"]["get_cursor_x"] = &get_cursor_x;
-	state["tdengine"]["get_cursor_y"] = &get_cursor_y;
-	state["tdengine"]["get_camera_x"] = &get_camera_x;
-	state["tdengine"]["get_camera_y"] = &get_camera_y;
+	state["tdengine"]["cursor"] = &cursor;
+	state["tdengine"]["camera"] = &camera;
 	state["tdengine"]["move_camera"] = &move_camera;
 	state["tdengine"]["sprite_size"] = &sprite_size;	
-	state["tdengine"]["draw_entity"] = &draw_entity;	
+	state["tdengine"]["teleport_entity"] = &teleport_entity;
+	state["tdengine"]["register_collider"] = &register_collider;
+	state["tdengine"]["save_layout"] = &save_layout;
+	state["tdengine"]["use_layout"] = &use_layout;
+	state["tdengine"]["frame_time"] = seconds_per_update;
+	state["tdengine"]["screen_dimensions"] = &screen_dimensions;
+	state["tdengine"]["ray_cast"] = &ray_cast;
+
 	state["tdengine"]["draw"] = state.create_table();
+	state["tdengine"]["draw"]["entity"] = &draw_entity;	
 	state["tdengine"]["draw"]["line_screen"] = &line_screen;
 	state["tdengine"]["draw"]["rect_filled_screen"] = &rect_filled_screen;
 	state["tdengine"]["draw"]["rect_outline_screen"] = &rect_outline_screen;
 	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
+	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
+	state["tdengine"]["draw"]["text"] = &API::draw_text;
+
+	state["tdengine"]["font"] = state.create_table();
+	state["tdengine"]["font"]["advance"] = &advance;
+
+	state["tdengine"]["internal"] = state.create_table();
+	state["tdengine"]["internal"]["move_entity"] = &move_entity;
+	state["tdengine"]["internal"]["toggle_console"] = &toggle_console;
+
+	state["tdengine"]["paths"] = state.create_table();
+	state["tdengine"]["paths"]["root"] = root_dir;
+	state["tdengine"]["paths"]["join"] = &path_join;
+	state["tdengine"]["paths"]["absolute"] = &absolute_path;	
+	
+	state["tdengine"]["text_flags"] = state.create_table();
+	state["tdengine"]["text_flags"]["none"] = Text_Flags::None;
+	state["tdengine"]["text_flags"]["highlighted"] = Text_Flags::Highlighted;
 	state["tdengine"]["render_flags"]= state.create_table();	
 	state["tdengine"]["render_flags"]["none"] = Render_Flags::None;	
 	state["tdengine"]["render_flags"]["highlighted"] = Render_Flags::Highlighted;	
 	state["tdengine"]["render_flags"]["screen_position"] = Render_Flags::ScreenPosition;	
-	state["tdengine"]["draw"]["rect_outline_world"] = &rect_outline_world;	
-	state["tdengine"]["text_box"] = state.create_table();	
-	state["tdengine"]["text_box"]["begin"] = &text_box_begin;	
-	state["tdengine"]["text_box"]["is_done"] = &text_box_is_done;	
-	state["tdengine"]["text_box"]["is_active"] = &text_box_is_active;	
-	state["tdengine"]["text_box"]["is_waiting"] = &text_box_is_waiting;	
-	state["tdengine"]["text_box"]["resume"] = &text_box_resume;	
-	state["tdengine"]["text_box"]["skip"] = &text_box_skip;	
-	state["tdengine"]["text_box"]["highlight_line"] = &text_box_highlight_line;	
-	state["tdengine"]["text_box"]["add_choice"] = &text_box_add_choice;	
-	state["tdengine"]["text_box"]["clear"] = &text_box_clear;	
+
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
 	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;
 	state["tdengine"]["InputChannel"]["Editor"] = INPUT_MASK_EDITOR;
 	state["tdengine"]["InputChannel"]["Game"] = INPUT_MASK_GAME;
 	state["tdengine"]["InputChannel"]["All"] = INPUT_MASK_ALL;
-	state["tdengine"]["paths"] = state.create_table();
-	state["tdengine"]["paths"]["root"] = root_dir;
-	state["tdengine"]["paths"]["join"] = &path_join;
-	state["tdengine"]["paths"]["absolute_path"] = &absolute_path;	
-    state["tdengine"]["internal"] = state.create_table();
-	state["tdengine"]["internal"]["move_entity"] = &move_entity;
-	state["tdengine"]["teleport_entity"] = &teleport_entity;
-	state["tdengine"]["register_collider"] = &register_collider;
-	state["tdengine"]["internal"]["screen_640"] = &use_640_360;
-	state["tdengine"]["internal"]["screen_720"] = &use_720p;
-	state["tdengine"]["internal"]["screen_1080"] = &use_1080p;
-	state["tdengine"]["internal"]["screen_1440"] = &use_1440p;
-	state["tdengine"]["internal"]["toggle_console"] = &toggle_console;
-	state["tdengine"]["save_layout"] = &save_layout;
-	state["tdengine"]["use_layout"] = &use_layout;
-	state["tdengine"]["frame_time"] = seconds_per_update;
-	state["tdengine"]["screen_dimensions"] = &screen_dimensions;
 
-	
-	state["tdengine"]["draw_text"] = &lua_draw_text;
-	state["tdengine"]["text_flags"] = state.create_table();
-	state["tdengine"]["text_flags"]["none"] = Text_Flags::None;
-	state["tdengine"]["text_flags"]["highlighted"] = Text_Flags::Highlighted;
-	
-	state["tdengine"]["font"] = state.create_table();
-	state["tdengine"]["font"]["advance"] = &advance;
-	
-	
-	// This one's internal because we want the Lua version to return a table
-	state["tdengine"]["internal"]["ray_cast"] = &ray_cast;
+		
 	state["imgui"]["extensions"] = state.create_table();
 	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;
+	
 	state.set_function("tdengine.log", &Log::write, &tdns_log);
 }

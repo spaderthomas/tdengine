@@ -10,9 +10,10 @@ void init_fonts() {
 		exit(0);
 	}
 
-	auto default_font_path = get_default_font_path();
-	if (FT_New_Face(freetype, default_font_path.c_str(), 0, &face)) {
-		tdns_log.write("Failed to load font: " + default_font_path);
+	if (FT_New_Face(freetype, default_font_path(), 0, &face)) {
+		std::string message = "Failed to load font: ";
+		message += default_font_path();
+		tdns_log.write(message);
 		exit(0);
 	}
 	
@@ -64,19 +65,6 @@ void init_fonts() {
 	glBindVertexArray(font_vao);
 	glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
 	
-	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 0, (GLvoid*)(sizeof(GLfloat) * 12));
-	
-	// GL buffers for the text box
-	glGenVertexArrays(1, &text_box_vao);
-	glGenBuffers(1, &text_box_vert_buffer);
-	glBindVertexArray(text_box_vao);
-	glBindBuffer(GL_ARRAY_BUFFER, text_box_vert_buffer);
-	
-	// VAO
 	glBufferData(GL_ARRAY_BUFFER, sizeof(GLfloat) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, 0);

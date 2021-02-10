@@ -97,13 +97,6 @@ void LuaState::script_file(ScriptPath path) {
 	});
 }
 
-void LuaState::test() {
-}
-
-void LuaState::update(float dt) {
-	
-}
-
 sol::table LuaState::get_entity(int id) {
 	return state["tdengine"]["entities"][id];
 }

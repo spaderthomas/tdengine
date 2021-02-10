@@ -27,7 +27,7 @@ function Editor:init()
   self.state = EditState.Idle
   
   self.selected = nil
-  self.position_when_selected = { x = 0, y = 0 }
+  self.position_when_selected = tdengine.vec2(0, 0)
   self.hovered = nil
   
   self.ded = {
@@ -58,13 +58,10 @@ function Editor:init()
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
   input:enable()
-
-  tdengine.internal.screen_1080()
 end
 
 function Editor:update(dt)
   local dbg = self:get_component('Debug')
-  dbg:print_once(inspect(tdengine.sprite_size('text_box.png')))
    
   self:calculate_framerate()
   
@@ -76,11 +73,10 @@ function Editor:update(dt)
   imgui.Text('fps: ' .. tostring(self.display_framerate))
 
   local screen_size = tdengine.screen_dimensions()
-  imgui.Text('screen size: (' .. screen_size.x .. ', ' .. screen_size.y .. ')')
+  imgui.extensions.Vec2('screen size', screen_size)
 
-
-  local cursor = tdengine.vec2(truncate(tdengine.get_cursor_x(), 3), truncate(tdengine.get_cursor_y(), 3))
-  imgui.Text('cursor: (' .. tostring(cursor.x) .. ', ' .. tostring(cursor.y) .. ')')
+  local cursor = tdengine.vec2(tdengine.cursor()):truncate(3)
+  imgui.extensions.Vec2('cursor', cursor)
 
   imgui.Begin("scene", true)
   self:draw_entity_viewer()
@@ -107,14 +103,10 @@ function Editor:update(dt)
   elseif self.state == EditState.HoldingSelection then
 	 if input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
 		local diff = self:get_mouse_vector()
-		local new_position = {
-		   x = self.position_when_selected.x + diff.x,
-		   y = self.position_when_selected.y + diff.y
-		}
+		local new_position = self.position_when_selected:add(diff)
 		tdengine.teleport_entity(self.selected:get_id(), new_position.x, new_position.y)
 	 else
 		self.state = EditState.Selected
-		print('You let go of the left mouse button')
 	 end
   end
 end
@@ -123,10 +115,9 @@ function Editor:do_geometry()
    local input = self:get_component('Input')
 
    if self.state == EditState.ReadyToDrawGeometry then
-  	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
-	 	self.last_click.x = tdengine.get_cursor_x()
-	 	self.last_click.y = tdengine.get_cursor_y()
-		self.state = EditState.DrawingGeometry
+	  if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
+		 self.last_click = tdengine.cursor()
+		 self.state = EditState.DrawingGeometry
 	 end
   elseif self.state == EditState.DrawingGeometry then
      if input:is_down(GLFW.Keys.MOUSE_BUTTON_1) then
@@ -144,8 +135,7 @@ function Editor:do_geometry()
 		tdengine.teleport_entity(box:get_id(), position.x, position.y)
 		
 		self.state = EditState.Idle
-		self.last_click.x = 0
-		self.last_click.y = 0
+		self.last_click = tdengine.vec2(0, 0)
 	 end
   end
 end
@@ -223,15 +213,14 @@ function Editor:check_for_new_selection()
 	  self.selected = tdengine.ray_cast(cursor.x, cursor.y)
 	  if self.selected ~= nil then
 		 self.state = EditState.HoldingSelection
-		 self.last_click = tdengine.cursor()
+		 self.last_click = tdengine.vec2(tdengine.cursor())
 
 		 -- Mark down where it was when we clicked it, so we can drag it
 		 local position = self.selected:get_component('Position')
 		 if position ~= nil then
-			self.position_when_selected = {
-			   x = position.world.x,
-			   y = position.world.y
-			}
+			self.position_when_selected = tdengine.vec2(
+			   position.world.x,
+			   position.world.y)
 		 end
 
 		 -- Highlight it (should use bitwise ops to toggle this)
@@ -280,23 +269,22 @@ function Editor:draw_selected_view()
 end
 
 function Editor:get_mouse_rect()
+   local cursor = tdengine.cursor()
    return {
       extents = {
-	     x = math.abs(tdengine.get_cursor_x() - self.last_click.x),
-		 y = math.abs(tdengine.get_cursor_y() - self.last_click.y)
+	     x = math.abs(cursor.x - self.last_click.x),
+		 y = math.abs(cursor.y - self.last_click.y)
 	  },
 	  origin = {
-	     x = (tdengine.get_cursor_x() + self.last_click.x) / 2,
-	     y = (tdengine.get_cursor_y() + self.last_click.y) / 2
+	     x = (cursor.x + self.last_click.x) / 2,
+	     y = (cursor.y + self.last_click.y) / 2
 	  }
    }
 end
 
 function Editor:get_mouse_vector()
-   return {
-	  x = tdengine.get_cursor_x() - self.last_click.x,
-	  y = tdengine.get_cursor_y() - self.last_click.y
-   }
+   local cursor = tdengine.vec2(tdengine.cursor())
+   return cursor:subtract(self.last_click)
 end
 
 -- Take a coordinate in canvas' world space and convert it to
@@ -406,7 +394,7 @@ function Editor:dialogue_editor()
 
 	  -- Save out the engine data
 	  local data_path = 'src/scripts/dialogue/' .. self.ded.loaded .. '.lua'
-	  data_path = tdengine.paths.absolute_path(data_path)
+	  data_path = tdengine.paths.absolute(data_path)
 	  local data_file = io.open(data_path, 'w')
 	  if data_file then
 		 data_file:write('return ')
@@ -417,7 +405,7 @@ function Editor:dialogue_editor()
 
 	  -- Save out the layout data
 	  local layout_path = 'src/scripts/layouts/dialogue/' .. self.ded.loaded .. '.lua'
-	  layout_path = tdengine.paths.absolute_path(layout_path)
+	  layout_path = tdengine.paths.absolute(layout_path)
 	  local layout_file = io.open(layout_path, 'w')
 	  if layout_file then
 		 layout_file:write('return ')
@@ -483,9 +471,14 @@ function Editor:dialogue_editor()
 	  imgui.TreePop()
    end
 
-   local active = tdengine.text_box.is_active()
-   local waiting = tdengine.text_box.is_waiting()
-   local done = tdengine.text_box.is_done()
+
+   local active, waiting, done = false, false, false
+   local text_box = tdengine.find_entity('TextBox')
+   if text_box then
+	  active = text_box.active
+	  waiting = text_box.waiting
+	  done = text_box.done
+   end
 
    imgui.Text('active: ' .. tostring(active))
    imgui.Text('waiting: ' .. tostring(waiting))
