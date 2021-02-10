@@ -2,22 +2,27 @@ TextBox = tdengine.entity('TextBox')
 function TextBox:init()
    tdengine.register_collider(self:get_id())
    self:reset()
+
+   local graphic = self:get_component("Graphic")
+   graphic:hide()
 end
 
 function TextBox:reset()
    self.text = nil
-   self.waiting = false
    self.active = false
    self.done = false
    self.time_accumulated = 0
-   self.time_per_update = 4 * tdengine.frame_time
+   self.time_per_update = tdengine.frame_time
    self.point = 0
    self.max_point = 0
+   self.choosing = false
+   self.highlighted_choice = 0
 
    -- If there is a line break at character i, that means that you want the
    -- last character of this line to be text[i]
    self.line_breaks = {}
 end
+
 
 function TextBox:print_lines()
    print('print_lines(): breaks are ' .. inspect(self.line_breaks))
@@ -31,14 +36,10 @@ function TextBox:print_lines()
 	  line_start = line_break + 1
    end
    print('print_lines(): lines end')
-
 end
 
-function TextBox:begin(text)
-   self:reset()
-   self.text = text
-   self.active = true
-   self.max_point = text:len()
+function line_breaks(text)
+   local breaks = {}
    
    -- Calculate the length of the text area, in pixels, for wrapping purposes
    local content_width = tdengine.sprite_size('text_box.png').x
@@ -51,11 +52,11 @@ function TextBox:begin(text)
    local word_size = 0
 
    local last_word_point = 1
-   for point = 1, #self.text do
-	  local c = self.text:sub(point, point)
+   for point = 1, #text do
+	  local c = text:sub(point, point)
 	  if is_newline(c) then
 		 -- On a newline, you're done with whatever line you were working on.
-		 table.insert(self.line_breaks, point)
+		 table.insert(breaks, point)
 		 line_size = 0
 		 word_size = 0
 	  elseif is_space(c) then
@@ -68,7 +69,7 @@ function TextBox:begin(text)
 		 else
 			-- The word would make us spill over. Line break before this word, and
 			-- add this word's length to the next line
-			table.insert(self.line_breaks, last_word_point)
+			table.insert(breaks, last_word_point)
 			line_size = word_size + (tdengine.font.advance(' ') / 64)
 		 end
 
@@ -80,24 +81,55 @@ function TextBox:begin(text)
    end
 
    if line_size + word_size <= content_width then
-	  table.insert(self.line_breaks, #self.text)
+	  table.insert(breaks, #text)
    else
-	  table.insert(self.line_breaks, last_word_point)
-	  table.insert(self.line_breaks, #self.text)
+	  table.insert(breaks, last_word_point)
+	  table.insert(breaks, #text)
    end
    
-   table.sort(self.line_breaks)
+   table.sort(breaks)
+   return breaks
+end
 
+function TextBox:choose(choices)
+   self:reset()
+   self.text = {}
+   self.active = true
+   self.choosing = true
+   self.highlighted_choice = 1
+
+   local graphic = self:get_component("Graphic")
+   graphic:show()
+
+   for index, choice in pairs(choices) do
+	  self.line_breaks[index] = line_breaks(choice)
+	  table.insert(self.text, choice)
+   end
+
+   print(inspect(self.line_breaks))
+   print(inspect(self.text))
+end
+
+
+function TextBox:begin(text)
+   self:reset()
+   self.text = text
+   self.active = true
+   self.max_point = text:len()
+   
+   local graphic = self:get_component("Graphic")
+   graphic:show()
+   
+   self.line_breaks = line_breaks(text)
 end
 
 function TextBox:update(dt)
    self.time_accumulated = self.time_accumulated + dt
-   if not self.waiting and self.time_accumulated >= self.time_per_update then
+   if self.time_accumulated >= self.time_per_update then
+	  self.point = math.min(self.point + 1, self.max_point)
+	  self.done = self.point == self.max_point
 	  self.time_accumulated = 0
    end
-
-   self.point = math.min(self.point + 1, self.max_point)
-   self.waiting = self.point == self.max_point
 
    local position = self:get_component('Position').world
    
@@ -108,27 +140,49 @@ function TextBox:update(dt)
 	  position.x - extents.x + padding.x,
 	  position.y + extents.y - padding.y)
 
-   local line_start = 1
-   local remaining = self.point
-   for index, line_break in pairs(self.line_breaks) do
-	  if not (remaining > 0) then break end
-	  
-	  local len = line_break - line_start
-	  local line = nil
-	  if len <= remaining then
-		 line = self.text:sub(line_start, line_break)
-		 remaining = remaining - len
-	  else
-		 line = self.text:sub(line_start, line_start + remaining)
-		 remaining = 0
-	  end
+   if self.choosing then
+	  for choice_index, choice in pairs(self.text) do
+		 local flags = ternary(choice_index == self.highlighted_choice, tdengine.text_flags.highlighted, 0)
 
-	  tdengine.draw.text(line, text_start.x, text_start.y, 0)
-	  text_start.y = text_start.y - .02
-	  line_start = line_break + 1
+		 local line_breaks = self.line_breaks[choice_index]
+		 local line_start = 1
+		 for index, line_break in pairs(line_breaks) do
+			local line = choice:sub(line_start, line_break)
+										   
+			tdengine.draw.text(line, text_start.x, text_start.y, flags)
+			text_start.y = text_start.y - .02
+			line_start = line_break + 1
+		 end
+
+		 text_start.y = text_start.y - .02
+	  end
+   else
+	  local line_start = 1
+	  local remaining = self.point
+	  for index, line_break in pairs(self.line_breaks) do
+		 if not (remaining > 0) then break end
+		 
+		 local len = line_break - line_start
+		 local line = nil
+		 if len <= remaining then
+			line = self.text:sub(line_start, line_break)
+			remaining = remaining - len
+		 else
+			line = self.text:sub(line_start, line_start + remaining)
+			remaining = 0
+		 end
+
+		 tdengine.draw.text(line, text_start.x, text_start.y, 0)
+		 text_start.y = text_start.y - .02
+		 line_start = line_break + 1
+	  end
    end
 end
 
 function TextBox:skip()
    self.point = self.max_point
+end
+
+function TextBox:highlight_choice(index)
+   self.highlighted_choice = index
 end
