@@ -292,6 +292,73 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/10/2021
+need to put the set nodes into ded -- problem i'm running into is twofold:
+1. i do not have input text in lua. this is because input text takes a char*,
+   and there is no conception of char* in lua (all strings are interned). the
+   only thing i can think of is the same thing i do for the multiline input text
+   -- wrap it up in a class that allocates a buffer on init. but then you need
+   an instance of the class for every input text you want. 
+
+maybe you could do something wacky in C++ end like...have some static thing
+which contains string buffers. and somehow map calls of InputText() to the
+appropriate buffer? you could hash the label (i think all labels have to be
+unique...)? 
+
+imgui.InputText('my label', buffer_size)
+local text = imgui.GetInputText('my label')
+
+yeah i think that would work, only problem is label collision -- not sure how
+that works in the regular imgui api. 
+
+2. typed inputs. all inputs are just strings. i don't even know if i need
+   anything beyond true and false. pretty much what's gonna happen is this:
+   you're going to make some dialogue choice, i will set a flag indicating that
+   you have made that choice (or that you've talked to this person, or, or,
+   or...). 
+
+which got me thinking: where the hell am i reading these variables anyway? what
+does the code for my game actually look like? i feel like it will be less and
+less in entities. entities will be 90% prefabs. here is where there needs to be
+Code:
+- some more simple entities (e.g. doors)
+- some more simple components (e.g. interaction, vision)
+- scene manager entities
+
+you walk around. sometimes, you interact with stuff and get some
+dialogue. sometimes, you talk to people and also get dialogue. sometimes you
+step in certain places and things happen. that's the whole game. 
+
+just gonna go with boolean inputs + i guess implement input text
+
+another problem: i get the feeling that i want to hardcore change up the
+dialogue trees depending on the state. eh, i guess not -- pretty much what i
+need is something that lets you add a choice as a function of the state. after
+that, you're just branching to a new subtree. 
+
+get the feeling that i just need to think less and make more game.
+
+ok, so finish up ded to handle the set nodes. i don't need to implement a branch
+node right now (although i suspect it would be only a few days' work). 
+
+openal is on the table after that
+
+battles are also on the table. if i do battles, i need to have a way for dudes
+to stand there and battle you when you get close enough. plus, i need to have
+the data for battles set up. this might mean that before battles i need to shed
+for a week or two to flesh out the battle system for real for real.
+
+need to do some brief research on how other games pop in the text box.
+
+need to add avatars (and maybe even...text shaking...) to the text box. avatars
+maybe, but i think shaking would be better left for polish. avatars seem pretty
+darn easy. 
+
+need to add doors
+
+need to be able to save out scenes
+** 02/09/2021
+** 02/08/2021
 ** 02/07/2021
 code hard
 
@@ -2689,7 +2756,7 @@ strongest among them.
  arrived, it seems that fate itself is pulling you together.
 
  "boon, do you know how to battle?" the librarian asks
-
+ 
  "i...i'm ten..." boon replies
 
  "right, and quick as a whip you are." the librarian goes onto explain: souls
@@ -3132,6 +3199,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-10 Wed 21:58]
 CLOCK: [2021-02-10 Wed 16:09]--[2021-02-10 Wed 16:43] =>  0:34
 CLOCK: [2021-02-09 Tue 23:15]--[2021-02-10 Wed 00:29] =>  1:14
 CLOCK: [2021-02-09 Tue 17:19]--[2021-02-09 Tue 18:29] =>  1:10

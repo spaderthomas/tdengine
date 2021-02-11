@@ -65,7 +65,7 @@ function Dialogue:process_text(node)
    self.text_box:begin(node.text)
 end
 
-function Dialogue:foo()
+function Dialogue:advance_until_input_needed()
    print('advance_until_input_needed(): begin')
    local is_input_needed = false
    while not is_input_needed do
@@ -130,15 +130,14 @@ function Dialogue:update(dt)
 
 	  if tdengine.was_pressed(GLFW.Keys.ENTER, tdengine.InputChannel.Game) then
 		 self.current = self.current[self.choice]
-		 self.text_box:highlight_choice
-		 (-1)
+		 self.text_box:highlight_choice(-1)
 		 self.choosing = false
-		 self:foo()
+		 self:advance_until_input_needed()
 	  end
    end
 
    if not self.text_box.active then
-	  self:foo()
+	  self:advance_until_input_needed()
    end
    
    local waiting = self.text_box.waiting
@@ -150,7 +149,7 @@ function Dialogue:update(dt)
 		 self.text_box:skip()
 	  else
 		 print('Dialogue:update() :: moving to next node')
-		 self:foo()
+		 self:advance_until_input_needed()
 	  end
    end
 

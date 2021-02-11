@@ -310,11 +310,11 @@ function Editor:make_dialogue_node(kind)
 	  uuid = tdengine.uuid()
    }
    if kind == 'Text' then
-	  node.text = 'im a text node!'
+	  node.text = ''
 	  node.who = ''
    end
    if kind == 'Choice' then
-	  node.text = 'im a choice node!'
+	  node.text = ''
    end
    if kind == 'Set' then
 	  node.variable = 'buns'
@@ -420,7 +420,7 @@ function Editor:dialogue_editor()
    -- Detail view
    local selected = self.ded.nodes[self.ded.selected]
    if selected then
-	  imgui.extensions.VariableName('Kind')
+	  imgui.extensions.VariableName('kind')
 	  imgui.SameLine()
 	  imgui.Text(selected.kind)
 
@@ -429,10 +429,17 @@ function Editor:dialogue_editor()
 	  imgui.PopTextWrapPos()
 
 	  if selected.kind == 'Text' then
-		 imgui.extensions.VariableName('Entity')
+		 imgui.extensions.VariableName('entity')
 		 imgui.SameLine()
 		 imgui.Text(selected.who)
 	  end
+	  
+	  if selected.kind == 'Set' then
+		 imgui.extensions.VariableName('state')
+		 imgui.SameLine()
+		 imgui.Text(selected.variable)
+	  end
+
    end
    
    imgui.Separator()
