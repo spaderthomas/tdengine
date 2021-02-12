@@ -551,6 +551,20 @@ namespace ImGuiWrapper {
 			strncpy(buffer, contents, buf_size - 1);
 		}
 	};
+
+	bool InputText(const char* label, int buf_size = 255) {
+		add_input_text_buffer(label, buf_size);
+		InputTextBuffer* buffer = get_input_text_buffer(label);
+		return ImGui::InputText(label, buffer->data, buffer->size);
+	}
+
+	const char* InputTextContents(const char* label) {
+		InputTextBuffer* buffer = get_input_text_buffer(label);
+		if (!buffer) {
+			return "You called InputTextContents, but passed an unknown label.";
+		}
+		return buffer->data;
+	}
 }
 
 void LoadImguiBindings() {
@@ -565,6 +579,8 @@ void LoadImguiBindings() {
   Lua.state["imgui"]["Text"] = &ImGuiWrapper::Text;
   Lua.state["imgui"]["SetNextWindowSize"] = &ImGuiWrapper::SetNextWindowSize;
   Lua.state["imgui"]["IsItemHovered"] = &ImGuiWrapper::IsItemHovered;
+  Lua.state["imgui"]["InputText"] = &ImGuiWrapper::InputText;
+  Lua.state["imgui"]["InputTextContents"] = &ImGuiWrapper::InputTextContents;
 
   sol::usertype<ImGuiWrapper::TextFilter> filter_type = Lua.state.new_usertype<ImGuiWrapper::TextFilter>("TextFilter");
   filter_type["Draw"]      = &ImGuiWrapper::TextFilter::Draw;

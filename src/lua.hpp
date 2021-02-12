@@ -18,4 +18,3 @@ struct LuaState {
 	sol::table get_component(int entity, std::string which);
 } Lua;
 
-

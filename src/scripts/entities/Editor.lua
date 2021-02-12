@@ -71,7 +71,7 @@ function Editor:update(dt)
   imgui.Begin("tded v2.0", true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
-
+  imgui.InputText('cocks')
   local screen_size = tdengine.screen_dimensions()
   imgui.extensions.Vec2('screen size', screen_size)
 

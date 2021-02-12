@@ -606,6 +606,45 @@ float Sine_Func::eval_at(float point) {
 	return amp * glm::sin(period * point - phase_shift);
 }
 
+size_t hash_label(const char* label) {
+	constexpr size_t prime = 31;
+	
+	size_t result;
+	size_t len = strlen(label);
+	for (int i = 0; i < len; i++) {
+        result = label[i] + (result * prime);
+    }
+    return result;
+}
+
+struct InputTextBuffer {
+	char* data;
+	int size;
+};
+
+std::unordered_map<size_t, InputTextBuffer>& input_text_buffers() {
+	static std::unordered_map<size_t, InputTextBuffer> map;
+	return map;
+}
+
+void add_input_text_buffer(const char* label, size_t size) {
+	auto& buffers = input_text_buffers();
+
+	size_t hash = hash_label(label);
+	if (!buffers.count(hash)) {
+		InputTextBuffer buffer;
+		buffer.data = (char*)calloc(size, sizeof(char));
+		buffer.size = size;
+	}	
+}
+
+InputTextBuffer* get_input_text_buffer(const char* label) {
+	auto& buffers = input_text_buffers();
+	
+	size_t hash = hash_label(label);
+	if (!buffers.count(hash)) return nullptr;
+	return &buffers[hash];
+}
 
 void init_imgui() {
 	IMGUI_CHECKVERSION();
