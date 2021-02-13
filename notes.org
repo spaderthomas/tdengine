@@ -157,6 +157,38 @@ return 1;
   - how they are triggered
   - how data is stored for them
   - battle loop
+** february 12th prioritized list
+1. add 'set' nodes to ded
+   - figure out where the state they touch lives
+   - test ded
+2. saving and loading specific scene state
+   - question: when you leave an area or room and come back, do you need to
+     restore EVERYTHING exactly how it was?
+   - question: could this be as simple as "use entities for everything" and then
+     using the entity saving code that already exists?
+3. implement doors
+   - after saving is done, because you need to save something to leave an area
+4. interactables + vision
+   - a component. when you press a button, search over all existing entities
+     with that component (or register when component is created). if vision box
+     intersects interaction box, run a function
+   - battles will be built like this
+	 
+--- design up to dungeon 1a
+
+5. design the battle system
+6. implement battles
+
+--- design dungeon 1
+
+7. add avatars to text box
+8. implement sounds
+   - looping sounds (music)
+   - one-off sounds
+   - fade in and fade out
+9. load up highly custom + specific game state for playtesting
+   - high priority, but no use in doing this until you HAVE game state that's
+     able to be saved and loaded
 * ideas
 ** quests
 *** domestic dispute
@@ -292,7 +324,41 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
-** 02/10/2021
+** 02/12/2021
+gonna copy and paste
+1. add 'set' nodes to ded
+   - figure out where the state they touch lives
+2. saving and loading specific scene state
+   - question: when you leave an area or room and come back, do you need to
+     restore EVERYTHING exactly how it was?
+   - question: could this be as simple as "use entities for everything" and then
+     using the entity saving code that already exists?
+3. implement doors
+   - after saving is done, because you need to save something to leave an area
+4. interactables + vision
+   - a component. when you press a button, search over all existing entities
+     with that component (or register when component is created). if vision box
+     intersects interaction box, run a function
+   - battles will be built like this
+	 
+--- design up to dungeon 1a
+
+5. design the battle system
+6. implement battles
+
+--- design dungeon 1
+
+7. add avatars to text box
+8. implement sounds
+   - looping sounds (music)
+   - one-off sounds
+   - fade in and fade out
+9. load up highly custom + specific game state for playtesting
+   - high priority, but no use in doing this until you HAVE game state that's
+     able to be saved and loaded
+
+how do i want to be able to name and locate these variables?
+** 02/10/2021 [code] planning
 need to put the set nodes into ded -- problem i'm running into is twofold:
 1. i do not have input text in lua. this is because input text takes a char*,
    and there is no conception of char* in lua (all strings are interned). the
@@ -3199,6 +3265,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-12 Fri 19:15]
+CLOCK: [2021-02-12 Fri 16:33]--[2021-02-12 Fri 17:52] =>  1:19
 CLOCK: [2021-02-11 Thu 16:54]--[2021-02-11 Thu 17:24] =>  0:30
 CLOCK: [2021-02-10 Wed 21:58]--[2021-02-10 Wed 23:58] =>  1:00
 CLOCK: [2021-02-10 Wed 16:09]--[2021-02-10 Wed 16:43] =>  0:34

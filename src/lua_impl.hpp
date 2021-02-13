@@ -55,6 +55,7 @@ int LuaState::init() {
 
 	state.script("tdengine.bootstrap()");
 	
+	script_dir(RelativePath("state"));
 	script_dir(RelativePath("entities"));
 	script_dir(RelativePath("components"));
 	script_dir(RelativePath("scenes"));

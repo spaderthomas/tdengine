@@ -50,6 +50,7 @@ function Dialogue:find_entry_node()
 end
 
 function Dialogue:process(node)
+   print('processing ' .. node.kind)
    if node.kind == 'Text' then
 	  self:process_text(node)
    elseif node.kind == 'Set' then
@@ -58,7 +59,15 @@ function Dialogue:process(node)
 end
 
 function Dialogue:process_set(node)
-   self.text_box:begin('i set ' .. node.variable .. 'to ' .. tostring(node.value))
+   local value = tdengine.state[node.variable]
+   if value == nil then
+	  local message = 'Dialogue:process_set(): tried to set a variable, but it did not exist in the state. '
+	  message = message .. 'Variable was: ' .. node.variable
+	  tdengine.log(message, tdengine.log_flags.default)
+	  return
+   end
+
+   tdengine.state[node.variable] = node.value
 end
 
 function Dialogue:process_text(node)

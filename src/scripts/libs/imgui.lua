@@ -109,5 +109,9 @@ imgui.extensions.RightAlignedString = function(str)
 end
 
 imgui.extensions.Vec2 = function(name, v)
+   if not name or not v then
+	  print('vec2 missing a parameter')
+	  return
+   end
    imgui.Text(name .. ': (' .. tostring(v.x) .. ', ' .. tostring(v.y) .. ')')
 end

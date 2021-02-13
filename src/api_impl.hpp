@@ -319,6 +319,17 @@ void draw_text(std::string text, float x, float y, int flags) {
 	glm::vec2 point(x, y);
 	draw_text(text, point, static_cast<Text_Flags>(flags));
 }
+void screen(const char* dimension) {
+	if (!strcmp(dimension, "640")) use_640_360();
+	else if (!strcmp(dimension, "720")) use_720p();
+	else if (!strcmp(dimension, "1080")) use_1080p();
+	else if (!strcmp(dimension, "1440")) use_1440p();
+}
+
+void log(const char* message, uint8_t flags) {
+	tdns_log.write(message, flags);
+}
+
 }
 	
 void register_lua_api() {
@@ -346,6 +357,8 @@ void register_lua_api() {
 	state["tdengine"]["frame_time"] = seconds_per_update;
 	state["tdengine"]["screen_dimensions"] = &screen_dimensions;
 	state["tdengine"]["ray_cast"] = &ray_cast;
+	state["tdengine"]["screen"] = &screen;
+	state["tdengine"]["log"] = &API::log;
 
 	state["tdengine"]["draw"] = state.create_table();
 	state["tdengine"]["draw"]["entity"] = &draw_entity;	
@@ -375,6 +388,10 @@ void register_lua_api() {
 	state["tdengine"]["render_flags"]["none"] = Render_Flags::None;	
 	state["tdengine"]["render_flags"]["highlighted"] = Render_Flags::Highlighted;	
 	state["tdengine"]["render_flags"]["screen_position"] = Render_Flags::ScreenPosition;	
+	state["tdengine"]["log_flags"]= state.create_table();	
+	state["tdengine"]["log_flags"]["console"] = Log_Flags::Console;	
+	state["tdengine"]["log_flags"]["file"] = Log_Flags::File;	
+	state["tdengine"]["log_flags"]["default"] = Log_Flags::Default;	
 
 	state["tdengine"]["InputChannel"] = state.create_table();
 	state["tdengine"]["InputChannel"]["None"] = INPUT_MASK_NONE;
@@ -385,7 +402,5 @@ void register_lua_api() {
 
 		
 	state["imgui"]["extensions"] = state.create_table();
-	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;
-	
-	state.set_function("tdengine.log", &Log::write, &tdns_log);
+	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;	
 }

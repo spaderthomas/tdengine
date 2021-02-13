@@ -48,6 +48,7 @@ function Editor:init()
   
   self.filter = imgui.TextFilter.new()
   self.id_filter = imgui.TextFilter.new()
+  self.state_filter = imgui.TextFilter.new()
 
   self.display_framerate = 0
   self.average_framerate = 0
@@ -71,13 +72,14 @@ function Editor:update(dt)
   imgui.Begin("tded v2.0", true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
-  imgui.InputText('cocks')
   local screen_size = tdengine.screen_dimensions()
   imgui.extensions.Vec2('screen size', screen_size)
 
   local cursor = tdengine.vec2(tdengine.cursor()):truncate(3)
   imgui.extensions.Vec2('cursor', cursor)
 
+  self:state_viewer()
+  
   imgui.Begin("scene", true)
   self:draw_entity_viewer()
   imgui.Separator()
@@ -323,6 +325,7 @@ function Editor:make_dialogue_node(kind)
    return node
 
 end
+
 function Editor:ded_load(name)
    self.ded.loaded = name
    self.ded.selected = nil
@@ -338,7 +341,15 @@ function Editor:ded_load(name)
    -- Load the GUI data
    filepath = 'layouts/dialogue/' .. name
    package.loaded[filepath] = nil
-   self.ded.layout_data = require(filepath)
+   status, self.ded.layout_data = pcall(require, filepath)
+   if not status then
+	  self.ded_nodes = {}
+	  
+	  local message = 'ded_load(): could not find GUI layout. '
+	  message = message .. 'dialogue was ' .. filepath
+	  tdengine.log(message, tdengine.log_flags.default)
+	  return
+   end
 end
 
 function Editor:ded_short_text(node)
@@ -387,6 +398,7 @@ function Editor:dialogue_editor()
    imgui.BeginChild('sidebar', 500, 0)
    
    imgui.Text(self:ded_full_path())
+   imgui.SameLine()
 
    -- Save button
    if imgui.Button('Save') then
@@ -409,6 +421,7 @@ function Editor:dialogue_editor()
 	  local layout_file = io.open(layout_path, 'w')
 	  if layout_file then
 		 layout_file:write('return ')
+		 print(inspect(self.ded.layout_data))
 		 layout_file:write(serpent.block(self.ded.layout_data, { comment = false }))
 	  else
 		 print('could not open gui node data: ' .. layout_path)		 
@@ -416,30 +429,61 @@ function Editor:dialogue_editor()
    end
 
    imgui.Separator()
+   imgui.Text('text box state')
+   local active, waiting, done = false, false, false
+   local text_box = tdengine.find_entity('TextBox')
+   if text_box then
+	  active = text_box.active
+	  waiting = text_box.waiting
+	  done = text_box.done
+   end
 
+   imgui.Text('active: ' .. tostring(active))
+   imgui.Text('waiting: ' .. tostring(waiting))
+   imgui.Text('done: ' .. tostring(done))
+
+   imgui.Text('')
+
+   imgui.Text('ded state')
+   imgui.extensions.Vec2('scrolling', self.ded.scrolling)
+   imgui.extensions.Vec2('window', self.ded.window_position)
+   imgui.extensions.Vec2('cursor', tdengine.vec2(imgui.GetMousePos()))
+
+   imgui.Separator()
    -- Detail view
    local selected = self.ded.nodes[self.ded.selected]
    if selected then
-	  imgui.extensions.VariableName('kind')
-	  imgui.SameLine()
-	  imgui.Text(selected.kind)
-
-	  imgui.PushTextWrapPos(0)
-	  imgui.Text(self.ded.editor:Contents())
-	  imgui.PopTextWrapPos()
+	  imgui.Text(selected.kind .. ' Node')
 
 	  if selected.kind == 'Text' then
-		 imgui.extensions.VariableName('entity')
+		 imgui.Text('entity: ')
 		 imgui.SameLine()
 		 imgui.Text(selected.who)
 	  end
 	  
 	  if selected.kind == 'Set' then
-		 imgui.extensions.VariableName('state')
+		 imgui.Text('state: ')
 		 imgui.SameLine()
-		 imgui.Text(selected.variable)
+		 local unique_id = '##variableinput_' .. selected.uuid
+		 if imgui.InputText(unique_id, 63) then
+			selected.variable = imgui.InputTextContents(unique_id)
+		 end
+
+		 imgui.Text('value: ')
+		 imgui.SameLine()
+		 unique_id = '##valueinput_' .. selected.uuid
+		 if imgui.InputText(unique_id, 63) then
+			local value = imgui.InputTextContents(unique_id)
+			if value == 'true' then selected.value = true 
+			elseif value == 'false' then selected.value = false end
+		 end
 	  end
 
+	  if selected.kind == 'Text' or selected.kind == 'Choice' then
+		 imgui.PushTextWrapPos(0)
+		 imgui.Text(self.ded.editor:Contents())
+		 imgui.PopTextWrapPos()
+	  end
    end
    
    imgui.Separator()
@@ -477,19 +521,6 @@ function Editor:dialogue_editor()
 	  end
 	  imgui.TreePop()
    end
-
-
-   local active, waiting, done = false, false, false
-   local text_box = tdengine.find_entity('TextBox')
-   if text_box then
-	  active = text_box.active
-	  waiting = text_box.waiting
-	  done = text_box.done
-   end
-
-   imgui.Text('active: ' .. tostring(active))
-   imgui.Text('waiting: ' .. tostring(waiting))
-   imgui.Text('done: ' .. tostring(done))
    
    if self.inslot then
 	  imgui.Text('inslot: ' .. self.inslot.x .. ', ' .. self.inslot.y)
@@ -596,7 +627,11 @@ function Editor:dialogue_editor()
 	  if pressed then
 		 self.ded.selected = id
 		 local text = ternary(node.text, node.text, node.variable)
-		 self.ded.editor:SetContents(text)
+		 if node.kind == 'Text' or node.kind == 'Choice' then
+			self.ded.editor:SetContents(text)
+		 else
+			self.ded.editor:SetContents('')
+		 end
 
 		 -- If someone left clicked us, check whether they're trying to
 		 -- (dis)connect themselves to you
@@ -743,7 +778,7 @@ function Editor:dialogue_editor()
    if rclick and in_window and not on_node then
 	  imgui.OpenPopup('context_menu')
    end
-
+ 
    imgui.PushStyleVar_2(imgui.constant.StyleVar.WindowPadding, 8, 8)
    if imgui.BeginPopup('context_menu') then
 	  if imgui.TreeNode('Add Node') then
@@ -760,8 +795,10 @@ function Editor:dialogue_editor()
 
 		 if node then
 			self.ded.nodes[node.uuid] = node
+
+			local mouse = tdengine.vec2(imgui.GetMousePos())
 			self.ded.layout_data[node.uuid] = {
-			   position = tdengine.vec2(100, 100),
+			   position = mouse:subtract(self.ded.window_position):subtract(self.ded.scrolling),
 			   size = tdengine.vec2(0, 0)
 			}
 		 end
@@ -787,7 +824,9 @@ function Editor:dialogue_editor()
    self.ded.editor:Draw(-1, -1)
    if self.ded.selected then
 	  local selected = self.ded.nodes[self.ded.selected]
-      selected.text = self.ded.editor:Contents()
+	  if selected.kind == 'Text' or selected.kind == 'Choice' then
+		 selected.text = self.ded.editor:Contents()
+	  end
    end
 
 
@@ -799,3 +838,32 @@ function Editor:dialogue_editor()
    imgui.End()
 end
 
+function Editor:state_viewer()
+   imgui.Begin('state')
+   self.state_filter:Draw('Filter state variables')
+   local variables = {}
+   for name, value in pairs(tdengine.state) do
+	  table.insert(variables, name)
+   end
+   table.sort(variables)
+   for index, name in pairs(variables) do
+	  if self.state_filter:PassFilter(name) then 
+		 imgui.Text(name .. ': ')
+		 imgui.SameLine()
+		 
+		 local value = tdengine.state[name]
+		 local true_color = tdengine.color32(0, 255, 0, 255)
+		 local false_color = tdengine.color32(255, 0, 0, 255)
+		 local color = ternary(value, true_color, false_color)
+		 imgui.PushStyleColor(imgui.constant.Col.Text, color)
+		 
+		 local label = tostring(tdengine.state[name]) .. '##' .. tostring(index)
+		 if imgui.Button(label) then
+			tdengine.state[name] = not value
+		 end
+		 
+		 imgui.PopStyleColor()
+	  end
+   end
+   imgui.End('state')
+end

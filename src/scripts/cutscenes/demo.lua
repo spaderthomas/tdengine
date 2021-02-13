@@ -42,11 +42,6 @@ return {
    },
    {
 	  name = 'Dialogue',
-	  dialogue = 'choice'
-   },
-   {
-	  name = 'MyCustomBullshit',
-	  some_param = 'horselover fat',
-	  somethining_else = 'evangelion unit-01'
+	  dialogue = 'set_with_choices'
    }
 }

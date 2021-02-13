@@ -6,6 +6,8 @@
 inspect = require('inspect')
 
 function tdengine.bootstrap()
+   tdengine.screen('1080')
+   
    -- Set up globals
    tdengine.entities = {}
    tdengine.components = {}

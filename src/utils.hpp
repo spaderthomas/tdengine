@@ -228,7 +228,7 @@ of note is that since we're using GLM vectors, it's not really convenient to hav
 conversions which use our typedefs, so conversions that take GLM vectors and single
 points are defined
 */
-typedef int pixel_unit;
+typedef int32 pixel_unit;
 typedef float screen_unit;
 typedef float gl_unit;
 
@@ -609,7 +609,7 @@ float Sine_Func::eval_at(float point) {
 size_t hash_label(const char* label) {
 	constexpr size_t prime = 31;
 	
-	size_t result;
+	size_t result = 0;
 	size_t len = strlen(label);
 	for (int i = 0; i < len; i++) {
         result = label[i] + (result * prime);
@@ -635,6 +635,7 @@ void add_input_text_buffer(const char* label, size_t size) {
 		InputTextBuffer buffer;
 		buffer.data = (char*)calloc(size, sizeof(char));
 		buffer.size = size;
+		buffers[hash] = buffer;
 	}	
 }
 

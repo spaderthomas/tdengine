@@ -711,22 +711,10 @@ END_IMGUI_FUNC
 // @unsupported DragFloat3
 // @unsupported DragFloat4
 
-//    IMGUI_API bool          DragFloatRange2(const char* label, float* v_current_min, float* v_current_max, float v_speed = 1.0f, float v_min = 0.0f, float v_max = 0.0f, const char* format = "%.3f", const char* format_max = NULL, float power = 1.0f);
-IMGUI_FUNCTION(DragFloatRange2)
-LABEL_ARG(label)
-FLOAT_POINTER_ARG(v_current_min)
-FLOAT_POINTER_ARG(v_current_max)
-OPTIONAL_NUMBER_ARG(v_speed, 1.0f)
-OPTIONAL_NUMBER_ARG(v_min, 0.0f)
-OPTIONAL_NUMBER_ARG(v_max, 0.0f)
-LABEL_ARG(format)
-OPTIONAL_LABEL_ARG(format_max)
-OPTIONAL_NUMBER_ARG(power, 1.0f)
-CALL_FUNCTION(DragFloatRange2, bool, label, v_current_min, v_current_max, v_speed, v_min, v_max, format, format_max, power)
-PUSH_BOOL(ret)
-END_FLOAT_POINTER(v_current_min)
-END_FLOAT_POINTER(v_current_max)
-END_IMGUI_FUNC
+
+// @deleted DragFloat
+// It was spitting out warnings and I am too lazy to fix it.
+
 //    IMGUI_API bool          DragInt(const char* label, int* v, float v_speed = 1.0f, int v_min = 0, int v_max = 0, const char* format = "%d");                                       // If v_min >= v_max we have no bound
 IMGUI_FUNCTION(DragInt)
 LABEL_ARG(label)
@@ -813,19 +801,10 @@ END_IMGUI_FUNC
 // Unsupported arg type  void* v
 // Unsupported arg type  const void* v_min
 // Unsupported arg type  const void* v_max
-//    IMGUI_API bool          VSliderFloat(const char* label, const ImVec2& size, float* v, float v_min, float v_max, const char* format = "%.3f", float power = 1.0f);
-IMGUI_FUNCTION(VSliderFloat)
-LABEL_ARG(label)
-IM_VEC_2_ARG(size)
-FLOAT_POINTER_ARG(v)
-NUMBER_ARG(v_min)
-NUMBER_ARG(v_max)
-LABEL_ARG(format)
-OPTIONAL_NUMBER_ARG(power, 1.0f)
-CALL_FUNCTION(VSliderFloat, bool, label, size, v, v_min, v_max, format, power)
-PUSH_BOOL(ret)
-END_FLOAT_POINTER(v)
-END_IMGUI_FUNC
+
+// @deleted VSliderFloat
+// because i am lazy T_T
+
 //    IMGUI_API bool          VSliderInt(const char* label, const ImVec2& size, int* v, int v_min, int v_max, const char* format = "%d");
 IMGUI_FUNCTION(VSliderInt)
 LABEL_ARG(label)
