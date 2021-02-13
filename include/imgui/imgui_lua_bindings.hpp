@@ -565,6 +565,11 @@ namespace ImGuiWrapper {
 		}
 		return buffer->data;
 	}
+
+	void InputTextClear(const char* label) {
+		clear_input_text_buffer(label);
+	}
+
 }
 
 void LoadImguiBindings() {
@@ -581,6 +586,7 @@ void LoadImguiBindings() {
   Lua.state["imgui"]["IsItemHovered"] = &ImGuiWrapper::IsItemHovered;
   Lua.state["imgui"]["InputText"] = &ImGuiWrapper::InputText;
   Lua.state["imgui"]["InputTextContents"] = &ImGuiWrapper::InputTextContents;
+  Lua.state["imgui"]["InputTextClear"] = &ImGuiWrapper::InputTextClear;
 
   sol::usertype<ImGuiWrapper::TextFilter> filter_type = Lua.state.new_usertype<ImGuiWrapper::TextFilter>("TextFilter");
   filter_type["Draw"]      = &ImGuiWrapper::TextFilter::Draw;

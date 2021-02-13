@@ -647,6 +647,16 @@ InputTextBuffer* get_input_text_buffer(const char* label) {
 	return &buffers[hash];
 }
 
+void clear_input_text_buffer(const char* label) {
+	auto& buffers = input_text_buffers();
+
+	size_t hash = hash_label(label);
+	if (buffers.count(hash)) {
+		auto buffer = &buffers[hash];
+		memset(buffer->data, 0, strlen(buffer->data));
+	}
+}
+
 void init_imgui() {
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();

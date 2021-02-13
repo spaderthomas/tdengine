@@ -235,12 +235,12 @@ function Editor:check_for_new_selection()
 end
 
 function Editor:draw_tools()
-  if imgui.Button("Add Geometry") then
+  if imgui.Button('Add Geometry') then
   	 local input = self:get_component('Input')
 	 self.state = EditState.ReadyToDrawGeometry
   end
 
-  if imgui.Button("Save") then
+  if imgui.Button('Save') then
 	 tdengine.save_scene(tdengine.loaded_scene)	 
   end
 
@@ -329,9 +329,12 @@ end
 function Editor:ded_load(name)
    self.ded.loaded = name
    self.ded.selected = nil
+   self.ded.connecting = nil
+   self.ded.disconnecting = nil
+   self.ded.deleting = nil
    self.ded.scrolling = tdengine.vec2(0, 0)
    self.ded.editor:SetContents('')
-   
+
    self.ded.nodes = tdengine.load_dialogue(name)
    if not self.ded.nodes then
 	  self.ded.nodes = {}
@@ -343,13 +346,80 @@ function Editor:ded_load(name)
    package.loaded[filepath] = nil
    status, self.ded.layout_data = pcall(require, filepath)
    if not status then
-	  self.ded_nodes = {}
+	  self.ded.nodes = {}
 	  
 	  local message = 'ded_load(): could not find GUI layout. '
 	  message = message .. 'dialogue was ' .. filepath
 	  tdengine.log(message, tdengine.log_flags.default)
 	  return
    end
+end
+
+function Editor:ded_save(name)
+   local serpent = require('serpent')
+
+   -- Save out the engine data
+   local data_path = 'src/scripts/dialogue/' .. name .. '.lua'
+   data_path = tdengine.paths.absolute(data_path)
+   local data_file = io.open(data_path, 'w')
+   if data_file then
+	  data_file:write('return ')
+	  data_file:write(serpent.block(self.ded.nodes, { comment = false }))
+	  data_file:close()
+   else
+	  print('ded_save(): could not open data file: ' .. data_path)
+   end
+
+   -- Save out the layout data
+   local layout_path = 'src/scripts/layouts/dialogue/' .. name .. '.lua'
+   layout_path = tdengine.paths.absolute(layout_path)
+   local layout_file = io.open(layout_path, 'w')
+   if layout_file then
+	  layout_file:write('return ')
+	  layout_file:write(serpent.block(self.ded.layout_data, { comment = false }))
+	  layout_file:close()
+   else
+	  print('ded_save(): could not open gui node data: ' .. layout_path)		 
+   end
+end
+
+function Editor:ded_new(name)
+   if not name then
+	  print('ded_new(): no name')
+	  return
+   end
+   if #name == 0 then
+	  print('ded_new(): empty name')
+	  return
+   end
+   local serpent = require('serpent')
+   local empty = {}
+
+   -- Save out the engine data
+   local data_path = 'src/scripts/dialogue/' .. name .. '.lua'
+   data_path = tdengine.paths.absolute(data_path)
+   local data_file = io.open(data_path, 'w')
+   if data_file then
+	  data_file:write('return ')
+	  data_file:write(serpent.block(empty, { comment = false }))
+	  data_file:close()
+   else
+	  print('ded_new(): could not open data file: ' .. data_path)
+   end
+
+   -- Save out the layout data
+   local layout_path = 'src/scripts/layouts/dialogue/' .. name .. '.lua'
+   layout_path = tdengine.paths.absolute(layout_path)
+   local layout_file = io.open(layout_path, 'w')
+   if layout_file then
+	  layout_file:write('return ')
+	  layout_file:write(serpent.block(empty, { comment = false }))
+	  layout_file:close()
+   else
+	  print('ded_save(): could not open gui node data: ' .. layout_path)		 
+   end
+
+   self:ded_load(name)
 end
 
 function Editor:ded_short_text(node)
@@ -398,36 +468,42 @@ function Editor:dialogue_editor()
    imgui.BeginChild('sidebar', 500, 0)
    
    imgui.Text(self:ded_full_path())
-   imgui.SameLine()
 
-   -- Save button
-   if imgui.Button('Save') then
-	  local serpent = require('serpent')
-
-	  -- Save out the engine data
-	  local data_path = 'src/scripts/dialogue/' .. self.ded.loaded .. '.lua'
-	  data_path = tdengine.paths.absolute(data_path)
-	  local data_file = io.open(data_path, 'w')
-	  if data_file then
-		 data_file:write('return ')
-		 data_file:write(serpent.block(self.ded.nodes, { comment = false }))
-	  else
-		 print('could not open data file: ' .. data_path)
-	  end
-
-	  -- Save out the layout data
-	  local layout_path = 'src/scripts/layouts/dialogue/' .. self.ded.loaded .. '.lua'
-	  layout_path = tdengine.paths.absolute(layout_path)
-	  local layout_file = io.open(layout_path, 'w')
-	  if layout_file then
-		 layout_file:write('return ')
-		 print(inspect(self.ded.layout_data))
-		 layout_file:write(serpent.block(self.ded.layout_data, { comment = false }))
-	  else
-		 print('could not open gui node data: ' .. layout_path)		 
-	  end
+   -- Buttons: Save, Save As, Load, New
+   if imgui.Button('  Save ') then
+	  self:ded_save(self.ded.loaded)
    end
 
+
+   local id = '##ded_save_as'
+   if imgui.Button('Save As') then
+	  self:ded_save(imgui.InputTextContents(id))
+   end
+   imgui.SameLine()
+   imgui.InputText(id, 63)
+
+   id = '##ded_load'
+   if imgui.Button('  Load ') then
+	  -- Because you can still click this and have the grid hidden
+	  tdengine.use_layout('ded') 
+
+	  self:ded_load(imgui.InputTextContents(id))
+	  imgui.InputTextClear(id)
+   end
+   imgui.SameLine()
+   imgui.InputText(id, 63)
+
+   id = '##ded_new'
+   if imgui.Button('  New  ') then
+	  -- Because you can still click this and have the grid hidden
+	  tdengine.use_layout('ded') 
+
+	  self:ded_new(imgui.InputTextContents(id))
+	  imgui.InputTextClear(id)
+   end
+   imgui.SameLine()
+   imgui.InputText(id, 63)
+      
    imgui.Separator()
    imgui.Text('text box state')
    local active, waiting, done = false, false, false
@@ -447,7 +523,6 @@ function Editor:dialogue_editor()
    imgui.Text('ded state')
    imgui.extensions.Vec2('scrolling', self.ded.scrolling)
    imgui.extensions.Vec2('window', self.ded.window_position)
-   imgui.extensions.Vec2('cursor', tdengine.vec2(imgui.GetMousePos()))
 
    imgui.Separator()
    -- Detail view
