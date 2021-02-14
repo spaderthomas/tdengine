@@ -17,9 +17,12 @@ imgui.extensions.Component = function(component)
    imgui.PopID()
 end
 
-imgui.extensions.Entity = function(entity)
+imgui.extensions.Entity = function(entity, unique_id)
    imgui.PushID(entity:get_id())
-   if imgui.TreeNode(entity:get_name()) then
+   local id = entity:get_name()
+   if unique_id then id = id .. unique_id end
+
+   if imgui.TreeNode(id) then
 	  imgui.extensions.VariableName('id')
 	  imgui.SameLine()
 	  imgui.Text(tostring(entity:get_id()))
@@ -56,7 +59,6 @@ imgui.extensions.TableMembers = function(name, tbl, ignore, imgui_id)
 			imgui.extensions.VariableName(member)
 			imgui.SameLine()
 			imgui.Text(tostring(value))
-			tbl[member] = new
 		 elseif value_type == 'table' then
 			imgui.extensions.Table(member, value, {}, next_imgui_id)
 		 end

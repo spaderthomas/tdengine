@@ -63,7 +63,9 @@ end
 
 function Editor:update(dt)
   local dbg = self:get_component('Debug')
-   
+
+  local player = tdengine.find_entity('Player')
+  --print(inspect(player:get_component('Animation')))
   self:calculate_framerate()
   
   self:handle_input()
@@ -252,6 +254,22 @@ function Editor:draw_entity_viewer()
 	local name = entity:get_name()
 	local id = tostring(entity:get_id())
 	if self.filter:PassFilter(name) or self.filter:PassFilter(id) then
+	   -- imgui.PushID(id)
+	   -- if imgui.TreeNode(entity:get_name()) then
+	   -- 	  imgui.extensions.VariableName('id')
+	   -- 	  imgui.SameLine()
+	   -- 	  imgui.Text(tostring(entity:get_id()))
+		  
+	   -- 	  local components = entity:all_components()
+	   -- 	  for index, component in pairs(components) do
+	   -- 		 imgui.extensions.Component(component)
+	   -- 	  end
+		  
+	   -- 	  imgui.extensions.TableMembers(entity:get_name(), entity)
+	   -- 	  imgui.TreePop()
+	   -- end
+	   
+	   --imgui.PopID()
 	  imgui.extensions.Entity(entity)
 	end
   end
@@ -263,10 +281,19 @@ function Editor:draw_selected_view()
 		 tdengine.destroy_entity(self.selected:get_id())
 		 self.selected = nil
 	  end
+
+	  -- local box = self.selected:get_component('BoundingBox')
+	  -- if box then
+	  -- 	 imgui.SameLine()
+	  -- 	 if imgui.Button('Resize') then
+	  -- 	 end
+	  -- end
 	  
-	  if self.selected ~= nil then
-		 imgui.extensions.Entity(self.selected)
-	  end
+	  -- if self.selected ~= nil then
+	  -- 	 imgui.extensions.Entity(self.selected, '##editor:selected')
+	  -- end
+
+
    end
 end
 

@@ -324,6 +324,28 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/13/2021
+i feel like all the state for a level should be encapsulated in the entities. in
+other words, a level is nothing besides all the entities that are inside
+it. with the pattern of using manager entities and stuff, i can't see why that
+wouldn't work. 
+
+and then for the state, it's all global. global as in globally accessible but
+also as in "this is state that applies to the whole game". for demo purposes,
+you can load up any precise game state by doing two things:
+- load the scene state
+- load the global state
+
+when you're playing the game, it doesn't make sense to have multiple saves for
+the global state or for a scene. what a save file probably IS, honestly, is a
+scene state for every scene in the game + global state. that's it. not that you
+necessarily load all of that immediately -- for the scene, you just load it when
+you hit that scene. 
+
+course, the global state might get more complicated. for example, you need to
+store the player's team. lol i guess you can store that in the player
+entity. but my point with saying that was -- no matter how complex you want to
+have the global state, who gives a fuck. scene state + global state = golden.
 ** 02/12/2021
 gonna copy and paste
 1. add 'set' nodes to ded

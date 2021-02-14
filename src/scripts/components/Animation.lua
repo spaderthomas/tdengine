@@ -5,9 +5,6 @@ function Animation:load(data)
    self.animations = data.animations or {}
    self:batch_add(self.animations)
 
-   self.loop = true
-   self.done = false
-
    self.current = ''
    self.last = ''
    local current = data.current or nil
@@ -31,6 +28,9 @@ end
 function Animation:init()
    self.frame = 0
    self.time_to_next = DEFAULT_FRAME_TIME
+   self.loop = true
+   self.done = false
+   print(self.done)
 end
 
 function Animation:update(dt)
