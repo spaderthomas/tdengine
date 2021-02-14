@@ -210,86 +210,62 @@ void RenderEngine::render() {
 	shader->begin();
 	shader->set_int("sampler", 0);
 
-	// Algorithm:
-	// Sort by Z-position (as if you were going to do the Painter's algorithm
-	// Z positions are integral (since 2D), so just collect elements of each Z-type into collections
-	// Sort these collections by Y-axis (so overlap works properly)
-	auto sort_by_z = [](const auto& a, const auto& b) {
-		return a.layer < b.layer;
+	auto sort_render_list = [](const auto& ra, const auto& rb) {
+		if (ra.layer != rb.layer) return ra.layer < rb.layer;
+		auto& physics_engine = get_physics_engine();
+		auto ca = physics_engine.get_collider(ra.entity);
+		auto cb = physics_engine.get_collider(rb.entity);
+		return ca->origin.y > cb->origin.y; 
 	};
-	sort(render_list.begin(), render_list.end(), sort_by_z);
-
-
-	// @hack do an in place sort
-	int layer_max = std::numeric_limits<int>::min();
-	std::vector<std::vector<Render_Element>> depth_sorted_render_elements;
-	for (auto& render_element : render_list) {
-		if (render_element.layer > layer_max) {
-			std::vector<Render_Element> new_depth_level;
-			depth_sorted_render_elements.push_back(new_depth_level);
-			layer_max = render_element.layer;
-		}
-		depth_sorted_render_elements.back().push_back(render_element);
-	}
-
+	stable_sort(render_list.begin(), render_list.end(), sort_render_list);
+		
 	// Main render loop
 	glm::vec2 camera_offset{camera.x, camera.y};
 	glm::vec2 camera_translation = magnitude_gl_from_screen(camera_offset);
-	for (auto& depth_level_render_elements : depth_sorted_render_elements) {
-		auto sort_by_world_pos = [](const auto& ra, const auto& rb) {
-			auto& physics_engine = get_physics_engine();
-			auto ca = physics_engine.get_collider(ra.entity);
-			auto cb = physics_engine.get_collider(rb.entity);
-			return ca->origin.y > cb->origin.y; 
-		};
-		stable_sort(depth_level_render_elements.begin(), depth_level_render_elements.end(), sort_by_world_pos);
-	
-		// Draw the correctly sorted elements for a depth level
-		for (auto& r : depth_level_render_elements) {
-			// Swap shader based on flags
-			if (has_flag(r.flags, Render_Flags::Highlighted)) {
-				if (shader != &highlighted_shader) {
-					shader->end();
-					shader = &highlighted_shader;
-					shader->begin();
-					shader->set_int("sampler", 0);
-				}
+	for (auto& element : render_list) {
+		// Swap shader based on flags
+		if (has_flag(element.flags, Render_Flags::Highlighted)) {
+			if (shader != &highlighted_shader) {
+				shader->end();
+				shader = &highlighted_shader;
+				shader->begin();
+				shader->set_int("sampler", 0);
 			}
-			else {
-				if (shader != &textured_shader) {
-					shader->end();
-					shader = &textured_shader;
-					shader->begin();
-					shader->set_int("sampler", 0);
-				}
+		}
+		else {
+			if (shader != &textured_shader) {
+				shader->end();
+				shader = &textured_shader;
+				shader->begin();
+				shader->set_int("sampler", 0);
 			}
+		}
 
-			r.sprite->atlas->bind();
+		element.sprite->atlas->bind();
 
-			// Point the texture coordinates to this sprite's texcoords
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), r.sprite->tex_coord_offset);
-			glEnableVertexAttribArray(1);
+		// Point the texture coordinates to this sprite's texcoords
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), element.sprite->tex_coord_offset);
+		glEnableVertexAttribArray(1);
 			
-			auto& physics_engine = get_physics_engine();
-			auto collider = physics_engine.get_collider(r.entity);
-			SRT transform = SRT::no_transform();
-			transform.scale = {
-				r.sprite->width / internal_resolution_width,
-				r.sprite->height / internal_resolution_height
-			};
-			transform.translate = gl_from_screen({
+		auto& physics_engine = get_physics_engine();
+		auto collider = physics_engine.get_collider(element.entity);
+		SRT transform = SRT::no_transform();
+		transform.scale = {
+			element.sprite->width / internal_resolution_width,
+			element.sprite->height / internal_resolution_height
+		};
+		transform.translate = gl_from_screen({
                 collider->origin.x,
                 collider->origin.y
 			});
-			if (!has_flag(r.flags, Render_Flags::ScreenPosition)) {
-				transform.translate += camera_translation;
-			}
-			auto transform_mat = mat3_from_transform(transform);
-			shader->set_mat3("transform", transform_mat);
-
-			shader->check();
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		if (!has_flag(element.flags, Render_Flags::ScreenPosition)) {
+			transform.translate += camera_translation;
 		}
+		auto transform_mat = mat3_from_transform(transform);
+		shader->set_mat3("transform", transform_mat);
+
+		shader->check();
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 	}
 
 	shader->end();

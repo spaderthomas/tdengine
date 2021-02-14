@@ -622,6 +622,7 @@ struct InputTextBuffer {
 	int size;
 };
 
+
 std::unordered_map<size_t, InputTextBuffer>& input_text_buffers() {
 	static std::unordered_map<size_t, InputTextBuffer> map;
 	return map;

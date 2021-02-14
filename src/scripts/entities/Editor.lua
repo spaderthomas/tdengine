@@ -505,24 +505,23 @@ function Editor:dialogue_editor()
    imgui.InputText(id, 63)
       
    imgui.Separator()
-   imgui.Text('text box state')
-   local active, waiting, done = false, false, false
+   local active = false
+   local done = false
+   local point = 0
+   local max_point = 0
    local text_box = tdengine.find_entity('TextBox')
    if text_box then
 	  active = text_box.active
-	  waiting = text_box.waiting
 	  done = text_box.done
+	  point = text_box.point
+	  max_point = text_box.max_point
    end
 
    imgui.Text('active: ' .. tostring(active))
-   imgui.Text('waiting: ' .. tostring(waiting))
    imgui.Text('done: ' .. tostring(done))
+   imgui.Text('point: ' .. tostring(point))
+   imgui.Text('max_point: ' .. tostring(max_point))
 
-   imgui.Text('')
-
-   imgui.Text('ded state')
-   imgui.extensions.Vec2('scrolling', self.ded.scrolling)
-   imgui.extensions.Vec2('window', self.ded.window_position)
 
    imgui.Separator()
    -- Detail view

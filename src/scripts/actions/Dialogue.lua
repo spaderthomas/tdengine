@@ -50,7 +50,6 @@ function Dialogue:find_entry_node()
 end
 
 function Dialogue:process(node)
-   print('processing ' .. node.kind)
    if node.kind == 'Text' then
 	  self:process_text(node)
    elseif node.kind == 'Set' then
@@ -75,33 +74,26 @@ function Dialogue:process_text(node)
 end
 
 function Dialogue:advance_until_input_needed()
-   print('advance_until_input_needed(): begin')
    local is_input_needed = false
    while not is_input_needed do
 	  if not self.current then
-		 print('advance_until_input_needed(): processing first node')
 		 self.current = self:find_entry_node()
 		 self:process(self.current)
-		 print('advance_until_input_needed(): processed first node')
 		 
 		 is_input_needed = self.current.kind == 'Text'
 	  elseif #self.current.children == 0 then
-		 print('advance_until_input_needed(): done!')
 		 local text_box = tdengine.find_entity('TextBox')
 		 tdengine.destroy_entity(text_box:get_id())
 		 
 		 self.done = true
 		 is_input_needed = true -- hack
 	  elseif #self.current.children == 1 then
-		 print('advance_until_input_needed(): processed one')
 		 self.current = self.data[self.current.children[1]]
 		 self:process(self.current)
 		 
 		 is_input_needed = self.current.kind == 'Text'
 
 	  elseif #self.current.children > 1 then
-		 print('advance_until_input_needed(): choice!')
-
 		 self.choosing = true
 		 self.choice = 1
 		 
@@ -117,17 +109,14 @@ function Dialogue:advance_until_input_needed()
 		 
 		 is_input_needed = true
 	  end
-
-	  print('advance_until_input_needed(): current node is ' .. inspect(self.current))
-	  print('advance_until_input_needed(): input needed: ' .. tostring(is_input_needed))
    end
-
-   print('advance_until_input_needed():  input is needed!')
 end
 
 function Dialogue:update(dt)
-   -- must be before next block, because next block sets choosing but when we
-   -- set it we only wanna process it on the next frame
+   if not self.text_box.active then
+	  self:advance_until_input_needed()
+   end
+
    if self.choosing then
 	  if tdengine.was_pressed(GLFW.Keys.DOWN, tdengine.InputChannel.Game) then
 		 self.choice = math.min(self.choice + 1, #self.current)
@@ -143,42 +132,18 @@ function Dialogue:update(dt)
 		 self.choosing = false
 		 self:advance_until_input_needed()
 	  end
-   end
-
-   if not self.text_box.active then
-	  self:advance_until_input_needed()
-   end
-   
-   local waiting = self.text_box.waiting
-   local done_with_node = self.text_box.done
-
-   if tdengine.was_pressed(GLFW.Keys.ENTER, tdengine.InputChannel.Game) then
-	  print('update(): you pressed ENTER')
-	  if not self.text_box.done then
-		 self.text_box:skip()
-	  else
-		 print('Dialogue:update() :: moving to next node')
-		 self:advance_until_input_needed()
+   else
+	  local waiting = self.text_box.waiting
+	  local done_with_node = self.text_box.done
+	  
+	  if tdengine.was_pressed(GLFW.Keys.ENTER, tdengine.InputChannel.Game) then
+		 if not self.text_box.done then
+			self.text_box:skip()
+		 else
+			self:advance_until_input_needed()
+		 end
 	  end
    end
-
-   --[[
-   if tdengine.was_pressed(GLFW.Keys.ENTER, tdengine.InputChannel.Game) then
-	  -- If it's in the middle of some text, skip to the end
-	  if not waiting then
-		 tdengine.text_box.skip()
-	  end
-	  -- The text box is full, but the text we submitted isn't done yet
-	  if waiting and not done_with_node then
-		 tdengine.text_box.resume()
-	  end
-	  -- All text we submitted in begin() has been displayed. Next node.
-	  if waiting and done_with_node then
-		 self:advance_until_input_needed()
-	  end
-   end
-   --]]
-
 end
 
 tdengine.actions.Dialogue = Dialogue

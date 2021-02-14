@@ -9,8 +9,8 @@ end
 
 function TextBox:reset()
    self.text = nil
-   self.active = false
-   self.done = false
+   self.active = false -- Was some text submitted to us?
+   self.done = false -- Is all the requested text being displayed?
    self.time_accumulated = 0
    self.time_per_update = tdengine.frame_time
    self.point = 0
@@ -96,6 +96,7 @@ function TextBox:choose(choices)
    self.text = {}
    self.active = true
    self.choosing = true
+   self.done = true -- Choices all display immediately
    self.highlighted_choice = 1
 
    local graphic = self:get_component("Graphic")
