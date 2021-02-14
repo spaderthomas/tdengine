@@ -346,6 +346,35 @@ course, the global state might get more complicated. for example, you need to
 store the player's team. lol i guess you can store that in the player
 entity. but my point with saying that was -- no matter how complex you want to
 have the global state, who gives a fuck. scene state + global state = golden.
+
+ok, gonna write doors. actually, i should write save state first. i already have
+save scene, which is the hard part. but for the doors, need a few editor
+features:
+need to be able to resize an entity's bounding box. every door will be
+different. i can default their size in the prefab to something reasonable. but i
+need a way to tweak bounding boxes. totally ok with adding this feature because
+i need it anyway!
+
+idea: have boxes at the corners. when selected, if your raycast hits any of
+those boxes, then turn the mouse into a cross with arrows. on click, do a
+special drag mode?
+
+idea: when selected, if you have a box, put up a button that says resize. your
+next click on the screen will be the new extents of the box == drag it to be
+where you want.
+
+problem: origin + extents...the render stuff uses the collider to figure out
+where to render. so i can't just move the position down for the box. so i may
+need to add an 'offset' to the box. sounds very slow. should probably be the
+other way around -- position is canonical for all physics stuff, graphics can
+add an offset. 
+
+right click -> resize? modal popup in general would be pretty nice
+
+yea do this
+
+right click -> resize. when the modal exits, your mouse is now tracking the
+extents of the box. click again to set it. badabing. 
 ** 02/12/2021
 gonna copy and paste
 1. add 'set' nodes to ded
@@ -3287,7 +3316,9 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-02-13 Sat 21:22]
+CLOCK: [2021-02-14 Sun 15:17]
+CLOCK: [2021-02-14 Sun 11:03]--[2021-02-14 Sun 11:27] =>  0:24
+CLOCK: [2021-02-13 Sat 21:52]--[2021-02-14 Sun 00:12] =>  2:20
 CLOCK: [2021-02-12 Fri 19:15]--[2021-02-12 Fri 21:45] =>  2:30
 CLOCK: [2021-02-12 Fri 16:33]--[2021-02-12 Fri 17:52] =>  1:19
 CLOCK: [2021-02-11 Thu 16:54]--[2021-02-11 Thu 17:24] =>  0:30

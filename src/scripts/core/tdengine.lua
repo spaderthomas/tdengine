@@ -46,6 +46,8 @@ function on_entity_created(cpp_ref)
 end
 
 function on_entity_destroyed(cpp_ref)
+   local entity = tdengine.entities[cpp_ref:get_id()]
+   entity.alive = false
    tdengine.entities[cpp_ref:get_id()] = nil
 end
 
@@ -215,6 +217,10 @@ local entity_mixin = {
   do_not_save = function(self)
 	 self.tdengine_do_not_save = true
   end,
+  -- This flag gets flipped when we destroy the entity. We shouldn't be holding
+  -- onto entities between frames...but sometimes we are very naughty boys indeed,
+  -- and this flag will help us not explode.
+  alive = true, 
   imgui_ignore = {
 	 class = true,
 	 imgui_ignore = true,
@@ -564,8 +570,12 @@ local vec2_mixin = {
    end,
    truncate = function(self, digits)
 	  return tdengine.vec2(truncate(self.x, digits), truncate(self.y, digits))
+   end,
+   abs = function(self)
+	  return tdengine.vec2(math.abs(self.x), math.abs(self.y))
    end
 }
+
 tdengine.vec2_impl = create_class('vec2_impl')
 add_new_to_class(tdengine.vec2_impl, tdengine)
 tdengine.vec2_impl:include(vec2_mixin)

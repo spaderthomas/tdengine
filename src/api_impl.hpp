@@ -87,14 +87,16 @@ void register_collider(int entity) {
 		std::string message = "Called register_collider() for ";
 		message += entity_ptr->debug_string() + " but it did not have a BoundingBox";
 		message += ". Using default bounding box extents.";
-		tdns_log.write(message);
+		tdns_log.write(message, Log_Flags::File);
 
 		collider.extents.x = 0;
 		collider.extents.y = 0;	
 	} else {
 		auto box = Lua.get_component(entity, "BoundingBox");
 		collider.extents.x = box["extents"]["x"];
-		collider.extents.y = box["extents"]["y"];	
+		collider.extents.y = box["extents"]["y"];
+		collider.offset.x = box["offset"]["x"];
+		collider.offset.y = box["offset"]["y"];	
 	}
 	
 	auto position = Lua.get_component(entity, "Position");

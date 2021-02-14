@@ -2,6 +2,7 @@ return {
    components = {
 	  Physics = {},
 	  BoundingBox = {},
-	  Position = {}
+	  Position = {},
+	  Graphic = {} -- @hack: For drawing the box blue when selected
    }
 }

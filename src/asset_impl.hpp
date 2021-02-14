@@ -2,7 +2,7 @@ template <typename Asset_Type>
 void AssetManager::add_asset(std::string name, Asset_Type* asset) {
 	static_assert(std::is_base_of_v<Asset, Asset_Type>, "To add an asset to the asset table, its type must derive from Asset.");
 	if (assets.find(name) != assets.end()) {
-		tdns_log.write("Tried to register asset with name " + name + ", but it already existed.");
+		tdns_log.write("Tried to register asset with name " + name + ", but it already existed.", Log_Flags::File);
 	}
 
 	asset->name = name;

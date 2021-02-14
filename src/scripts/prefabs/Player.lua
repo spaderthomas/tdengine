@@ -26,7 +26,8 @@ return {
 	Physics = {},
 	Position = {},
 	BoundingBox = {
-	   extents = { x = .05, y = .15 }
+	   extents = { x = .05, y = .15 },
+	   offset = { x = -.067, y = -.001 },
 	},
 	Movement = {},
 	Input = {}

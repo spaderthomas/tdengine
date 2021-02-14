@@ -2,11 +2,11 @@ bool are_colliding(Collider a, Collider b, glm::vec2& penetration) {
 	// First, calculate the Minkowski difference
 	Center_Box minkowski;
 	minkowski.extents = a.extents + b.extents;
-	float a_left = a.origin.x - .5f * a.extents.x;
-	float b_right = b.origin.x + .5f * b.extents.x;
+	float a_left = a.origin.x + a.offset.x - .5f * a.extents.x;
+	float b_right = b.origin.x + b.offset.x + .5f * b.extents.x;
 	minkowski.origin.x = a_left - b_right + .5f * minkowski.extents.x;
-	float a_top = a.origin.y + .5f * a.extents.y;
-	float b_bottom = b.origin.y - .5f * b.extents.y;
+	float a_top = a.origin.y + a.offset.y + .5f * a.extents.y;
+	float b_bottom = b.origin.y + b.offset.y - .5f * b.extents.y;
 	minkowski.origin.y = a_top - b_bottom - .5f * minkowski.extents.y;
 
 	// If the Minkowski difference intersects the origin, there's a collision
@@ -129,12 +129,12 @@ bool point_inside_box(glm::vec2& screen_pos, Center_Box& box) {
 	return false;
 }
 bool point_inside_collider(float x, float y, const Collider& collider) {
-	float xl = collider.origin.x + (collider.extents.x / 2);
-	float xs = collider.origin.x - (collider.extents.x / 2);
+	float xl = collider.origin.x + collider.offset.x + (collider.extents.x / 2);
+	float xs = collider.origin.x + collider.offset.x - (collider.extents.x / 2);
 	bool inside_x = (xs < x) && (x < xl);
 
-	float yl = collider.origin.y + (collider.extents.y / 2);
-	float ys = collider.origin.y - (collider.extents.y / 2);
+	float yl = collider.origin.y + collider.offset.y + (collider.extents.y / 2);
+	float ys = collider.origin.y + collider.offset.y - (collider.extents.y / 2);
 	bool inside_y = (ys < y) && (y < yl);
 
 	return inside_x && inside_y;

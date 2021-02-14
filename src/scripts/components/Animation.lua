@@ -30,7 +30,6 @@ function Animation:init()
    self.time_to_next = DEFAULT_FRAME_TIME
    self.loop = true
    self.done = false
-   print(self.done)
 end
 
 function Animation:update(dt)

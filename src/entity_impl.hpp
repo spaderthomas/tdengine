@@ -138,10 +138,7 @@ bool Entity::has_component(std::string name)
 }
 
 Component* Entity::get_component(std::string name) {
-	if (!has_component(name)) {
-		tdns_log.write("Tried to get a component, but it didn't exist. Entity ID: " + std::to_string(id) + ". Component name: " + name);
-		return nullptr;
-	}
+	if (!has_component(name)) return nullptr;
 	return components[name];
 }
 

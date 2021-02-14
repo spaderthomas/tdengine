@@ -2,6 +2,7 @@ struct Collider {
 	int entity;
 	glm::vec2 origin;
 	glm::vec2 extents;
+	glm::vec2 offset;
 };
 
 namespace MoveFlags {

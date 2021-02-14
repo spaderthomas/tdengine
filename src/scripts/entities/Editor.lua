@@ -8,6 +8,8 @@ local EditState = {
   RectangleSelect = 'RectangleSelect',
   ReadyToDrawGeometry = 'ReadyToDrawGeometry',
   DrawingGeometry = 'DrawingGeometry',
+  Resizing = 'Resizing',
+  MovingAabb = 'MovingAabb',
 }
 
 Editor = tdengine.entity('Editor')
@@ -62,10 +64,11 @@ function Editor:init()
 end
 
 function Editor:update(dt)
-  local dbg = self:get_component('Debug')
+  -- If we reloaded the scene or something, our handle is invalid
+  if self.selected and not self.selected.alive then
+	 self.selected = nil
+  end
 
-  local player = tdengine.find_entity('Player')
-  --print(inspect(player:get_component('Animation')))
   self:calculate_framerate()
   
   self:handle_input()
@@ -74,22 +77,32 @@ function Editor:update(dt)
   imgui.Begin("tded v2.0", true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
+  
   local screen_size = tdengine.screen_dimensions()
   imgui.extensions.Vec2('screen size', screen_size)
 
   local cursor = tdengine.vec2(tdengine.cursor()):truncate(3)
-  imgui.extensions.Vec2('cursor', cursor)
+  imgui.extensions.Vec2('cursor (screen)', cursor)
+  imgui.extensions.Vec2('cursor (world)', tdengine.screen_to_world(cursor))
+
+
+  
+  imgui.Text('editor state: ' .. self.state)
 
   self:state_viewer()
   
   imgui.Begin("scene", true)
-  self:draw_entity_viewer()
+  
+  self:entity_viewer()
   imgui.Separator()
-  self:draw_selected_view()
+  
+  self:selected_entity()
   imgui.Separator()
+  
   self:draw_tools()
-  imgui.End()
-  imgui.End()
+  
+  imgui.End() -- scene
+  imgui.End() -- dashboard
 
   self:do_geometry()
 
@@ -141,6 +154,42 @@ function Editor:do_geometry()
 		self.state = EditState.Idle
 		self.last_click = tdengine.vec2(0, 0)
 	 end
+  elseif self.state == EditState.Resizing then
+	 local box = self.selected:get_component('BoundingBox')
+	 local position = self.selected:get_component('Position')
+	 if not box or not position then
+		self.state = EditState.Idle -- should never happen
+		return
+	 end
+
+	 local cursor = tdengine.screen_to_world(tdengine.cursor())
+	 box.extents = cursor:subtract(position.world):abs():scale(2)
+
+	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
+		tdengine.register_collider(self.selected:get_id())
+		
+		self.state = EditState.Idle
+		self.last_click = tdengine.vec2(0, 0)
+	 end
+  elseif self.state == EditState.MovingAabb then
+	 local box = self.selected:get_component('BoundingBox')
+	 local position = self.selected:get_component('Position')
+	 if not box or not position then
+		self.state = EditState.Idle -- should never happen
+		return
+	 end
+
+	 local cursor = tdengine.screen_to_world(tdengine.cursor())
+	 local world = tdengine.vec2(position.world)
+	 box.offset = cursor:subtract(world)
+
+	 if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
+		tdengine.register_collider(self.selected:get_id())
+		
+		self.state = EditState.Idle
+		self.last_click = tdengine.vec2(0, 0)
+	 end
+
   end
 end
 
@@ -159,9 +208,11 @@ function Editor:handle_input()
   
   local input = self:get_component('Input')
   if input:was_pressed(GLFW.Keys.ESCAPE) then
-	 local graphic = self.selected:get_component('Graphic')
-	 if graphic ~= nil then
-		graphic.flags = 0
+	 if self.selected then
+		local graphic = self.selected:get_component('Graphic')
+		if graphic ~= nil then
+		   graphic.flags = 0
+		end
 	 end
 	self.selected = nil
 	
@@ -201,20 +252,34 @@ end
 function Editor:check_for_new_selection()
    local input = self:get_component('Input')
 
-   if input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1) then
-	  local cursor = tdengine.cursor()
-	  cursor = tdengine.screen_to_world(cursor)
-
-	  -- Deselect whatever is already selected, whether this click hit anything
-	  -- or not
+   local set_selected_draw_flags = function(flags)
 	  if self.selected ~= nil then
 		 local graphic = self.selected:get_component('Graphic')
 		 if graphic ~= nil then
-			graphic.flags = 0
+			graphic.flags = flags
 		 end
 	  end
+   end
+   
+   local left = input:was_pressed(GLFW.Keys.MOUSE_BUTTON_1)
+   local right = input:was_pressed(GLFW.Keys.MOUSE_BUTTON_2)
+   if left or right then
+	  -- Un-highlight the last selected thing
+	  set_selected_draw_flags(tdengine.render_flags.none)
 
+	  -- Ray cast to see if we clicked anything...
+	  local cursor = tdengine.screen_to_world(tdengine.cursor())
 	  self.selected = tdengine.ray_cast(cursor.x, cursor.y)
+
+	  -- If we didn't, reset
+	  if not self.selected then
+		 self.state = EditState.Idle
+	  end
+
+	  set_selected_draw_flags(tdengine.render_flags.highlighted)
+   end
+   
+   if left then
 	  if self.selected ~= nil then
 		 self.state = EditState.HoldingSelection
 		 self.last_click = tdengine.vec2(tdengine.cursor())
@@ -226,14 +291,35 @@ function Editor:check_for_new_selection()
 			   position.world.x,
 			   position.world.y)
 		 end
+	  end
+   -- Right click brings up a context menu
+   elseif right then
+	  if self.selected then imgui.OpenPopup('entity_context_menu') end
+   end
 
-		 -- Highlight it (should use bitwise ops to toggle this)
-		 local graphic = self.selected:get_component('Graphic')
-		 if graphic ~= nil then
-			graphic.flags = 1
+   imgui.PushStyleVar_2(imgui.constant.StyleVar.WindowPadding, 8, 8)
+   if imgui.BeginPopup('entity_context_menu') then
+	  if imgui.MenuItem('Delete') then
+		 tdengine.destroy_entity(self.selected:get_id())
+		 self.selected = nil
+	  end
+
+	  local box = self.selected:get_component('BoundingBox')
+	  if box then
+	  	 if imgui.MenuItem('Resize AABB') then
+			self.state = EditState.Resizing
+			self.last_click = tdengine.vec2(tdengine.cursor())
+		 end
+		 if imgui.MenuItem('Move AABB') then
+			self.state = EditState.MovingAabb
+			self.last_click = tdengine.vec2(tdengine.cursor())
 		 end
 	  end
+	  
+	  imgui.EndPopup()
    end
+   imgui.PopStyleVar()
+
 end
 
 function Editor:draw_tools()
@@ -248,52 +334,50 @@ function Editor:draw_tools()
 
 end
 
-function Editor:draw_entity_viewer()
-  self.filter:Draw("Filter by name")
-  for id, entity in pairs(tdengine.entities) do
-	local name = entity:get_name()
-	local id = tostring(entity:get_id())
-	if self.filter:PassFilter(name) or self.filter:PassFilter(id) then
-	   -- imgui.PushID(id)
-	   -- if imgui.TreeNode(entity:get_name()) then
-	   -- 	  imgui.extensions.VariableName('id')
-	   -- 	  imgui.SameLine()
-	   -- 	  imgui.Text(tostring(entity:get_id()))
-		  
-	   -- 	  local components = entity:all_components()
-	   -- 	  for index, component in pairs(components) do
-	   -- 		 imgui.extensions.Component(component)
-	   -- 	  end
-		  
-	   -- 	  imgui.extensions.TableMembers(entity:get_name(), entity)
-	   -- 	  imgui.TreePop()
-	   -- end
-	   
-	   --imgui.PopID()
-	  imgui.extensions.Entity(entity)
-	end
-  end
+function Editor:entity_viewer()
+   self.filter:Draw("Filter by name")
+   local entity_hovered_in_list = nil
+   for id, entity in pairs(tdengine.entities) do
+	  local name = entity:get_name()
+	  local sid = tostring(id)
+	  if self.filter:PassFilter(name) or self.filter:PassFilter(sid) then
+		 imgui.PushID(id .. '##list_view')
+
+		 -- Write the selected node in a different color
+		 local pushed_color = false
+		 if self.selected and self.selected:get_id() == id then
+			local hl_color = tdengine.color32(0, 255, 0, 255)
+			imgui.PushStyleColor(imgui.constant.Col.Text, hl_color)
+			pushed_color = true
+		 end
+
+		 -- Display the node, and if clicked select it
+		 if imgui.MenuItem(name) then
+			self.selected = entity
+		 end
+
+		 -- Pop the color we pushed for the selected node!
+		 if pushed_color then
+			imgui.PopStyleColor()
+		 end
+		 
+		 if imgui.IsItemHovered() then
+			entity_hovered_in_list = id
+		 end
+
+		 imgui.PopID()
+	  end
+   end
 end
 
-function Editor:draw_selected_view()
+function Editor:selected_entity()
    if self.selected ~= nil then
-	  if imgui.Button('Delete') then
-		 tdengine.destroy_entity(self.selected:get_id())
-		 self.selected = nil
-	  end
-
-	  -- local box = self.selected:get_component('BoundingBox')
-	  -- if box then
-	  -- 	 imgui.SameLine()
-	  -- 	 if imgui.Button('Resize') then
-	  -- 	 end
-	  -- end
 	  
 	  -- if self.selected ~= nil then
 	  -- 	 imgui.extensions.Entity(self.selected, '##editor:selected')
 	  -- end
 
-
+	  imgui.extensions.Entity(self.selected)
    end
 end
 
