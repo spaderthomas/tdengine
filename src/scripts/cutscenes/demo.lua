@@ -7,15 +7,15 @@ return {
    },
    {
 	  name = 'Delay',
-	  time = 0
-   },
+	  time = 1
+x  },
    {
 	  name = 'FadeIn',
 	  time = 3
    },
    {
 	  name = 'Delay',
-	  time = 0
+	  time = 1
    },
    {
 	  name = 'Compound',
@@ -25,6 +25,10 @@ return {
 			entity = 'Player',
 			animation = 'boon_surprise',
 			loop = false,
+		 },
+		 {
+			name = 'Delay',
+			time = 1
 		 },
 		 {
 			name = 'Animation',
@@ -42,6 +46,6 @@ return {
    },
    {
 	  name = 'Dialogue',
-	  dialogue = 'set_with_choices'
+	  dialogue = 'evan'
    }
 }

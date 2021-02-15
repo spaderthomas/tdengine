@@ -258,7 +258,8 @@ local component_mixin = {
 	 class = true,
 	 parent = true,
 	 imgui_ignore = true
-  }
+  },
+  should_save = true
 }
 
 function tdengine.component(name)
@@ -396,7 +397,7 @@ function tdengine.save_scene(name)
 			-- Save out all components
 			local components = entity:all_components()
 			for index, component in pairs(components) do
-			   if component.save then
+			   if component.save and component.should_save then
 				  saved.components[component:get_name()] = component:save()
 			   end
 			end

@@ -5,5 +5,5 @@ end
 
 layout('tiny')
 scene('intro')
-cutscene('dialogue_test')
+cutscene('demo')
 

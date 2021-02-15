@@ -86,7 +86,6 @@ function Editor:update(dt)
   imgui.extensions.Vec2('cursor (world)', tdengine.screen_to_world(cursor))
 
 
-  
   imgui.Text('editor state: ' .. self.state)
 
   self:state_viewer()

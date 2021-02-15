@@ -6,6 +6,12 @@ function Player:init()
    tdengine.register_collider(self:get_id())
 end
 
+function Player:save()
+   local box = self:get_component('BoundingBox')
+   box.should_save = false
+   return {}
+end
+
 function Player:handle_movement()
   local input = self:get_component('Input')
   local movement = self:get_component('Movement')

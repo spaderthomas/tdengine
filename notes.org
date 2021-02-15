@@ -158,9 +158,10 @@ return 1;
   - how data is stored for them
   - battle loop
 ** february 12th prioritized list
-1. add 'set' nodes to ded
+1. add 'set' nodes to dialogue editor
    - figure out where the state they touch lives
    - test ded
+
 2. saving and loading specific scene state
    - question: when you leave an area or room and come back, do you need to
      restore EVERYTHING exactly how it was?
@@ -324,6 +325,29 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/14/2021
+door
+prefab: basically nothing
+what you save in the scene is pretty much the whole thing
+
+where do you specify the data that tells you what scene to load? dont think it
+gets loaded thru a component...kind of just want it on the door. but i don't
+think the engine is set up to work like that. so might need to stuff it in a
+component. 
+
+don't feel bad about having to design stuff with all this code you wrote. as in,
+if it doesn't work out or doesn't feel great to use. you know that nothing
+you've written feels BAD to use -- not perfect, sure, but none of it is
+terrible. it is all solving problems that you have when writing this game (how
+do i store / load data in a structured way, how do i easily have game objects
+that update once per frame, how do i share some behavior etc). the finer use
+cases -- especially with saving and loading -- will come with experience. the
+more you use this stuff, the better it will be, and every thing that you have to
+change will just make your program better at accomplishing its task. you trend
+in the right direction, and we care about trend lines. 
+
+so all that to say: if the door doesn't feel quite right, it's ok! be
+observant & thoughtful. 
 ** 02/13/2021
 i feel like all the state for a level should be encapsulated in the entities. in
 other words, a level is nothing besides all the entities that are inside
