@@ -10,6 +10,7 @@ local EditState = {
   DrawingGeometry = 'DrawingGeometry',
   Resizing = 'Resizing',
   MovingAabb = 'MovingAabb',
+  ClickPosition = 'ClickPosition',
 }
 
 Editor = tdengine.entity('Editor')
@@ -29,8 +30,17 @@ function Editor:init()
   self.state = EditState.Idle
   
   self.selected = nil
+  self.destroy_selected = false
   self.position_when_selected = tdengine.vec2(0, 0)
   self.hovered = nil
+  
+  -- Stuff we use to add an entity to the level
+  self.component_input = imgui.InputTextMultiline.new()
+  self.geometry = {
+	 origin = tdengine.vec2(),
+	 extents = tdengine.vec2()
+  }
+  self.use_geometry = false
   
   self.ded = {
 	 editor = imgui.InputTextMultiline.new(),
@@ -85,22 +95,11 @@ function Editor:update(dt)
   imgui.extensions.Vec2('cursor (screen)', cursor)
   imgui.extensions.Vec2('cursor (world)', tdengine.screen_to_world(cursor))
 
-
   imgui.Text('editor state: ' .. self.state)
 
   self:state_viewer()
+  self:scene_viewer()
   
-  imgui.Begin("scene", true)
-  
-  self:entity_viewer()
-  imgui.Separator()
-  
-  self:selected_entity()
-  imgui.Separator()
-  
-  self:draw_tools()
-  
-  imgui.End() -- scene
   imgui.End() -- dashboard
 
   self:do_geometry()
@@ -125,6 +124,12 @@ function Editor:update(dt)
 		self.state = EditState.Selected
 	 end
   end
+
+  if self.destroy_selected then
+	 tdengine.destroy_entity(self.selected:get_id())
+	 self.selected = nil
+	 self.destroy_selected = false
+  end
 end
 
 function Editor:do_geometry()
@@ -140,8 +145,13 @@ function Editor:do_geometry()
 	    local rect = self:get_mouse_rect()
 	    tdengine.draw.rect_outline_screen(rect, tdengine.colors.red)
   	 else
-		local box = self:create_entity('Box')
 		local rect = self:get_mouse_rect()
+		self.geometry = {
+		   origin = tdengine.screen_to_world(rect.origin),
+		   extents = rect.extents
+		}
+		--[[
+		local box = self:create_entity('Box')
 		
 		local aabb = box:get_component('BoundingBox')
 		aabb.extents = rect.extents
@@ -149,6 +159,7 @@ function Editor:do_geometry()
 		local position = tdengine.screen_to_world(rect.origin)
 		tdengine.register_collider(box:get_id())
 		tdengine.teleport_entity(box:get_id(), position.x, position.y)
+		]]--
 		
 		self.state = EditState.Idle
 		self.last_click = tdengine.vec2(0, 0)
@@ -291,16 +302,16 @@ function Editor:check_for_new_selection()
 			   position.world.y)
 		 end
 	  end
-   -- Right click brings up a context menu
+   -- Right click brings up a context menu (either for this entity or in general)
    elseif right then
-	  if self.selected then imgui.OpenPopup('entity_context_menu') end
+	  if self.selected then imgui.OpenPopup('entity_context_menu')
+	  else imgui.OpenPopup('main_context_menu') end
    end
 
    imgui.PushStyleVar_2(imgui.constant.StyleVar.WindowPadding, 8, 8)
    if imgui.BeginPopup('entity_context_menu') then
 	  if imgui.MenuItem('Delete') then
-		 tdengine.destroy_entity(self.selected:get_id())
-		 self.selected = nil
+		 self.destroy_selected = true
 	  end
 
 	  local box = self.selected:get_component('BoundingBox')
@@ -319,17 +330,26 @@ function Editor:check_for_new_selection()
    end
    imgui.PopStyleVar()
 
+   imgui.PushStyleVar_2(imgui.constant.StyleVar.WindowPadding, 8, 8)
+   if imgui.BeginPopup('main_context_menu') then
+	  if imgui.MenuItem('Add Entity') then
+		 imgui.OpenPopup('dogdog')
+	  end
+	  imgui.EndPopup()
+   end
+
+   if imgui.BeginPopupModal('dogdog') then
+	  print('hi')
+	  local id = '##main_context_menu:add_entity'
+	  if imgui.InputText(id, 63) then
+		 print(imgui.InputTextContents(id))
+	  end
+	  imgui.EndPopup()
+   end
+   imgui.PopStyleVar()
 end
 
 function Editor:draw_tools()
-  if imgui.Button('Add Geometry') then
-  	 local input = self:get_component('Input')
-	 self.state = EditState.ReadyToDrawGeometry
-  end
-
-  if imgui.Button('Save') then
-	 tdengine.save_scene(tdengine.loaded_scene)	 
-  end
 
 end
 
@@ -412,6 +432,112 @@ end
 function Editor:canvas_screen_to_window_screen(canvas_screen)
    local window_screen = canvas_screen:add(self.ded.window_position)
    return window_screen
+end
+
+function Editor:scene_viewer()
+   imgui.Begin("scene", true)
+   imgui.Text(self:scene_descriptor())
+
+  if imgui.Button(' Save  ') then
+	 tdengine.save_scene(tdengine.loaded_scene)	 
+  end
+
+  local id = '##scene_viewer_save_as'
+  if imgui.Button('Save As') then
+	 self:ded_save(imgui.InputTextContents(id))
+  end
+  imgui.SameLine()
+  imgui.InputText(id, 63)
+
+  imgui.Separator()
+
+  local name_input = '##add_entity_name_input'
+  imgui.Text('Name: ')
+  imgui.SameLine()
+  imgui.InputText(name_input, 63)
+  
+  self.component_input:Draw(382, 200)
+  
+  if imgui.Button('Draw Bounding Box') then
+	 self.state = EditState.ReadyToDrawGeometry
+	 self.use_geometry = true
+  end
+  
+  if imgui.Button('Add Entity') then
+	 -- Load in the text from the input field as a table
+	 local text = self.component_input:Contents()
+	 text = ternary(text:len() == 0, '{}', text)
+	 text = 'return ' .. text
+	 
+	 load_data, message = loadstring(text)
+
+	 if load_data then
+		local components = load_data()
+
+		-- Create a table which we'll use to load the entity. The data in this
+		-- table is the same as any other saved entity. There's nothing special!
+		data = {
+		   name = imgui.InputTextContents(name_input),
+		   components = components
+		}
+
+		-- It's more convenient to draw a box and use that for the position and
+		-- AABB, so inject that data if we did that
+		if self.use_geometry then
+		   data.components.BoundingBox = {
+			  extents = self.geometry.extents,
+			  offset = tdengine.vec2(0, 0)
+		   }
+		   data.components.Position = {
+			  world = self.geometry.origin
+		   }
+		end
+
+		print(inspect(data))
+
+		-- Create the entity and load it with the data we just made
+		local id = tdengine.create_entity(data.name)
+		if not id then
+		   print('something went wrong calling create_entity()')
+		   return
+		end
+		
+		local entity = tdengine.entities[id]
+		tdengine.load_entity(entity, data)
+		
+		--print(inspect(self.geometry))
+		self.use_geometry = false
+		self.geometry = {
+		   origin = tdengine.vec2(0, 0),
+		   extents = tdengine.vec2(0, 0) }
+
+     -- loadstring() returns nil if there's a syntax error
+	 else
+		print('scene_viewer(): syntax error when adding entity:')
+		print(message)
+		return
+	 end
+
+  end
+
+  
+  imgui.Separator()
+  self:entity_viewer()
+  imgui.Separator()
+  
+  self:selected_entity()
+  imgui.Separator()
+  
+  imgui.End() -- scene
+
+end
+
+function Editor:scene_descriptor()
+   if string.len(tdengine.loaded_scene) > 0 then
+	  return 'src/scripts/scenes/' .. tdengine.loaded_scene .. '.lua'
+   end
+
+   return 'no scene loaded'
 end
 
 function Editor:make_dialogue_node(kind)

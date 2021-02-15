@@ -2,7 +2,6 @@ BoundingBox = tdengine.component('BoundingBox')
 function BoundingBox:load(data)
    self.extents = data.extents or { x = .1, y = .1 }
    self.offset = data.offset or { x = 0, y = 0 }
-   print(self.parent:get_name() .. inspect(self.offset))
 end
 
 function BoundingBox:save()

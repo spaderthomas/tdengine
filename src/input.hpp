@@ -175,6 +175,15 @@ void fill_imgui_input() {
 		}
 	}
 
+	for (int key = GLFW_KEY_LEFT_BRACKET; key < GLFW_KEY_GRAVE_ACCENT; key++) {
+		if (input_manager.was_pressed(key)) {
+			if (input_manager.is_mod_down(GLFW_KEY_SHIFT)) {
+				imgui.AddInputCharacter(input_manager.shift_map[key]);
+			} else {
+				imgui.AddInputCharacter(key);
+			}
+		}
+	}
 	// Alphas have to be adjusted because GLFW uses the capital ASCII code
 	for (int key = GLFW_KEY_A; key <= GLFW_KEY_Z; key++) {
 		if (input_manager.was_pressed(key)) {

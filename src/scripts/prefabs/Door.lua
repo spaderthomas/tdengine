@@ -2,6 +2,6 @@ return {
    components = {
 	  Physics = {},
 	  BoundingBox = {},
-	  Position = {}
+	  Position = {},
    }
 }
