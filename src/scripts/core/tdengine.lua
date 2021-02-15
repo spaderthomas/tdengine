@@ -333,7 +333,7 @@ function tdengine.load_entity(entity, data)
 	  component:init()
    end
 
-   entity:init()
+   entity:init(data.params or {})
 end
 
 function tdengine.load_prefab(entity)

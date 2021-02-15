@@ -536,21 +536,13 @@ namespace ImGuiWrapper {
 		bool PassFilter(const char* text) { return filter.PassFilter(text); }
 	};
 
-	struct InputTextMultiline {
-		static constexpr int buf_size = 512;
-		char buffer[buf_size] = { 0 };
+	bool InputTextMultiline(const char* label, int buf_size, float sx, float sy) {
+		add_input_text_buffer(label, buf_size);
+		InputTextBuffer* buffer = get_input_text_buffer(label);
 
-		bool Draw(float sx, float sy) {
-			ImVec2 size(sx, sy);
-			return ImGui::InputTextMultiline("##label", buffer, buf_size, size);
-		}
-		const char* Contents() {
-			return buffer;
-		}
-		void SetContents(const char* contents) {
-			strncpy(buffer, contents, buf_size - 1);
-		}
-	};
+		ImVec2 size(sx, sy);
+		return ImGui::InputTextMultiline(label, buffer->data, buffer->size, size);
+	}
 
 	bool InputText(const char* label, int buf_size = 255) {
 		add_input_text_buffer(label, buf_size);
@@ -570,6 +562,14 @@ namespace ImGuiWrapper {
 		clear_input_text_buffer(label);
 	}
 
+	void InputTextSetContents(const char* label, const char* contents) {
+		InputTextBuffer* buffer = get_input_text_buffer(label);
+		if (!buffer) {
+			tdns_log.write("You called InputTextContents, but passed an unknown label.");
+		}
+
+		strncpy(buffer->data, contents, buffer->size);
+	}
 }
 
 void LoadImguiBindings() {
@@ -585,18 +585,13 @@ void LoadImguiBindings() {
   Lua.state["imgui"]["SetNextWindowSize"] = &ImGuiWrapper::SetNextWindowSize;
   Lua.state["imgui"]["IsItemHovered"] = &ImGuiWrapper::IsItemHovered;
   Lua.state["imgui"]["InputText"] = &ImGuiWrapper::InputText;
-  Lua.state["imgui"]["InputTextContents"] = &ImGuiWrapper::InputTextContents;
+  Lua.state["imgui"]["InputTextMultiline"] = &ImGuiWrapper::InputTextMultiline;
   Lua.state["imgui"]["InputTextClear"] = &ImGuiWrapper::InputTextClear;
+  Lua.state["imgui"]["InputTextContents"] = &ImGuiWrapper::InputTextContents;
+  Lua.state["imgui"]["InputTextSetContents"] = &ImGuiWrapper::InputTextSetContents;
 
   sol::usertype<ImGuiWrapper::TextFilter> filter_type = Lua.state.new_usertype<ImGuiWrapper::TextFilter>("TextFilter");
   filter_type["Draw"]      = &ImGuiWrapper::TextFilter::Draw;
   filter_type["PassFilter"] = &ImGuiWrapper::TextFilter::PassFilter;
   Lua.state["imgui"]["TextFilter"] = filter_type;
-  
-  sol::usertype<ImGuiWrapper::InputTextMultiline> inputtext_type = Lua.state.new_usertype<ImGuiWrapper::InputTextMultiline>("InputTextMultiline");
-  inputtext_type["Draw"]     = &ImGuiWrapper::InputTextMultiline::Draw;
-  inputtext_type["Contents"] = &ImGuiWrapper::InputTextMultiline::Contents;
-  inputtext_type["SetContents"] = &ImGuiWrapper::InputTextMultiline::SetContents;
-  Lua.state["imgui"]["InputTextMultiline"] = inputtext_type; 
-
 }

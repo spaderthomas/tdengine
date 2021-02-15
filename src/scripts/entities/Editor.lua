@@ -35,7 +35,8 @@ function Editor:init()
   self.hovered = nil
   
   -- Stuff we use to add an entity to the level
-  self.component_input = imgui.InputTextMultiline.new()
+  self.component_input_id = '##add_entity_component_input'
+  self.param_input_id = '##add_entity_param_input'
   self.geometry = {
 	 origin = tdengine.vec2(),
 	 extents = tdengine.vec2()
@@ -43,7 +44,7 @@ function Editor:init()
   self.use_geometry = false
   
   self.ded = {
-	 editor = imgui.InputTextMultiline.new(),
+	 input_id = '##ded_editor',
 	 nodes = {},
 	 layout_data = {},
 	 loaded = '',
@@ -150,17 +151,7 @@ function Editor:do_geometry()
 		   origin = tdengine.screen_to_world(rect.origin),
 		   extents = rect.extents
 		}
-		--[[
-		local box = self:create_entity('Box')
-		
-		local aabb = box:get_component('BoundingBox')
-		aabb.extents = rect.extents
-		
-		local position = tdengine.screen_to_world(rect.origin)
-		tdengine.register_collider(box:get_id())
-		tdengine.teleport_entity(box:get_id(), position.x, position.y)
-		]]--
-		
+
 		self.state = EditState.Idle
 		self.last_click = tdengine.vec2(0, 0)
 	 end
@@ -451,75 +442,116 @@ function Editor:scene_viewer()
 
   imgui.Separator()
 
-  local name_input = '##add_entity_name_input'
-  imgui.Text('Name: ')
-  imgui.SameLine()
-  imgui.InputText(name_input, 63)
-  
-  self.component_input:Draw(382, 200)
-  
-  if imgui.Button('Draw Bounding Box') then
-	 self.state = EditState.ReadyToDrawGeometry
-	 self.use_geometry = true
-  end
-  
-  if imgui.Button('Add Entity') then
-	 -- Load in the text from the input field as a table
-	 local text = self.component_input:Contents()
-	 text = ternary(text:len() == 0, '{}', text)
-	 text = 'return ' .. text
+  if imgui.TreeNode('Add Entity') then
+	 local name_input = '##add_entity_name_input'
+	 imgui.Text('put the entity name here')
+	 imgui.InputText(name_input, 63)
+
+	 local buffer_size = 512
+	 local size = tdengine.vec2(328, 200)
 	 
-	 load_data, message = loadstring(text)
+	 imgui.Text('write a table of components to use to load the entity')
+	 imgui.InputTextMultiline(self.component_input_id, buffer_size, size.x, size.y)
 
-	 if load_data then
-		local components = load_data()
-
-		-- Create a table which we'll use to load the entity. The data in this
-		-- table is the same as any other saved entity. There's nothing special!
-		data = {
-		   name = imgui.InputTextContents(name_input),
-		   components = components
-		}
-
-		-- It's more convenient to draw a box and use that for the position and
-		-- AABB, so inject that data if we did that
-		if self.use_geometry then
-		   data.components.BoundingBox = {
-			  extents = self.geometry.extents,
-			  offset = tdengine.vec2(0, 0)
-		   }
-		   data.components.Position = {
-			  world = self.geometry.origin
-		   }
-		end
-
-		print(inspect(data))
-
-		-- Create the entity and load it with the data we just made
-		local id = tdengine.create_entity(data.name)
-		if not id then
-		   print('something went wrong calling create_entity()')
-		   return
-		end
-		
-		local entity = tdengine.entities[id]
-		tdengine.load_entity(entity, data)
-		
-		--print(inspect(self.geometry))
-		self.use_geometry = false
-		self.geometry = {
-		   origin = tdengine.vec2(0, 0),
-		   extents = tdengine.vec2(0, 0) }
-
-     -- loadstring() returns nil if there's a syntax error
-	 else
-		print('scene_viewer(): syntax error when adding entity:')
-		print(message)
-		return
+	 imgui.Text('some special tools to autogenerate component data')
+	 if imgui.Button('Autogenerate Bounding Box') then
+		self.state = EditState.ReadyToDrawGeometry
+		self.use_geometry = true
 	 end
 
-  end
+	 
+	 imgui.Text('write a table of parameters to pass to the entity')
+	 imgui.InputTextMultiline(self.param_input_id, buffer_size, size.x, size.y)
 
+	 local invalid_messages = {}
+	 local name = imgui.InputTextContents(name_input)
+	 if #name == 0 then
+		local message = 'You need to specify which entity to create'
+		table.insert(invalid_messages, message)
+	 end
+
+	 if #invalid_messages > 0 then
+		local color = tdengine.color32(255, 0, 0, 255)
+		imgui.PushStyleColor(imgui.constant.Col.Text, color)
+	 else
+		local color = tdengine.color32(0, 255, 0, 255)
+		imgui.PushStyleColor(imgui.constant.Col.Text, color)
+	 end
+	 if imgui.Button('Add Entity') then
+		-- Load in the text from the component input field as a table
+		local text = imgui.InputTextContents(self.component_input_id)
+		text = ternary(text:len() == 0, '{}', text)
+		text = 'return ' .. text
+		
+		load_components, lc_message = loadstring(text)
+
+		-- Load in the text from the param input field as a table
+		text = imgui.InputTextContents(self.param_input_id)
+		text = ternary(text:len() == 0, '{}', text)
+		text = 'return ' .. text
+		
+		load_params, lp_message = loadstring(text)
+
+		if load_components and load_params then
+		   local components = load_components()
+		   local params = load_params()
+
+		   -- Create a table which we'll use to load the entity. The data in this
+		   -- table is the same as any other saved entity. There's nothing special!
+		   data = {
+			  name = imgui.InputTextContents(name_input),
+			  components = components,
+			  params = params
+		   }
+
+		   -- It's more convenient to draw a box and use that for the position and
+		   -- AABB, so inject that data if we did that
+		   if self.use_geometry then
+			  data.components.BoundingBox = {
+				 extents = self.geometry.extents,
+				 offset = tdengine.vec2(0, 0)
+			  }
+			  data.components.Position = {
+				 world = self.geometry.origin
+			  }
+		   end
+
+		   print(inspect(data))
+
+		   -- Create the entity and load it with the data we just made
+		   local id = tdengine.create_entity(data.name)
+		   if not id then
+			  print('something went wrong calling create_entity()')
+			  return
+		   end
+		   
+		   local entity = tdengine.entities[id]
+		   tdengine.load_entity(entity, data)
+		   
+		   --print(inspect(self.geometry))
+		   self.use_geometry = false
+		   self.geometry = {
+			  origin = tdengine.vec2(0, 0),
+			  extents = tdengine.vec2(0, 0) }
+
+		   -- loadstring() returns nil if there's a syntax error
+		else
+		   print('scene_viewer(): syntax error when adding entity:')
+		   print(lc_message)
+		   print(lp_message)
+		   return
+		end
+
+	 end
+	 
+	 imgui.PopStyleColor()
+
+	 for index, message in pairs(invalid_messages) do
+		imgui.Text(message)
+	 end
+
+	 imgui.TreePop()
+  end
   
   imgui.Separator()
   self:entity_viewer()
@@ -569,7 +601,7 @@ function Editor:ded_load(name)
    self.ded.disconnecting = nil
    self.ded.deleting = nil
    self.ded.scrolling = tdengine.vec2(0, 0)
-   self.ded.editor:SetContents('')
+   imgui.InputTextSetContents(self.ded.input_id, '')
 
    self.ded.nodes = tdengine.load_dialogue(name)
    if not self.ded.nodes then
@@ -791,7 +823,7 @@ function Editor:dialogue_editor()
 
 	  if selected.kind == 'Text' or selected.kind == 'Choice' then
 		 imgui.PushTextWrapPos(0)
-		 imgui.Text(self.ded.editor:Contents())
+		 imgui.Text(imgui.InputTextContents(self.ded.input_id))
 		 imgui.PopTextWrapPos()
 	  end
    end
@@ -938,9 +970,9 @@ function Editor:dialogue_editor()
 		 self.ded.selected = id
 		 local text = ternary(node.text, node.text, node.variable)
 		 if node.kind == 'Text' or node.kind == 'Choice' then
-			self.ded.editor:SetContents(text)
+			imgui.InputTextSetContents(self.ded.input_id, text)
 		 else
-			self.ded.editor:SetContents('')
+			imgui.InputTextSetContents(self.ded.input_id, '')
 		 end
 
 		 -- If someone left clicked us, check whether they're trying to
@@ -1131,11 +1163,11 @@ function Editor:dialogue_editor()
    imgui.EndChild()
 
    -- @hack: 0 doesn't infer like I'd expect it to
-   self.ded.editor:Draw(-1, -1)
+   imgui.InputTextMultiline(self.ded.input_id, 512, -1, -1)
    if self.ded.selected then
 	  local selected = self.ded.nodes[self.ded.selected]
 	  if selected.kind == 'Text' or selected.kind == 'Choice' then
-		 selected.text = self.ded.editor:Contents()
+		 imgui.InputTextContents(self.ded.input_id)
 	  end
    end
 
