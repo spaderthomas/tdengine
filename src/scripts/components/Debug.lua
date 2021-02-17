@@ -1,8 +1,6 @@
 Debug = tdengine.component('Debug')
-function Debug:load(data)
-end
 
-function Debug:init()
+function Debug:init(params)
   self.last_message = ''
 end
 

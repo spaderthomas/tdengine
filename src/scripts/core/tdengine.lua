@@ -9,6 +9,19 @@ function update_component(id, dt)
    component:update(dt)
 end
 
+function on_collision(id, other)
+   local entity = tdengine.entities[id]
+   local other = tdengine.entities[other]
+
+   if not entity or not other then
+	  print('some entity did not exist for on_collision')
+   end
+   
+   if entity.on_collision then
+	  entity:on_collision(other)
+   end
+end
+
 function tdengine.find_entity(name)
    for id, entity in pairs(tdengine.entities) do
 	  if entity:get_name() == name then
@@ -25,62 +38,85 @@ end
 function tdengine.find_entity_by_descriptor(name)
 end
 
-function on_entity_created(cpp_ref)
+function tdengine.create_entity(name, data)   
+   local id = tdengine.alloc_entity(name)
+   
    -- Find the matching type in Lua
-   EntityType = _G[cpp_ref:get_name()]
+   EntityType = _G[name]
    if not EntityType then
-	  return 1
+	  return nil
    end
    
    -- Construct the entity with a do-nothing constructor
    entity = EntityType:new()
-   entity.cpp_ref = cpp_ref
+   entity.id = id
    
-   tdengine.entities[cpp_ref:get_id()] = entity
+   tdengine.entities[id] = entity
 
-   tdengine.load_prefab(entity)
+   -- Load the prefab to create any default compononents
+   local filepath = 'prefabs/' .. name
+   package.loaded[filepath] = nil
+   local status, prefab = pcall(require, filepath)
+   if not status then
+	  print('tdengine.create_entity(): could not find prefab. ' .. name)
+   end
 
-   EntityType.init(entity)
+   print('loading prefab')
+   if prefab then
+	  print('got one')
+	  for name, component in pairs(prefab.components) do
+		 print('component ' .. name)
+		 local param_components = data.components or {}
 
-   return 0
+		 -- Merge the component data passed in with what's in the prefab
+		 local param_component = param_components[name] or {}
+		 for key, value in pairs(param_component) do
+			component[key] = value
+		 end
+
+		 print('addin')
+		 entity:add_component(name, component)		 
+		 print('added')
+	  end
+   end
+
+   params = data.params or {}
+   entity:init(params)
+
+   return id
 end
 
-function on_entity_destroyed(cpp_ref)
-   local entity = tdengine.entities[cpp_ref:get_id()]
+function tdengine.destroy_entity(id)
+   local entity = tdengine.entities[id]
+   entity.id = -1
    entity.alive = false
-   tdengine.entities[cpp_ref:get_id()] = nil
+   
+   tdengine.free_entity(id)
+   tdengine.entities[id] = nil
 end
 
-function on_component_created(cpp_ref, data)
-   ComponentType = _G[cpp_ref:get_name()]
+function tdengine.create_component(entity_id, name, params)
+   local id = tdengine.add_component(entity_id, name)
+  
+   ComponentType = _G[name]
    if not ComponentType then
-	  print('Tried to create an component of type ' .. cpp_ref:get_name() .. ', but no such component exists')
+	  print('create_component(): no such component ' .. name)
 	  return
    end
    
    component = ComponentType:new()
 
-   component.cpp_ref = cpp_ref
-   component.parent = tdengine.entities[cpp_ref:get_entity()]
+   component.id = id
+   component.parent = tdengine.entities[entity_id]
    
-   tdengine.components[cpp_ref:get_id()] = component
+   tdengine.components[id] = component
 
-   component:load(data)
-
-   -- When we create entities from prefabs, we want to make sure everything
-   -- is created and loaded before we run init (which may make API calls that
-   -- require other components to be there).
-   --
-   -- When we directly call add_component() at runtime, we want to initialize
-   -- it straight off.
-   local skip_init = data.skip_init or false
-   if not skip_init then
-      component:init()
-   end
+   component:init(params)
 end
 
-function on_component_destroyed(cpp_ref)
-   tdengine.components[cpp_ref:get_id()] = nil
+function tdengine.destroy_component(id)
+   tdengine.free_component(component);
+   tdengine.components[id] = nil
 end
 
 -- Class stuff
@@ -164,26 +200,21 @@ end
 -- tdengine functions we're injecting in for sugar
 local entity_mixin = {
   has_component = function(self, kind)
-	return Entity["has_component"](self.cpp_ref, kind)
+	return tdengine.has_component(self.id, kind)
   end,  
   get_component = function(self, kind)
-	local component = Entity["get_component"](self.cpp_ref, kind)
-	if component then
-	  return tdengine.components[component:get_id()]
+	local id = tdengine.get_component(self.id, kind)
+	if id >= 0 then
+	  return tdengine.components[id]
 	else
       return nil
 	end
   end,  
   add_component = function(self, kind, data)
-	local component = Entity["add_component"](self.cpp_ref, kind, data)
-	if component then
-      return tdengine.components[component:get_id()]
-	else
-	  return nil
-	end
+	return tdengine.create_component(self.id, kind, data)
   end,
   all_components = function(self)
-    local components = Entity["all_components"](self.cpp_ref)
+    local components = tdengine.all_components(self.id)
 	local array = {}
 	for i = 1, #components do
 	  local component = components[i]
@@ -192,10 +223,10 @@ local entity_mixin = {
 	return array
   end,
   get_name = function(self)
-	return Entity["get_name"](self.cpp_ref)
+	return tdengine.entity_name(self.id)
   end,
   get_id = function(self)
-	return Entity["get_id"](self.cpp_ref)
+	return self.id
   end,
   create_entity = function(self, name)
 	 local id = tdengine.create_entity(name)
@@ -238,10 +269,10 @@ end
 
 local component_mixin = {
   get_name = function(self)
-	return Component["get_name"](self.cpp_ref)
+	return tdengine.component_name(self.id)
   end,
   get_id = function(self)
-	return Component["get_id"](self.cpp_ref)
+	return self.id
   end,
   do_if_parent_is = function(self, parent, f, ...)
 	 if self.parent:get_name() == parent then
@@ -304,7 +335,7 @@ function tdengine.load_scene(name)
    end
   
    for index, data in pairs(scene.entities) do
-	  local id = tdengine.create_entity(data.name)
+	  local id = tdengine.create_entity(data.name, data)
 	  if not id then return end
 
 	  local entity = tdengine.entities[id]
@@ -312,58 +343,6 @@ function tdengine.load_scene(name)
    end
 
    tdengine.loaded_scene = name
-end
-
-function tdengine.load_entity(entity, data)
-   local components = data.components
-   if not components then return end
-
-   for name, data in pairs(components) do
-	  if entity:has_component(name) then
-		 local component = entity:get_component(name)
-		 component:load(data)
-	  else
-		 data.skip_init = true
-		 local component = entity:add_component(name, data)		 
-	  end
-   end
-   
-   for name, data in pairs(components) do
-	  local component = entity:get_component(name)
-	  component:init()
-   end
-
-   entity:init(data.params or {})
-end
-
-function tdengine.load_prefab(entity)
-   local filepath = 'prefabs/' .. entity:get_name()
-   package.loaded[filepath] = nil
-   local status, data = pcall(require, filepath)
-   if not status then
-	  local message = 'tdengine.load_prefab() :: could not find prefab. '
-	  message = message .. 'requested prefab was: ' .. name
-	  print(message)
-   end
-
-
-   local components = data.components
-   if not components then return end
-
-   for name, data in pairs(components) do
-	  if entity:has_component(name) then
-		 local component = entity:get_component(name)
-		 component:load(data)
-	  else
-		 data.skip_init = true
-		 local component = entity:add_component(name, data)		 
-	  end
-   end
-   
-   for name, data in pairs(components) do
-	  local component = entity:get_component(name)
-	  component:init()
-   end
 end
 
 function tdengine.save_scene(name)

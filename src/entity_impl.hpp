@@ -27,22 +27,12 @@ ComponentManager& get_component_manager() {
 	return manager;
 }
 
-Component* ComponentManager::create_component(std::string name, int entity, sol::table data) {
+Component* ComponentManager::create_component(std::string name, int entity) {
 	auto component = std::make_unique<Component>();
 	auto id = Component::next_id++;
 	component->id = id;
 	component->name = name;
 	component->entity = entity;
-
-	auto& c = *(component.get());
-	sol::protected_function on_component_created = Lua.state["on_component_created"];
-	auto result = on_component_created(c, data);
-	if (!result.valid()) {
-		sol::error error = result;
-		tdns_log.write("Failed to create component. Entity ID: " + std::to_string(entity) + ". Component name: " + name + ". Lua error:");
-		tdns_log.write(error.what());
-	}
-
 	
 	components[component->id] = std::move(component);
 	return components[id].get();
@@ -66,14 +56,6 @@ void ComponentManager::destroy_component(int id) {
 	
 	auto component = components[id].get();
 	
-	sol::protected_function on_component_created = Lua.state["on_component_destroyed"];
-	auto result = on_component_created(component);
-	if (!result.valid()) {
-		sol::error error = result;
-		tdns_log.write("Failed to destroy component. ID was: " + std::to_string(id));
-		tdns_log.write(error.what());
-	}
-
 	components.erase(id);
 }
 	
@@ -109,14 +91,14 @@ void Entity::update(float dt) {
 	}
 }
 
-Component* Entity::add_component(std::string name, sol::table data) {
+Component* Entity::add_component(std::string name) {
 	// Don't double add components
 	if (components.find(name) != components.end()) {
 		return components[name];
 	}
 
 	auto& component_manager = get_component_manager();
-	auto component = component_manager.create_component(name, id, data);
+	auto component = component_manager.create_component(name, id);
 	
 	if (component) {
 		components[name] = component;
@@ -156,6 +138,25 @@ EntityManager& get_entity_manager() {
 }
 
 void EntityManager::update(float dt) {
+	auto& physics_engine = get_physics_engine();
+	for (const auto& collision : physics_engine.collisions) {
+		// Run on_collision for both entities involved in the collision
+		sol::protected_function on_collision = Lua.state["on_collision"];
+		auto result = on_collision(collision.entity, collision.other);
+		if (!result.valid()) {
+			sol::error error = result;
+			tdns_log.write("on_collision failed for " + std::to_string(collision.entity) + "Lua error: ");
+			tdns_log.write(error.what());
+		}
+
+		result = on_collision(collision.other, collision.entity);
+		if (!result.valid()) {
+			sol::error error = result;
+			tdns_log.write("on_collision failed for " + std::to_string(collision.other) + "Lua error: ");
+			tdns_log.write(error.what());
+		}
+	}
+		
 	for (auto& [id, entity] : entities) {
 		entity->update(dt);
 	}
@@ -175,33 +176,6 @@ int EntityManager::create_entity(std::string name) {
 	Entity::next_id++;
 	auto it = inserted.first;
 	Entity& entity = *it->second;
-
-	// Add it to Lua
-	sol::protected_function on_entity_created = Lua.state["on_entity_created"];
-	auto result = on_entity_created(entity);
-
-	// This one is hit if there's an error in the Lua code for the entity		
-	if (!result.valid()) {
-		sol::error error = result;
-		std::string message = "You tried to create an entity named " + name;
-		message += ", but it errored out in init(). Here's the Lua error:";
-		tdns_log.write(message);
-		tdns_log.write(error.what());
-	}
-	// Otherwise, check the return code. We'll return 1 if we couldn't find the entity type.
-	else {
-		int code = result;
-
-		if (code) {
-			std::string message = "You tried to create an entity named " + name;
-			message += ", but there is no Lua class for that entity";
-			tdns_log.write(message);
-
-			// Delete the C++ object we just created
-			entities.erase(entities.find(entity.id));
-			return -1;
-		}
-	}
 
 	return entity.id;
 }

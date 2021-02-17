@@ -1,10 +1,9 @@
-namespace API {
-int create_entity(std::string name) {
+int API::alloc_entity(std::string name) {
 	auto& entity_manager = get_entity_manager();
 	return entity_manager.create_entity(name);
 }
 
-void destroy_entity(int entity) {
+void API::free_entity(int entity) {
 	auto& entity_manager = get_entity_manager();
 	auto& physics_engine = get_physics_engine();
 	auto& render_engine = get_render_engine();
@@ -13,7 +12,98 @@ void destroy_entity(int entity) {
 	entity_manager.destroy_entity(entity);
 }
 
-void draw_entity(int entity) {
+int API::alloc_component(int entity, const char* name) {
+	auto& manager = get_component_manager();
+	auto component = manager.create_component(std::string(name), entity);
+	return component->get_id();
+}
+
+void API::free_component(int component) {
+	auto& manager = get_component_manager();
+	return manager.destroy_component(component);
+}
+
+const char* API::component_name(int id) {
+	auto& manager = get_component_manager();
+	auto component = manager.get_component(id);
+	if (!component) {
+		tdns_log.write("component_name(): no such component: " + std::to_string(id));
+		return nullptr;
+	}
+	return component->get_name().c_str();
+}
+
+const char* API::entity_name(int id) {
+	auto& entity_manager = get_entity_manager();
+	auto entity = entity_manager.get_entity(id);
+	if (!entity) {
+		tdns_log.write("entity_name(): no such entity: " + std::to_string(id));
+		return nullptr;
+	}
+	return entity->get_name().c_str();
+}
+
+bool API::has_component(int id, const char* name) {
+	auto& entity_manager = get_entity_manager();
+	auto entity = entity_manager.get_entity(id);
+	if (!entity) {
+		tdns_log.write("has_component(): no such entity: " + std::to_string(id));
+		return false;
+	}
+	return entity->has_component(name);
+}
+
+int API::get_component(int id, const char* name) {
+	auto& entity_manager = get_entity_manager();
+	auto entity = entity_manager.get_entity(id);
+	if (!entity) {
+		tdns_log.write("get_component(): no such entity: " + std::to_string(id));
+		return -1;
+	}
+
+	auto component = entity->get_component(name);
+	if (!component) {
+		std::string message = "get_component(): no such component. ";
+		message += name;
+		message += "(" + std::to_string(id) + ")";
+		tdns_log.write(message);
+		return -1;
+	}
+
+	return component->get_id();
+}
+
+int API::add_component(int id, const char* name) {
+	auto& entity_manager = get_entity_manager();
+	auto entity = entity_manager.get_entity(id);
+	if (!entity) {
+		tdns_log.write("add_component(): no such entity: " + std::to_string(id));
+		return -1;
+	}
+
+	auto component = entity->add_component(name);
+	return component ? component->get_id() : -1;
+}
+
+sol::object API::all_components(int id) {
+	auto& entity_manager = get_entity_manager();
+	auto entity = entity_manager.get_entity(id);
+	if (!entity) {
+		tdns_log.write("all_components(): no such entity: " + std::to_string(id));
+		return sol::make_object(Lua.state, sol::lua_nil);
+	}
+
+	auto out = Lua.state.create_table();
+	auto components = entity->all_components();
+	for (int i = 0; i < components.size(); i++) {
+		auto component = components[i];
+		out[i + 1] = component->id;
+	}
+	
+	return out;
+}
+
+void API::draw_entity(int entity) {
 	auto& entity_manager = get_entity_manager();
 	auto entity_ptr = entity_manager.get_entity(entity);
 	
@@ -76,7 +166,7 @@ void draw_entity(int entity) {
 	render_engine.render_list.push_back(r);
 }
 
-void register_collider(int entity) {
+void API::register_collider(int entity) {
 	auto& entity_manager = get_entity_manager();
 
 	Collider collider;
@@ -107,7 +197,7 @@ void register_collider(int entity) {
 	physics_engine.add_collider(entity, collider);
 }
 
-sol::object ray_cast(float x, float y) {
+sol::object API::ray_cast(float x, float y) {
 	auto& physics_engine = get_physics_engine();
 
 	for (const auto& [entity, collider] : physics_engine.colliders) {
@@ -119,7 +209,7 @@ sol::object ray_cast(float x, float y) {
 	return sol::make_object(Lua.state, sol::lua_nil);
 }
 
-sol::object sprite_size(std::string name) {
+sol::object API::sprite_size(std::string name) {
 	auto& asset_manager = get_asset_manager();
 	auto sprite = asset_manager.get_asset<Sprite>(name);
 	if (sprite) {
@@ -132,7 +222,7 @@ sol::object sprite_size(std::string name) {
 	return sol::make_object(Lua.raw_state, sol::lua_nil);
 }
 
-void move_entity(int entity) {
+void API::move_entity(int entity) {
 	auto box = Lua.get_component(entity, "BoundingBox");
 	auto movement = Lua.get_component(entity, "Movement");
 
@@ -146,7 +236,7 @@ void move_entity(int entity) {
 	physics_engine.requests.push_back(request);
 }
 
-void teleport_entity(int entity, float x, float y) {
+void API::teleport_entity(int entity, float x, float y) {
 	MoveRequest request;
 	request.flags |= MoveFlags::BypassCollision;
 	request.entity = entity;
@@ -159,7 +249,7 @@ void teleport_entity(int entity, float x, float y) {
 
 
 
-void register_animation(std::string name, std::vector<std::string> frames) {
+void API::register_animation(std::string name, std::vector<std::string> frames) {
 	tdns_log.write("Registering animation: " + name, Log_Flags::File);
 	
 	Animation* animation = new Animation;
@@ -171,7 +261,7 @@ void register_animation(std::string name, std::vector<std::string> frames) {
 	asset_manager.add_asset<Animation>(name, animation);
 }
 
-int count_frames(std::string animation) {
+int API::count_frames(std::string animation) {
 	auto& asset_manager = get_asset_manager();
 	Animation* asset = asset_manager.get_asset<Animation>(animation);
 	if (!asset) {
@@ -183,40 +273,33 @@ int count_frames(std::string animation) {
 	return asset->frames.size();
 }
 
-void enable_input_channel(int channel) {
+void API::enable_input_channel(int channel) {
 	auto& input_manager = get_input_manager();
 	input_manager.enable_channel(channel);
 }
 
-void disable_input_channel(int channel) {
+void API::disable_input_channel(int channel) {
 	auto& input_manager = get_input_manager();
 	input_manager.disable_channel(channel);
 }
 
-bool is_down(GLFW_KEY_TYPE id, int mask) {
+bool API::is_down(GLFW_KEY_TYPE id, int mask) {
 	auto& manager = get_input_manager();
 	if (!(manager.mask & mask)) return false;
 	return manager.is_down[id];
 }
 
-bool was_pressed(GLFW_KEY_TYPE id, int mask) {
+bool API::was_pressed(GLFW_KEY_TYPE id, int mask) {
 	auto& manager = get_input_manager();
 	return manager.was_pressed(id, mask);
 }
-bool was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask) {
+
+bool API::was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask) {
 	auto& manager = get_input_manager();
 	return manager.chord(mod_key, cmd_key, mask);
 }
-float get_cursor_x() {
-	auto& manager = get_input_manager();
-	return manager.screen_pos.x;
-}
-float get_cursor_y() {
-	auto& manager = get_input_manager();
-	return manager.screen_pos.y;
-}
 
-sol::object cursor() {
+sol::object API::cursor() {
 	auto& manager = get_input_manager();
 	
 	auto out = Lua.state.create_table();
@@ -225,14 +308,14 @@ sol::object cursor() {
 	return out;
 }
 
-sol::object screen_dimensions() {
+sol::object API::screen_dimensions() {
 	auto out = Lua.state.create_table();
 	out["x"] = screen_x;
 	out["y"] = screen_y;
 	return out;
 }
 
-sol::object camera() {
+sol::object API::camera() {
 	auto& renderer = get_render_engine();
 	
 	auto out = Lua.state.create_table();
@@ -241,21 +324,13 @@ sol::object camera() {
 	return out;
 }
 
-float get_camera_x() {
-	auto& render_engine = get_render_engine();
-	return render_engine.camera.x;
-}
-float get_camera_y() {
-	auto& render_engine = get_render_engine();
-	return render_engine.camera.y;
-}
-void move_camera(float x, float y) {
+void API::move_camera(float x, float y) {
 	auto& render_engine = get_render_engine();
 	render_engine.camera.x += x;
 	render_engine.camera.y += y;
 }
 
-bool draw_sprite_button(std::string sprite_name, float sx, float sy) {
+bool API::draw_sprite_button(std::string sprite_name, float sx, float sy) {
 	auto& asset_manager = get_asset_manager();
 	auto sprite = asset_manager.get_asset<Sprite>(sprite_name);
 	if (!sprite) {
@@ -274,64 +349,63 @@ bool draw_sprite_button(std::string sprite_name, float sx, float sy) {
 							  bottom_left_tex_coords, top_right_tex_coords);
 }
 
-void line_screen(sol::table p1, sol::table p2, sol::table color) {
+void API::line_screen(sol::table p1, sol::table p2, sol::table color) {
 	glm::vec2 a{p1["x"], p2["y"]};
 	glm::vec2 b{p2["x"], p2["y"]};
 	glm::vec4 clr{color["r"], color["g"], color["b"], color["a"]};
 	draw_line_from_points(a, b, clr);
 }
 
-void rect_filled_screen(sol::table rect, sol::table color) {
+void API::rect_filled_screen(sol::table rect, sol::table color) {
 	glm::vec2 origin{rect["origin"]["x"], rect["origin"]["y"]};
 	glm::vec2 extents{rect["extents"]["x"], rect["extents"]["y"]};
 	glm::vec4 clr{color["r"], color["g"], color["b"], color["a"]};
 	draw_rect_filled_screen(origin, extents, clr);
 }
 
-void rect_outline_screen(sol::table rect, sol::table color) {
+void API::rect_outline_screen(sol::table rect, sol::table color) {
 	glm::vec2 origin{rect["origin"]["x"], rect["origin"]["y"]};
 	glm::vec2 extents{rect["extents"]["x"], rect["extents"]["y"]};
 	glm::vec4 clr{color["r"], color["g"], color["b"], color["a"]};
 	draw_rect_outline_screen(origin, extents, clr);
 }
 
-void rect_outline_world(sol::table rect, sol::table color) {
+void API::rect_outline_world(sol::table rect, sol::table color) {
 	glm::vec2 origin{rect["origin"]["x"], rect["origin"]["y"]};
 	glm::vec2 extents{rect["extents"]["x"], rect["extents"]["y"]};
 	glm::vec4 clr{color["r"], color["g"], color["b"], color["a"]};
 	draw_rect_outline_world(origin, extents, clr);
 }
 
-void toggle_console() {
+void API::toggle_console() {
 	show_console = !show_console;
 }
 
-void use_layout(const char* name) {
+void API::use_layout(const char* name) {
 	layout_to_load = name;
 }
 
-void save_layout(const char* name) {
+void API::save_layout(const char* name) {
 	auto relative = RelativePath(std::string("layouts/") + name + ".ini");
 	auto layout = ScriptPath(relative);
 	ImGui::SaveIniSettingsToDisk(layout.path.c_str());
 	tdns_log.write("Saved Imgui configuration: " + layout.path, Log_Flags::File);
 }
 
-void draw_text(std::string text, float x, float y, int flags) {
+void API::draw_text(std::string text, float x, float y, int flags) {
 	glm::vec2 point(x, y);
 	draw_text(text, point, static_cast<Text_Flags>(flags));
 }
-void screen(const char* dimension) {
+
+void API::screen(const char* dimension) {
 	if (!strcmp(dimension, "640")) use_640_360();
 	else if (!strcmp(dimension, "720")) use_720p();
 	else if (!strcmp(dimension, "1080")) use_1080p();
 	else if (!strcmp(dimension, "1440")) use_1440p();
 }
 
-void log(const char* message, uint8_t flags) {
+void API::log(const char* message, uint8_t flags) {
 	tdns_log.write(message, flags);
-}
-
 }
 	
 void register_lua_api() {
@@ -339,8 +413,16 @@ void register_lua_api() {
 	
 	using namespace API;
     state["tdengine"] = state.create_table();
-	state["tdengine"]["create_entity"] = &create_entity;
-	state["tdengine"]["destroy_entity"] = &destroy_entity;
+	state["tdengine"]["alloc_entity"] = &alloc_entity;
+	state["tdengine"]["free_entity"] = &free_entity;
+	state["tdengine"]["entity_name"] = &entity_name;
+	state["tdengine"]["has_component"] = &has_component;
+	state["tdengine"]["get_component"] = &get_component;
+	state["tdengine"]["add_component"] = &add_component;
+	state["tdengine"]["all_components"] = &all_components;
+	state["tdengine"]["alloc_component"] = &alloc_component;
+	state["tdengine"]["free_component"] = &free_component;
+	state["tdengine"]["component_name"] = &component_name;
 	state["tdengine"]["register_animation"] = &register_animation;
 	state["tdengine"]["count_frames"] = &count_frames;
 	state["tdengine"]["enable_input_channel"] = &enable_input_channel;

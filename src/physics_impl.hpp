@@ -141,6 +141,8 @@ bool point_inside_collider(float x, float y, const Collider& collider) {
 }
 
 void PhysicsEngine::update(float dt) {
+	collisions.clear();
+	
 	for (auto& request : requests) {
 		auto collider = get_collider(request.entity);
 		if (!collider) continue;
@@ -160,13 +162,11 @@ void PhysicsEngine::update(float dt) {
 			glm::vec2 penetration;
 			if (are_colliding(*collider, other, penetration)) {
 				collider->origin -= penetration;
-				auto physics = Lua.get_component(request.entity, "Physics");
-				physics["had_collision"] = true;
-				physics["collided_with"] = id;
 
-				physics = Lua.get_component(id, "Physics");
-				physics["had_collision"] = true;
-				physics["collided_with"] = request.entity;
+				CollisionInfo info;
+				info.entity = request.entity;
+				info.other = id;
+				collisions.push_back(info);
 			}
 		}
 	}

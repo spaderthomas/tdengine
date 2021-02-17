@@ -1,13 +1,18 @@
 local DEFAULT_FRAME_TIME = 8 / 60
 
 Animation = tdengine.component('Animation')
-function Animation:load(data)
-   self.animations = data.animations or {}
+function Animation:init(params)
+   self.frame = 0
+   self.time_to_next = DEFAULT_FRAME_TIME
+   self.loop = true
+   self.done = false
+
+   self.animations = params.animations or {}
    self:batch_add(self.animations)
 
    self.current = ''
    self.last = ''
-   local current = data.current or nil
+   local current = params.current or nil
    if current then
 	  self.current = current
 	  self.last = current
@@ -23,13 +28,6 @@ function Animation:as_table()
 	  animations = self.animations,
 	  current = self.current
    }
-end
-
-function Animation:init()
-   self.frame = 0
-   self.time_to_next = DEFAULT_FRAME_TIME
-   self.loop = true
-   self.done = false
 end
 
 function Animation:update(dt)

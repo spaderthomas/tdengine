@@ -17,7 +17,7 @@ Editor = tdengine.entity('Editor')
 function Editor:load(data)
 end
 
-function Editor:init()
+function Editor:init(params)
   self:persist()
    
   self.options = {
@@ -68,7 +68,7 @@ function Editor:init()
   self.frame = 0
 
   self:do_not_save()
-  
+
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
   input:enable()

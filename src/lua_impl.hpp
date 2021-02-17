@@ -61,6 +61,8 @@ int LuaState::init() {
 	script_dir(RelativePath("scenes"));
 	script_dir(RelativePath("actions"));
 
+	state.script("tdengine.load_editor()");
+
 	return 0;
 }
 

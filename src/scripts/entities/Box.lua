@@ -1,5 +1,5 @@
 Box = tdengine.entity('Box')
-function Box:init()
+function Box:init(params)
    tdengine.register_collider(self:get_id())
    local graphic = self:get_component('Graphic')
    graphic.draw = false

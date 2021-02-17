@@ -1,8 +1,5 @@
 Physics = tdengine.component('Physics')
-function Physics:load(data)
-end
-
-function Physics:init()
+function Physics:init(params)
    self.had_collision = false
    self.collided_with = 0
 end

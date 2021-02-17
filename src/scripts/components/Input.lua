@@ -1,9 +1,6 @@
 Input = tdengine.component('Input')
-function Input:load(data)
-   self.channel = data.channel or tdengine.InputChannel.Editor
-end
-
-function Input:init()
+function Input:init(params)
+   self.channel = params.channel or tdengine.InputChannel.Editor
 end
 
 function Input:update()

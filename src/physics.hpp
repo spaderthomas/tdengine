@@ -5,6 +5,11 @@ struct Collider {
 	glm::vec2 offset;
 };
 
+struct CollisionInfo {
+	int entity;
+	int other;
+};
+
 namespace MoveFlags {
 	constexpr int BypassCollision = 1;
 }
@@ -42,6 +47,12 @@ bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration);
 struct PhysicsEngine {
 	std::map<EntityID, Collider> colliders;
 	std::vector<MoveRequest> requests;
+
+	// These are built up when the engine resolves all physics / collisions.
+	// The entity manager reads from this on the next frame and calls the relevant
+	// callbacks in Lua. The engine will clear out all data from here before it
+	// updates.
+	std::vector<CollisionInfo> collisions;
 	
 	void update(float dt);
 	bool has_collider(int entity);

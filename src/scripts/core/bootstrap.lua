@@ -73,3 +73,7 @@ function tdengine.bootstrap()
 	  _G[name] = data.proc
    end
 end
+
+function tdengine.load_editor()
+   tdengine.create_entity('Editor', {})
+end
