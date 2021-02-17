@@ -4,5 +4,8 @@ function Physics:init(params)
    self.collided_with = 0
 end
 
+function Physics:late_init()
+end
+
 function Physics:update()
 end

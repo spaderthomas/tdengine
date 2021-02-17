@@ -3,5 +3,6 @@ return {
 	  Physics = {},
 	  BoundingBox = {},
 	  Position = {},
+	  Graphic = {},
    }
 }

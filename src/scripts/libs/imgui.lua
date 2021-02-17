@@ -10,7 +10,10 @@ imgui.extensions.Component = function(component)
 	  imgui.extensions.VariableName('id')
 	  imgui.SameLine()
 	  imgui.Text(tostring(component:get_id()))
-	  imgui.extensions.TableMembers(component:get_name(), component)
+
+	  local name = component:get_name()
+	  local ignore = component.imgui_ignore
+	  imgui.extensions.TableMembers(name, component, ignore)
 	  imgui.TreePop()
    end
 
@@ -32,17 +35,17 @@ imgui.extensions.Entity = function(entity, unique_id)
 		 imgui.extensions.Component(component)
 	  end
 
-	  imgui.extensions.TableMembers(entity:get_name(), entity)
+	  imgui.extensions.TableMembers(entity:get_name(), entity, entity.imgui_ignore)
 	  imgui.TreePop()
    end
 
    imgui.PopID()
 end
 
-imgui.extensions.TableMembers = function(name, tbl, ignore, imgui_id)
-   ignore = tbl.imgui_ignore or {}
+imgui.extensions.TableMembers = function(name, t, ignore, imgui_id)
+   local ignore = ignore or {}
    imgui_id = imgui_id or '##' .. name
-   for member, value in pairs(tbl) do
+   for member, value in pairs(t) do
 	  if not ignore[member] then
 		 local value_type = type(value)
 		 local next_imgui_id = imgui_id .. '__' .. member
@@ -66,12 +69,12 @@ imgui.extensions.TableMembers = function(name, tbl, ignore, imgui_id)
    end
 end
 
-imgui.extensions.Table = function(name, tbl, ignore, imgui_id)
+imgui.extensions.Table = function(name, t, ignore, imgui_id)
    ignore = ignore or {}
    imgui_id = imgui_id or '##' .. name
    
    if imgui.TreeNode(name) then
-	  imgui.extensions.TableMembers(name, tbl, ignore, imgui_id)
+	  imgui.extensions.TableMembers(name, t, ignore, imgui_id)
 	  imgui.TreePop()
    end
 end
@@ -97,7 +100,8 @@ imgui.extensions.InputFloat = function(label, value, format)
 end
 
 imgui.extensions.VariableName = function(name)
-   imgui.PushStyleColor_2(imgui.constant.Col.Text, .1, .2, .7, 1)
+   local color = tdengine.color32(0, 200, 200, 255)
+   imgui.PushStyleColor(imgui.constant.Col.Text, color)
    imgui.Text(name .. ':')
    imgui.PopStyleColor()
 end

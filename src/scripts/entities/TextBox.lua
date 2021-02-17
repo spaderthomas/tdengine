@@ -1,6 +1,5 @@
 TextBox = tdengine.entity('TextBox')
 function TextBox:init(params)
-   tdengine.register_collider(self:get_id())
    self:reset()
 
    local graphic = self:get_component("Graphic")

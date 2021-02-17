@@ -61,11 +61,9 @@ function tdengine.create_entity(name, data)
 	  print('tdengine.create_entity(): could not find prefab. ' .. name)
    end
 
-   print('loading prefab')
+   print('loading prefab: ' .. name)
    if prefab then
-	  print('got one')
 	  for name, component in pairs(prefab.components) do
-		 print('component ' .. name)
 		 local param_components = data.components or {}
 
 		 -- Merge the component data passed in with what's in the prefab
@@ -74,9 +72,16 @@ function tdengine.create_entity(name, data)
 			component[key] = value
 		 end
 
-		 print('addin')
-		 entity:add_component(name, component)		 
+		 print('adding ' .. name)
+		 entity:add_component(name, component)
 		 print('added')
+	  end
+   end
+
+   local components = entity:all_components()
+   for index, component in pairs(components) do
+	  if component.late_init then
+		 component:late_init()
 	  end
    end
 
@@ -97,7 +102,7 @@ end
 
 function tdengine.create_component(entity_id, name, params)
    local id = tdengine.add_component(entity_id, name)
-  
+
    ComponentType = _G[name]
    if not ComponentType then
 	  print('create_component(): no such component ' .. name)
@@ -111,6 +116,13 @@ function tdengine.create_component(entity_id, name, params)
    
    tdengine.components[id] = component
 
+   -- You forgot to write init() in the component. 
+   if not component.init then
+	  local debugger = require('debugger')
+	  debugger.auto_where = 1
+	  debugger()
+   end
+   
    component:init(params)
 end
 
@@ -214,11 +226,10 @@ local entity_mixin = {
 	return tdengine.create_component(self.id, kind, data)
   end,
   all_components = function(self)
-    local components = tdengine.all_components(self.id)
+	local ids = tdengine.all_components(self.id)
 	local array = {}
-	for i = 1, #components do
-	  local component = components[i]
-	  array[i] = tdengine.components[component:get_id()]
+	for index, id in pairs(ids) do
+	  array[index] = tdengine.components[id]
 	end
 	return array
   end,
@@ -256,7 +267,8 @@ local entity_mixin = {
 	 class = true,
 	 imgui_ignore = true,
 	 tdengine_persist = true,
-	 tdengine_do_not_save = true
+	 tdengine_do_not_save = true,
+	 id = true
   }
 }
 
@@ -288,7 +300,8 @@ local component_mixin = {
   imgui_ignore = {
 	 class = true,
 	 parent = true,
-	 imgui_ignore = true
+	 imgui_ignore = true,
+	 id = true
   },
   should_save = true
 }
@@ -336,10 +349,6 @@ function tdengine.load_scene(name)
   
    for index, data in pairs(scene.entities) do
 	  local id = tdengine.create_entity(data.name, data)
-	  if not id then return end
-
-	  local entity = tdengine.entities[id]
-	  tdengine.load_entity(entity, data)
    end
 
    tdengine.loaded_scene = name
@@ -361,16 +370,14 @@ function tdengine.save_scene(name)
 			-- Insert some basic fields that every entity has
 			local saved = {
 			   name = entity:get_name(),
-			   components = {}
+			   components = {},
+			   params = {}
 			}
 
 			-- If the entity has some custom save logic, call it first. It will
 			-- return a table which we merge into the main table for this entity
 			if entity.save then
-			   local extra = entity:save()
-			   for key, value in pairs(extra) do
-				  saved[key] = value
-			   end
+			   saved.params = entity:save()
 			end
 
 			-- Save out all components

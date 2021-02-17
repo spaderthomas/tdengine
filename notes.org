@@ -325,6 +325,19 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/17/2021
+feel like i'm bikeshedding here
+
+but i need to know what to save out when i swap scenes. i am actively
+implementing features for the game. maybe the solution here is to keep it
+simple. just do a very naive save for now. what does a naive save look like? 
+given that i want to go through a door, come back, and then have shit be the
+same way that i left it. 
+
+only thing on disk are the template files. when you leave a scene, i save the
+state into a table that lives in memory. one entry in the table for each
+scene. when i load the scene, i check the table for the requested scene. if it's
+there, i use it. if it's not, i use the template. 
 ** 02/15/2021
 good stuff...
 
@@ -3369,7 +3382,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-02-16 Tue 21:27]--[2021-02-17 Tue 23:27] =>  2:00
+CLOCK: [2021-02-17 Wed 16:00]
+CLOCK: [2021-02-16 Tue 21:27]--[2021-02-16 Tue 23:27] =>  2:00
 CLOCK: [2021-02-15 Mon 16:30]--[2021-02-15 Mon 17:14] =>  0:44
 CLOCK: [2021-02-15 Mon 14:14]--[2021-02-15 Mon 15:54] =>  1:40
 CLOCK: [2021-02-14 Sun 15:17]--[2021-02-14 Sun 16:40] =>  1:23

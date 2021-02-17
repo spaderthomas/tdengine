@@ -2,7 +2,8 @@ Door = tdengine.entity('Door')
 
 function Door:init(params)
    self.where = params.where or ''
-   tdengine.register_collider(self:get_id())
+   local graphic = self:get_component('Graphic')
+   graphic.draw = false
 end
 
 function Door:update(dt)

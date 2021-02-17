@@ -3,13 +3,6 @@ local GLFW = require('glfw')
 
 Player = tdengine.entity('Player')
 function Player:init(params)
-   tdengine.register_collider(self:get_id())
-end
-
-function Player:save()
-   local box = self:get_component('BoundingBox')
-   box.should_save = false
-   return {}
 end
 
 function Player:handle_movement()

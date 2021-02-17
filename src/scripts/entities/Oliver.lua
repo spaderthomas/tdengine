@@ -3,7 +3,6 @@ local GLFW = require('glfw')
 
 Oliver = tdengine.entity('Oliver')
 function Oliver:init(params)
-   tdengine.register_collider(self:get_id())
 end
 
 function Oliver:update(dt)

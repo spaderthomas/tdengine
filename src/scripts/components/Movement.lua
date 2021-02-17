@@ -1,5 +1,5 @@
 Movement = tdengine.component('Movement')
-function Movement:load(params)
+function Movement:init(params)
   self.speed = params.speed or .01   
   self.wish = { x = 0, y = 0 }
 end
