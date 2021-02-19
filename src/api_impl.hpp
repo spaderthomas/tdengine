@@ -23,24 +23,24 @@ void API::free_component(int component) {
 	return manager.destroy_component(component);
 }
 
-const char* API::component_name(int id) {
+std::string API::component_name(int id) {
 	auto& manager = get_component_manager();
 	auto component = manager.get_component(id);
 	if (!component) {
 		tdns_log.write("component_name(): no such component: " + std::to_string(id));
 		return nullptr;
 	}
-	return component->get_name().c_str();
+	return component->get_name();
 }
 
-const char* API::entity_name(int id) {
+std::string API::entity_name(int id) {
 	auto& entity_manager = get_entity_manager();
 	auto entity = entity_manager.get_entity(id);
 	if (!entity) {
 		tdns_log.write("entity_name(): no such entity: " + std::to_string(id));
 		return nullptr;
 	}
-	return entity->get_name().c_str();
+	return entity->get_name();
 }
 
 bool API::has_component(int id, const char* name) {
@@ -138,7 +138,7 @@ void API::draw_entity(int entity) {
 	auto& asset_manager = get_asset_manager();
 	Animation* animation_p = asset_manager.get_asset<Animation>(animation_name);
 	if (!animation_p) {
-		tdns_log.write("Could not find animation: " + animation_name);
+		tdns_log.write("Could not find animation: " + animation_name, Log_Flags::File);
 		return;
 	}
 
@@ -265,8 +265,8 @@ int API::count_frames(std::string animation) {
 	auto& asset_manager = get_asset_manager();
 	Animation* asset = asset_manager.get_asset<Animation>(animation);
 	if (!asset) {
-		tdns_log.write("Asked for animation's frames, but could not find that animation");
-		tdns_log.write("Animation name: " + animation);
+		tdns_log.write("Asked for animation's frames, but could not find that animation", Log_Flags::File);
+		tdns_log.write("Animation name: " + animation, Log_Flags::File);
 		return 0;
 	}
 	

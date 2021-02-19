@@ -67,7 +67,7 @@ function Editor:init(params)
   self.average_framerate = 0
   self.frame = 0
 
-  self:do_not_save()
+  self:should_save(false)
 
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
@@ -347,6 +347,7 @@ end
 function Editor:entity_viewer()
    self.filter:Draw("Filter by name")
    local entity_hovered_in_list = nil
+
    for id, entity in pairs(tdengine.entities) do
 	  local name = entity:get_name()
 	  local sid = tostring(id)

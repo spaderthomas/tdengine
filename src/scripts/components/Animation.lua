@@ -2,6 +2,10 @@ local DEFAULT_FRAME_TIME = 8 / 60
 
 Animation = tdengine.component('Animation')
 function Animation:init(params)
+   -- By default, animations live in the prefab of the entity. Not being changed at runtime.
+   -- Only need to save them when we can't define in the prefab (like Background)
+   self:should_save(false)
+   
    self.frame = 0
    self.time_to_next = DEFAULT_FRAME_TIME
    self.loop = true
@@ -23,7 +27,7 @@ end
 -- Some entities need to save out their animation table, because they are built
 -- at runtime. This is the equivalent of Animation:save, except we can't call it
 -- that, because that would automatically opt-in the component to serialization
-function Animation:as_table()
+function Animation:save()
    return {
 	  animations = self.animations,
 	  current = self.current

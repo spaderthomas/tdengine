@@ -12,20 +12,21 @@ function tdengine.bootstrap()
    tdengine.entities = {}
    tdengine.components = {}
    tdengine.actions = {}
+   tdengine.state = {}
+   tdengine.scenes = {}
    tdengine.loaded_scene = ''
    tdengine.active_cutscene = nil
-   tdengine.state = {}
 
    -- Set up console shortcuts
    tdengine.console_pipe = ''
    local console_shortcuts = {
 	  scene = {
-		 help = 'load a scene from a file located in src/scripts/scenes',
-		 proc = tdengine.load_scene
+		 help = 'load a scene from a template located in src/scripts/scenes/templates',
+		 proc = function(...) tdengine.load_scene_from_template(...) end
 	  },
 	  cutscene = {
 		 help = 'load and begin a cutscene from a file located in src/scripts/cutscenes',
-		 proc = tdengine.begin_cutscene
+		 proc = function(...) tdengine.begin_cutscene(...) end
 	  },
 	  ded = {
 		 help = 'load a scene into the dialogue editor',

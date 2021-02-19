@@ -1,7 +1,10 @@
 -- Callbacks
 function update_entity(id, dt)
-  local entity = tdengine.entities[id]
-  entity:update(dt)
+   local entity = tdengine.entities[id]
+   if entity then
+	  entity:update(dt)
+	  return
+   end
 end
 
 function update_component(id, dt)
@@ -40,7 +43,7 @@ end
 
 function tdengine.create_entity(name, data)   
    local id = tdengine.alloc_entity(name)
-   
+
    -- Find the matching type in Lua
    EntityType = _G[name]
    if not EntityType then
@@ -50,7 +53,7 @@ function tdengine.create_entity(name, data)
    -- Construct the entity with a do-nothing constructor
    entity = EntityType:new()
    entity.id = id
-   
+
    tdengine.entities[id] = entity
 
    -- Load the prefab to create any default compononents
@@ -58,11 +61,10 @@ function tdengine.create_entity(name, data)
    package.loaded[filepath] = nil
    local status, prefab = pcall(require, filepath)
    if not status then
-	  print('tdengine.create_entity(): could not find prefab. ' .. name)
    end
 
-   print('loading prefab: ' .. name)
    if prefab then
+
 	  for name, component in pairs(prefab.components) do
 		 local param_components = data.components or {}
 
@@ -72,9 +74,7 @@ function tdengine.create_entity(name, data)
 			component[key] = value
 		 end
 
-		 print('adding ' .. name)
 		 entity:add_component(name, component)
-		 print('added')
 	  end
    end
 
@@ -234,7 +234,8 @@ local entity_mixin = {
 	return array
   end,
   get_name = function(self)
-	return tdengine.entity_name(self.id)
+	 local name = tdengine.entity_name(self.id)
+	 return name
   end,
   get_id = function(self)
 	return self.id
@@ -256,18 +257,19 @@ local entity_mixin = {
   persist = function(self)
 	 self.tdengine_persist = true
   end,
-  do_not_save = function(self)
-	 self.tdengine_do_not_save = true
+  should_save = function(self, should)
+	 self.tdengine__should_save = should
   end,
   -- This flag gets flipped when we destroy the entity. We shouldn't be holding
   -- onto entities between frames...but sometimes we are very naughty boys indeed,
   -- and this flag will help us not explode.
-  alive = true, 
+  alive = true,
+  tdengine__should_save = true,
   imgui_ignore = {
 	 class = true,
 	 imgui_ignore = true,
 	 tdengine_persist = true,
-	 tdengine_do_not_save = true,
+	 tdengine__should_save = true,
 	 id = true
   }
 }
@@ -297,13 +299,16 @@ local component_mixin = {
   remove_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = false
   end,
+  should_save = function(self, should)
+	 self.tdengine__should_save = should
+  end,
+  tdengine__should_save = true,
   imgui_ignore = {
 	 class = true,
 	 parent = true,
 	 imgui_ignore = true,
 	 id = true
   },
-  should_save = true
 }
 
 function tdengine.component(name)
@@ -336,10 +341,74 @@ function tdengine.action(name)
    return class
 end
 
-function tdengine.load_scene(name)
-   package.loaded['scenes/'..name] = nil
-   local scene = require('scenes/' .. name)
-   
+function tdengine.serialize_current_scene()
+   local save = {
+	  entities = {}
+   }
+
+   for index, entity in pairs(tdengine.entities) do
+	  if entity.tdengine__should_save then
+		 -- Insert some basic fields that every entity has
+		 local entity_table = {
+			name = entity:get_name(),
+			components = {},
+			params = {}
+		 }
+
+		 -- Presave: Here's where you set up your components correctly to save. E.g.
+		 --   - Mark components that you don't want to save.
+		 --   - Load in a temporary state to save with
+		 if entity.pre_save then
+			entity:pre_save()
+		 end
+
+		 -- Entity's save should return a table that are the parameters that are passed
+		 -- into its init()
+		 if entity.save then
+			entity_table.params = entity:save()
+		 end
+
+		 -- Save out all components
+		 local components = entity:all_components()
+		 for index, component in pairs(components) do
+			if component.save and component.tdengine__should_save then
+			   entity_table.components[component:get_name()] = component:save()
+			end
+		 end
+
+		 -- After all components are saved, do whatever the fuck you want
+		 if entity.post_save then
+			entity:post_save(entity_table)
+		 end
+
+		 table.insert(save.entities, entity_table)
+	  end
+   end
+
+   return save
+end
+
+function tdengine.save_current_scene_as_template(name)
+   name = name or tdengine.loaded_scene
+   local filepath = tdengine.paths.absolute('src/scripts/scenes/templates/' .. name .. '.lua')
+   local data = tdengine.serialize_current_scene()
+   tdengine.write_file_to_return_table(filepath, data)
+end
+
+function tdengine.save_current_scene_to_disk(name)
+   name = name or tdengine.loaded_scene
+   local filepath = tdengine.paths.absolute('src/scripts/scenes/saves/' .. name .. '.lua')
+   local data = tdengine.serialize_current_scene()
+   tdengine.write_file_to_return_table(filepath, data)
+end
+
+function tdengine.save_current_scene_to_memory()
+   local data = tdengine.serialize_current_scene()
+   tdengine.scenes[tdengine.loaded_scene] = data
+end
+
+
+function tdengine.load_scene(data)
    for id, entity in pairs(tdengine.entities) do
 	  persist = entity.tdengine_persist or false
 	  if not persist then
@@ -347,57 +416,121 @@ function tdengine.load_scene(name)
 	  end
    end
   
-   for index, data in pairs(scene.entities) do
-	  local id = tdengine.create_entity(data.name, data)
+   for index, entity in pairs(data.entities) do
+	  tdengine.create_entity(entity.name, entity)
+   end
+end
+
+function tdengine.load_scene_from_template(name)
+   local module_name = 'scenes/templates/' .. name
+   package.loaded[module_name] = nil
+   local status, scene = pcall(require, module_name)
+   if not status then
+	  print('tdengine.load_scene_from_template(): could not require module ' .. module_name)
    end
 
    tdengine.loaded_scene = name
+   tdengine.load_scene(scene)
 end
 
-function tdengine.save_scene(name)
-   local relative = 'src/scripts/scenes/' .. name .. '.lua'
-   local filepath = tdengine.paths.absolute(relative)
-   local file = assert(io.open(filepath, 'w'))
-   if file then
-	  local scene = require('scenes/' .. name)
-	  local save = {
-		 entities = {}
-	  }
+function tdengine.load_scene_from_memory(name)
+   local scene = tdengine.scenes[name]
+   if not scene then
+	  print('tdengine.load_scene_from_memory(): no entry for scene ' .. name)
+   end
+   
+   tdengine.loaded_scene = name
+   tdengine.load_scene(scene)
+end
 
-	  for index, entity in pairs(tdengine.entities) do
-		 do_not_save = entity.tdengine_do_not_save or false
-		 if not do_not_save then
-			-- Insert some basic fields that every entity has
-			local saved = {
-			   name = entity:get_name(),
-			   components = {},
-			   params = {}
-			}
+function tdengine.load_scene_from_disk(name)
+   local module_name = 'scenes/saves/' .. name
+   package.loaded[module_name] = nil
+   local status, scene = pcall(require, module_name)
+   if not status then
+	  print('tdengine.load_scene_from_disk(): could not require module ' .. module_name)
+   end
 
-			-- If the entity has some custom save logic, call it first. It will
-			-- return a table which we merge into the main table for this entity
-			if entity.save then
-			   saved.params = entity:save()
-			end
+   tdengine.loaded_scene = name
+   tdengine.load_scene(scene)
+end
 
-			-- Save out all components
-			local components = entity:all_components()
-			for index, component in pairs(components) do
-			   if component.save and component.should_save then
-				  saved.components[component:get_name()] = component:save()
-			   end
-			end
-
-			table.insert(save.entities, saved)
-		 end
+function tdengine.create_action(name, params)
+   ActionType = tdengine.actions[name]
+   if ActionType ~= nil then
+	  local action = ActionType:new()
+	  if contains(params, 'block') then
+		 action.block = params.block
 	  end
+	  
+	  action:init(params)
+	  return action
+   else
+	  print('create_action(): could not find action: ' .. name)
+   end
 
-	  local serpent = require('serpent')
-	  file:write('return ')
-	  file:write(serpent.block(save, { comment = false }))
+   return nil
+end
+
+function tdengine.begin_cutscene(name)
+   local module_path = 'cutscenes/' .. name
+   package.loaded[module_path] = nil
+   local cutscene = require(module_path)
+
+   tdengine.active_cutscene = {
+	  name = name,
+	  actions = {}
+   }
+   for index, data in pairs(cutscene) do
+	  local action = tdengine.create_action(data.name, data)
+	  tdengine.active_cutscene.actions[index] = action
    end
 end
 
+function tdengine.update_actions(dt, actions)
+   local done = true
+   for index, action in pairs(actions) do
+	  if not action.done then
+		 action:update(dt)
+		 done = false
+
+		 if action.block then
+			break
+		 end
+	  end
+   end
+
+   return done
+end
+
+function tdengine.update_cutscene(dt)
+   if tdengine.active_cutscene == nil then
+	  return
+   end
+
+   local done = tdengine.update_actions(dt, tdengine.active_cutscene.actions)
+   if done then
+	  print('update_cutscene(): finished ' .. tdengine.active_cutscene.name)
+	  tdengine.active_cutscene = nil
+   end
+end
+
+function tdengine.load_dialogue(name)
+   -- Load the dialogue data itself
+   local filepath = 'dialogue/' .. name
+   package.loaded[filepath] = nil
+   
+   local status, dialogue = pcall(require, filepath)
+   if not status then
+	  local message = 'tdengine.load_dialogue() :: could not find dialogue. '
+	  message = message .. 'requested dialogue was: ' .. name
+	  print(message)
+
+	  return nil
+   end
+   
+   return dialogue
+end
 -- Utilities
 tdengine.colors = {}
 tdengine.colors.red =   { r = 1, g = 0, b = 0, a = 1 }
@@ -466,6 +599,15 @@ function tdengine.scandir(dir)
    end
    pfile:close()
    return t
+end
+
+function tdengine.write_file_to_return_table(filepath, t)
+   local file = assert(io.open(filepath, 'w'))
+   if file then
+	  local serpent = require('serpent')
+	  file:write('return ')
+	  file:write(serpent.block(t, { comment = false }))
+   end
 end
 
 function tdengine.screen_to_world(screen)
@@ -606,81 +748,4 @@ end
 function truncate(float, digits)
    local mult = 10 ^ digits
    return math.modf(float * mult) / mult
-end
-  
-function tdengine.create_action(name, params)
-   ActionType = tdengine.actions[name]
-   if ActionType ~= nil then
-	  local action = ActionType:new()
-	  if contains(params, 'block') then
-		 action.block = params.block
-	  end
-	  
-	  action:init(params)
-	  return action
-   else
-	  print('create_action(): could not find action: ' .. name)
-   end
-
-   return nil
-end
-
-function tdengine.begin_cutscene(name)
-   local module_path = 'cutscenes/' .. name
-   package.loaded[module_path] = nil
-   local cutscene = require(module_path)
-
-   tdengine.active_cutscene = {
-	  name = name,
-	  actions = {}
-   }
-   for index, data in pairs(cutscene) do
-	  local action = tdengine.create_action(data.name, data)
-	  tdengine.active_cutscene.actions[index] = action
-   end
-end
-
-function tdengine.update_actions(dt, actions)
-   local done = true
-   for index, action in pairs(actions) do
-	  if not action.done then
-		 action:update(dt)
-		 done = false
-
-		 if action.block then
-			break
-		 end
-	  end
-   end
-
-   return done
-end
-
-function tdengine.update_cutscene(dt)
-   if tdengine.active_cutscene == nil then
-	  return
-   end
-
-   local done = tdengine.update_actions(dt, tdengine.active_cutscene.actions)
-   if done then
-	  print('update_cutscene(): finished ' .. tdengine.active_cutscene.name)
-	  tdengine.active_cutscene = nil
-   end
-end
-
-function tdengine.load_dialogue(name)
-   -- Load the dialogue data itself
-   local filepath = 'dialogue/' .. name
-   package.loaded[filepath] = nil
-   
-   local status, dialogue = pcall(require, filepath)
-   if not status then
-	  local message = 'tdengine.load_dialogue() :: could not find dialogue. '
-	  message = message .. 'requested dialogue was: ' .. name
-	  print(message)
-
-	  return nil
-   end
-   
-   return dialogue
 end

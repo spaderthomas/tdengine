@@ -11,6 +11,11 @@ function Door:update(dt)
    aabb:draw()
 end
 
+function Door:pre_save()
+   local aabb = self:get_component('BoundingBox')
+   aabb:should_save(true)
+end
+
 function Door:on_collision(other)
    if other:get_name() == 'Player' then
 	  print('plyr')

@@ -1,14 +1,14 @@
 namespace API {
 int         alloc_entity(std::string name);
 void        free_entity(int entity);
-const char* entity_name(int entity);
+std::string entity_name(int entity);
 bool        has_component(int entity, const char* name);
 int         get_component(int entity, const char* name);
 int         add_component(int entity, const char* name);
 sol::object all_components(int entity);
 int         alloc_component(int entity, const char* name);
 void        free_component(int component);
-const char* component_name(int component);
+std::string component_name(int component);
 void        draw_entity(int component);
 void        move_entity(int entity);
 void        teleport_entity(int entity, float x, float y);

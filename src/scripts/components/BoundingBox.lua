@@ -2,8 +2,11 @@ BoundingBox = tdengine.component('BoundingBox')
 function BoundingBox:init(params)
    self.extents = params.extents or { x = .1, y = .1 }
    self.offset = params.offset or { x = 0, y = 0 }
+   self:should_save(false)
 end
 
+-- Box wants to save its bounding box, because it doesn't really
+-- have a prefab.
 function BoundingBox:save()
    return {
 	  extents = self.extents,

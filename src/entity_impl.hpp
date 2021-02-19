@@ -190,14 +190,6 @@ void EntityManager::destroy_entity(int id) {
 	for (auto [name, component] : entity->components) {
 		component_manager.destroy_component(component->get_id());
 	}
-	
-	sol::protected_function on_entity_created = Lua.state["on_entity_destroyed"];
-	auto result = on_entity_created(entity);
-	if (!result.valid()) {
-		sol::error error = result;
-		tdns_log.write("Failed to destroy entity. ID was: " + std::to_string(id));
-		tdns_log.write(error.what());
-	}
 
 	entities.erase(id);
 }
