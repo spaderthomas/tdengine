@@ -161,14 +161,15 @@ return 1;
 1. add 'set' nodes to dialogue editor
    - figure out where the state they touch lives
    - test ded
-
 2. saving and loading specific scene state
    - question: when you leave an area or room and come back, do you need to
      restore EVERYTHING exactly how it was?
    - question: could this be as simple as "use entities for everything" and then
      using the entity saving code that already exists?
 3. implement doors
-   - after saving is done, because you need to save something to leave an area
+   - after saving is done, because you need to save something to leave
+     an area
+
 4. interactables + vision
    - a component. when you press a button, search over all existing entities
      with that component (or register when component is created). if vision box
@@ -208,6 +209,123 @@ assists in for a few rounds.
 larry also has friends in the hub. he was a vet of the korean war. didn't die
 there -- hell, the most action he got was on shore leave in seoul with some
 _kijichon_. 
+*** slowpoke tails
+somewhere, there's a guy. he's posted up, leaned back in a chair, half
+lookin around the room real lazy. you walk by him, make a passing
+accidental eye contact, and he lights up. he waves you over real
+aggressive. 
+
+"hey, you kids interested in buying any _slowpoke tails_?" he
+asks. slowpoke tails, something equally stupid. 
+
+boon looks surprised at this. "you mean that you have _money_ here?"
+he asks. 
+
+"of course we got money here," he replies. "what, just because we
+ain't livin' means the fundamental laws of supply and demand go up in
+smoke?"
+
+"well...no, i guess not. i just never thought about it like that, i
+guess. what can you even do with money down here?" boon asks.
+
+"well, when i save me enough i'm gonna buy a used car. maybe drive me
+and my girl up to the mountains, get a cabin. you know, _normal
+stuff_," the guy says. 
+
+1. what do the slowpoke tails do?
+   - you eat em, while you're fightin' someone. makes all your magick-y
+	 type stuff WAAAAY strong, like off the charts strong, like if your
+	 chart was 0 to 100 you'd crack right through that sucker!
+	 1. how much?
+		- a thousand per. trust me, if you eat one of these suckers,
+          you're guaranteed to win any battle! a thousand is a steal
+          for something like this!
+		  1. alright, i'll buy one.
+			 - pleasure doin' business! don't use em all in one place!
+               _hahahahaha_
+	 2. where'd you get all these slowpoke tails anyway?
+		- it's all about the hustle, baby! grind all day! i got me a
+          supplier from the eighth grade, who knows where he gets em
+          from, but he sells em to me a hundred at a time and i move
+          em. i'm the boots on the ground, baby!
+		  1. can we use your supplier to get into the 8th grade?
+			 - no, baby, no, i can't give up my sources like that!
+               besides, look, i'm a regular guy on his hustle to make
+               a few bucks and provide goods to the people. this guy's
+               on another level. a guy like me don't got the
+               _authority_ to bring someone to him, capeesh?
+		  2. supplier? is there something illegal about these things?
+			 - what?! illegal?? no, baby, no, you got the wrong
+               idea. i mean, sure, there may be a little _regulation_
+               involved with these things, but illegal is a very
+               dangerous little word. just, if anyone asks ya, don't
+               go throwin' the word 'slowpoke tails' around, will ya?
+               they're taxonomical novelties. 
+2. what did you do when you were alive?
+   - same thing i do now, feels like. hustle every day, baby! try to
+     make it in this crazy world of ours!
+	 1. how did you die?
+		- ah, you look a little young, kid. i mean, i know looks can
+          be deceiving down here, but i don't feel right telling a kid
+          that story. i would tell you to come back when you're older,
+          but, heh...
+	 2. why are you stuck in limbo?
+		- back on the other side, i was pretty fucked up in the head,
+          capeesh? when i left this place, i started workin' for my
+          pops, hard. then i got in some pretty bad shit. and well,
+          i'm here now, so i guess you can figure pretty easy how that
+          turned out. must be this is the last place i ever felt like
+          a kid. same as anyone else here, i guess.
+	 3. what's your goal?
+		- hustle, baby, grind, make my way to the top! i wanna get
+          some nice stuff for my girlfriend! 
+3. tell me about your girlfriend
+   - yeah, daniella, she's my best girl. she's my number one! i got
+     together with her in high school, we been together ever since
+     then, i wouldn't be nothin' without her! i always promised her
+     we'd take a trip out to the mountains, so i'm trying to make
+     enough money to get us a car and go out there.
+	 1. she sounds nice -- what's she look like?
+		- she's a good lookin' italian girl, well, most italian girls
+          are good lookin', best girls on earth! yeah, she's my number
+          1 alright.
+	 2. i haven't met anyone like that down here yet
+		- yeah, man, of course you haven't, she's still on the other
+          side! but she's comin' for me, and when she does we're goin'
+          to the mountains in my shiny new car! i'll get it waxed for
+          her and everything, and i ain't even talkin about the car on
+          that one.
+
+so, obviously the slowpoke tails are total bunk. they give you a five
+percent increase to your special attack. basically worthless. but,
+rudy didn't tell you no lies -- if your chart is from 0 to 100
+percent, your power is definitely off the chart. 
+
+they can tell from the conversation that rudy isn't all there. he's
+not feral, but he's not lucid like oliver or the librarian. and you
+get the feeling that daniella might not be coming. but you can also
+tell rudy's personality: fun, happy-go-lucky exterior, loyal, and with
+a darkness inside him. you're also meant to feel the absurdity of him
+grinding and hustling in the afterlife to make a few bucks, and to be
+unsure if that makes sense, or what it would mean to _own a used car_
+in the realm between corporeality and cognition. 
+
+flags from this conversation:
+- talked_to_rudy
+without this flag, daniella is pretty much an empty NPC. 
+
+- know_about_daniella
+you _can_ talk to daniella, as it turns out. she's also in limbo. the
+problem is: she's old. rudy remembers his young, beautiful daniella.
+but daniella was a middle aged woman when she died. he can't recognize
+her. this is kind of the punchline to this sidequest.
+
+- know_about_supplier
+not sure what to do about this. i don't know if "find a way into the
+hall" is going to be a sticking point past the 6th grade hall. if it
+is, it could be a there-are-many-ways-in situation and this is one of
+them. or i could flesh this out and have it be a more key piece of the
+story. 
 ** details
 a man who has nailed himself to the cross like christ, flayed his own skin raw
 because he believes himself to be in the christian version of hell. he can get
@@ -304,9 +422,18 @@ _anything_. not the good, not the bad. she just wanted to stop existing.
 
 so she killed herself.
 
-i've written barb as mean in the storyboard. she's more like asuka, which isn't
-quite right, because asuka is mostly _cocky_. whereas barb should be vapid,
-plastic. 
+she's a mean girl, an ex-cheerleader who was a bitch because it made
+her fit in and because it felt good to hate other people as much as
+she hated herself. she's nasty, and vapid, and mean, and doesn't care
+about anyone or anything. she pops her bubble gum in her face. she's
+full of pent up anger. when she meets boon, she hates him. she thinks
+he's a snivelling runt, someone who doesn't understand what pain
+really is. and that he is far too weak for the simple things he has
+been through. deep down, she knows that she doesn't want anyone to
+feel the way that she does. but she would never say that, or
+acknowledge it. she helps boon begrudgingly, and holds a sort of
+disdainful affection for him. she wants him to succeed where she
+failed, but hates him for not having fallen as low as her. 
 ** oliver
 the street urchin who has been trapped in limbo for over a hundred years. but
 what is the tone of his sentence? wisdom, resignation. he cannot get out of
@@ -3382,6 +3509,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-21 Sun 00:31]--[2021-02-21 Sun 01:37] =>  1:06
 CLOCK: [2021-02-18 Thu 19:35]--[2021-02-18 Thu 21:13] =>  1:38
 CLOCK: [2021-02-17 Wed 16:00]--[2021-02-17 Wed 17:00] =>  1:00
 CLOCK: [2021-02-16 Tue 21:27]--[2021-02-16 Tue 23:27] =>  2:00
@@ -3478,3 +3606,6 @@ fine, detailed sprites. does portraits + buildings + sprites + landscapes. dude
 writes comics too.
 https://www.reddit.com/r/PixelArt/comments/iv50oz/a_few_of_my_latest_creatures_from_my_1000/
 https://i.redd.it/lolcaujmeuu51.jpg
+** EdelweissPkmn
+cool, detailed versions that still give off a GBC pokemon vibe
+https://twitter.com/edelweisspkmn?lang=en
