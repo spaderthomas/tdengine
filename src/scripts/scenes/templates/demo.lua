@@ -2,37 +2,35 @@ return {
   entities = {
     {
       components = {
+        Animation = {
+          animations = {
+            classroom_background = {
+              "classroom.png"
+            }
+          },
+          current = "classroom_background"
+        },
         Position = {
           world = {
             x = 3,
             y = 3
           }
-        },
-		Animation = {
-		   animations = {
-			  classroom_background = { 'classroom.png' }
-		   },
-		   current = 'classroom_background'
-		}
+        }
       },
-      name = "Background"
+      name = "Background",
+      params = {}
     },
     {
       components = {
-        BoundingBox = {
-          extents = {
-            x = 0.050000000000000003,
-            y = 0.14999999999999999
-          }
-        },
         Position = {
           world = {
-            x = 0.31548118591308594,
-            y = 0.38032066822052002
+            x = 0.1954183429479599,
+            y = 0.3807280957698822
           }
         }
       },
-      name = "Player"
+      name = "Player",
+      params = {}
     },
     {
       components = {
@@ -40,6 +38,10 @@ return {
           extents = {
             x = 0.10041841119527817,
             y = 0.1796116828918457
+          },
+          offset = {
+            x = 0,
+            y = 0
           }
         },
         Position = {
@@ -49,7 +51,8 @@ return {
           }
         }
       },
-      name = "Box"
+      name = "Box",
+      params = {}
     },
     {
       components = {
@@ -57,6 +60,10 @@ return {
           extents = {
             x = 0.20031380653381348,
             y = 0.35436898469924927
+          },
+          offset = {
+            x = 0,
+            y = 0
           }
         },
         Position = {
@@ -66,24 +73,32 @@ return {
           }
         }
       },
-      name = "Box"
+      name = "Box",
+      params = {}
     },
     {
       components = {
         BoundingBox = {
           extents = {
-            x = 0.10041841119527817,
-            y = 0.17864077840931714
+            x = 0.099479168653488159,
+            y = 0.17499999701976776
+          },
+          offset = {
+            x = 0,
+            y = 0
           }
         },
         Position = {
           world = {
-            x = 0.050209205597639084,
-            y = 0.086407765746116638
+            x = 0.050260379910469055,
+            y = 0.090648181736469269
           }
         }
       },
-      name = "Box"
+      name = "Door",
+      params = {
+        where = "intro"
+      }
     }
   }
 }

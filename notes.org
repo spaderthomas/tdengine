@@ -24,6 +24,7 @@ Tags in the plot stuff
 @quest: places in the story where quests occur
 
 Tags in my notes about code
+@lifetime: memory problems w/ entity + component lifetimes
 @ded
 @editor
 @layer: stuff about graphics layers
@@ -66,9 +67,6 @@ Player = tdengine.entity('Player')
 @physics
 Needing to register a collider to render something is jank
 
-@ded 
-save as
-
 @editor
 need a way to stop having messages spam the fuck out of me -- like when
 something is F'd in entity update. maybe reserve console output for prints and
@@ -77,6 +75,12 @@ frame and don't double print them (unless a file is reloaded...?)
 
 @logging
 log channels
+
+@lifetime
+in my door, in on_collision, i destroy a bunch of entities...but those entities'
+ids might be in the list of things that had a collision and need to be
+processed. pretty sure this can be fixed by just enhancing deallocate_entity or
+whatever it's called to fully remove it from physics engine
 * learn
 ** lua
 *** metamethods
@@ -161,14 +165,14 @@ return 1;
 1. add 'set' nodes to dialogue editor
    - figure out where the state they touch lives
    - test ded
-
 2. saving and loading specific scene state
    - question: when you leave an area or room and come back, do you need to
      restore EVERYTHING exactly how it was?
    - question: could this be as simple as "use entities for everything" and then
-     using the entity saving code that already exists?
+     using the entity saving code that already exists?`
 3. implement doors
    - after saving is done, because you need to save something to leave an area
+	 
 4. interactables + vision
    - a component. when you press a button, search over all existing entities
      with that component (or register when component is created). if vision box
@@ -325,6 +329,46 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/20/2021
+hot idea: here's my problem. let's say i want to make a bunch of things you can
+interact with -- signs, pictures, flowers, whatever. they are all pretty much
+the same thing, as in they'll use the same prefab. most components i can just
+configure in the scene data -- what sprite do you use, what are your animations,
+etc. but the hard thing is what function you call when they are interacted
+with. because that's code, and you can't serialize code. well, what if you just
+specify the function as a string that is looked up by the engine?
+
+#+BEGIN_SRC lua
+{
+  components = {
+	Interaction = {
+	  box = { whatever },
+	  -- on_interaction = tdengine.whatever
+	  -- on_interaction = sow.on_interaction.intro_001__flower
+	  -- on_interaction = sow.on_interaction.intro:flower
+	}
+  }
+}
+#+END_SRC
+** 02/19/2021
+interactable stuff. i think i want to design this by making it a separate system
+from the physics system?
+
+there are two components:
+vision/interactor component, pretty much just by the player. defines a box that,
+when a button is pressed, will be used to check for interactions.
+interactable, which is also a box
+
+the player, on creation, registers its vision box with the system. then, in the
+init() for the interactable component, you register yourself with this
+system. same pattern as the physics engine, including how this system really
+owns the bounding box used for the interactable area. physics engine still owns
+the position, though, because it's tied to the entity position.
+
+want it to live in the backend just because it's math, and i like
+math/collisions to live in the backend. really really same pattern as the
+physics engine, just with a different set of boxes!
+** 02/18/2021
 ** 02/17/2021
 feel like i'm bikeshedding here
 
@@ -338,6 +382,7 @@ only thing on disk are the template files. when you leave a scene, i save the
 state into a table that lives in memory. one entry in the table for each
 scene. when i load the scene, i check the table for the requested scene. if it's
 there, i use it. if it's not, i use the template. 
+** 02/16/2021
 ** 02/15/2021
 good stuff...
 
@@ -475,6 +520,7 @@ gonna copy and paste
      able to be saved and loaded
 
 how do i want to be able to name and locate these variables?
+** 02/11/2021
 ** 02/10/2021 [code] planning
 need to put the set nodes into ded -- problem i'm running into is twofold:
 1. i do not have input text in lua. this is because input text takes a char*,
@@ -3382,6 +3428,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-20 Sat 11:47]
+CLOCK: [2021-02-19 Fri 14:00]--[2021-02-19 Fri 15:45] =>  1:45
 CLOCK: [2021-02-18 Thu 19:35]--[2021-02-18 Thu 21:13] =>  1:38
 CLOCK: [2021-02-17 Wed 16:00]--[2021-02-17 Wed 17:00] =>  1:00
 CLOCK: [2021-02-16 Tue 21:27]--[2021-02-16 Tue 23:27] =>  2:00

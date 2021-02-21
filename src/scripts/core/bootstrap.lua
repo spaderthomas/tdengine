@@ -14,7 +14,7 @@ function tdengine.bootstrap()
    tdengine.actions = {}
    tdengine.state = {}
    tdengine.scenes = {}
-   tdengine.loaded_scene = ''
+   tdengine.loaded_scene = { name = '', path = '' }
    tdengine.active_cutscene = nil
 
    -- Set up console shortcuts

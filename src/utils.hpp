@@ -721,12 +721,24 @@ struct FileWatcher {
 	}
 
 	void update() {
+		std::error_code error;
+		std::vector<std::string> invalid;
 		for (auto& [path, last_known_write_time] : time_map) {
-			auto last_write_time = std::filesystem::last_write_time(path);
+			auto last_write_time = std::filesystem::last_write_time(path, error);
+			if (last_write_time == std::filesystem::file_time_type::min()) {
+				invalid.push_back(path);
+				continue;
+			}
 			if (last_known_write_time < last_write_time) {
 				time_map[path] = last_write_time;
 				action_map[path]();
 			}
+		}
+
+		for (const auto& path : invalid) {
+			tdns_log.write("Erasing path from filesystem watcher: " + path);
+			time_map.erase(path);
+			action_map.erase(path);
 		}
 	}
 	

@@ -389,14 +389,14 @@ function tdengine.serialize_current_scene()
 end
 
 function tdengine.save_current_scene_as_template(name)
-   name = name or tdengine.loaded_scene
+   name = name or tdengine.loaded_scene.name
    local filepath = tdengine.paths.absolute('src/scripts/scenes/templates/' .. name .. '.lua')
    local data = tdengine.serialize_current_scene()
    tdengine.write_file_to_return_table(filepath, data)
 end
 
 function tdengine.save_current_scene_to_disk(name)
-   name = name or tdengine.loaded_scene
+   name = name or tdengine.loaded_scene.name
    local filepath = tdengine.paths.absolute('src/scripts/scenes/saves/' .. name .. '.lua')
    local data = tdengine.serialize_current_scene()
    tdengine.write_file_to_return_table(filepath, data)
@@ -404,7 +404,7 @@ end
 
 function tdengine.save_current_scene_to_memory()
    local data = tdengine.serialize_current_scene()
-   tdengine.scenes[tdengine.loaded_scene] = data
+   tdengine.scenes[tdengine.loaded_scene.name] = data
 end
 
 
@@ -427,20 +427,30 @@ function tdengine.load_scene_from_template(name)
    local status, scene = pcall(require, module_name)
    if not status then
 	  print('tdengine.load_scene_from_template(): could not require module ' .. module_name)
+	  return false
    end
 
-   tdengine.loaded_scene = name
+   tdengine.loaded_scene = {
+	 name = name,
+	 path = module_name
+   }
    tdengine.load_scene(scene)
+   return true
 end
 
 function tdengine.load_scene_from_memory(name)
    local scene = tdengine.scenes[name]
    if not scene then
 	  print('tdengine.load_scene_from_memory(): no entry for scene ' .. name)
+	  return false
    end
    
-   tdengine.loaded_scene = name
+   tdengine.loaded_scene = {
+	 name = name,
+	 path = module_name
+   }
    tdengine.load_scene(scene)
+   return true
 end
 
 function tdengine.load_scene_from_disk(name)
@@ -449,10 +459,15 @@ function tdengine.load_scene_from_disk(name)
    local status, scene = pcall(require, module_name)
    if not status then
 	  print('tdengine.load_scene_from_disk(): could not require module ' .. module_name)
+	  return false
    end
 
-   tdengine.loaded_scene = name
+   tdengine.loaded_scene = {
+	 name = name,
+	 path = module_name
+   }
    tdengine.load_scene(scene)
+   return true
 end
 
 function tdengine.create_action(name, params)

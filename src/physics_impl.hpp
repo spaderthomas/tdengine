@@ -216,3 +216,51 @@ PhysicsEngine& get_physics_engine() {
 	static PhysicsEngine engine;
 	return engine;
 }
+
+void InteractionSystem::update(float dt) {
+	for (
+	for (auto& request : requests) {
+		auto collider = get_collider(request.entity);
+		if (!collider) continue;
+
+		// @hack 2020/10/04: Normally, wish describes an offset from where you currently are.
+		// To make teleport_entity() not be complicated, when we don't care about collision we treat it as a position, not an offset
+		if (request.flags & MoveFlags::BypassCollision) {
+			collider->origin = request.wish;
+			continue;
+		}
+
+		collider->origin += request.wish;
+
+		for (auto& [id, other] : colliders) {
+			if (id == request.entity) continue;
+			
+			glm::vec2 penetration;
+			if (are_colliding(*collider, other, penetration)) {
+				collider->origin -= penetration;
+
+				CollisionInfo info;
+				info.entity = request.entity;
+				info.other = id;
+				collisions.push_back(info);
+			}
+		}
+	}
+
+	for (auto request : requests) {
+		auto collider = get_collider(request.entity);
+		if (!collider) continue;
+
+		// Update the positions in Lua
+		auto position = Lua.get_component(request.entity, "Position");
+		position["world"]["x"] = collider->origin.x;
+		position["world"]["y"] = collider->origin.y;
+	}
+
+	requests.clear();
+}
+
+InteractionSystem& get_interaction_system() {
+	static InteractionSystem system;
+	return system;
+}

@@ -60,6 +60,27 @@ struct PhysicsEngine {
 	Collider* get_collider(int entity);
 	void remove_entity(int entity);
 };
-
 PhysicsEngine& get_physics_engine();
 
+// Shit that the player can interact with
+struct Interactable {
+	int entity;
+	glm::vec2 extents;
+	glm::vec2 offset;
+};
+
+// Shit that looks for the player and does something when it sees them
+struct Watcher {
+	int entity;
+	glm::vec2 extents;
+	glm::vec2 offset;
+};
+
+struct InteractionSystem {
+	std::vector<Interactable> interactables;
+	std::vector<Watcher> watchers;
+	int player;
+
+	void update(float dt);
+};
+InteractionSystem& get_interaction_system();

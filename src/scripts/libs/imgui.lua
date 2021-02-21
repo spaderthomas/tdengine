@@ -23,6 +23,7 @@ end
 imgui.extensions.Entity = function(entity, unique_id)
    imgui.PushID(entity:get_id())
    local id = entity:get_name()
+
    if unique_id then id = id .. unique_id end
 
    if imgui.TreeNode(id) then

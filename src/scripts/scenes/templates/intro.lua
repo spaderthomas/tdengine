@@ -4,12 +4,13 @@ return {
       components = {
         Position = {
           world = {
-            x = 0.17782440781593323,
-            y = 0.42484468221664429
+            x = 0.21782436966896057,
+            y = 0.12251508980989456
           }
         }
       },
-      name = "Player"
+      name = "Player",
+      params = {}
     },
     {
       components = {
@@ -20,28 +21,8 @@ return {
           }
         }
       },
-      name = "Oliver"
-    },
-    {
-      components = {
-        BoundingBox = {
-          extents = {
-            x = 0.10041841864585876,
-            y = 0.06976744532585144
-          },
-          offset = {
-            x = 0,
-            y = 0
-          }
-        },
-        Position = {
-          world = {
-            x = 0.20548121631145477,
-            y = 0.01496124267578125
-          }
-        }
-      },
-      name = "Door"
+      name = "Oliver",
+      params = {}
     },
     {
       components = {
@@ -62,7 +43,8 @@ return {
           }
         }
       },
-      name = "Box"
+      name = "Box",
+      params = {}
     },
     {
       components = {
@@ -83,7 +65,8 @@ return {
           }
         }
       },
-      name = "Box"
+      name = "Box",
+      params = {}
     },
     {
       components = {
@@ -102,7 +85,8 @@ return {
           }
         }
       },
-      name = "Background"
+      name = "Background",
+      params = {}
     },
     {
       components = {
@@ -123,7 +107,32 @@ return {
           }
         }
       },
-      name = "Box"
+      name = "Box",
+      params = {}
+    },
+    {
+      components = {
+        BoundingBox = {
+          extents = {
+            x = 0.030208349227905273,
+            y = 0.018518522381782532
+          },
+          offset = {
+            x = 0,
+            y = 0
+          }
+        },
+        Position = {
+          world = {
+            x = 0.20354163646697998,
+            y = 0.011296309530735016
+          }
+        }
+      },
+      name = "Door",
+      params = {
+        where = "demo"
+      }
     }
   }
 }
