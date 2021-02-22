@@ -12,7 +12,9 @@ std::string component_name(int component);
 void        draw_entity(int component);
 void        move_entity(int entity);
 void        teleport_entity(int entity, float x, float y);
+void        register_position(int entity);
 void        register_collider(int entity);
+void        register_raycastable(int entity);
 void        disable_collision_detection(int entity);
 	
 // Pipe down to a couple of systems that the entity that is the player has changed

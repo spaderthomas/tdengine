@@ -4,6 +4,7 @@ local GLFW = require('glfw')
 Interactable = tdengine.entity('Interactable')
 function Interactable:init(params)
    tdengine.register_interactable(self.id)
+   tdengine.register_raycastable(self.id)
    tdengine.disable_collision_detection(self.id)
    self.on_interaction_name = params.on_interaction
 end
@@ -11,11 +12,14 @@ end
 function Interactable:pre_save()
   local aabb = self:get_component('BoundingBox')
   aabb:should_save(true)
+
+  local animation = self:get_component('Animation')
+  animation:should_save(true)
 end
 
 function Interactable:save()
    return {
-	  
+	  on_interaction = self.on_interaction_name
    }
 end
 

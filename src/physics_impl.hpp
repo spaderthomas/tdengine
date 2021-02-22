@@ -1,44 +1,3 @@
-bool are_colliding(Collider a, Collider b, glm::vec2& penetration) {
-	// First, calculate the Minkowski difference
-	Center_Box minkowski;
-	minkowski.extents = a.extents + b.extents;
-	float a_left = a.origin.x + a.offset.x - .5f * a.extents.x;
-	float b_right = b.origin.x + b.offset.x + .5f * b.extents.x;
-	minkowski.origin.x = a_left - b_right + .5f * minkowski.extents.x;
-	float a_top = a.origin.y + a.offset.y + .5f * a.extents.y;
-	float b_bottom = b.origin.y + b.offset.y - .5f * b.extents.y;
-	minkowski.origin.y = a_top - b_bottom - .5f * minkowski.extents.y;
-
-	// If the Minkowski difference intersects the origin, there's a collision
-	auto verts = minkowski.as_points();
-	if (verts.right >= 0 && verts.left <= 0 && verts.top >= 0 && verts.bottom <= 0) {
-		// The pen vector is the shortest vector from the origin of the MD to an edge.
-		// You know this has to be a vertical or horizontal line from the origin (these are by def. the shortest)
-		float min = 100000.f;
-		if (abs(verts.left) < min) {
-			min = abs(verts.left);
-			penetration = glm::vec2(verts.left, 0.f);
-		}
-		if (abs(verts.right) < min) {
-			min = abs(verts.right);
-			penetration = glm::vec2(verts.right, 0.f);
-		}
-		if (abs(verts.top) < min) {
-			min = abs(verts.top);
-			penetration = glm::vec2(0.f, verts.top);
-		}
-		if (abs(verts.bottom) < min) {
-			min = abs(verts.bottom);
-			penetration = glm::vec2(0.f, verts.bottom);
-		}
-
-		return true;
-	}
-
-	penetration = glm::vec2(0.f);
-	return false;
-}
-
 bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
 	// First, calculate the Minkowski difference
 	Center_Box minkowski;
@@ -99,9 +58,15 @@ Center_Box Center_Box::from_points(Points_Box& points) {
 	return box;
 }
 
-Center_Box Center_Box::from_collider(Collider* collider) {
+Center_Box Center_Box::from_entity(int entity) {
 	Center_Box box;
-	box.origin = collider->origin + collider->offset;
+	
+	auto& physics = get_physics_engine();
+	auto position = physics.get_position(entity);
+	auto collider = physics.get_collider(entity);
+	if (!position || !collider) return box; // @log
+	
+	box.origin = *position + collider->offset;
 	box.extents = collider->extents;
 	return box;
 }
@@ -135,13 +100,19 @@ bool point_inside_box(glm::vec2& screen_pos, Center_Box& box) {
 
 	return false;
 }
-bool point_inside_collider(float x, float y, const Collider& collider) {
-	float xl = collider.origin.x + collider.offset.x + (collider.extents.x / 2);
-	float xs = collider.origin.x + collider.offset.x - (collider.extents.x / 2);
+bool point_inside_entity(float x, float y, int entity) {
+	auto& physics_engine = get_physics_engine();
+	auto position = physics_engine.get_position(entity);
+	auto collider = physics_engine.get_collider(entity);
+	if (!position || !collider) return false;
+
+	
+	float xl = position->x + collider->offset.x + (collider->extents.x / 2);
+	float xs = position->x + collider->offset.x - (collider->extents.x / 2);
 	bool inside_x = (xs < x) && (x < xl);
 
-	float yl = collider.origin.y + collider.offset.y + (collider.extents.y / 2);
-	float ys = collider.origin.y + collider.offset.y - (collider.extents.y / 2);
+	float yl = position->y + collider->offset.y + (collider->extents.y / 2);
+	float ys = position->y + collider->offset.y - (collider->extents.y / 2);
 	bool inside_y = (ys < y) && (y < yl);
 
 	return inside_x && inside_y;
@@ -151,25 +122,29 @@ void PhysicsEngine::update(float dt) {
 	collisions.clear();
 	
 	for (auto& request : requests) {
-		auto collider = get_collider(request.entity);
-		if (!collider) continue;
+		auto& physics = get_physics_engine();
+
+		auto mover_position = physics.get_position(request.entity);
 
 		// @hack 2020/10/04: Normally, wish describes an offset from where you currently are.
 		// To make teleport_entity() not be complicated, when we don't care about collision we treat it as a position, not an offset
 		if (request.flags & MoveFlags::BypassCollision) {
-			collider->origin = request.wish;
+			*mover_position = request.wish;
 			continue;
 		}
 
-		collider->origin += request.wish;
+		*mover_position += request.wish;
+		auto mover_box = Center_Box::from_entity(request.entity);
 
-		for (auto& [id, other] : colliders) {
+		for (auto& [id, other] : collidable) {
 			if (id == request.entity) continue;
 			if (!other.collision_detection_enabled) continue;
-			
+
+			auto other_box = Center_Box::from_entity(id);
+
 			glm::vec2 penetration;
-			if (are_colliding(*collider, other, penetration)) {
-				collider->origin -= penetration;
+			if (are_boxes_colliding(mover_box, other_box, penetration)) {
+				*mover_position -= penetration;
 
 				CollisionInfo info;
 				info.entity = request.entity;
@@ -180,38 +155,63 @@ void PhysicsEngine::update(float dt) {
 	}
 
 	for (auto request : requests) {
-		auto collider = get_collider(request.entity);
-		if (!collider) continue;
+		auto position = get_position(request.entity);
+		if (!position) continue;
 
 		// Update the positions in Lua
-		auto position = Lua.get_component(request.entity, "Position");
-		position["world"]["x"] = collider->origin.x;
-		position["world"]["y"] = collider->origin.y;
+		auto component = Lua.get_component(request.entity, "Position");
+		component["world"]["x"] = position->x;
+		component["world"]["y"] = position->y;
 	}
 
 	requests.clear();
 }
 
 void PhysicsEngine::add_collider(int entity, Collider collider) {
-	colliders[entity] = collider;
+	collidable[entity] = collider;
 }
 
 bool PhysicsEngine::has_collider(int entity) {
-	return colliders.find(entity) != colliders.end();
+	return collidable.find(entity) != collidable.end();
 }
 
-Collider* PhysicsEngine::get_collider(int entity_id) {
-	auto it = colliders.find(entity_id);
-	if (it == colliders.end()) {
+Collider* PhysicsEngine::get_collider(int entity) {
+	auto it = collidable.find(entity);
+	if (it == collidable.end()) {
 		return nullptr;
 	}
 
 	return &(it->second);
+}
 
+void PhysicsEngine::add_raycast(int entity, Collider collider) {
+	raycast[entity] = collider;
+}
+
+Collider* PhysicsEngine::get_raycast(int entity) {
+	auto it = raycast.find(entity);
+	if (it == raycast.end()) {
+		return nullptr;
+	}
+
+	return &(it->second);
+}
+
+void PhysicsEngine::add_position(int entity, Position position) {
+	positions[entity] = position;
+}
+
+Position* PhysicsEngine::get_position(int entity) {
+	auto it = positions.find(entity);
+	if (it == positions.end()) {
+		return nullptr;
+	}
+
+	return &(it->second);
 }
 
 void PhysicsEngine::remove_entity(int entity) {
-	colliders.erase(entity);
+	collidable.erase(entity);
 }
 
 PhysicsEngine& get_physics_engine() {
@@ -235,23 +235,26 @@ void InteractionSystem::update(float dt) {
 	auto& physics = get_physics_engine();
 
 	auto player_collider = physics.get_collider(player);
-	if (!player_collider) {
-		std::string message = "@no_collider_for_player, ";
+	auto player_position = physics.get_position(player);
+	if (!player_collider || !player_position) {
+		std::string message = "@no_physics_for_player, ";
 		message += std::to_string(player);
 		tdns_log.write(message);
 	}
-	Center_Box player_box = Center_Box::from_collider(player_collider);	
+	Center_Box player_box;
+	player_box.origin = *player_position;
+	player_box.extents = player_collider->extents;
 
 	for (auto& interactable : interactables) {
-		auto collider = physics.get_collider(interactable.entity);
-		if (!collider) {
-			std::string message = "@no_collider_for_interactable, ";
+		auto position = physics.get_position(interactable.entity);
+		if (!position) {
+			std::string message = "@no_position_for_interactable, ";
 			message += std::to_string(interactable.entity);
 			tdns_log.write(message);
 		}
 		
 		Center_Box interactable_box;
-		interactable_box.origin = collider->origin + interactable.offset;
+		interactable_box.origin = *position + interactable.offset;
 		interactable_box.extents = interactable.extents;
 
 		glm::vec2 penetration;

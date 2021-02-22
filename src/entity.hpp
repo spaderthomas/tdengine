@@ -58,3 +58,11 @@ struct CutsceneManager {
 	void update(float dt);
 };
 CutsceneManager& get_cutscene_manager();
+
+struct UpdateSystem {
+	void update(float dt);
+	void run_collision_callbacks(float dt);
+	void run_interaction_callback(float dt);
+	void run_entity_updates(float dt);
+};
+UpdateSystem& get_update_system();

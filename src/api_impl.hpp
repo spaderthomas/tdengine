@@ -171,6 +171,17 @@ void API::draw_entity(int entity) {
 	render_engine.render_list.push_back(r);
 }
 
+void API::register_position(int entity) {
+	Position position;
+	
+	auto component = Lua.get_component(entity, "Position");
+	position.x = component["world"]["x"];
+	position.y = component["world"]["y"];
+
+	auto& physics_engine = get_physics_engine();
+	physics_engine.add_position(entity, position);
+}
+
 void API::register_collider(int entity) {
 	auto& entity_manager = get_entity_manager();
 
@@ -194,12 +205,28 @@ void API::register_collider(int entity) {
 		collider.offset.y = box["offset"]["y"];	
 	}
 	
-	auto position = Lua.get_component(entity, "Position");
-	collider.origin.x = position["world"]["x"];
-	collider.origin.y = position["world"]["y"];
-	
 	auto& physics_engine = get_physics_engine();
 	physics_engine.add_collider(entity, collider);
+	physics_engine.add_raycast(entity, collider);
+}
+
+void register_raycastable(int entity) {
+	auto& entity_manager = get_entity_manager();
+
+	Collider collider;
+	collider.entity = entity;
+
+	auto entity_ptr = entity_manager.get_entity(entity);
+	if (!entity_ptr->has_component("BoundingBox")) return;
+	
+	auto box = Lua.get_component(entity, "BoundingBox");
+	collider.extents.x = box["extents"]["x"];
+	collider.extents.y = box["extents"]["y"];
+	collider.offset.x = box["offset"]["x"];
+	collider.offset.y = box["offset"]["y"];	
+	
+	auto& physics_engine = get_physics_engine();
+	physics_engine.add_raycast(entity, collider);
 }
 
 void API::disable_collision_detection(int entity) {
@@ -218,8 +245,8 @@ void API::disable_collision_detection(int entity) {
 sol::object API::ray_cast(float x, float y) {
 	auto& physics_engine = get_physics_engine();
 
-	for (const auto& [entity, collider] : physics_engine.colliders) {
-		if (point_inside_collider(x, y, collider)) {
+	for (const auto& [entity, collider] : physics_engine.raycast) {
+		if (point_inside_entity(x, y, entity)) {
 			return Lua.state["tdengine"]["entities"][entity];
 		}
 	}
@@ -236,14 +263,12 @@ void API::register_interactable(int entity) {
 	Interactable interactable;
 	interactable.entity = entity;
 
-	// Usually, the physics engine would just own the position of the entity. Then,
-	// the interaction box would have its own extents. But, for now, I'm just going
-	// to use the regular AABB as the interaction box.
-	auto& physics = get_physics_engine();
-	auto collider = physics.get_collider(entity);
-	interactable.extents = collider->extents;
-	interactable.offset = collider->offset;
-	
+	auto box = Lua.get_component(entity, "BoundingBox");
+	interactable.extents.x = box["extents"]["x"];
+	interactable.extents.y = box["extents"]["y"];
+	interactable.offset.x = box["offset"]["x"];
+	interactable.offset.y = box["offset"]["y"];	
+
 	auto& system = get_interaction_system();
 	system.interactables.push_back(interactable);
 }
@@ -474,7 +499,9 @@ void register_lua_api() {
 	state["tdengine"]["camera"] = &camera;
 	state["tdengine"]["move_camera"] = &move_camera;
 	state["tdengine"]["sprite_size"] = &sprite_size;
+	state["tdengine"]["register_position"] = &register_position;
 	state["tdengine"]["register_collider"] = &register_collider;
+	state["tdengine"]["register_raycastable"] = &register_raycastable;
 	state["tdengine"]["disable_collision_detection"] = &disable_collision_detection;
 	state["tdengine"]["register_interactable"] = &register_interactable;
 	state["tdengine"]["do_interaction_check"] = &do_interaction_check;

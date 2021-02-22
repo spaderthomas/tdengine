@@ -137,44 +137,7 @@ EntityManager& get_entity_manager() {
 	return manager;
 }
 
-void EntityManager::update(float dt) {
-	// this should be a separate system :) 
-	auto& physics_engine = get_physics_engine();
-	for (const auto& collision : physics_engine.collisions) {
-		// Run on_collision for both entities involved in the collision
-		sol::protected_function on_collision = Lua.state["on_collision"];
-		auto result = on_collision(collision.entity, collision.other);
-		if (!result.valid()) {
-			sol::error error = result;
-			tdns_log.write("on_collision failed for " + std::to_string(collision.entity) + "Lua error: ");
-			tdns_log.write(error.what());
-		}
-
-		result = on_collision(collision.other, collision.entity);
-		if (!result.valid()) {
-			sol::error error = result;
-			tdns_log.write("on_collision failed for " + std::to_string(collision.other) + "Lua error: ");
-			tdns_log.write(error.what());
-		}
-	}
-
-	// Read for updates needed from interaction system
-	auto& interaction_system = get_interaction_system();
-	if (interaction_system.interacted_with >= 0) {
-		sol::protected_function on_interaction = Lua.state["on_interaction"];
-		auto result = on_interaction(interaction_system.interacted_with);
-		if (!result.valid()) {
-			sol::error error = result;
-			tdns_log.write("@on_interaction_failure, " + std::to_string(interaction_system.interacted_with));
-			tdns_log.write("Lua error:");
-			tdns_log.write(error.what());
-		}		
-	}
-		
-	for (auto& [id, entity] : entities) {
-		entity->update(dt);
-	}
-}
+void EntityManager::update(float dt) {}
 
 Entity* EntityManager::get_entity(int id) {
 	return entities[id].get();
@@ -225,3 +188,54 @@ void CutsceneManager::update(float dt) {
 	}
 }
 
+UpdateSystem& get_update_system() {
+	static UpdateSystem system;
+	return system;
+}
+
+void UpdateSystem::run_collision_callbacks(float dt) {
+	auto& physics_engine = get_physics_engine();
+	sol::protected_function on_collision = Lua.state["on_collision"];
+
+	auto run_collision_callback = [&](int entity_to_run_callback, int arg) {
+		auto result = on_collision(entity_to_run_callback, arg);
+		if (!result.valid()) {
+			sol::error error = result;
+			tdns_log.write("on_collision failed for " + std::to_string(entity_to_run_callback) + "Lua error: ");
+			tdns_log.write(error.what());
+		}
+	};
+	
+	for (const auto& collision : physics_engine.collisions) {
+		run_collision_callback(collision.entity, collision.other);
+		run_collision_callback(collision.other,  collision.entity);
+	}
+}
+
+void UpdateSystem::run_interaction_callback(float dt) {
+	// Read for updates needed from interaction system
+	auto& interaction_system = get_interaction_system();
+	if (interaction_system.interacted_with >= 0) {
+		sol::protected_function on_interaction = Lua.state["on_interaction"];
+		auto result = on_interaction(interaction_system.interacted_with);
+		if (!result.valid()) {
+			sol::error error = result;
+			tdns_log.write("@on_interaction_failure, " + std::to_string(interaction_system.interacted_with));
+			tdns_log.write("Lua error:");
+			tdns_log.write(error.what());
+		}		
+	}
+}
+
+void UpdateSystem::run_entity_updates(float dt) {
+	auto& entity_manager = get_entity_manager();
+	for (auto& [id, entity] : entity_manager.entities) {
+		entity->update(dt);
+	}
+}
+
+void UpdateSystem::update(float dt) {
+	run_collision_callbacks(dt);
+	run_interaction_callback(dt);		
+	run_entity_updates(dt);		
+}

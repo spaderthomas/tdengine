@@ -24,8 +24,8 @@ return {
       components = {
         Position = {
           world = {
-            x = 0.1954183429479599,
-            y = 0.3807280957698822
+            x = 0.14625518023967743,
+            y = 0.45921644568443298
           }
         }
       },
@@ -101,7 +101,7 @@ return {
       }
     },
     {
-	   components = {
+      components = {
         BoundingBox = {
           extents = {
             x = 0.099479168653488159,
@@ -111,18 +111,24 @@ return {
             x = 0,
             y = 0
           }
-        },		  
+        },
         Position = {
           world = {
-            x = 0.250260379910469055,
-            y = 0.290648181736469269
+            x = 0.25026038289070129,
+            y = 0.2906481921672821
           }
-        }
+        },
+		Animation = {
+		   animations = {
+			  box16 = {
+				 'box16.png'
+			  }
+		   },
+		   current = 'box16'
+		}
       },
       name = "Interactable",
-	  params = {
-		 on_interaction = 'demo'
-	  }
+      params = {}
     }
   }
 }

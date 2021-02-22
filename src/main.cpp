@@ -41,6 +41,7 @@ int main() {
 	auto& cutscene_manager   = get_cutscene_manager();
 	auto& physics_engine     = get_physics_engine();
 	auto& interaction_system = get_interaction_system();
+	auto& update_system      = get_update_system();
 	
 	init_shaders();
 	init_mesh();
@@ -79,6 +80,7 @@ int main() {
 		cutscene_manager.update(seconds_per_update);
 		physics_engine.update(seconds_per_update);
 		interaction_system.update(seconds_per_update);
+		update_system.update(seconds_per_update);
 
 		render_engine.render();
 

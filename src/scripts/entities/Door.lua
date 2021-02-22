@@ -4,6 +4,9 @@ function Door:init(params)
   self.where = params.where or ''
   local graphic = self:get_component('Graphic')
   graphic.draw = false
+  
+  tdengine.register_collider(self.id)
+
 end
 
 function Door:update(dt)

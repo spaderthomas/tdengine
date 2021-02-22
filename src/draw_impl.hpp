@@ -213,9 +213,9 @@ void RenderEngine::render() {
 	auto sort_render_list = [](const auto& ra, const auto& rb) {
 		if (ra.layer != rb.layer) return ra.layer < rb.layer;
 		auto& physics_engine = get_physics_engine();
-		auto ca = physics_engine.get_collider(ra.entity);
-		auto cb = physics_engine.get_collider(rb.entity);
-		return ca->origin.y > cb->origin.y; 
+		auto pa = physics_engine.get_position(ra.entity);
+		auto pb = physics_engine.get_position(rb.entity);
+		return pa->y > pb->y; 
 	};
 	stable_sort(render_list.begin(), render_list.end(), sort_render_list);
 		
@@ -248,15 +248,15 @@ void RenderEngine::render() {
 		glEnableVertexAttribArray(1);
 			
 		auto& physics_engine = get_physics_engine();
-		auto collider = physics_engine.get_collider(element.entity);
+		auto position = physics_engine.get_position(element.entity);
 		SRT transform = SRT::no_transform();
 		transform.scale = {
 			element.sprite->width / internal_resolution_width,
 			element.sprite->height / internal_resolution_height
 		};
 		transform.translate = gl_from_screen({
-                collider->origin.x,
-                collider->origin.y
+                position->x,
+                position->y
 			});
 		if (!has_flag(element.flags, Render_Flags::ScreenPosition)) {
 			transform.translate += camera_translation;
