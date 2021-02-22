@@ -103,6 +103,11 @@ sol::object API::all_components(int id) {
 	return out;
 }
 
+void API::register_player(int entity) {
+	auto& interaction = get_interaction_system();
+	interaction.player = entity;
+}
+
 void API::draw_entity(int entity) {
 	auto& entity_manager = get_entity_manager();
 	auto entity_ptr = entity_manager.get_entity(entity);
@@ -197,6 +202,19 @@ void API::register_collider(int entity) {
 	physics_engine.add_collider(entity, collider);
 }
 
+void API::disable_collision_detection(int entity) {
+	auto& physics_engine = get_physics_engine();
+	auto collider = physics_engine.get_collider(entity);
+	if (!collider) {
+		std::string message = "@disable_collision_detection:no_collider, ";
+		message += std::to_string(entity);
+		tdns_log.write(message);
+		return;
+	}
+	
+	collider->collision_detection_enabled = false;
+}
+
 sol::object API::ray_cast(float x, float y) {
 	auto& physics_engine = get_physics_engine();
 
@@ -207,6 +225,27 @@ sol::object API::ray_cast(float x, float y) {
 	}
 
 	return sol::make_object(Lua.state, sol::lua_nil);
+}
+
+void API::do_interaction_check() {
+	auto& interaction = get_interaction_system();
+	interaction.check_for_interactions = true;
+}
+
+void API::register_interactable(int entity) {
+	Interactable interactable;
+	interactable.entity = entity;
+
+	// Usually, the physics engine would just own the position of the entity. Then,
+	// the interaction box would have its own extents. But, for now, I'm just going
+	// to use the regular AABB as the interaction box.
+	auto& physics = get_physics_engine();
+	auto collider = physics.get_collider(entity);
+	interactable.extents = collider->extents;
+	interactable.offset = collider->offset;
+	
+	auto& system = get_interaction_system();
+	system.interactables.push_back(interactable);
 }
 
 sol::object API::sprite_size(std::string name) {
@@ -407,7 +446,8 @@ void API::screen(const char* dimension) {
 void API::log(const char* message, uint8_t flags) {
 	tdns_log.write(message, flags);
 }
-	
+
+
 void register_lua_api() {
 	auto& state = Lua.state;
 	
@@ -433,9 +473,13 @@ void register_lua_api() {
 	state["tdengine"]["cursor"] = &cursor;
 	state["tdengine"]["camera"] = &camera;
 	state["tdengine"]["move_camera"] = &move_camera;
-	state["tdengine"]["sprite_size"] = &sprite_size;	
-	state["tdengine"]["teleport_entity"] = &teleport_entity;
+	state["tdengine"]["sprite_size"] = &sprite_size;
 	state["tdengine"]["register_collider"] = &register_collider;
+	state["tdengine"]["disable_collision_detection"] = &disable_collision_detection;
+	state["tdengine"]["register_interactable"] = &register_interactable;
+	state["tdengine"]["do_interaction_check"] = &do_interaction_check;
+	state["tdengine"]["register_player"] = &register_player;
+	state["tdengine"]["teleport_entity"] = &teleport_entity;
 	state["tdengine"]["save_layout"] = &save_layout;
 	state["tdengine"]["use_layout"] = &use_layout;
 	state["tdengine"]["frame_time"] = seconds_per_update;

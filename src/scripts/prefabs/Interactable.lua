@@ -1,0 +1,6 @@
+return {
+   components = {
+	  Position = {},
+	  BoundingBox = {},
+   }
+}

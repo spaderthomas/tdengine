@@ -18,13 +18,14 @@ function BoundingBox:update()
 end
 
 function BoundingBox:draw(color)
+   -- Figure out the color based on whether it's highlighted in the Editor
    color = color or tdengine.colors.red
 
-   local graphic = self.parent:get_component('Graphic')
-   if graphic then
-	  local flag = tdengine.render_flags.highlighted
-	  local hl = bitwise(tdengine.op_and, graphic.flags, flag) ~= 0
-	  color = ternary(hl, tdengine.colors.blue, color)
+   local editor = tdengine.find_entity('Editor')
+   if editor and editor.selected then
+	  if editor.selected.id == self.parent.id then
+		 color = tdengine.colors.blue
+	  end
    end
    
    local position = self.parent:get_component('Position')

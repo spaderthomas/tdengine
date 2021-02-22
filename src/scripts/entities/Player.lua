@@ -3,6 +3,7 @@ local GLFW = require('glfw')
 
 Player = tdengine.entity('Player')
 function Player:init(params)
+   tdengine.register_player(self.id)
 end
 
 function Player:handle_movement()
@@ -30,7 +31,8 @@ function Player:update(dt)
    local position = self:get_component('Position')
    aabb:draw()
 
-   self:all_components()
-
-   local graphic = self:get_component('Graphic')
+   local input = self:get_component('Input')
+   if input:was_pressed(GLFW.Keys.O) then
+	  tdengine.do_interaction_check();
+   end
 end

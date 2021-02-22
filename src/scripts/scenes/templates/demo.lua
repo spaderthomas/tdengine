@@ -99,6 +99,30 @@ return {
       params = {
         where = "intro"
       }
+    },
+    {
+	   components = {
+        BoundingBox = {
+          extents = {
+            x = 0.099479168653488159,
+            y = 0.17499999701976776
+          },
+          offset = {
+            x = 0,
+            y = 0
+          }
+        },		  
+        Position = {
+          world = {
+            x = 0.250260379910469055,
+            y = 0.290648181736469269
+          }
+        }
+      },
+      name = "Interactable",
+	  params = {
+		 on_interaction = 'demo'
+	  }
     }
   }
 }

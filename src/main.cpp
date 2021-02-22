@@ -33,13 +33,14 @@ int main() {
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
 
-	auto& asset_manager     = get_asset_manager();
-	auto& input_manager     = get_input_manager();
-	auto& render_engine     = get_render_engine();
-	auto& entity_manager    = get_entity_manager();
-	auto& component_manager = get_component_manager();
-	auto& cutscene_manager  = get_cutscene_manager();
-	auto& physics_engine    = get_physics_engine();
+	auto& asset_manager      = get_asset_manager();
+	auto& input_manager      = get_input_manager();
+	auto& render_engine      = get_render_engine();
+	auto& entity_manager     = get_entity_manager();
+	auto& component_manager  = get_component_manager();
+	auto& cutscene_manager   = get_cutscene_manager();
+	auto& physics_engine     = get_physics_engine();
+	auto& interaction_system = get_interaction_system();
 	
 	init_shaders();
 	init_mesh();
@@ -77,6 +78,7 @@ int main() {
 		entity_manager.update(seconds_per_update);
 		cutscene_manager.update(seconds_per_update);
 		physics_engine.update(seconds_per_update);
+		interaction_system.update(seconds_per_update);
 
 		render_engine.render();
 

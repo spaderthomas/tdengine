@@ -8,7 +8,7 @@ return {
    {
 	  name = 'Delay',
 	  time = 1
-x  },
+  },
    {
 	  name = 'FadeIn',
 	  time = 3

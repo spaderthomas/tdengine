@@ -14,6 +14,7 @@ function tdengine.bootstrap()
    tdengine.actions = {}
    tdengine.state = {}
    tdengine.scenes = {}
+   tdengine.on_interactions = {}
    tdengine.loaded_scene = { name = '', path = '' }
    tdengine.active_cutscene = nil
 

@@ -3,6 +3,8 @@ struct Collider {
 	glm::vec2 origin;
 	glm::vec2 extents;
 	glm::vec2 offset;
+
+	bool collision_detection_enabled = true;
 };
 
 struct CollisionInfo {
@@ -26,6 +28,7 @@ struct Center_Box {
 	glm::vec2 extents;
 	
 	static Center_Box from_points(Points_Box& points);
+	static Center_Box from_collider(Collider* collider);
 	Points_Box as_points();
 };
 
@@ -43,9 +46,10 @@ bool point_inside_collider(float x, float y, const Collider& collider);
 
 bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration);
 bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration);
+bool are_colliding(Collider a, Collider b, glm::vec2& penetration);
 
 struct PhysicsEngine {
-	std::map<EntityID, Collider> colliders;
+	std::map<int, Collider> colliders;
 	std::vector<MoveRequest> requests;
 
 	// These are built up when the engine resolves all physics / collisions.
@@ -79,7 +83,13 @@ struct Watcher {
 struct InteractionSystem {
 	std::vector<Interactable> interactables;
 	std::vector<Watcher> watchers;
-	int player;
+	
+	int player = -1;
+	int interacted_with = -1;
+	
+	// Game code can flip this flag e.g. when the player presses a key to
+	// interact with stuff. Otherwise, we won't check for interactions.
+	bool check_for_interactions = false;
 
 	void update(float dt);
 };

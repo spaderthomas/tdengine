@@ -138,6 +138,7 @@ EntityManager& get_entity_manager() {
 }
 
 void EntityManager::update(float dt) {
+	// this should be a separate system :) 
 	auto& physics_engine = get_physics_engine();
 	for (const auto& collision : physics_engine.collisions) {
 		// Run on_collision for both entities involved in the collision
@@ -155,6 +156,19 @@ void EntityManager::update(float dt) {
 			tdns_log.write("on_collision failed for " + std::to_string(collision.other) + "Lua error: ");
 			tdns_log.write(error.what());
 		}
+	}
+
+	// Read for updates needed from interaction system
+	auto& interaction_system = get_interaction_system();
+	if (interaction_system.interacted_with >= 0) {
+		sol::protected_function on_interaction = Lua.state["on_interaction"];
+		auto result = on_interaction(interaction_system.interacted_with);
+		if (!result.valid()) {
+			sol::error error = result;
+			tdns_log.write("@on_interaction_failure, " + std::to_string(interaction_system.interacted_with));
+			tdns_log.write("Lua error:");
+			tdns_log.write(error.what());
+		}		
 	}
 		
 	for (auto& [id, entity] : entities) {
@@ -176,6 +190,8 @@ int EntityManager::create_entity(std::string name) {
 	Entity::next_id++;
 	auto it = inserted.first;
 	Entity& entity = *it->second;
+
+	tdns_log.write("@entity_create: " + name + ", " + std::to_string(entity.id), Log_Flags::File);
 
 	return entity.id;
 }
@@ -208,3 +224,4 @@ void CutsceneManager::update(float dt) {
 		tdns_log.write(error.what());
 	}
 }
+

@@ -25,6 +25,18 @@ function on_collision(id, other)
    end
 end
 
+function on_interaction(id)
+   local entity = tdengine.entities[id]
+
+   if not entity then
+	  print('@no_entity_on_interaction, ' .. tostring(id))
+   end
+   
+   if entity.on_interaction then
+	  entity:on_interaction()
+   end
+end
+
 function tdengine.find_entity(name)
    for id, entity in pairs(tdengine.entities) do
 	  if entity:get_name() == name then

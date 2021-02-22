@@ -99,6 +99,13 @@ Center_Box Center_Box::from_points(Points_Box& points) {
 	return box;
 }
 
+Center_Box Center_Box::from_collider(Collider* collider) {
+	Center_Box box;
+	box.origin = collider->origin + collider->offset;
+	box.extents = collider->extents;
+	return box;
+}
+
 void Points_Box::convert_screen_to_gl() {
 	left = gl_from_screen(left);
 	right = gl_from_screen(right);
@@ -158,6 +165,7 @@ void PhysicsEngine::update(float dt) {
 
 		for (auto& [id, other] : colliders) {
 			if (id == request.entity) continue;
+			if (!other.collision_detection_enabled) continue;
 			
 			glm::vec2 penetration;
 			if (are_colliding(*collider, other, penetration)) {
@@ -195,12 +203,6 @@ bool PhysicsEngine::has_collider(int entity) {
 Collider* PhysicsEngine::get_collider(int entity_id) {
 	auto it = colliders.find(entity_id);
 	if (it == colliders.end()) {
-		auto& entity_manager = get_entity_manager();
-		auto entity = entity_manager.get_entity(entity_id);
-		std::string message = "The physics engine tried to get a collider for ";
-		message += entity->get_name() + "(" + std::to_string(entity_id) + ")";
-		message += ", but it never registered a collider.";
-		tdns_log.write(message);
 		return nullptr;
 	}
 
@@ -217,47 +219,53 @@ PhysicsEngine& get_physics_engine() {
 	return engine;
 }
 
+// @slow
 void InteractionSystem::update(float dt) {
-	for (
-	for (auto& request : requests) {
-		auto collider = get_collider(request.entity);
-		if (!collider) continue;
+	// Reset shit from the previous frame
+	interacted_with = -1;
 
-		// @hack 2020/10/04: Normally, wish describes an offset from where you currently are.
-		// To make teleport_entity() not be complicated, when we don't care about collision we treat it as a position, not an offset
-		if (request.flags & MoveFlags::BypassCollision) {
-			collider->origin = request.wish;
-			continue;
+	if (player < 0) return;
+	if (!check_for_interactions) return;
+
+	// We're going to check the player's box against all the boxes we've registered
+	// as interactable. If we find a match, we'll mark it down. When the entity'
+	// system runs, it will ask us whether we found an interaction and, if so,
+	// run a callback on the entity that was hit.		
+	tdns_log.write("Checking for interactions");
+	auto& physics = get_physics_engine();
+
+	auto player_collider = physics.get_collider(player);
+	if (!player_collider) {
+		std::string message = "@no_collider_for_player, ";
+		message += std::to_string(player);
+		tdns_log.write(message);
+	}
+	Center_Box player_box = Center_Box::from_collider(player_collider);	
+
+	for (auto& interactable : interactables) {
+		auto collider = physics.get_collider(interactable.entity);
+		if (!collider) {
+			std::string message = "@no_collider_for_interactable, ";
+			message += std::to_string(interactable.entity);
+			tdns_log.write(message);
 		}
+		
+		Center_Box interactable_box;
+		interactable_box.origin = collider->origin + interactable.offset;
+		interactable_box.extents = interactable.extents;
 
-		collider->origin += request.wish;
+		glm::vec2 penetration;
+		if (are_boxes_colliding(player_box, interactable_box, penetration)) {
+			interacted_with = interactable.entity;
+			tdns_log.write("found interaction, " + std::to_string(interacted_with));
 
-		for (auto& [id, other] : colliders) {
-			if (id == request.entity) continue;
-			
-			glm::vec2 penetration;
-			if (are_colliding(*collider, other, penetration)) {
-				collider->origin -= penetration;
-
-				CollisionInfo info;
-				info.entity = request.entity;
-				info.other = id;
-				collisions.push_back(info);
-			}
+			// It only makes sense to interact with one thing at a time, so if
+			// their bounding boxes happen to overlap, choose 1st arbitrarily.
+			break;
 		}
 	}
 
-	for (auto request : requests) {
-		auto collider = get_collider(request.entity);
-		if (!collider) continue;
-
-		// Update the positions in Lua
-		auto position = Lua.get_component(request.entity, "Position");
-		position["world"]["x"] = collider->origin.x;
-		position["world"]["y"] = collider->origin.y;
-	}
-
-	requests.clear();
+	check_for_interactions = false;
 }
 
 InteractionSystem& get_interaction_system() {

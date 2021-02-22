@@ -13,14 +13,16 @@ void        draw_entity(int component);
 void        move_entity(int entity);
 void        teleport_entity(int entity, float x, float y);
 void        register_collider(int entity);
+void        disable_collision_detection(int entity);
 	
 // Pipe down to a couple of systems that the entity that is the player has changed
 void        register_player(int entity);
 // Tell whatever system I write that it needs to check for interactions.
 // It'll run a callback on the appropriate entity if it finds
 void        do_interaction_check();
-void        register_interactable();
+void        register_interactable(int entity);
 void        register_watcher();
+
 sol::object ray_cast(float x, float y);
 sol::object sprite_size(std::string name);
 void        register_animation(std::string name, std::vector<std::string> frames);

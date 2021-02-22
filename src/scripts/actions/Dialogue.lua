@@ -30,7 +30,7 @@ function Dialogue:init(params)
    
    self.text_box = tdengine.find_entity('TextBox')
    if not self.text_box then
-	  tdengine.create_entity('TextBox')
+	  tdengine.create_entity('TextBox', {})
 	  self.text_box = tdengine.find_entity('TextBox')
    end
 
