@@ -1,4 +1,7 @@
 * rules
+  :LOGBOOK:
+  CLOCK: [2021-02-23 Tue 15:47]
+  :END:
 RULE #1: focus on the precursors (curiousity, community, experimentation,
 expression)
 
