@@ -190,9 +190,6 @@ std::vector<uint> line_indices = {
 
 
 GLFWwindow* g_window;
-void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
-	glViewport(0, 0, width, height);
-}
 
 /*
 Some unit definitions:

@@ -73,7 +73,7 @@ end
 
 function Editor:update(dt)
   -- If we reloaded the scene or something, our handle is invalid
-  if self.selected and not self.selected.alive then
+   if self.selected and not self.selected.alive then
 	self.selected = nil
   end
 
@@ -428,10 +428,19 @@ function Editor:scene_viewer()
   imgui.Text(self:scene_descriptor())
 
   local button_size = { x = 150, y = 0 }
-    
+  local loaded = false
+  
   if imgui.Button('Save To Memory', button_size.x, button_size.y) then
-	tdengine.save_current_scene_to_memory()	 
+	 tdengine.save_current_scene_to_memory()
   end
+
+  local id = '##scene_viewer:load_from_memory'
+  if imgui.Button('Load From Memory', button_size.x, button_size.y) then
+	tdengine.load_scene_from_memory(imgui.InputTextContents(id))
+	loaded = true
+  end
+  imgui.SameLine()
+  imgui.InputText(id, 63)
 
   local id = '##scene_viewer:save_to_template'
   if imgui.Button('Save To Template', button_size.x, button_size.y) then
@@ -445,6 +454,7 @@ function Editor:scene_viewer()
   local id = '##scene_viewer:load_from_template'
   if imgui.Button('Load From Template', button_size.x, button_size.y) then
 	tdengine.load_scene_from_template(imgui.InputTextContents(id))
+	loaded = true
   end
   imgui.SameLine()
   imgui.InputText(id, 63)
@@ -459,9 +469,12 @@ function Editor:scene_viewer()
   local id = '##scene_viewer:load_from_disk'
   if imgui.Button('Load From Disk', button_size.x, button_size.y) then
 	tdengine.load_scene_from_disk(imgui.InputTextContents(id))
+	loaded = true
   end
   imgui.SameLine()
   imgui.InputText(id, 63)
+
+  if loaded then self.selected = nil end
 
   imgui.Separator()
 

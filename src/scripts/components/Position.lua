@@ -1,5 +1,3 @@
-local inspect = require('inspect')
-
 Position = tdengine.component('Position')
 function Position:init(params)
    self.world = params.world or { x = 0, y = 0 }

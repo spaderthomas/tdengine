@@ -4,8 +4,6 @@ struct Collider {
 	int entity;
 	glm::vec2 extents;
 	glm::vec2 offset;
-
-	bool collision_detection_enabled = true;
 };
 
 struct CollisionInfo {
@@ -60,19 +58,15 @@ struct PhysicsEngine {
 	// and then this struct clears out the vectorvector on the next frame.
 	std::vector<CollisionInfo> collisions;
 	
-	void update(float dt);
-	
-	bool has_collider(int entity);
-	void add_collider(int entity, Collider collider);
-	Collider* get_collider(int entity);
-	
-	void add_raycast(int entity, Collider collider);
+	void      update(float dt);
+	bool      has_collider(int entity);
+	void      add_collider(int entity, Collider collider);
+	Collider* get_collider(int entity);	
+	void      add_raycast(int entity, Collider collider);
 	Collider* get_raycast(int entity);
-	
-	void add_position(int entity, Position position);
+	void      add_position(int entity, Position position);
 	Position* get_position(int entity);
-	
-	void remove_entity(int entity);
+	void      remove_entity(int entity);
 };
 PhysicsEngine& get_physics_engine();
 
@@ -91,8 +85,7 @@ struct Watcher {
 };
 
 struct InteractionSystem {
-	std::vector<Interactable> interactables;
-	std::vector<Watcher> watchers;
+	std::map<int, Interactable> interactables;
 	
 	int player = -1;
 	int interacted_with = -1;
@@ -101,6 +94,9 @@ struct InteractionSystem {
 	// interact with stuff. Otherwise, we won't check for interactions.
 	bool check_for_interactions = false;
 
-	void update(float dt);
+	void          update(float dt);
+	void          remove_entity(int entity);
+	void          add_interactable(int entity, Interactable interactable);
+	Interactable* get_interactable(int entity);
 };
 InteractionSystem& get_interaction_system();

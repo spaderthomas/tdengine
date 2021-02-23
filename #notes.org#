@@ -1,0 +1,3665 @@
+* rules
+  :LOGBOOK:
+  CLOCK: [2021-02-23 Tue 15:47]
+  :END:
+RULE #1: focus on the precursors (curiousity, community, experimentation,
+expression)
+
+RULE #2: be vigilant for bad outcomes (giving up, phoning it in, dislike for
+project)
+
+RULE #3: you are legit
+
+RULE #4: stories, songs, characters are amporphous. do not become discouraged.
+
+RULE #5: fine grained schedules and planning do not work for you, though they
+are tempting. 
+
+RULE #6: your gut is an excellent performance tool
+
+RULE #7: anything is possible
+
+RULE #8: embrace the rectangle
+* tags
+Tags in the plot stuff
+@boon: places where i could expand on the main character
+@polish: places where i only drew a negative
+@quest: places in the story where quests occur
+
+Tags in my notes about code
+@lifetime: memory problems w/ entity + component lifetimes
+@ded
+@editor
+@layer: stuff about graphics layers
+@logging
+@lua_init: how globals get setup
+@physics: yeah
+@reload: never have to quit the game and restart it
+@render_refactor
+
+Tags in the code itself
+@bootstrap: places i can clean up initialization
+@log: places i can improve or even just DO logging
+@maybe_bug: either too lazy to fix now, or not a problem now
+@paths: i hate paths
+@slow: yea
+* code
+@render_refactor
+Stop baking texture atlases, texture coordinates, etc on startup. 
+Font rendering API
+Stop rendering primitives with vector<std::function> probably
+Initialize font VAOs and stuff in init_gl(), not init_fonts()
+I'm generating a unique texture for every character?
+Use the shader uniform to translate character instead of generating new vertices
+every time?
+
+@lua_init
+Stop storing entity classes as part of the global table, e.g:
+Player = tdengine.entity('Player')
+
+@layer
+0  :: background
+1  :: default for all entities
+10 :: text box
+
+@reload
+- 02/04/21: needed to re-load bootstrap code
+- 02/04/21: spawned a new text box every frame
+- 02/04/21: lua exception caused imgui stack to be uneven
+- 02/04/21: lua exception caused imgui stack to be uneven
+
+@physics
+Needing to register a collider to render something is jank
+
+@editor
+need a way to stop having messages spam the fuck out of me -- like when
+something is F'd in entity update. maybe reserve console output for prints and
+write lua errors to the log? maybe keep a cache of messages we print out every
+frame and don't double print them (unless a file is reloaded...?)
+
+@logging
+log channels
+
+@lifetime
+in my door, in on_collision, i destroy a bunch of entities...but those entities'
+ids might be in the list of things that had a collision and need to be
+processed. pretty sure this can be fixed by just enhancing deallocate_entity or
+whatever it's called to fully remove it from physics engine-
+* learn
+** lua
+*** metamethods
+__index is the metamethod that gets called when you key into a table but the key
+does not exist.
+*** nil
+important: Lua tables make no distinction between a table value being nil and
+the corresponding key not existing in the table
+*** tdengine class system
+you create a class using the function _create_class(). this returns an object
+that has some metamethods that let you easily include mixins and look for
+methods. 
+
+the table it returns has three fields:
+1. static, which contains class static methods
+2. __methods, which contains any user defined methods (...or members)
+3. name
+
+the metatable has three metamethods:
+1. __newindex, which says that any new keys (i.e. anything you the class-writer
+   add) goes into the field __methods. we do this so we have one consolidated
+   place where all user fields go, for if we need to look em up.
+2. __index, which says to check the static methods table first
+3. __tostring
+
+calling a method through dot syntax:
+the last important thing: if the class' __index says to look in static methods,
+how do we ever call a user-defined method? the answer is that the class' static
+method table also has a metatable, which says simply that if you can't find the
+static method, look in the user-defined message. so if a method is called, we
+assume it is a static method, and if it is not we check the user defined
+methods.
+**** what does new() do?
+instances are created with new(), which is a static method on the class. 
+
+all this function does is return a table that has a custom __index
+metamethod. the index function says to look inside the class table's __methods
+table when you cannot find a key on the class.
+**** where are members stored?
+members defined on the class (like methods) will be stored on the class table's
+__methods. they are not visible through inspect, since they are found and called
+through metafunctions.
+
+members defined on instances (like doing self.key = value) will be stored on the
+instance table itself.
+*** c api
+#+BEGIN_SRC c
+auto state = Lua.raw_state;
+int max_args = lua_gettop(L);
+int arg = 1;
+int stackval = 0;
+
+lua_newtable(state);
+lua_pushnumber(state, 6);
+lua_setfield(state, -2, "x");
+lua_pushnumber(state, 9);
+lua_setfield(state, -2, "9");
+
+return 1;
+#+END_SRC
+* pin
+** demo code tasks
+- a fade-in / depixelate shader (for waking up)
+- visual or auditory effect (for poking and prodding)
+- dialogue
+  - dialogue boxes
+  - chat heads
+  - dialogue options / trees
+  - italics?
+  - letter noises
+- some kind of cutscene / battle hybrid (for the intro battle)
+- ability to swap between levels / rooms
+- basic dialogue cutscene with a trigger (for random chats)
+- interactable items / NPCs (for the cafeteria)
+- quest state (for larry)
+- warp / contract shader (for teleporting)
+- basic mock of battles
+  - how they are triggered
+  - how data is stored for them
+  - battle loop
+** february 12th prioritized list
+1. add 'set' nodes to dialogue editor
+   - figure out where the state they touch lives
+   - test ded
+2. saving and loading specific scene state
+   - question: when you leave an area or room and come back, do you need to
+     restore EVERYTHING exactly how it was?
+   - question: could this be as simple as "use entities for everything" and then
+     using the entity saving code that already exists?`
+3. implement doors
+   - after saving is done, because you need to save something to leave
+     an area
+4. interactables + vision
+   - a component. when you press a button, search over all existing entities
+     with that component (or register when component is created). if vision box
+     intersects interaction box, run a function
+   - battles will be built like this
+	 
+--- design up to dungeon 1a
+
+5. design the battle system
+6. implement battles
+
+--- design dungeon 1
+
+7. add avatars to text box
+8. implement sounds
+   - looping sounds (music)
+   - one-off sounds
+   - fade in and fade out
+9. load up highly custom + specific game state for playtesting
+   - high priority, but no use in doing this until you HAVE game state that's
+     able to be saved and loaded
+* ideas
+** quests
+*** domestic dispute
+a total happenstance sidequest that begins with you in an empty room, and if you
+venture to the right place you can hear something interesting through the wall
+-- maybe even a litle knocking/bumping animation around the correct spot, or a
+tiny hum that gets louder the closer you get.
+*** chickenshit larry
+chickenshit larry is the guard you meet in the twisted realm in the first
+interlude. he's hiding in a broom closet, because the twisted realm is just so
+twisted. if you kill him, that's it. he's done. you get a nice item in
+compensation. if you let him go, he's there for you later on in the sixth
+grade. maybe he gives you a heal, or some buffs, or an even better item, or
+assists in for a few rounds.
+
+larry also has friends in the hub. he was a vet of the korean war. didn't die
+there -- hell, the most action he got was on shore leave in seoul with some
+_kijichon_. 
+*** slowpoke tails
+somewhere, there's a guy. he's posted up, leaned back in a chair, half
+lookin around the room real lazy. you walk by him, make a passing
+accidental eye contact, and he lights up. he waves you over real
+aggressive. 
+
+"hey, you kids interested in buying any _slowpoke tails_?" he
+asks. slowpoke tails, something equally stupid. 
+
+boon looks surprised at this. "you mean that you have _money_ here?"
+he asks. 
+
+"of course we got money here," he replies. "what, just because we
+ain't livin' means the fundamental laws of supply and demand go up in
+smoke?"
+
+"well...no, i guess not. i just never thought about it like that, i
+guess. what can you even do with money down here?" boon asks.
+
+"well, when i save me enough i'm gonna buy a used car. maybe drive me
+and my girl up to the mountains, get a cabin. you know, _normal
+stuff_," the guy says. 
+
+1. what do the slowpoke tails do?
+   - you eat em, while you're fightin' someone. makes all your magick-y
+	 type stuff WAAAAY strong, like off the charts strong, like if your
+	 chart was 0 to 100 you'd crack right through that sucker!
+	 1. how much?
+		- a thousand per. trust me, if you eat one of these suckers,
+          you're guaranteed to win any battle! a thousand is a steal
+          for something like this!
+		  1. alright, i'll buy one.
+			 - pleasure doin' business! don't use em all in one place!
+               _hahahahaha_
+	 2. where'd you get all these slowpoke tails anyway?
+		- it's all about the hustle, baby! grind all day! i got me a
+          supplier from the eighth grade, who knows where he gets em
+          from, but he sells em to me a hundred at a time and i move
+          em. i'm the boots on the ground, baby!
+		  1. can we use your supplier to get into the 8th grade?
+			 - no, baby, no, i can't give up my sources like that!
+               besides, look, i'm a regular guy on his hustle to make
+               a few bucks and provide goods to the people. this guy's
+               on another level. a guy like me don't got the
+               _authority_ to bring someone to him, capeesh?
+		  2. supplier? is there something illegal about these things?
+			 - what?! illegal?? no, baby, no, you got the wrong
+               idea. i mean, sure, there may be a little _regulation_
+               involved with these things, but illegal is a very
+               dangerous little word. just, if anyone asks ya, don't
+               go throwin' the word 'slowpoke tails' around, will ya?
+               they're taxonomical novelties. 
+2. what did you do when you were alive?
+   - same thing i do now, feels like. hustle every day, baby! try to
+     make it in this crazy world of ours!
+	 1. how did you die?
+		- ah, you look a little young, kid. i mean, i know looks can
+          be deceiving down here, but i don't feel right telling a kid
+          that story. i would tell you to come back when you're older,
+          but, heh...
+	 2. why are you stuck in limbo?
+		- back on the other side, i was pretty fucked up in the head,
+          capeesh? when i left this place, i started workin' for my
+          pops, hard. then i got in some pretty bad shit. and well,
+          i'm here now, so i guess you can figure pretty easy how that
+          turned out. must be this is the last place i ever felt like
+          a kid. same as anyone else here, i guess.
+	 3. what's your goal?
+		- hustle, baby, grind, make my way to the top! i wanna get
+          some nice stuff for my girlfriend! 
+3. tell me about your girlfriend
+   - yeah, daniella, she's my best girl. she's my number one! i got
+     together with her in high school, we been together ever since
+     then, i wouldn't be nothin' without her! i always promised her
+     we'd take a trip out to the mountains, so i'm trying to make
+     enough money to get us a car and go out there.
+	 1. she sounds nice -- what's she look like?
+		- she's a good lookin' italian girl, well, most italian girls
+          are good lookin', best girls on earth! yeah, she's my number
+          1 alright.
+	 2. i haven't met anyone like that down here yet
+		- yeah, man, of course you haven't, she's still on the other
+          side! but she's comin' for me, and when she does we're goin'
+          to the mountains in my shiny new car! i'll get it waxed for
+          her and everything, and i ain't even talkin about the car on
+          that one.
+
+so, obviously the slowpoke tails are total bunk. they give you a five
+percent increase to your special attack. basically worthless. but,
+rudy didn't tell you no lies -- if your chart is from 0 to 100
+percent, your power is definitely off the chart. 
+
+they can tell from the conversation that rudy isn't all there. he's
+not feral, but he's not lucid like oliver or the librarian. and you
+get the feeling that daniella might not be coming. but you can also
+tell rudy's personality: fun, happy-go-lucky exterior, loyal, and with
+a darkness inside him. you're also meant to feel the absurdity of him
+grinding and hustling in the afterlife to make a few bucks, and to be
+unsure if that makes sense, or what it would mean to _own a used car_
+in the realm between corporeality and cognition. 
+
+flags from this conversation:
+- talked_to_rudy
+without this flag, daniella is pretty much an empty NPC. 
+
+- know_about_daniella
+you _can_ talk to daniella, as it turns out. she's also in limbo. the
+problem is: she's old. rudy remembers his young, beautiful daniella.
+but daniella was a middle aged woman when she died. he can't recognize
+her. this is kind of the punchline to this sidequest.
+
+- know_about_supplier
+not sure what to do about this. i don't know if "find a way into the
+hall" is going to be a sticking point past the 6th grade hall. if it
+is, it could be a there-are-many-ways-in situation and this is one of
+them. or i could flesh this out and have it be a more key piece of the
+story. 
+** details
+a man who has nailed himself to the cross like christ, flayed his own skin raw
+because he believes himself to be in the christian version of hell. he can get
+down whenever he wants. 
+
+souls swarthily introducing themselves by name, date of death, manner of death. 
+"hi, name's ted swanson. nineteen fifty three, wrapped my station wagon around a
+telephone pole -- dad was such a mean drunk, and school was the only place i
+ever felt /safe/. and you?"
+
+"uncle rufus, were you worried about me??"
+"well of course not, young oliver. you know as well as i do that we souls lack
+hormonal and nervous systems in our body. i'm as cold and unfeeling as you are,
+my boy!"
+
+it has to have special sounds that play along with each character of the text,
+different for different characters. 
+
+text that fades in for a new area (ni no kuni, the witness)
+
+musical themes for players. barbara ann. 
+
+menu: you want it to squirt open or i'm not sure the right word for it. the
+really satisfying animation where you tab onto something, it hangs for a second,
+and then it expands. the menu should be really clear. one of the best parts of
+CSH for me is that it's so easy to see everything that you can do.
+** worldbuilding
+what if each wing of the school had a particular theme or feeling? it would be
+pretty funny to walk into the seventh grade hall, not knowing what to expect,
+only to find out that they theme themselves after the ultra-refined high society
+of victorian england. 
+
+souls are remarkably like ordinary people just trying to make it through their
+lives (or, well, afterlives)
+** themes
+when bad things happen to you, you want desperately to return to your old
+life. but you can't -- not even if you solve the bad thing and return your
+external world to the same state as before. it changes you inside, permanently. 
+
+fate does not choose you, it's just that things have to happen to someone. 
+
+people cannot fundamentally change themselves (powerlessness, fate, determinism)
+-- they can become different, but they cannot change their own nature. perhaps
+earth shattering events can change a person's nature, but a person cannot cause
+these events or harness their power. 
+** tangents
+even though gpt-3 is in some sense just recombining human patterns, it is still
+creating art. the strangeness of a genetic algorithm influencing art created by
+humans. 
+
+technofetishism: instead of beginning with the idea and using technology to
+express it, we often begin with technology and mold our expression around what
+it allows. 
+
+a scientific phenomenon that cannot be observed
+* characters
+** boon
+boon is kind of a shinji figure. he is quiet, and well mannered, and
+angsty -- but he is not depressed.
+
+he is someone who is meek and timid, and is afraid to assert his agency. he
+flinches. he has been broken at some point in his life, broken to where he
+believes that he cannot take what the world throws at him and that the only
+answer to life is to pre-emptively curl into the fetal position and pray that it
+doesn't irreparably harm you
+** barbara ann
+i've got a good idea for a character forming. i keep getting the image of desire
+from the sandman. someone overt, androgynous, charming, tantalizing,
+colorful. someone worried deeply about the superficial pleasures of life --
+seeing and being seen, checking, swiping, checking. someone whose personality is
+so big that you know it cannot be real. an overcompensation in the other
+direction. 
+
+you meet this person and you dislike them, they grate on your nerves. they feel
+so plastic. but you come to realize that you are truly the same as them. the
+mask you wear and the mask they wear are the same, differing in color and form
+but still to call the thin strip of plastic the person is flat wrong. and the
+person underneath is the same.
+
+she's an ex-cheerleader. her dad was a horrible alcoholic, but you wouldn't have
+known it to know her or be around her family. he was verbally abusive. he told
+her that no one would ever love her -- and do you know how hard it is to hear
+that from your own parent? even when you know it's untrue? she had an eating
+disorder, but not bad enough to kill her. just bad enough to keep her thin and
+beautiful and validate her. the pain of being at home grew to overwhelm
+her. 
+
+then, all of a sudden, it stopped. her father died, suddenly, in a car
+accident. barb couldn't get a hold on her emotions. she felt everything, relief,
+hurt, pain, emptiness, joy. she had nobody to tell these things to. there was
+nobody who wouldn't think her a freak for being joyful at her father's
+death. they didn't understand. all she really wanted to do was to not feel
+_anything_. not the good, not the bad. she just wanted to stop existing. 
+
+so she killed herself.
+
+she's a mean girl, an ex-cheerleader who was a bitch because it made
+her fit in and because it felt good to hate other people as much as
+she hated herself. she's nasty, and vapid, and mean, and doesn't care
+about anyone or anything. she pops her bubble gum in her face. she's
+full of pent up anger. when she meets boon, she hates him. she thinks
+he's a snivelling runt, someone who doesn't understand what pain
+really is. and that he is far too weak for the simple things he has
+been through. deep down, she knows that she doesn't want anyone to
+feel the way that she does. but she would never say that, or
+acknowledge it. she helps boon begrudgingly, and holds a sort of
+disdainful affection for him. she wants him to succeed where she
+failed, but hates him for not having fallen as low as her. 
+** oliver
+the street urchin who has been trapped in limbo for over a hundred years. but
+what is the tone of his sentence? wisdom, resignation. he cannot get out of
+limbo there is no hope for him, but instead of becoming despondent he resigns
+himself to the situation. this is part of the theme of the game: how you handle
+the tide of life.
+
+ollie, despite being ten, is a powerful and old soul who just happens to have
+been out of commission for a few decades. 
+
+oliver calls boon sir even though he's only a week older than him. "how old were
+you when you, um, you know...". he calls everyone sir, because he has those old
+boarding school manners.
+
+he speaks with an almost-british accent. everything about him screams preparatory
+school.
+** the librarian
+* log
+** 02/20/2021
+hot idea: here's my problem. let's say i want to make a bunch of things you can
+interact with -- signs, pictures, flowers, whatever. they are all pretty much
+the same thing, as in they'll use the same prefab. most components i can just
+configure in the scene data -- what sprite do you use, what are your animations,
+etc. but the hard thing is what function you call when they are interacted
+with. because that's code, and you can't serialize code. well, what if you just
+specify the function as a string that is looked up by the engine?
+
+#+BEGIN_SRC lua
+{
+  components = {
+	Interaction = {
+	  box = { whatever },
+	  -- on_interaction = tdengine.whatever
+	  -- on_interaction = sow.on_interaction.intro_001__flower
+	  -- on_interaction = sow.on_interaction.intro:flower
+	}
+  }
+}
+#+END_SRC
+** 02/19/2021
+interactable stuff. i think i want to design this by making it a separate system
+from the physics system?
+
+there are two components:
+vision/interactor component, pretty much just by the player. defines a box that,
+when a button is pressed, will be used to check for interactions.
+interactable, which is also a box
+
+the player, on creation, registers its vision box with the system. then, in the
+init() for the interactable component, you register yourself with this
+system. same pattern as the physics engine, including how this system really
+owns the bounding box used for the interactable area. physics engine still owns
+the position, though, because it's tied to the entity position.
+
+want it to live in the backend just because it's math, and i like
+math/collisions to live in the backend. really really same pattern as the
+physics engine, just with a different set of boxes!
+** 02/18/2021
+** 02/17/2021
+feel like i'm bikeshedding here
+
+but i need to know what to save out when i swap scenes. i am actively
+implementing features for the game. maybe the solution here is to keep it
+simple. just do a very naive save for now. what does a naive save look like? 
+given that i want to go through a door, come back, and then have shit be the
+same way that i left it. 
+
+only thing on disk are the template files. when you leave a scene, i save the
+state into a table that lives in memory. one entry in the table for each
+scene. when i load the scene, i check the table for the requested scene. if it's
+there, i use it. if it's not, i use the template. 
+** 02/16/2021
+** 02/15/2021
+good stuff...
+
+need to add a callback that gets triggered by the physics engine when there are
+collisions. just push a pair of ints back to a vector, then somewhere in, say,
+the entity system or somewhere, loop through all those entities, grab em, then
+run the callback (telling who you collided with)
+
+door will be very easy to implement after that :) 
+
+maaaaybe clean up the editor? but kinda feeling like i need to just do
+features. 
+
+liked the system code that i saw from that rust engine...thought the engine as a
+whole didn't tickle my fancy really, but kind of broadening my idea of what a
+system is (something that handles one facet of the game, big or small). so i
+think i could design the vision / interactable stuff like that. 
+
+basically akin to the physics engine, but instead of resolving positions, it
+checks for intersections of a different kind of box. 
+
+i think it'd be good to spend a half an hour and make a nice diagram for how the
+save/load stuff works, and try to poke some holes in it. 
+
+i think the on_collision stuff will be very powerful -- also, consider
+implementing vision stuff with just that? just a hair of an idea, haven't
+thought about it at all. 
+
+remember: #1 goal is to design a game, not to write a program. you can do it!
+** 02/14/2021
+door
+prefab: basically nothing
+what you save in the scene is pretty much the whole thing
+
+where do you specify the data that tells you what scene to load? dont think it
+gets loaded thru a component...kind of just want it on the door. but i don't
+think the engine is set up to work like that. so might need to stuff it in a
+component. 
+
+don't feel bad about having to design stuff with all this code you wrote. as in,
+if it doesn't work out or doesn't feel great to use. you know that nothing
+you've written feels BAD to use -- not perfect, sure, but none of it is
+terrible. it is all solving problems that you have when writing this game (how
+do i store / load data in a structured way, how do i easily have game objects
+that update once per frame, how do i share some behavior etc). the finer use
+cases -- especially with saving and loading -- will come with experience. the
+more you use this stuff, the better it will be, and every thing that you have to
+change will just make your program better at accomplishing its task. you trend
+in the right direction, and we care about trend lines. 
+
+so all that to say: if the door doesn't feel quite right, it's ok! be
+observant & thoughtful. 
+** 02/13/2021
+i feel like all the state for a level should be encapsulated in the entities. in
+other words, a level is nothing besides all the entities that are inside
+it. with the pattern of using manager entities and stuff, i can't see why that
+wouldn't work. 
+
+and then for the state, it's all global. global as in globally accessible but
+also as in "this is state that applies to the whole game". for demo purposes,
+you can load up any precise game state by doing two things:
+- load the scene state
+- load the global state
+
+when you're playing the game, it doesn't make sense to have multiple saves for
+the global state or for a scene. what a save file probably IS, honestly, is a
+scene state for every scene in the game + global state. that's it. not that you
+necessarily load all of that immediately -- for the scene, you just load it when
+you hit that scene. 
+
+course, the global state might get more complicated. for example, you need to
+store the player's team. lol i guess you can store that in the player
+entity. but my point with saying that was -- no matter how complex you want to
+have the global state, who gives a fuck. scene state + global state = golden.
+
+ok, gonna write doors. actually, i should write save state first. i already have
+save scene, which is the hard part. but for the doors, need a few editor
+features:
+need to be able to resize an entity's bounding box. every door will be
+different. i can default their size in the prefab to something reasonable. but i
+need a way to tweak bounding boxes. totally ok with adding this feature because
+i need it anyway!
+
+idea: have boxes at the corners. when selected, if your raycast hits any of
+those boxes, then turn the mouse into a cross with arrows. on click, do a
+special drag mode?
+
+idea: when selected, if you have a box, put up a button that says resize. your
+next click on the screen will be the new extents of the box == drag it to be
+where you want.
+
+problem: origin + extents...the render stuff uses the collider to figure out
+where to render. so i can't just move the position down for the box. so i may
+need to add an 'offset' to the box. sounds very slow. should probably be the
+other way around -- position is canonical for all physics stuff, graphics can
+add an offset. 
+
+right click -> resize? modal popup in general would be pretty nice
+
+yea do this
+
+right click -> resize. when the modal exits, your mouse is now tracking the
+extents of the box. click again to set it. badabing. 
+** 02/12/2021
+gonna copy and paste
+1. add 'set' nodes to ded
+   - figure out where the state they touch lives
+2. saving and loading specific scene state
+   - question: when you leave an area or room and come back, do you need to
+     restore EVERYTHING exactly how it was?
+   - question: could this be as simple as "use entities for everything" and then
+     using the entity saving code that already exists?
+3. implement doors
+   - after saving is done, because you need to save something to leave an area
+4. interactables + vision
+   - a component. when you press a button, search over all existing entities
+     with that component (or register when component is created). if vision box
+     intersects interaction box, run a function
+   - battles will be built like this
+	 
+--- design up to dungeon 1a
+
+5. design the battle system
+6. implement battles
+
+--- design dungeon 1
+
+7. add avatars to text box
+8. implement sounds
+   - looping sounds (music)
+   - one-off sounds
+   - fade in and fade out
+9. load up highly custom + specific game state for playtesting
+   - high priority, but no use in doing this until you HAVE game state that's
+     able to be saved and loaded
+
+how do i want to be able to name and locate these variables?
+** 02/11/2021
+** 02/10/2021 [code] planning
+need to put the set nodes into ded -- problem i'm running into is twofold:
+1. i do not have input text in lua. this is because input text takes a char*,
+   and there is no conception of char* in lua (all strings are interned). the
+   only thing i can think of is the same thing i do for the multiline input text
+   -- wrap it up in a class that allocates a buffer on init. but then you need
+   an instance of the class for every input text you want. 
+
+maybe you could do something wacky in C++ end like...have some static thing
+which contains string buffers. and somehow map calls of InputText() to the
+appropriate buffer? you could hash the label (i think all labels have to be
+unique...)? 
+
+imgui.InputText('my label', buffer_size)
+local text = imgui.GetInputText('my label')
+
+yeah i think that would work, only problem is label collision -- not sure how
+that works in the regular imgui api. 
+
+2. typed inputs. all inputs are just strings. i don't even know if i need
+   anything beyond true and false. pretty much what's gonna happen is this:
+   you're going to make some dialogue choice, i will set a flag indicating that
+   you have made that choice (or that you've talked to this person, or, or,
+   or...). 
+
+which got me thinking: where the hell am i reading these variables anyway? what
+does the code for my game actually look like? i feel like it will be less and
+less in entities. entities will be 90% prefabs. here is where there needs to be
+Code:
+- some more simple entities (e.g. doors)
+- some more simple components (e.g. interaction, vision)
+- scene manager entities
+
+you walk around. sometimes, you interact with stuff and get some
+dialogue. sometimes, you talk to people and also get dialogue. sometimes you
+step in certain places and things happen. that's the whole game. 
+
+just gonna go with boolean inputs + i guess implement input text
+
+another problem: i get the feeling that i want to hardcore change up the
+dialogue trees depending on the state. eh, i guess not -- pretty much what i
+need is something that lets you add a choice as a function of the state. after
+that, you're just branching to a new subtree. 
+
+get the feeling that i just need to think less and make more game.
+
+ok, so finish up ded to handle the set nodes. i don't need to implement a branch
+node right now (although i suspect it would be only a few days' work). 
+
+openal is on the table after that
+
+battles are also on the table. if i do battles, i need to have a way for dudes
+to stand there and battle you when you get close enough. plus, i need to have
+the data for battles set up. this might mean that before battles i need to shed
+for a week or two to flesh out the battle system for real for real.
+
+need to do some brief research on how other games pop in the text box.
+
+need to add avatars (and maybe even...text shaking...) to the text box. avatars
+maybe, but i think shaking would be better left for polish. avatars seem pretty
+darn easy. 
+
+need to add doors
+
+need to be able to save out scenes
+** 02/09/2021
+** 02/08/2021
+** 02/07/2021
+code hard
+
+- store indices into the text to denote lines instead of splitting it literally
+  into separate lines
+** 02/06/2021
+** 02/05/2021
+** 02/04/2021
+handle set nodes
+handle choice nodes
+
+yet another api question...what part of the api lives where. right now, here's
+the apis i need to add:
+- have the text box display several choices
+- store which choice is active
+- render active choice in a different color
+
+basically, do i store all this in C++? or do i store it in lua? the intent of
+lua is to stitch together low level API calls. what is a low level api? "render
+some text at this location"? or "add a choice to a text box"? problem is i feel
+like having a bona fide text box API in C++ is a solid idea, that's a prety core
+thing my game needs, but that means some game state has to live in C++ that i
+don't want it to. like the active choice -- i want to grab that in lua. i don't
+give a shit about it in c++ except to render it a different color
+
+"" right "" thing to do: 
+- remove the text box class from C++
+- text box entity stores all the members and methods on shit there
+- C++ has an API that lets you draw fonts
+  - has an option for wrap
+
+"" wrong "" thing to do:
+- add member on text box to store choices
+- add member on text box to store active
+- call that shit from lua
+- leave a comment :) 
+
+today is a solve problems day.
+** 02/03/2021
+ok, so here's the deal:
+text box renders itself now. it uses its own vao. it assumes that the text box
+is loaded in as a Special Texture. but that's not gonna be the case. it's going
+to be baked into a font atlas, and we're going to render it with texture
+coordinates using the same VAO as everything else.
+
+that would imply that we want to render it using the same code path as
+everything else -- make a render element, submit it, let the renderer pick it
+up. problem: render elements use entity IDs to grab position (because update
+loop is entity_update -> physics resolve -> render, and you make requests in (1)
+but you cannot know the new position until (2)). so basically, i can't render
+anything through the render engine unless it's an entity.  
+
+- make the text box an entity?
+  - prefab would work perfectly here
+  - action looks up the entity at runtime
+  - just use existing api to render the text (altho you will eventually need a
+    full text-rendering API)
+  - use a high layer
+** 02/02/2021
+ok, all the piping stuff is done. time to:
+- fix the asset for the text box
+- read inputs in the action and control the text box
+- walk the node tree
+- handle different kinds of nodes
+- reset the text box when done
+** 02/01/2021
+i made it a month!
+
+something to run dialogue? i only really have the text and choice options right
+now.
+
+ok, brief reprise to finish the layout stuff i started. funny to think that i
+started that on saturday or something and that led me through the whole library
+nonsense i was thinking about. so, it's time to finish up the dialogue action
+(then, maybe move into openal). 
+
+it's just an action, right? as far as figuring out whether inputs should be
+stopped (like how i had a dialogue mode before) or anything boils down to: it's
+just an action. 
+
+ok, what's the api look like? like, what part of this lives in C++ and what part
+of it lives in lua?
+
+- render the text box
+  - of course, the actual rendering is done in c++. but is the text box rendered
+    generically, or is there an api for it specifically?
+- render the avatar
+  - ditto above: special text box api?
+- store the current text block
+- calculate which text should be rendered
+- render said text
+- figure out when voices need to be played
+- render voices
+- animate text
+-- c++ above
+
+-- lua below
+- store the dialogue tree
+- specify which voice will be used
+- specify animation for text
+- specify full text block
+
+ok, so here's what keeps coming up: is there a special text box api in the
+engine, or do i just build it out of primitives on the lua end? as in, "render
+this image here", there's your text box. "render this text on the screen",
+there's your text. need wrapping? gotta calculate it in lua. 
+
+as i write more of this game, it's almost like i want EVERYTHING to be in lua
+except for a very few things (i mean, this is basically true now)
+- graphics
+- physics
+- entities
+- input
+
+lotsa benefits to doing it that way. never recompile. mostly never recompile
+lol. it's almost like there is a secondary api in some sense, the lua api. 
+
+here's another thing: there's no good place in lua to put something like this
+(persistent, updated every frame, not an entity). there's no main update
+function for lua. to do something like this, you have to either:
+- stick it in an entity
+- make a special struct + api in c++
+
+i feel like that's...kind of by design, right? when you model your game such
+that everything in it is an entity, don't be surprised when it's hard to add
+things in the game that are not entities. maybe making it an entity is not a bad
+idea? or -- they're just getting triggered through cutscenes. so maybe
+everything lives in the action. 
+
+also i already have all this code in C++. maybe i just bind the class?
+
+---
+
+k, just gonna make a decision. 
+
+the engine has a text box that lives somewhere. "display text in a box" is one
+of the core features that the engine provides. from lua, you're just gonna send
+it some configurations (voices? avatar? text chunk?), and then you can query
+every frame whether it's done with the text chunk or not. 
+
+need a way to get inputs (must be force-fed? read directly from input? if so,
+which channel?)
+
+not sure where exactly it lives
+
+dialogue action just keeps current node, traverses the graph using input, calls
+into text box api when it inits or needs a new chunk rendered
+** 01/31/2021
+** 01/30/2021
+pros of static linking:
+- i don't have to include any libraries with the game
+- linux-flavor-agnostic? dude on stack says this makes binaries LESS agnostic,
+  but if you link everything down to libc i don't see how that's the case
+- guaranteed same libraries...this is really just libc tho. i'm providing all
+  the other ones, not using system
+pros of dynamic linking:
+- maybe more linux agnostic? just use system libc, gl, x, etc.
+- seems to be less friction? (everything defaults to dynamic)
+- can use all lua features (c module loading, even tho i don't use that rn)
+glfw
+freetype
+lua
+libc
+dl
+x
+gl
+** 01/29/2021: ded 6
+- run a dialogue
+- edit entity in ded
+- delete node in ded
+- display choice / set nodes in ded
+- how do set nodes work?
+  - global state store?
+  - run arbitrary functions?
+- dialogue templating...? not sure if need
+- render target? (probably not)
+- quick imgui layout switching
+  - forward / back?
+  - thru console
+- edit bounding box in editor
+  - adjust existing (drag)
+- open al
+- console scripts can be more than one liners
+- doors
+
+all things reveal themselves
+fear is the mind killer
+do not let vagueness overwhelm your mind
+** 01/28/2021: ded 5
+gamestop makes the game stop
+
+- put bezier curves in the right place -- might need to do a second loop for
+  this? probably dont HAVE to. just might render a little weird (like curve
+  being overlapped by circle).
+- hook up connect logic: when you click connect, the next thing you click on
+  will be added to your children, or if you click on the BG it gets cleared
+
+** 01/27/2021: ded 4
+la la la
+** 01/26/2021: ded 3
+- sloppy code in dialogue_editor() about different node kinds
+- make sure two way bindings with the textedit are ok
+- connections
+  - right click -> connect to?
+- click off node to de-select
+- edit fields besides text
+
+- DONE
+  - BUGS
+	- load, add a text node, it replaces #1?
+  - sticky highlight on selection
+  - select in sidebar selects node
+  - scrolling
+  - sidebar shows what node is highlighted
+** 01/25/2021: ded 2
+- don't use sha...sha can change. just generate a unique id for each node on
+  startup and save it out.
+** 01/25/2021: ded
+pretty much just moving the node graph stuff over from CPP to lua. had to port
+over a few functions, but nothing too serious -- actually dug into how those
+bindings work a little bit and -- perhaps i learned something about lua. it's
+going quite smoothly so far. effectively solving problems, feel really good,
+feel like a problem solver today instead of a problem haver. that is always
+nice. a day or two more like this and all the infra will be done. it will need
+some tweaking, of course. stuff to remember:
+- store the gui info for each dialogue in a separate file (don't pollute)
+- maybe it's a good time to make a SLIGHTLY complicated imgui config save
+  store. cuz it would be nice to do something like this:
+tdengine.layout('dialogue') -- open up the dialogue editor, maximize it
+tdengine.layout('battle') -- show all the widgets for battle data in the right
+place
+blah blah blah
+then just have it like
+~/config/layouts
+~/config/dialogue_nodes
+~/config/dialogue_nodes/demo
+~/config/dialogue_nodes/intro
+~/config/dialogue_nodes/library
+...
+- need some kind of simple text editor in-engine (probably something already in
+  imgui or on the 'net), because if all dialogue is gonna be edited in
+  engine...or else find a way to have unique but semantically meaningful IDs for
+  each dialogue node so you know what they are by looking at them? on the one
+  hand, i want to see all the dialogue every time i look at it to see how it
+  flows. OTOH, my mental map is pretty much gonna be a semantically meaningful
+  ID -- it's just whatever part of the dialogue is actually displayed at any
+  given time. idk.
+** 01/24/2021
+hm...it's not a graph
+
+but it really is lol
+
+https://i.imgur.com/fPdez9X.png
+
+i want this so badly. dialogue needs to be a little more powerful than i've
+conceived it -- but not much. thinking of it in a similar way to how the actions
+are conceived. simple data that maps onto lua objects. have a set number of node
+types, stitch them together. the big difference is that actions are one hundred
+percent serial -- sure, you have the compound actions that run in sequence, but
+at the end of the day it's serial. there's no branching. 
+
+ok:
+- store all nodes in a flat map that maps the hash of the node to the contents
+- this is how nodes are stored for both editing and running
+- when a node changes, re-hash it and update all references to the old hash for
+  development, just leave in the metadata for the nodes (e.g. position)
+** 01/23/2021: [code] dialogue 1
+dialogue is basically a graph. that's why the idea of defining all the nodes in
+one file was appealing to me -- you're just stitching up graph nodes. but that's
+way, way too many files. you wanna have one file per dialogue scene -- in other
+words, they map up one to one with actions in cutscenes. 
+
+need to have a way to record what choices were taken, maybe a way to set game
+state based on it. maybe add this as a flag on choice nodes?
+
+what are the cases i want to handle?
+- sections of different characters speaking in turn, linearly. ABCABCAABCCB.
+- dialogue options
+  - conditionally present based on game state
+- branches that return to the original choice that set them off (but with that
+  branch grayed out). loops in the graph.
+> what about A?
+> but what does B have to do with it?
+> tell me more about C?
+picking any of these gives you info on A, B, or C, and then returns you to the
+> top so you can ask aout all three if you want
+- change dialogue based on game state
+- markup in the text for text effects (new text box, shake, delay like for .
+  .   .)
+** 01/22/2021: [code] cutscenes 5: electric jive
+here's an idea for something that's been in the back of my mind for a while: you
+want to do something like find_entity('Box'). but there are multiple boxes in
+the world. you could add a field that every entity can override, called the
+descriptor. descriptors have to be unique. it's...pretty much like a name. but
+anyway, you just specify it in the save file (not the prefab, because the prefab
+is the 'generic' one). that way you don't have to make a new file or class for
+every god damn box you want to access. but no need to do that now. 
+** 01/21/2021: [code] cutscenes 4
+let's hammer in. on making some actual content for this game. the tricky thing
+about working out this demo is that i don't want to spend too much time
+polishing content that will ultimately be replaced, but i don't want to totally
+phone it in and have it look like shit. the other thing about phoning it in is
+that you can't be sure it will _work_ -- both on a technical level and whether
+your ideas for what goes in cutscenes in stuff will work.
+
+here's another idea i had. i want this game to be something so finely wrought
+and packed with detail that you want to take out a notebook, physical pen and
+paper, to keep track of everything going on. my best idea for this right now is
+really subtle dialogue choices. not simple shit like 'if your paragon rating is
+above fifteen, you get this special paragon dialogue option to win the
+scenario'. like, i want the dialogue to be so rich that you could play the game
+twice through and almost have a totally different experience based on subtly
+different dialogue changes that accumulate through the game. the game remembers
+every inconsequential conversation you have. 
+
+but anyway. writing stuff today. so the purpose of this demo, let's be specific
+here, is a proof of concept. it is meant to show that i can have the skeleton of
+stitching together little scripts to make something that feels like it belongs
+in a game. 
+
+i want close to zero visual polish. everything will be colored squares. i could
+make this whole fucking game with colored squares. COLORED SQUARES ARE GOOD!
+(that should almost be a new rule but not quite)
+
+i want a moderate amount of dialogue polish -- certainly enough dialogue to
+actually convey what is going on, but don't worry about it sounding too good. 
+
+other thing to keep in mind: make it so you can easily set up (slash potentially
+tear down) the default state for the scene so that you can get in a really fast
+run -> edit loop. just keep that in mind
+** 01/20/2021: [code] cutscenes 3
+workflow. making a new scene here. here's what i'm doing:
+- create a 1920 x 1080 background image
+- create a scene file with a background
+- draw geometry on the background
+- save the background
+- manually add other kinds of entities by hand-editing the file
+
+need to be able to undo adding geometry
+adding entities through the editor would be quite nice
+
+do...all the olivers need to be the same? like in a cutscene...i want to have
+"oliver" in the sense that it has his sprite, but like any of the "oliver"
+behavior do i really want that? what does an oliver even mean? does it make
+sense to have one script that is "oliver" -- i guess that would just contain his
+animations? 
+
+- saving doesn't work -- it nulled out a bunch of fields for the
+  background. guessing that some component doesn't have save implemented
+  correctly. 
+- i really need to be able to drag around arbitrary entities. i can already
+  select them, so this should be pretty easy. 
+** 01/19/2021: [code] cutscenes 2
+data data data. it's the same thing as code anyway, just sugar that works from
+the editor. so today i need to start writing the infra to run the cutscenes. 
+
+- a class in lua, like the entity class, that actions will use. 
+- generic update code, that looks at the current cutscene and runs the next
+  actions etc. 
+
+where does the generic update code go? everything updates thru the engines in
+C++ now. physics, entities, renderer. do i need any of this stuff to live in
+C++? i was actually thinking whether actions need to be entities. the only thing
+"being an entity" does for you:
+- you have a unique ID
+- you can attach components
+- you are updated every frame
+
+i don't care if the actions have an ID. i don't want them to attach
+components. i do want to update them, but in the context of a different kind of
+logic -- not just for each { update(); }. think i just wanna call into some lua
+function. 
+
+random notes:
+dialogue -- store each node as its own lua file and then the trees are very easy
+to compose
+cutscenes are triggered by simple entities with a bounding box that, when
+collided with, calls begin_cutscene()
+begin_cutscene needs to redirect input
+** 01/15/2021: 
+the first vignette needs to have more battles. it needs to have like 8
+to 10. the first two are three are training wheels. setting up the rooms like
+this with one opponent per room is a little too slow. there could be two per
+room. like chickenshit larry, hiding in a closet, except a little
+different. crouching under the teacher's desk. there are three identical art
+rooms, the first one has one, the second has two, the third has two (one of
+which is larry), that's four battles. that's good training wheels. what's the
+final little section of this mini dungeon? oh, that's cool: what if you go like
+this
+
+entrance -> room 1 -> room 2 -> room 3 -> room 2 (modified) -> room 1 (modified)
+-> entrance (modified). and then return from whence you came through the
+painting. 
+
+each room becomes a little more...hellish? more like a dungeon? maybe the souls
+in each room are the same people, with no memory of the last room where you just
+vanquished them? maybe there is a story that runs through different timelines in
+each of the rooms. the notes on the teacher's desk are about boon. but how are
+the rooms visually different? just a rearranging of the tables and chairs? that
+doesn't sound very satisfying. 
+
+maybe in the last room they go in the closet and walk downstairs to find a
+gallery. thinking of the factory in CSH, where it's this open thing but
+separated by walls to where it doesn't feel like you're just walking through a
+hallway. you're in this dank gallery of forgotten paintings, unused paints and
+oils and canvases from a hundred years ago, dead rats. you maneuver around it
+and you find the painting of the knot and as you're about to touch it this
+baddie swoops in.
+
+there's two parts to this that i'm missing. the first: the actual barb part of
+the subplot. but this is mostly going to be the conversations that happen
+between each room. so i'm ok with not writing the exact dialogue, because this
+is a storyboard, i just want the thrust of what they say. and the second is the
+tone of this. i feel like this is actually set out fairly well. warbling,
+twisted, dark, unreal. i guess the problem really is that when i got to charles
+(who is a great first henchman kind of guy), the tone kind of inadvertently
+changed into something goofy and very video gamey. not necessarily something
+that i want to avoid, though. this IS a video game. don't pretend that it's not,
+and don't get caught up too much in your own ass about the Feel and Tone of the
+game precisely. charles should be a little goofy. charles is huge and a little
+slow and lets secrets slip without thinking about it. and he has a huge evil
+belly laugh: BWA HA HA HA !!! (that's in italics, by the way) 
+
+why do souls do what they do? are they alive -- what is the difference between
+them, mentally and emotionally, and someone who is alive? perhaps fate is the
+difference: human beings get pulled and torn in opposing directions by fate, but
+at the end of the day they retain the agency to if not defeat it at least _fight
+back against it_. but these souls are hollow. they may look and act and feel
+like humans when you are in this world, but they are puppets of fate. the more
+you inspect them, the more you realize they are like intricate toy wind-up
+dolls, following some preset pattern of steps and hi's and ho's but without any
+of the decision that makes it meaningful. when souls come to you with their
+problems, you offer solution. but it is as if they do not hear you, as if they
+cannot hear you. the souls that surround boon being a little different, as if
+infused by his essence. and the librarian being a notable exception as a
+who-knows-the-fuck-what-but-definitely-not-dead. 
+** 01/18/2021: [code] cutscenes 1
+gonna skip making the intro intro aka the part in the physical world. gonna
+start coding from when you wake up in the closet. shader can wait. so i need to
+make a really simple cutscene. compose a few simple actions.
+- entities need to start in a given location (generalized to start in a given
+  state?)
+- then define actions (move this entity here, display this dialogue tree, wait
+  for this amount of time, play this sound)
+- then a condition for the cutscene to end
+- some subsystem that manages cutscenes, knows when they are happening, knows to
+  steal and relinquish inputs, etc.
+- some code path that i can take to begin a cutscene (probably this lives 100%
+  in lua -- you're just dealing with entities and data, which both live in lua)
+- easy way from the editor to start/restart/debug
+  - for simple cutscenes like the beginning, it may be sufficient to just load
+    up the level from a clean file and run the cut scene
+  - pretty quickly tho you're going to run into cases where cutscene behaves
+    differently depending on game state (simple example: you talked to X, so you
+    get a different dialogue tree). for that, you might want to have basically
+    save states. 
+
+quality of life stuff:
+- list out all commands baked into the console
+
+ok so for the cutscenes, just having it as data is pretty silly. i'm going to be
+writing them all by hand (not in the editor like i would dragging stuff around
+and making bounding boxes). it needs to be defined as a graph of actions --
+that's a really simple way to put it and also accurate. a directed graph of
+actions. if a node is your parent, then it must finish before you can begin. i
+don't think you need coroutines to make it nice. 
+
+so actually. maybe data isn't so silly after all? so 90% of my stuff is going to
+be dialogue, playing sounds, playing animations, and walking around. those can
+be controlled very easily with basic parameters. what entity, what sound, where
+to, how long, et cetera. and then you can have another basic action type to
+compound stuff together, plus delay, that's seriously 95% of the stuff i can
+think of right now. you can have parallel things by a simple flag that says
+'don't block', you can have parallel with sync points with a compound
+action. and if you need a custom action, just write a class like you write all
+the "built in" ones and add it the same way in the cutscene
+** 01/17/2021: [code] first look
+what code do i need to make part one happen? and how detailed does it have to
+be? because if it was "as detailed as the final product minus assets", that
+would be a ton of work. because you would have to iron out the battle system,
+the mechanics, moves, start designing creatures and enemies and dungeon layout
+and placement and all sorts of things. 
+
+here's a thought / decision. max told me earlier today: stick to your
+vision. you know what you want to make, so make it. well, playing CSH has been
+fun and i really like how each battle is kind of its own puzzle. but i want this
+game to be more than that: i want it to be a dungeon crawler. so there is the
+game itself of the individual battles, but there is also managing your resources
+through this long dungeon and figuring out how to preserve your health
+
+the problem with the battles is that it's pretty much all or nothing, right?
+either you have meaningful battles and you have to iron out all the things that
+make it meaningful, or you have totally pointless battles. there's no real
+halfway. i mean, maybe you don't need to have everything ironed out. somewhere
+in this file i have a lot of notes on what the battle system itself looks
+like. the basics of it. designing the battle system is different than balancing
+the dungeons, and what enemies go in them, and how you progress through
+them. but even if the system is set up, you have to have the creatures to have
+real battles. and if you want creatures then you're starting to design
+everything. i don't think i want to do that. 
+
+work:
+- a fade-in / depixelate shader (for waking up)
+- visual or auditory effect (for poking and prodding)
+- dialogue
+  - dialogue boxes
+  - chat heads
+  - dialogue options / trees
+  - italics?
+  - letter noises
+- some kind of cutscene / battle hybrid (for the intro battle)
+- ability to swap between levels / rooms
+- basic dialogue cutscene with a trigger (for random chats)
+- interactable items / NPCs (for the cafeteria)
+- quest state (for larry)
+- warp / contract shader (for teleporting)
+- basic mock of battles
+  - how they are triggered
+  - how data is stored for them
+  - battle loop
+
+i need to have cutscenes. so just these little scenes where there is no player
+control, but there is dialogue, and people can maybe walk around. 
+** 01/16/2021: [story] big picture
+getting a late start...it's about one in the morning. but it must be done every
+day. 
+
+current state of ideas for the big plot:
+all events that ever were, are, or will be are woven into a fabric. the fabric's
+pattern is finely wrought, complex beyond belief, but it is still ultimately a
+pattern. the problem with disrupting a pattern is not the site of incident, it's
+everything that ever comes after it. and a thread has come loose in the
+fabric. time and causality are losing their integration. the disruption of the
+pattern centers around the main character, not for any particular reason but
+simply because things must happen to someone. he was intended to die a young,
+pointless death. but something broke, and he lived, and this is causing the
+universe to unravel. it tries to self-repair, to bring things to a steady and
+acceptable state, which naturally means that it tries to kill him. and it
+half-succeeds, but his soul cannot pass through to the realm of the
+dead. instead, it is stuck in limbo. he does not know this, though, and believes
+himself to be in a fight for his life. he travels through the version of his
+school in limbo, until he finds and defeats the spirits which did this to him
+and is faced with a choice: his life, or the self consistency of the universe as
+we know it.
+
+his foes are two corrupted spirits, byproducts of the death of causality, that
+have infected the boys in the physical world who kicked the shit out of
+him. they are not anthropomorphic spirits, like the rest of the cast. boon will
+come to find upon the final confrontation that they are manifestations of
+predestination. they cannot be spoken to, reasoned with, or overcome through
+force. through his journey, boon will believe them to be more or less regular
+souls, like the ones who populate the world. he will seek their motives, their
+whereabouts, their weaknesses. and he will find and defeat many souls: grunts,
+henchman, officers, the men women and children that have been lined up like
+dominos by these unseen forces to act out this elaborate play. but they are
+simple marionettes. 
+
+theme: fate does not choose you, it's just that things have to happen to
+someone. 
+
+random idea: what about one of the first two halls being about you tracking down
+some sage, or some friend of the librarian's, or someone along those lines who
+has been held hostage?
+
+ah feck. i'm having trouble figuring out the causality here. so fate starts to
+unravel around boon...does that cause him to have a near death experience? or
+was he ordained to die, and the universe is trying to self-repair the pattern to
+make sure that happens? or was he ordained to live, and the unraveling is
+causing him to die? or is the universe merely fighting him off like an antibody
+would a virus?
+
+1 is just kind of random and doesn't push the plot or ideas. like, yea, it gives
+you a reason to be down there: something shitty just happened to you. and even
+though that is in line with the themes i have, it's not compelling. i'm sure
+there's an entry for it on tv tropes, and i don't know what it's called, but
+it's basically: insert a fancy sounding but utterly meaningless cause for the
+events which are about to transpire.
+
+2 is cool because at the end of the game you can say: boon, you have to die, or
+else the whole world will unravel. but it's also weird, because: who knows this
+information? i guess the librarian could. that would be pretty sweet. 
+
+---
+
+ok so there's your big picture plot. so boon will gradually learn that the
+universe is unravelling, and that maybe he could have some part in fixing it --
+but not what fixing it entails for him. so then what you need is still the peaks
+of the plot. of course the first peak is the arrival in limbo. the last peak is
+the confrontation with the false villains. you need two peaks in between
+there. one for each hall. 
+
+...what if this isn't a school themed game? that's kind of a terrifying thought
+LOL i mean not much of the game is _dependent_ on it taking place in a
+school. the art room stuff would be kind of weird but really it's just a
+backdrop rather than an integral part. i am just unsure what else the backdrop
+would be. somewhere vaguely dank/dungeon-y? like an underground civilization?
+** 01/14/2021: 
+having a lot of thoughts about the creature system in this game. about having
+the NPCs be the same as the creatures. it makes some things easier but other
+things harder. the thing i keep coming back to, though, is the fact that the
+game is too short to really have a fleshed out creature system. the doubt i was
+having was related to dialogue and such: if you have this fleshed out character
+like barb, how do you meaningfully make her a part of the story beyond her arc
+when she may or may not be a part of your party. 
+
+so what's good with this first interlude. remember -- short, simple, sweet. this
+isn't the first dungeon. it's mainly just a place where you can learn how to
+battle. not a lot of plot is going to happen here. 
+
+thinking you're basically gonna walk along, stop and talk with barb every once
+in a while. you overhear a guard saying something about a weird painting of a
+knot in a room at the end of the hall. when you get there, there's a lil mini
+boss -- just the captain for the squad that's patrolling this hall, not even
+enough to give him a name, really. and he takes barb half hostage. and boon has
+the choice to run through the painting or to save barb first (maybe this is an
+actual player choice, maybe it's just a choice that in game boon has that is noy
+role played)). something to make barb open up to them at the end.  
+
+what does the interlude section look like? 
+well, speaking outside of flavor, i'm thinking of it as mostly hallways with a
+few small places where it opens up. maybe it's a whole art themed thing? lol
+thinking of metaphysical justifications but i don't think i need them. what's
+the tone of it? it's a twisted projection of an art room. but not in a funhouse
+style, with oversized paintbrushes. it warbles. it is slightly eerie. it has the
+queer feeling of things not created in this world, things that are not quite
+right to our perception, like the paint cans i put in there. 
+
+i want the hallway to be shaped like a knot
+
+i keep getting this image of a room drenched in red light. not sure why an art
+house would be lit in red. 
+
+another cool idea is if instead of a hallway, it's a series of rooms. and each
+room is roughly the same, layout wise. but inside each of them is a battle or
+two, then the notes and drawings and such give you a clue for how to get to the
+next area. i think that sounds way more fun. 
+** 01/13/2021: 
+lol kind of phoning it in today but that's ok. 
+
+so yesterday i was kind of working on the big picture of the plot, especially as
+it relates to the first interlude. i was feeling pretty good too. i like this
+part.
+
+so yeah you go do the little arc with barb, you have your moment with her, you
+defeat the beastie or beasties that are keeping you trapped, and then you return
+to the hub to talk to the librarian. and he's gonna give you the rundown. 
+** 01/12/2021: [story] art room, interludes?, creatures?
+school room. so barb used to hang out at the sixth grade hall, but we haven't
+heard from her -- as in, we're pretty sure that she isn't _there_, but we just
+don't know where she is. we saw her hanging around....where? 
+
+ok, here's an idea: we saw her hanging around the art room. when you get to the
+art room, she's trapped in a painting. and there's this short puzzle inside the
+art room to lead you to find the painting. 
+
+riddles?
+
+are there people in the art room? i want this to feel a little hazy. a little
+preordained. 
+
+you are being tied together with this person for a moment in time. linked to
+them -- but the link is against your will. a chain? and when you become tied to
+a person, it is in a sense forever. your experiences with that person do not
+leave you when they leave you. a chain is an ugly thing. i prefer a knot. 
+
+a knot that looks like ok yea
+
+sixth grade hall: 
+barb has a loose idea of what's going on from being trapped
+lots of henchmen
+a minor boss at the end who really clues you into what's going on. maybe he's
+kind of goofy?
+
+should you just be able to battle with barb oliver and boon? i think that even
+20 creatures is kind of tough to pack into a 3 dungeon game. like you have to be
+able to find all of them, have time to level them up...you can still have items
+be the result of sidequests. items, moves, abilities, anything like that. 
+
+and should i have these interlude sections? the way the barb one is set up, it's
+pretty much like it's the dungeon itself. like i'm planning on having these
+little plot points scattered through the dungeon anyway, so is this really any
+different? well, for barb, maybe it's not so different. because her thing is
+getting you _into_ the dungeon. but for #2 and #3, that doesn't have to
+necessarily be the case. i mean, even for barb, it could be something like:
+yeah, i've been sneaking into the sixth grade for a while now, and i could tell
+you how i do it, but first i need to get the fuck out of wherever we are now. so
+you do that, get her out, then return to talk to the librarian who lets you
+know:
+there are two personality wells that have collided and are tearing the realm
+apart
+you are one of them
+the world's internal rules are becoming un-self-consistent
+
+or phrased slightly differently
+
+all things are preordained
+boon was supposed to die in the closet
+but for some reason, he did not, which broke fate
+since all things are preordained, if the mechanism of preordaining breaks, then
+it threatens to tear apart the realm at the seams. 
+
+^^ that would kind of imply though that the villains took over after boon got
+his shit kicked in...? whereas i was kinda going for "alter-egos in spirit world
+become corrupted and infect their corporeal counterparts). it would be awesome
+though if boon had to die at the end. or maybe the breaking of fate was not at
+an instant, but a slow fracture, and the villains manifest as a part of that
+initial warping...and you have to defeat them before the whole thing cracks into
+a million pieces.
+
+also, side note: develop the main villains more. i think they are pretty boring
+now. well, you gotta have some interaction with them before the final
+boss. maybe after the seventh grade. 
+
+you should be able to hot swap anything on characters. no EV bullshit. 
+** 01/11/2021: 
+i never tell the player to get you a soda. 
+
+i don't want to just tell the player to "go and talk to this person". that
+doesn't feel right in the spirit of this game -- the feyness, the
+surrealness. but also remember: this is a game. not a pixellated diary. it has
+to be fun. and especially in the beginning, the player is gonna want to play the
+game. is it fun for the player to go around talking to people? no, it is not --
+UNLESS they can pick up some quick adventures. get sucked into a story, or to a
+side dungeon. so maybe the librarian actually pushes you forward. 
+
+okay, but the librarian as the all-knower telling you to let fate lead you on is
+way more in line with what i want. i think the better option is to ok yea im
+just gonna write this in the plot section
+
+-- later
+
+okay, the problem now is that i want them to go to the cafeteria and get into
+some nonsense, but if i send them there without a plan then i have to figure out
+how to direct them to the right place given that they could talk to pretty much
+anyone there.
+
+i could have them go there but then have some of it blocked off. 
+
+i could have ollie suggest you get to a specific place within the cafeteria, but
+then that would kind of defeat the purpose. 
+
+i could have them go there but then some kind of barely-cutscene pulls them in
+the right direction.
+
+i could have them go there but all the people by the entrance have an extra
+dialogue option called "do you know how the fuck to get to sixth grade" and they
+point in some direction.
+
+i think i like that last one -- question is what that direction is. 
+
+well, remember. barb and the old man. you want to pull to barb first. so what if
+the first vignette is twofold: finding barb, then a mini dungeon to get to sixth
+grade. but you want to spend time with barb. they should be accompanying you on
+the vignettes. i think it would be a cool idea to have this hunt for barb. this
+guy said she was over here, that guy said she was over there. bust into the
+wrong place and get a cool battle. but also: they should be accompanying
+you. the whole point of barb is this character that you're stuck with, and you
+come to hate, and then you come to feel a deep empathy with. and ALSO ALSO, this
+first bit needs to be pretty combat intensive. lots of easier battles to get
+them used to the combat system. 
+
+so what if you ask around a bit and everyone says, yeah, there's this chick barb
+who hung around there a lot, but the last time we heard from her was ___. then
+you go there, just pretend it's a restaurant for metaphor's sake, you go to the
+restaurant and you hear a girl calling from the walk in. you walk in to
+investigate. and the door slams shut behind you. now you're both trapped. and
+now you've got to make your way out of here. 
+** 01/10/2021: [story] sidequests, connectedness
+just wrote some plot today
+
+BUT IN ADDITION TO THAT
+
+i will also work on some more stuff. i'll work on...the first vignette. real
+business time. ok, so the way i'm thinking this is set up is that the librarian
+gives you this talk
+
+and i'm just now realizing that i forgot that you are playing a game, and that
+you need to, you know, do some battling. and that the librarian needs to show
+you how to battle. so stick that in at the end.
+
+so the librarian gives you this talk where he gives you a little rundown on some
+metaphysics and the general situation in limbo and, loosely, what you need to do
+to not be there permanently. and he says: alright, that's all i know, you're
+gonna have to figure out the rest. this is part of the theme of the game here:
+fate happens, and then you must deal with it. this is definitely in part a kafka
+ripoff, and i'm not sure how it will come across in the game. it could very
+easily come across as "just meander around until something happens and then you
+can keep playing the game". maybe it's better to point them in a specific
+direction? 
+
+been thinking for a good minute, coming up a bit blank. so here's a thread to
+pull on: how do i create this small yet tight and complex world of people and
+things? i keep having this thought that maybe one character tells you to go talk
+to another one...not even really a conscious thought, just one of those things
+that pops up in my head. let me brainstorm. 
+
+
+different dialogue options pop up for the different characters you talk to
+depending on what you have learned about them. for example, maybe you walk into
+kristina's house and she tells you that she is pregnant. then later, when you're
+talking to jerry, that either directly or subtly alters the conversation you can
+have with him. 
+
+
+a large mystery to be unravelled? but one that is unrelated to the plot at
+hand. i'm looking for something here with just enough of a hook to pull you in,
+but no more than that. any less, and you wouldn't even realize there was a
+mystery there. certainly no quest marker shit. 
+
+
+lost shorts. something that starts out innocuous that grows out of hand.
+
+
+everyone in the town talks shit on crazy eddie. he was a homeless guy who, in
+life, liked to hang around the school and (genuinely) befriend the kids and
+sleep out behind the gym. 
+
+(hey, an aside: i'm kind of realizing that not every story in the game has to be
+connected to every other story. that would be massive and absurd. for one, focus
+on making all these sidequests punchy and poignant and chestaching.)
+
+so he sleeps out behind the gym, and day, crazy eddie just dies. in the way that
+homeless people do sometimes. back in limbo, crazy eddie is being
+annoying. he's been a real spiritual asshole, and wouldn't you go try to talk
+some sense in to him seeing as you're the new kid? so you go down and talk to
+crazy eddie and he doesn't really make a lot of sense -- but what you can
+surmise is that his normal haunt is, well, haunted. there are some
+less-than-kind spirits there. you knock 'em out, and then crazy eddie says to
+you: thank you. you're the first person that's been kind to me in longer than i
+can fathom. do you know hard it is to be crazy? actually -- being crazy is
+really easy. you live in your own personal reality. it's the brief moments where
+you snap back. that doesn't happen for everyone, but it happens for me. every
+once in a while, i'll come to, and i'll look at myself, my unwashed body, my
+tattered clothes, my stench, and i'll feel a self hatred that cuts through me
+like a hot knife. and i'll know that nobody could ever love me, and that i do
+not deserve kindness. and i'll tough it out until i lose myself again in my
+illness. it always comes back, thankfully, because then the hard part is over. 
+** 01/09/2021:
+just wrote some plot today
+** 01/08/2021: 
+one thing i've been thinking about these characters: remember that this is a
+video game. this isn't an art movie. i have a certain disdain for self centered
+art movie style of thing, not that i watch a lot of art movies. but things that
+tell stories that don't mean very much to those watching it and are very
+specific to those who made it. so i'm writing this to say: don't worry so much
+about putting in tense scenes, don't worry so hard about what the characters
+represent or what their pain is. just focus on making them have interesting
+backstories or personalities and fit loosely into the story and themes and they
+will write themselves. you need to be excited about them.
+
+like barb. i am super excited about her. i have a good idea of how i want to
+write her, and i think it will be an awesome experience for the player to come
+to like and empathize with this person that you once hated or found annoying. i
+think that will be fun to write and fun to play.
+
+i also like the old man, because people get really emotional about old men. and
+i can see a lot of possibilities, a lot of ways to rope you into feeling
+something real for this pixelated character.
+
+not sure how i feel about bruce though. bruce just doesn't feel video game-y
+enough to me. barb and the old man are "big" personalities. better put, they are
+strong personalities. they have clearly defined traits. this is kind of the idea
+of why i like sans so much as a character and why i think he works so well. sans
+is so sans that it hurts. everything about him is himself. you need that in a
+video game -- any video game, but especially a 2D one. you lose a lot of modes
+of expression in a video game. tones of voice, facial expressions. so you need
+the character to be strong as a character. no people as just themes. and bruce
+feels more like a theme to me. 
+
+i also want to keep with the school theme a little more. altho i do like the
+idea of changing the old man to instead of someone who peaked in high school and
+that's why he returns here in death to an old teacher who died on the job. like,
+the kind of teacher who teaches until they're 80 and then just nods off in third
+period on day and kicks the fuckin bucket. and that would work a lot better with
+the school theme.
+
+here's another idea: a mom. a very bubbly woman, big hips and shoulder length
+hair. her elementary-aged son died. she puts on a face. she smiles, she's polite
+at PTA meetings, she goes for a drink with the gals at work occasionally. but
+she's just dead inside. kelly...
+
+how do i tie all of these characters together? the initial idea was to have
+oliver bring you to what is in essence a cantina -- because all good stories
+start at cantinas -- and then introduce you to a few characters who tell you
+what's going on. but maybe that's not the way to do it...? the problem is that
+characters scheming in the cantina against the enemy is a very _political_ kind
+of thing. for that to be really engaging, you want to have an involvde plot with
+plenty of room for twists and turns and backstabbing. you want a game of thrones
+situation. and this game is not that. this game is about simple characters and
+stories, but real characters and stories. real emotion and intrigue packed into
+each part of the game. so there shouldn't be a lot of main characters, and i
+think that by introducing all these characters at the start you're kind of
+setting yourself up for a game where you DO have a lot of main characters. these
+that you're developing should be the 'secondary characters'. 
+
+ok, so i'm gonna rock with that. now, there are two ways i could go with
+this. the first is that i could have all three characters be interchangable in
+their order. the second is that i could dictate the order. the former would be a
+little harder to program. maybe a lot harder to program, considering the
+connectedness component. as in, if you want all of the small characters in the
+hub to overlap, then you want these three secondary characters to be a key piece
+of that. but it gets hairy about how they handle these characters depending on
+if you have done their quest or not. of course, you could program it in, but it
+would be a lot of work to make sure that the game is not just coherent in every
+configuration but still keeps the same emotionality. makes the same emotional
+sense.
+
+another kind of problem i'm seeing is how you actually get to know these
+secondary characters if you're only with them for a short time. well, the
+interlude arcs are going to be like little vignettes. stories that are meant to
+be told quickly. 
+
+what if the third character was the mysterious librarian? the soul who knows
+more than he should? so he gets introduced early, you go talk to him as a part
+of the 
+
+ooohhhh
+
+ok, i got it
+
+so when you first land, ollie picks you up. he tells you that you should
+probably go talk to the librarian, because some strange things have been
+happening. you know -- this is kind of the guy who knows what's going on in the
+world. afterworld. nice and simple. so the librarian kind of points you in the
+right direction for the first interlude. ditto for the second interlude. and
+then, he IS the third interlude. 
+
+how does barb know how to get into the 
+** 01/07/2021: [planning] schedule
+back at it. so the two threads i have to pull on now are: who are the main
+people who populate this world, and how do you get to the first dungeon? first,
+though, i want to do a little more meta planning. rough list of big things that
+need to happen:
+- first draft of the plot slash structure  - sketch main characters
+  - each section: intro, first dungeon, interlude, second, interlude, third,
+    final boss
+  - hub design
+- design the game itself
+  - battle system
+  - dungeons
+- program the thing
+  - dialogue
+  - battling
+  - persistence
+  - tools
+- promotion
+- find an artist
+- concept art
+- converting programmer art to production art
+- polish
+- package it for sale
+
+i think i could finish the plot except really hammering down the connectedness
+of the hub in a month. so maybe there are some things to do in the hub, the main
+thrust of what you do there in the interludes is fleshed out, but all the fine
+details are not ironed out
+
+the programming...honestly, i could see that taking at least 6-8 months. i could
+also see it taking more, but that feels like a realistic number to shoot
+for. that being because i have my tools, i know them well, i have a good idea
+for where they are. and they are pretty solid.
+
+designing the game will take a while. on the order of 3 months or more to get a
+rough cut. but a lot of that will happen with programming it and playing it. 
+
+i would want like a month to screen artists -- but this can be totally
+concurrent. and then i would expect 4-6 months for them to do the art. somewhat
+parallelizable, but i would certainly not want to hire an artist at the end of
+first draft stage because i know the game is going to change as i program
+it. that's something i would do around the end of "first programming draft". 
+
+then polishing it overlaps like 3 months with the artist. kind of a catch all
+for "make the game better", "alpha test", "integrate real art and fix bugs
+produced therefrom". you could spend 6 months polishing it methinks.
+
+promotion happens while you are programming it -- maybe on that tail end where
+you have the artist churning out concept art. promoting and polishing are kind
+of the same time slot.
+
+packaging it for sale i think would take like 3 weeks. 
+
+min / max
+1 / 1 (plot rough cut)
+6 / 8 (program rough cut)
+3 / 4 (design rough cut)
+1 / 1 (art screen)
+4 / 6 (art)
+6 / 6 (polish)
+6 / 6 (promotion)
+1 / 1 (packaging)
+
+1 + 6 + 3 + 6 + 1 = 17 months for a low estimate of all the serial work i am
+doing. if you're working an hour a day that's 500 hours. two hours a day, a
+thousand. 
+
+gonna set some dates for finishing rough plot/design and then once i get there
+break down the 'grammin. 
+
+ok, back to the regularly scheduled programming!
+
+so we've got barb and we've got bradshaw. i want to have the third character set
+in place here before i figure out what you have to do to get to the first
+dungeon. both characters are still very underdeveloped, but that's ok. 
+
+what about a character that is an artist? but like, a squidward kind of
+artist. a bruce who is also a talentless hack. a painter, call him, who died in
+middle age without having accomplished anything of note. the reason that he
+painted was not because he loved painting, but because he had some success with
+it as a child. it gave him a feeling of satisfaction and self worth. as he
+became older, he became depressed. his life felt empty and meaningless. (oh, by
+the way, we will call him bruce). he felt like his life had to have meaning, but
+he was too afraid of actual success and dedication to make his life had
+meaning. he was in love with the idea of life having meaning rather than the
+meaning itself. any meaning would do. so anyway, he "sets out" to paint this
+great painting. the most beautiful painting you've ever seen. to be a painter
+that could not be forgotten. but it is a false setting out. he never intends to
+accomplish anything. occasionally, he saw and felt glimpses of this. the hardest
+thing to overcome was: what have you accomplished? the important thing being:
+the way he chose to cope with suffering was by self-deception.
+
+he grew rounder, grew to middle age, and there was nothing in his life worth
+preserving. he died, of something stupid, a congenital heart defect or something
+pointless like that. and that was it. there was nothing.
+** 01/06/2021: 
+i got a cat today :) here's some stuff i wrote while i was waiting for jonathan
+
+i'm excited for the barb character. one thing i was thinking about today is how
+do i have emotionally tense scenes? you can't really have long shots showing the
+characters acting. well, you can, because a computer can do anything. but i
+think that's too much for what i want this game to be. it's not necessarily
+emotional tension that i'm after, but rather depth and connectedness and
+emotional realism. showing broken people cope, and showing a community of people
+living together and how they interact and are so tightly wound around each
+other. how the actions of one, tiny actions, can have great rippling effects. 
+
+so barb is a young girl. teenaged, sweet sixteen. i think i need to have someone
+older in the cast as well. there's another aspect of suffering: someone who is
+ground down not by tragedy but by the daily condition of life. an old man for
+whom his senior year of high school was the peak of his life. and not even
+because it was so great -- although it _was_ a very good time -- but moreso
+because he held so much hope for the future. it was wide open. and as the weight
+of adulthood bears down on him, he slowly becomes flatter, slower, older. and
+when he dies, his soul returns to its time of greatest joy. he's not an overtly
+sad man. he doesn't loudly sigh and look off into the distance. his pain isn't
+really pain per se, it's just that his feeling and emotions have been ground
+down into corn field flat plains. but what makes the player care about him if he
+is so flat? what is his motive for being in a pseudo political organization that
+knows things about the goings-on of the enemy? why would he do any of these
+tings if he derives no pleasure or pain from them?
+** 01/05/2021: [planning] more brainstorm
+what are ways that we deal with our lives? we take drugs. we become
+depressed. we distract ourselves with meaningless things. we pretend things are
+meaningful. we surround ourselves with people. we become promiscuous. we lock
+ourselves in our rooms. we feel empty. we curl up into a ball and pray that we
+are not kicked again. we overcompensate and become manic. 
+
+i like the idea of these four characters at the center of...some story. maybe
+it's not the main story. maybe the main story continues to be a boy and an
+unlikely companion trying against the odds of what is known and possible to
+overcome fate. you know, maybe here's another idea popping up: why we do things,
+and the selfishness therein. boon is eradicating evil, yes, but he's doing it
+purely selfishly.
+
+these three characters could be the core of the goings-on in the hub. of the
+sidequests, of all the people. the center of the network. let me also look at
+some of the side characters from the last game...
+
+i've got a good idea for a character forming. i keep getting the image of desire
+from the sandman. someone overt, androgynous, charming, tantalizing,
+colorful. someone worried deeply about the superficial pleasures of life --
+seeing and being seen, checking, swiping, checking. someone whose personality is
+so big that you know it cannot be real. an overcompensation in the other
+direction. you meet this person and you dislike them, they grate on your
+nerves. they feel so plastic. but you come to realize that you are truly the
+same as them. the mask you wear and the mask they wear are the same, differing
+in color and form but still to call the thin strip of plastic the person is flat
+wrong. and the person underneath is the same. 
+
+barbara (a.k.a barb)
+
+she's an ex-cheerleader. her dad was a horrible alcoholic, but you wouldn't have
+known it to know her or be around her family. he was verbally abusive. he told
+her that no one would ever love her -- and do you know how hard it is to hear
+that from your own parent? even when you know it's untrue? she had an eating
+disorder, but not bad enough to kill her. just bad enough to keep her thin and
+beautiful and validate her. the pain of being at home grew to overwhelm
+her. then, all of a sudden, it stopped. her father died, suddenly, in a car
+accident. barb couldn't get a hold on her emotions. she felt everything, relief,
+hurt, pain, emptiness, joy. she had nobody to tell these things to. there was
+nobody who wouldn't think her a freak for being joyful at her father's
+death. they didn't understand. all she really wanted to do was to not feel
+_anything_. not the good, not the bad. she just wanted to stop existing. 
+
+so she killed herself.
+
+in the afterlife, things don't change so much. it's weird -- you think that fate
+is something that affects the living. fate is all these things that get thrown
+at you and happen to you, and you juggle them until you feel like the dishes are
+about to drop and at the last second you stumble across the finish line and all
+the dishes break but it's okay -- they aren't your responsibility any
+more. you've made it. you can breathe a sigh of relief. but all those feelings
+that fate laid on you, they don't just end. now that you're dead, they're just
+there, forever, morphing yes but so slowly that it is almost unbearable. 
+
+even the dead have to cope!
+** 01/04/2021: [planning] limbo ideas
+think these entries are going to just be summaries sometimes. i'm going to start
+designing the world, the hubs. maybe some waypoints, but i think those will be
+tied more to the story.
+
+the first place you will enter is limbo. limbo is the space between the
+grades. you wake up in some designated room of limbo, the room where newly
+damned souls enter. limbo is one of the four hubs of the game (the other three
+being the three middle school grades). the three grades are long hallways that
+stretch like three fingers from the palm that is limbo. it is a place that you
+will return to after each dungeon. limbo is the largest hub of the game, and
+after each dungeon, things become unlocked in it. brainstorm for some places in
+limbo
+
+a bar where wayward souls gather. there could be a lot of conversations
+here. there could be a hidden room in the back of the bar that the keep allows
+you into if you smooth talk the right way. people could ask you to retreive
+their lost items from the different grades
+
+an old teacher's soul whose mind has not adjusted to the afterlife, and holds
+raving lessons in the town square
+
+some souls that have taken up an ordinary life in limbo. an irony there --
+living the afterlife just as you lived the life. fate throws you a curveball
+but you haven't even walked up to the plate yet. 
+
+another idea: everyone you talk to in limbo is a part of the graph. they are all
+connected by degrees. 
+
+a library, with a strange and otherworldly librarian. one who seems to know too
+much of the world to be a simple librarian, almost like hoid. 
+
+a warehouse that holds a secret entrance into one of the grades. (maybe this is
+the gym). i would love it if there were a talking basketball in one of the
+gyms. as in, everything has a soul, and even the souls of inanimate objects may
+manifest themselves strongly enough to be conscious in the afterlife. 
+
+i think you could also have many 'ordinary' buildings -- places of work,
+dwellings, that don't mean anything on their own, but take place in these small
+stories that emerge through the hub. 
+
+so the point of the hub is that it is this (relative to the game size) large
+place which is full of life, secrets, and sendings-off. as i think about it,
+since you return to the hub, it may be best to have it be the ONLY hub, and to
+truly have the grades be dungeons. this also keeps the game down to a much more
+manageable size and length -- and more like the length i was intending for it to
+be. lets me pack in the details that i want while still keeping it short. so the
+game then becomes periods of, say, an hour in the hub. sorting things out,
+figuring out how to get into the next grade. then, say, two hours to run the
+dungeon. which puts you at about 8-10 hours (1 + 2 + 1 + 2 + 1 + 2). which could
+be extended a bit by adding in mini-dungeons. 
+
+so i think the next thing to do is to figure out what takes place in between you
+landing in limbo and you starting the first dungeon. how do you get there? how
+do you learn the mechanics of the game? what places and people are involved? are
+there multiple ways to do it? what side items are available in that time?
+
+who are ollie's friends? how many integral characters does this game have? like,
+i don't think there should be five more people that you meet there. the game
+simply isn't long enough to really flesh them out. ollie is totally fine as far
+as development, because he's always with you. there could be, say, three souls
+there. and each one is a jumping off point for the different grades. so each one
+gets to be developed. but it kind of sucks that you deal with the first one to
+get to 6th grade and then never again for the rest of the game. that might not
+be so bad for two reasons: for one, these secondary characters can be tied into
+the network of the hub. you can run into them at other places. for two, they can
+always be there giving input when you return to the hub and for you to talk to
+after you have been briefed. 
+
+so let's say there are three damned souls. are they extensions of the themes of
+the game? are they different manifestations of how we deal with suffering? or
+are they just interesting traits wrapped up in a human shell? is their main
+purpose to push the themes? like, are they designed around that, or are they
+designed around being cool characters and then the theme is bolted onto them?
+
+hey, here's another thought: don't be too deadly serious with these
+characters. i mean, i don't want to be as silly as undertale, but the reason
+undertale is so fucking awesome is because the characters are really big, and
+silly, and funny. 
+
+brainstormin:
+
+T. A. Milliken, a teenaged boy dressed in a fine bespoke uniform, who is from
+old textile money. He's a bit haughty, but not maliciously so. He is a bit of a
+buffoon, but ultimately a loveable one. 
+** 01/03/2021: [planning] differentiate
+i don't know how the hell the gameplay looks with no random encounters. I just
+looked into cosmic star heroine a little more and it basically has random
+encounters. well, that's not totally fair -- it doesn't. there are monsters that
+you can see on the screen. i guess because of how they look it doesn't feel
+different than random encounters, but it really is. it's the same as i want to
+do: every encounter is designed. 
+
+alright, so check this: make the game a little less of a rightwalker. there are
+doors with keys...almost like simple 2D zelda puzzles? 
+
+kind of an aside. one thing i didn't like about the (admittedly few) videos i
+watched about CSH was that the game does not make you feel. it has a certain
+style to it, a certain consistency, but not one that is special. i want this
+game to be ethereal, strange, fey. 
+ 
+so there are these small sub-tasks in the dungeons that keep things
+interesting. you end up doing something like 30-40 minutes of battles, then you
+come to some way point. the waypoints join together into larger sections. the
+waypoints provide you with intermediate goals to make the game feel
+cohesive. the levels can have some mild backtracking. but it's all about
+stringing together these intermediate goals between the big hubs. this feels
+kind of nebuluous writing it but clearer in my mind. i think this will flesh out
+more as i design the game.
+** 01/02/2021: [planning] answering ?s
+little summary from yesterday: the world should be gray and absurd, humorous,
+and the player should feel as if they are being dragged along through a strange
+world that has an internal consistency but a surreal consistency and a fixed
+nature. 
+
+WRITING STYLE
+okay, so from yesterday: quiet conversations between two characters, like
+murakami, where they explain key points of the game through their thoughts. they
+express ideas, themes, and they themselves should be symbols in what they think
+and say. 
+
+most of the writing is dialogue, i just realized. besides flavor text, it's all
+dialogue. so the writing style depends heavily on the characters and their
+voices. 
+
+CHARACTERS
+i want the characters to be few and big. not big as in wheel of time big --
+fleshed out through dozens and dozens of conversations -- but having a distict
+personality. i really lovs sans. in fact, i like the whole undertale model of
+characters. there aren't too many characters that talk, but you'll remember
+every single one who does. and the ones that don't still have a personality to
+them. 
+
+boon is kind of a shinji figure. he is quiet, and well mannered, and
+angsty. there's going to be a main sidekick that guides him through the world,
+someone of experience. what is the relationship between these two like? i love
+the idea of oliver, the street urchin who has been trapped in limbo for over a
+hundred years. but what is the tone of his sentence? wisdom, resignation. he
+cannot get out of limbo (note: what if this is a decision you can make at the
+end of the game?). there is no hope for him, but instead of becoming despondent
+he resigns himself to the situation. this is part of the theme of the game: how
+you handle the tide of life. 
+
+the one problem with oliver being this wise yet resigned character is who spurs
+boon forth? boon is another facet of how we handle life. he is someone who is
+meek and timid, and is afraid to assert his agency. upon second thought, i don't
+think he is depressed. he just flinches. he has been broken at some point in his
+life, broken to where he believes that he cannot take what the world throws at
+him and that the only answer to life is to pre-emptively curl into the fetal
+position and pray that it doesn't irreparably harm you. how do you get a
+character like that to take decisive action? well, the whole arc of the game is
+boon overcoming this outlook. 
+
+so maybe the dynamic between oliver and boon is this: oliver sees that boon
+could escape, so he decides to help him. oliver is resigned to his own fate, but
+he is not resigned as a personality trait. and there are some conversations that
+explore oliver's feelings about his being trapped. 
+
+GAMEPLAY
+okay, this is a hard one. i want every battle to be handcrafted, out in the
+open. that means no random battles. playing through, say, FF6, if you took out
+the random battles then you're seriously walking from place to place. and i
+don't think that random battles are interesting enough to break that up. 
+
+the one idea that i have is puzzles, but the problem with that is that this is
+supposed to be a small game, a focused game, and i think that by putting in
+puzzles i am going to start getting in over my head (especially with the effort
+needed to make GOOD puzzles). i would rather have really good and tight battles
+and combat design. 
+
+undertale solves this in a fucking brilliant way. it keeps the random battles,
+but they're all minigames. well, before i brainstorm about this, let me lay out
+the game on a slightly higher level.
+
+the game is essentially a "walk right" game. there's no backtracking. you don't
+diverge in the order you beat different parts. there are a few main hubs -- at
+least one for each grade. and then there are smaller little outposts that you
+hit. there are no quests, at least not in the traditional sense (go here, do
+this thing, then come back to me). there are things you can do in the
+towns. brainstorm
+you can have seemingly innocuous conversations with people that may subtly
+influence other parts of the game
+resolving a conflict between two people that gets you a one-off battle and a
+neat item at the end
+mini-dungeons -- think of the dojo in cerulean city
+hidden mini dungeons
+shops, inns
+
+i think the important thing is to pack detail in the towns. everyone you talk to
+should be opening up some small gameplay, or giving you a good conversation. the
+people in the town should connect. the towns are not big, they are not a focal
+point of the game, but i want them to feel less like waypoints and more like
+breathing entities (not to the extent that, say, vampire breathes. but breath
+nonetheless).
+
+so yes: hubs, outposts, and then what i will call dungeons. a dungeon is any
+section of the game that is focused on combat between two hubs or outposts. 
+
+outposts are more there for plot and scenery breakup, i think. like, i can put a
+heal point anywhere in the dungeon to break it up into functionally two
+dungeons. so maybe outposts take the place of heal points? maybe outposts can be
+really tiny things, like a single house, packed with personality, and that is
+just what a heal point is. but if the layout of the game is the three grades and
+then maybe an intro city, i don't think you want to have them playing for like
+two to three hours straight doing a whole grade without really talking to
+anyone. so these outposts can also be plot points. put macguffins there, etc. 
+
+one thing though: i definitely want dialogue to be a formal part of the
+game. choices you can make -- at least in the smaller parts of the game, like
+the mini quests. or it is silently impactful (take a conversation one way, item
+A shows up late game, take it the other way, item B)
+
+DIVISION
+three grades. with an introduction. keep it easy. everyone is under levi and
+o'doyle. the sixth graders are minor bosses, the seventh graders are a little
+higher in the pecking order. so as you go along, you get closer to the top and
+you learn more about how it's being run. 
+** 01/01/2021: [planning] hello!
+watching the hawks game now. my prediction: the hawks will win a playoff series
+this year. i think if they get a couple more years of development for the young
+guys and one solid free agent -- hell, they have a lot of trade leverage because
+they have good young guys on cheap contracts -- then they are a really scary
+team. 
+
+i want to start with some high level planning. and maybe some meta planning. the
+general structure for what i want to do is this: develop the tone of the
+game. it's less important to think about translating this into
+audiovisual. first of all, that's not your forte. even if you have the tone of
+the game nailed down precisely, you would not be able to take that precise idea
+and turn it into a visual theme. even harder if the tone is not a very precise
+thing. second of all, it's too early to hammer that out. just wait until you get
+someone who is good at that. remember the jonathan blow braid talk. 
+
+developing the tone of the game means: 
+
+
+- what are the prevailing emotions the game makes you feel? 
+does it make you feel queer and fey?
+does it make you feel afraid?
+does it make you feel empty?
+does it fill you with spirit? 
+
+what does the ending of the game make you feel?
+does this game make you think?
+what ideas and themes do you want to spread through the game? (i love themes, i
+love connections, i love symbolism). 
+
+don't worry about HOW these things happen for this question. remember
+rule 7. anything is possible. 
+
+A:
+wow. welcome to the hot seat, buddy. you can do anything, and it sure feels
+overwhelming. you know, the main inspiration for the tone and set pieces so far
+has been sandman. and i really like that. i like that because sandman is really
+consisten in its style, but has such a wide range of what it can make you
+feel. there's a lot of horror in it (24 hours in the diner, calliope), but also
+a lot of humor (serial killer convention, cleaning the demons out of hell), very
+fey and surreal (midsummer, hippolyta and the sandman), painful (family
+relationships, his wife). but through it all, it is dark, it is grand, it is
+literary. 
+
+i want emptiness and lack of control to be a theme. fate and gravity, being
+drawn towards people and ripped from them. feeling weak and powerless over your
+life and your own emotions. and then feeling isolated and empty after that. 
+
+i want the player to feel like they are being pulled through this world by an
+invisible current. 
+
+i want the player to feel like the nature of the world and their surroundings is
+fixed. a law of nature rather than something malleable
+
+i want boon to be somewhat helpless -- the image that is sticking out in my mind
+is a big, burly man's man clapping him on the shoulder good naturedly and boon
+just feeling totally alienated and isolated.
+
+but the game should not be totally depressing. the game should be full of life,
+because life is full of life. it should be funny at times, even if in a darkly
+funny way. 
+
+i want the world to be absurd in its blatant acceptance of cause and effect, of
+the nature of the world. as in, maybe a character says that you've got to do
+this series of highly specific and unpleasant things to get what you want. and
+when you ask why, they look at you quizzically as if they do not understand --
+that is merely the way the world is, and that cannot be changed. 
+
+i don't know how i feel about simple images: the names of buildings and people,
+logos, stuff like that.
+
+
+- what is the writing style -- are there any other writers or games you can
+  point to? 
+
+i want there to be quiet conversations between two characters, like in a
+murakami novel. i want the characters to narrate their feelings and thoughts and
+the ideas of the game as dialogue in these scenes. 
+
+
+- how does the player learn how to play the game?
+i mean, i have a basic idea of this. building up strategies in the enemies you
+battle. simple battles at the beginning to show mechanics. but i think it's a
+good idea to flesh this out more: how do players get the ability to customize
+their team and develop strategies? this is kind of a problem with the mainline
+pokemon games. you just kind of pick up whatever pokemon you find, and the only
+sense you have of creating a strategy is padding out type disadvantages. 
+
+but also: what are some specific ways i can show the player what strategies are
+in the game? clearly, a lot of it has to be through the battles that you
+face. dialogue along with that. but flesh those out into more concrete ideas.
+
+
+- what are some characters you want to put in the game?
+you don't slash can't slash shouldn't try to make all the characters in the game
+up front. there will be characters added after planning, and characters cut
+after planning. but a good story needs to have good characters, so make up some
+good characters. of course, try to have an idea of where they are in the game --
+as part of killing bruce, try to be more focused than spending weeks making
+characters who will never see the light of day -- but don't stress too much
+about the characters fitting in perfectly. 
+
+
+- what does an hour of gameplay look like?
+what's the pace of the game like? 
+how do you make the game more than walking along a hallway doing battles? this
+is actually an advantage of shitty random battles -- this is pretty much solved
+for you. routes and dungeons don't have to be interesting except at set points. 
+how often are you in towns? 
+how are the dungeons laid out in relation to the locales?
+how does talking to the characters and dialogue play into the gameplay? is it
+formalized like a quest? is it informal like undertale?
+does the game have any puzzles?
+
+
+- what are the locales of the game?
+towns, buildings in towns. give it character. think undertale.
+
+
+- how is the game divided?
+how long is it?
+what's the plot structure -- is it divided into arcs, and if so how many?
+again, setting out a grand plot structure can be nebulous when the plot that
+comes to be doesn't fit in the structure. but you're making guidelines more than
+anything. the guideline was good to have when i was writing the first game. it
+helped me figure where a boss needed to go, where a dungeon needed to go. 
+** 03/02/2020: [code] engine architecture
+@spader 3/2/2020: I want to avoid writing a lot of wrappers. Ideally, adding a
+binding to the engine is one or two files. Most of the bindings into the engine
+are going to be pretty thin wrappers. The layers look like this: 
+
+Lowest level: ENGINE. 
+Inside here, you have all the subsystems that actually do the work. The
+rendering engine, the physics system, etc. 
+
+Next level: API. 
+Thin wrappers which are directly bound to Lua. The purpose of these
+is to keep my Lua API nice and stable, and let me do whatever tricky things I
+want with function signatures. Varargs, template stuff, whatever. Just register
+a wrapper to Lua. 
+
+Next level: SUGAR.
+Thin wrappers in Lua. The purpose of these are purely sugar. For example, the
+C++ API will take in integer IDs for entities, but I want to pass in the Lua
+table because that looks natural. Write a wrapper that takes the Lua table and
+forwards the ID to C++. 
+
+Last level(?): COMPONENTS.
+Components shouldn't be wrappers around the API per se -- they should put some
+useful functionality on top of it. In other words, they talk to other components
+and then decide what API functions to call. 
+
+That doesn't seem too arduous. 
+** 08/11/2020: [design] ideas 1
+ok, fuck, let's do this. jonathan blow was playing some sweet looking indie
+puzzle game. it looked like super mario world. i can do that. I can do that!
+there are too many ideas brewing in this head to let them sit there, and i want
+to make a small video game. i want to make a small RPG. 
+
+complexity is born from composing simplicity. simple mechanics can make a fun
+game. what are the mechanics of an RPG? 
+
+a type chart
+stats
+moves
+move power
+split attack / defense || special attack / special defense
+a team of characters
+STAB
+items
+passive abilities
+limit breaks
+HP 
+double battles
+
+problem with modern JRPGs: grind. they either compose too many simple systems,
+or compose complex systems. so you have to spend time to  a lot of timlearn them
+before you are really playing The Game. before that, you are playing A Game, but
+one that is simple and dull. satisfaction comes from making a strategy and
+executing it. 
+
+the game should have permanent death. maybe not of characters, because that can
+cause degenerate strategies to be optimal (see: fire emblem). but maybe
+yes. permanent death is a tradeoff. on the one hand, there are real stakes. it
+is annoying to start over, and you are incentivized not to experiment lest it
+fails and you die. but on the other hand, if there is no permanenet death, there
+is no incentive to form good strategies. you can simply try new strategies over
+and over. there is no fear as a real commander feels when his troops may die. so
+what is the game trying to invoke? what is it that i enjoy most about the role
+playing game? i enjoy the pit of mind against mind. the pre-game strategy, i
+never quite enjoyed as much. i like going into battle and knowing my cards and
+knowing their cards (for the most part) and tricking them. outwitting them. so i
+would like to make a game where you can outwit. that's hard with AI. 
+
+if the player in any way becomes weaker after losing a fight, that feels like
+poor game design. how will the player overocome what just defeated him when he
+is weaker than when he was defeated? 
+
+if the player does not lose something after a fight, what incentive do they have
+to win the fight? 
+
+permadeath is good when the game is intended to be restarted frequently. but to
+do that, you need some kind of procedural generation. that makes it hard to
+handcraft content and avoid grinding. i want the player to be able to experiment
+with different strategies. 
+
+what about the above, but instead of procedurally generated pushing and popping,
+you merely cycle through lives? what is the gameplay element of this?
+
+(a brief aside) teaching players by guiding them
+the player faces a creature that constantly heals, and must learn to use taunt
+the player faces a creature that damages itself, and must learn to stall
+** 08/12/2020: [design] ideas 2
+check out the first picture here: https://saint11.org/blog/pixel-art-tutorials/
+the black and white graphics are really awesome. just like that elias daler game
+that uses four colors and is very pretty. see it here:
+https://eliasdaler.github.io/tomb-painter-first-dev-log/
+
+four colors, four colors. i can do that. 
+
+here's an idea i had in the shower. it's similar to the idea that starts this
+file. RPGs are complicated, and that's what people think makes them fun. but
+what makes them fun is not complexity, but depth. related ideas, but
+different. ultimate is complex -- dozens of mechanics, 80 characters, hundreds
+of moves. melee is deep. now that i think about it, what are the core mechanics
+of melee?
+
+aerial attacks
+grounded attacks
+projectiles
+shield
+crouch cancel
+
+grab/throw
+
+jump
+wavedash
+ledge cancel
+dash
+
+ledge
+stocks/percent
+blast zones
+l cancel
+
+and that's splitting it up a lot. most of those are the RPS of
+shield/grab/attack, and then movement options. that covers like 2/3 of the
+game. and there's like 12 characters. but combining these things, and the fact
+that you can do almost any of them out of any other of them makes it so
+deep. what's a similar list for RPGs?
+
+stats
+moves
+creatures
+switching
+
+types
+physical/magical attacks
+abilities
+items
+healing
+boss battles
+wild encounters
+trainers
+dungeons
+leveling up/experience
+evolution
+
+i don't think that i would want to go without creatures. creatures have to be
+differentiated -- i think stats and attacks have to be included. the type chart
+is one of the most complex things in an RPG, and i don't think i've played one
+after pokemon where i legitimately understood the type system. but you need to
+have flavors, you need to have something more to differentiate them. maybe the
+type system isn't something that changes damage output. maybe different types
+give you different passives. or maybe it gives you access to different skill
+trees. for example: every type has access to the same moves? but then that would
+get much too samey. still kind of thinking competitive here. competitively, you
+want to have options and mixups and hidden information. that's not as relevant
+in a single player game. there, you want each battle to present a specific
+challenge, a specific strategy that the player must overcome. some strategies
+are plain. for example, if you had a rain dance team. some are more complex: for
+example, a toxic spikes team. a good rpg forces players to form and process new
+strategies at the perfect rate. let them lean on some tried and true strategies,
+but force them to adapt to new wrinkles in it. 
+
+what about a game where all you do is battle? like the battle tower. 
+what about a game that is almost entirely a couple of dungeons? 
+what about a game that is one long tunnel? (undertale)
+what if it had elements of randomization or proceduralism?
+
+i like it undertale style. a long tunnel. oh, also, another fun part of RPGs:
+dungeons! where you need a meta strategy: not something for inside the battles,
+but for managing the battles themselves. 
+
+small idea: a boy who hears voices. the voices are spirits crossed over, and
+some can be harnessed to do battle. you can embrace the madness to gain more
+power, but you become unhinged. hollow ichigo.
+
+another idea: a school deal. maybe with spirits, maybe keeping the original
+hollow ichigo idea where power begets insanity. but the idea is a sixth grader,
+new, who is getting bullied. maybe the school is an anime style thing where they
+go to learn about battling creatures? or maybe the creatures are just the
+manifestations of the other kids in the spirit world, and the player can dip
+into that world, and the farther the player dips into the world the more they
+lose their sanity.
+
+what if, in the anime style, they're making fun of him for how weak his
+creatures are, but they have some ridiculous name
+
+/ha ha ha/, PLAYER, you came with THAT dodecabakumon? You're such a LOSER! /ha
+ha ha ha ha/
+
+** 08/13/2020: [design] ideas 3
+eight hours feels right for this game. each dungeon is about two hours, throw in
+some time for exposition and feeling out the mechanics at the beginning of the
+game. 
+
+NO TYPE SYSTEM.
+
+no evolution? on the one hand, it is cool to see the creature you raised from
+birth get super strong. on the other hand, it's a confusing mechanic for a short
+game. i mean, the fact that magikarp turns into gyarados is hilarious and i
+wouldn't have it any other way, but it's a big ask for the player to just figure
+out on their own that they should train a magikarp to level 30. and if the
+essence of the game is planning and dungeon crawling, how are they supposed to
+plan for that?
+
+pseudo randomization: be able to hot swap out different strategies for each
+dungeon or for subsections of each dungeon. they'll maintain the same feel and
+goals, but you could get a ton of variety for very cheap by just e.g. switching
+up the order different challenges get thrown at you. 
+
+really feeling for permadeath, but maybe with an extra mechanic that allows you
+to bypass it under some circumstancs. like with reversing the time in FE3H --
+although that is a little more powerful than what i would like. you need to keep
+the difficulty low in the beginning to compensate for this. 
+
+keep the core set of things small: few moves, few creatures. don't overwhelm
+them. create simple, versatile moves that let you compose higher strategies. 
+
+introduce ideas slowly. the player should never see a powerful new move or
+strategy in its full form on the first time. you need to slowly morph the
+player's idea of the strategies available to them. in the toxic dungeon: show
+them what poison is, allow them to recover from it. show them how they can
+prevent nondamaging moves with taunt. 
+
+maybe some kind of RPS core mechanic? the thing with shield grab attack in melee
+is that it is deep because of timings. you can punish whiffs with grabs, but you
+can punish bad grabs with attacks. so while at the simplest level, it is an RPS
+that is easy to understand, it becomes deeper at every level. a lot of that has
+to do with analog things like spacing and rhythm. how do you replicate that in a
+turn based game?
+
+the ability to hot swap moves -- unlike pokemon. if the goal is to test them
+strategically, why completely lock them into one set of choices to execute their
+strategy? on the other hand, too much freedom lets them ignore strategy in favor
+of hyper specialization. perhaps a meter that limits your change, or something
+that rewards you for staying with the same team composition?
+
+what is the RPS? is it in the game (shield grab attack), or is it meta (offense
+balance stall)? what if it was all doubles? doubles has a lot more of the
+RPS. what about attack / defend / grab? attack beats grab beats defend beats
+attack. you need to make defending an option that does more than just stall for
+a turn. core mechanic wise, not depth wise.
+idea: defending an attack stuns you for a turn
+idea: defending an attack cuts your stats for a turn
+idea: defending an attack acts like using roar
+idea: defending an attack causes the attacker to take damage
+
+
+can think of a lot of ways to make this deep:
+attacks can have different potencies on defending. 
+defending multiple times weakens the defense (% chance to fail or reduced damage
+soak)
+passives that make attacks bypass defense in some way
+
+passives are a good way to give depth to the rps. 
+** 08/24/2020: [design] ideas 4
+how do you win games defensively? if you choose to stall, what is your win
+condition? in pokemon, it's setting up entry hazards and forcing people to
+switch. spreading status. bulky stat boosters. i feel like making the 'block' do
+damage could be counterintuitive. if it does chip damage -- what do you do next?
+would shaving off an eighth or a quarter really do that much, especially if
+(when) there are mechanics in place that makes block spamming not work. it needs
+to be something that puts pressure on the offensive player to act. 
+
+is toxic + block going to be overpowered? one thing is that that takes two move
+slots. plus, offensive players have options -- stat boosts, free switches,
+abilities. it might be UNDERpowered. i think blocks doing some base amount of
+damage on success plus whatever passives to spice it up is a great start. 
+
+** 09/02/2020: [code] prefabs
+Here's a problem: I want to do a lot of content creation in the editor. For
+example:
+I want to create bounding boxes for entities in the editor.
+
+Okay, I'm glad I did this. Why do I need prefabs? They're a good generic idea --
+when there's a lot of content you want to make in the editor, you need to
+serialize that out. Puting the data in a script doesn't work. Fine. Or when
+you're making a game where entity types are reused often -- lots of Goombas, for
+example. Then you want to have a base with sane defaults that you tweak. But I
+am making neither of those games. If there are no puzzles in my game (which,
+remember, keeping it simple), then there are pretty much three things in my
+game:
+Things you can interact with (items on the ground, save spots)
+Trainers
+Walls
+
+That's seriously pretty darn close to /it/. So fuck prefabs. 
+** 09/02/2020: [code] tiles
+Should the game have tiles? If it's not going to be tile-based, why aren't you
+just making the background in Aseprite and laying it down as a massive image? Of
+course, that picture could still be composed of many tiles. But from the
+engine's perspective, it's just getting a big ass background image. Then, in the
+editor, you paint some simple geometry over that picture for where the walls
+are. 
+
+The upside of no tiles:
+You don't have to think about the tile coordinates of your game. 
+Authoring dungeons will be a lot easier, visually, in a tool like Aseprite.
+Less data to save and load.
+Less geometry in the game (although, you could still do the draw-bounding-boxes
+approach no matter what you do with tiles).
+At the end of the day, this is just the background. If you have some special
+tile that you want to do something, just code it as an entity. 
+** 09/04/2020: [code] what's next
+How do I use images as level backgrounds?
+I want to be able to extend the image without having to totally change the
+geometry every time. Obviously, if I change something that exists, I'll have to
+manually change the geometry. But if I, say, add a few new rooms to the level, I
+don't want it to render in such a way that all the geometry is in the wrong
+place. 
+
+One solution is to make some corner of the image as the absolute (0, 0). When
+you want to extend the image, you extend it away from that corner (farther out
+into the quadrant). A problem with this, though: If the bottom left is your
+(0, 0), then you can never go below or behind that. One way you can solve that
+is to start map images as very large. And don't start drawing in the bottom
+left. I mean, that would probably work. Simpler: Every map has the same size. If
+you have some dungeon or map or something that is too large, just split it into
+two. Be clever. If every map is the exact same size, that makes everything
+pretty damn simple.
+
+1024 x 1024 would probably work.
+** 10/02/2020: [code] anew
+here's what you're gonna do. pick a feature, implement it, have fun doing
+it. this is something that you do to have fun and learn about programming. and
+there's nothing wrong with that. 
+
+this is the first feature: i want to load up an image of a fixed size. i want to
+be able to use the editor to draw simple geometry over that image. i want that
+geometry to be hooked up into the physics engine. then, i want that geometry +
+image to be saved out as part of the level. simple as that -- don't want to
+worry about what else goes in a save file, or how it gets serialized. 
+** 10/03/2020: [code] rendering stuff
+@render_refactor
+so loading up the image and rendering it forced me to fix the internal
+resolution stuff. i'm happy about that! some notes from that:
+
+when we load the image to bake the texture atlas, we record its height and
+width. then, when we render, we check the height and width against the internal
+screen resolution, which will spit out what fraction of the screen it should
+take up. 
+
+one problem with this is that we're calculating that fraction every time
+
+another problem is that there's no way to scale up a particular instance of
+rendering a sprite. that's not a problem, because we don't need to do that, but
+it is kind of weird.
+
+the render code is doing that calculation. is that the right place for it? how
+much processing should the render engine be doing? it's also building the
+transform for the thing. also it has the camera...? but i guess the camera
+really only effects the viewport. kinda feels like it should just be sorting the
+structs and then issuing GL commands
+
+speaking of issuing GL commands, we're issuing a glDrawElements for every
+sprite. not sure how that's going to pan out. rendering a 1920x1080 thing
+dropped my framerate by about 20%. 
+
+when i'm not building the texture atlas on startup (which would be a good thing
+to do soon, since that actually adds noticeable startup time), i need to write
+some metadata about my assets. the program will do pretty much what it does now,
+but instead of actually adding assets to the tree, we'll just write out the
+height, width, number of channels, texcoords to a file. we can also dump all the
+texture coordinates into an array. then you can loop over that and add all the
+sprites, and just grab a pointer to the texture object and give em back to the
+sprite.
+
+one thing i'm realizing is that you have to store your entities as data. you
+can't touch them in the level editor if not. reason i'm thinking about this: if
+i want to add level geometry to the level, save it, and load it back, i have to
+load back in at least the position and size of those boxes. 
+
+oh, also, now is the time where i need to have several entities of the same name
+existent at the same time. 
+
+plus, if i want to do stuff like draw bounding boxes over things and move shit
+around, i mean that has to go in data that gets loaded up. need to do some
+design on this -- have the idea of unity prefab floating around in my
+mind. because there's some data that never needs to be saved/loaded. for
+example, what your animation data is. but then there's some data that pretty
+much always needs to be loaded, like your position. n then how we store it -- it
+would be fucking awesome to store all the data as lua scripts. there is surely a
+way to do this thing. i don't want to pull in and compile a stupid json parser. 
+
+so that's tomorrow i guess!
+
+** 10/04/2020: [code] movement
+think i fucked something up...when i move the player, he's not actually
+moving. everything is moving around him. not sure what the deal is there.
+
+but there are still collisions? so something is moving
+** 10/05/2020: [code] drawing colliders
+it works
+
+you need to make it so you can see the collider before you release the mouse
+(but that's easy) (tm)
+
+what i learned today: my coordinate system got flip flopped somewhere along the
+way. but if you ever need to think about it, this is how:
+- the (x, y) of the camera defines where the bottom-left most part of the screen
+  is being shown
+- your coordinate system is inverted along both axes
+
+so if the camera is at .2, .3, that means that the screen is like this
+
+                             v------ (-.8, -.7) world == (1, 1) screen
+[                            .]
+
+                                    <--- my attempt at 16:9 lol
+
+
+
+
+
+[.                            ]
+ ^---- (.2, .3) world == (0, 0) screen
+** 10/06/2020: [code] saving colliders
+for one, i don't just want to save the file with the same name as the
+level. because it sounds really useful to be able to load a couple different
+states for a level.
+
+i feel like it'd be useful to split the file into two parts: all the shit in the
+level, and then some global configs. like, it'd be a really likely scenario
+based on the game i have planned out that you would need to store:
+- the seed used to generate the enemy layouts
+- the camera
+- the player's team
+
+what DO you need to save for a level? i mean saving at playtime, not at
+edittime. at edit time, you need to move shit around. add shit. all that
+stuff. but at playtime, what part of that is not totally baked? so, once you
+battle a trainer, you need a flag that says they're defeated. but you could
+store that in the global save? but it would make more sense to store it in a
+level save. because then you wouldn't have to make a unique ID that that trainer
+entity knows how to load, you'd just do the normal flow of save all components
+and load em back up. 
+
+i think the best thing to do is to save most stuff in the level file for now. 
+
+ok, so what's that look like? i think it actually looks pretty simple. when you
+save a scene, we're just going to go through the entities that exist and save
+them.
+entity:save()
+for component in entity.get_components
+** 10/07/2020: [code] saving colliders 2
+the general save/load cycle is pretty clear to me. what's less clear to me is
+how i should lay out my entities. for example, the player looks like this:
+#+BEGIN_SRC lua
+function Player:init()
+  local graphic = self:add_component('Graphic')
+  graphic.scale = { x = .1, y = .1 }
+  
+  local animation = self:add_component('Animation')
+  animation:batch_add(animations)
+  animation:begin('spader_walk_down')
+  
+  local physics = self:add_component('Physics')
+  local movement = self:add_component('Movement')
+  local input = self:add_component('Input')
+end
+#+END_SRC
+all of that can be defined in a table
+
+so when i create an entity, i already know where the prefab is. there's no need
+to pass that in or around -- i can just load the module from the prefabs
+directory, create all the components, etc. but for a component, there's no 1:1
+mapping between prefabs <-> components. in other words, the data you want to use
+to create the component is associated with the specific entity you're creating
+it for. 
+
+how i want it to work:
+- you can still create a component at runtime
+- when init() is called, the component's data is already setup
+- load and prefab work exactly the same way
+
+so i need to make a load() function for sure. that gets called when you do load
+or prefab. when you prefab, we also call init() after we load the data. 
+
+creating a component at runtime means you have to pass in a table of data
+
+-- later
+
+awesome, it works :D!
+
+main problem now is that there is no ordering of components
+
+so for example, i want to register the collider. that needs a position and a
+bounding box. i'd like to stick the registration code in one of those components
+so i don't have to type it every time. but i can't know which one gets created
+first, and the engine needs both of them to make the collider. so for now i have
+to put it in the entity's init function
+
+maybe late_init()?
+ 
+** 10/08/2020: [code] saving scenes
+saving entities is pretty straightforward...what i care about is the semantics
+of saving levels. 
+
+i was thinking of having a 'prefab' for a level -- all that means is a list of
+the default setup of the level. what entities are there. but those entities also
+need to be populated with some data. at that point, why not just use a save
+file? why write the same code twice -- and it will be the same code, because
+fundamentally you're just creating entities according to a list and then feeding
+them in some configurations. in both cases. 
+
+so why not make a 'scene' the same as a save file? 
+** 10/13/2020: [code] what's next
+make the backgrounds render in the right place
++ fix the hack used to render the background (which doesn't work right now anyway)
+
+how the render engine figures out positions and stuff is honestly fine
+
+i want to do the gameplay first. ah, well, fuck, that might not work -- it'd be
+tough to lay out a dungeon when you don't know what it will look like. but on
+the other hand, you could totally lay out all the enemies and get the battling
+air tight (or at least only semiporous), and then lay out those enemies in a way
+that makes sense visually. 
+
+but before i start that, i would like to tie off some of the loose ends i have
+with the editor. in particular:
+- select an entity in the editor
+  - save as prefab
+- draw bounding boxes on an entity and store it in the prefab
+- filter entity by ID
+** 10/14/2020: [code] thoughts on init
+i want to put some common API calls in components. like registering the
+collider -- i want to put that in the physics component so i don't forget to
+write that line of code in every entity that has physics. 
+
+but there's not a good place to put that code right now. because when i create
+an entity, i need to call init -- i don't know if it's going to be loaded with
+some specific data right after that. but if i AM loading it right after, i'd
+like to defer initialization until after that happens. 
+
+i don't want to add another code path for "create this entity but don't load the
+prefab or initialize it"...i know that at the call site
+
+i could just do the same i do for components: pass a table into
+create_entity(). when i raw create, just pass in the prefab. when i load, join
+the prefab with the data. that would also stop the problems i'm having with like
+registering colliders twice and shit like that
+** 10/15/2020: [design] stat balance
+-- during the day
+
+if the 'creatures' are all the souls of people, then how do you make a game
+where every soul isn't unique? if i see an opponent using a Timmy, and i think
+Timmy is cool, then i would also like to acquire a Timmy. but there is only one
+Timmy, and only one of his soul. in other words, no dice. also, if there are, i
+dunno, a hundred battles in this game -- i don't want to design that many
+creatures (100 * souls_per_team + whatever you can catch). 
+
+simple idea is something like this: we've already established that the souls are
+fragments. that's why they are inhuman, angry, able to be controlled. so then
+there must be other such fragments. what if you could grow a soul from a simple
+fragment to a more complete fragment? there's your leveling system.
+
+another idea that just popped into my head: if you want to do evolution, the
+evolutions could be the paths that the different souls could have taken in
+life. maybe timmy could evolve into middle manager timmy, or loving father
+timmy, or psychotic break timmy. 
+
+you need to be able to acquire souls. so i've been thinking about this. 
+
+one idea, slightly complex, maybe too complex for this game's size:
+defeating enemies gives you soul fragments. you can use the soul fragments to
+synthesize souls. maybe the fragments play double duty: you can also use them to
+level up your existing souls, to restore some of their essence. 
+
+the essences correspond to your stats. a soul has natural affinities to certain
+essences, and this is reflected in how many fragments it takes to increase their
+value in the essence -- one who was brawny in the physical world may only
+require two fragments to increase physical attack, but five fragments to
+increase special attack. 
+
+-- later, at night
+
+there are six stats. they're the standard ones. stats start out as bases -- this
+is the actual number that the soul starts with at level one. i think i need a
+damage formula to properly balance stats? you also need some kind of growth
+modifier to determine how quickly an essence picks up points. the way i think it
+should work is that you have a minimum number of points you can get and a
+maximum number of points. this is determined by the stat maximum...? because
+you'd like every soul of the same type to end up with the same base
+stats. either the growth rate determines the max, or the max influences the
+points allocated per. 
+
+20 -> 120
+100 points left. base growth rate is 4% -- that means, on average, allocate 4%
+of the points remaining divided nby the total levels. round down.
+but i mean, if you want to distribute 100 points over 29 levels, at the end of
+the day you're getting ~3 points per level. that percent is meaningless.
+
+if you just have 20 and 120, you know you need to disburse 100 points. how do
+you do so over 29 levels, going between 2, 3, and 4 points, and ensure that all
+100 are disbursed?
+
+well, you can factor it into the smallest amount of points you can gain per
+round, then use that as the base. in our case, you'd need 3 points per level. 
+
+hm, i guess i don't need to figure this out to start designing souls. the point
+is - you don't need an explicit growth rate, because the difference between your
+base essense and your max essence IS your growth rate
+
+so the next question: what are good ranges for where the stats end up? i need a
+damage formula for this.
+
+let's start a simple scenario:
+attack = 100
+defense = 100
+power = 100
+hp = 100 (not taken into account in damage formula)
+
+we want it to scale positively with power and attack. and scale negatively with
+defense
+but this also gives some pretty big numbers for damage. assuming attack and
+defense are equal -- which should probably be a 3hko given no modifiers --
+damage == power. so if you imagine a 30/20 defender vs a 20 attacker, the attack
+power would have to be ten. 
+
+but wouldn't it be simple and understandable if power == damage given no
+modifiers and equally matched souls? i do like that. instead of scaling the
+damage formula by the level to keep the damage equal, just scale the power. 
+
+your stats can start and end at any number or range you want. you just need them
+to be big enough to give you a solid range of values to differentiate between
+different souls. 
+
+we'll say that we have thirty levels. reason: the game is three dungeons. you
+want them to be close to max level (say 90%) by the final boss. party of
+four. 4 * 30 = 120. 120 / 3 is 40. 40 levels per dungeon, on balance. each
+dungeon should take you three hours or so. that gives you ~12 levels per
+hour. so a level up every five minutes -- again, on balance, since it'll be
+diminishing returns. more napkin math than anything.
+
+i'd like to keep the stats low enough that i don't have to scale move power like
+crazy, but high enough that you get the pleasant feeling of seeing more than +1
+or +2. 
+
+and i'd like to keep HP pretty much the same as the other stats
+
+rough percentages: strong is 50% stronger than normal. 
+strong = normal * 3 / 2
+weak = normal * 2 / 3
+normal = strong * 2 / 3
+normal = weak * 3 / 2
+normal = 1
+=> 
+weak = (2 / 3) * (2 / 3) = 4 / 9
+
+so a if an strong attacker had 90 attack, a weak one would have 40
+let's scale that up a bit
+180/80.
+180 means your base is probably closer to 50 -- not that you're going to get the
+soul at level 1 anyway -- but that would be 130 points over 29 levels, which is
+a mixture of 4s and 5s per level. 
+
+80 / 120 / 180
+
+so our stats are gonna vary from like 60 to 200, from the absolute worst to the
+absolute best. 
+
+hp ranges from 120, 180, 240
+
+attack power is gonna range from like 20 to 80
+** 10/16/2020: [design] first battle, mechanics
+mechanics:
+no types
+attack
+block
+grab
+passives
+items
+essences
+fragments (EVs)
+experience
+natures
+
+the first dungeon needs to explain these things. 
+
+the very first battle should explain RPS and passives. then, very soon after
+that you should get an item. battles give you fragments + experience. and when
+you get your first soul, he can explain to you briefly about natures. that's
+pretty easy. this game should be very simple to pick up, and it is. the core
+rules are simple. oh, also, you should explain the stats during the first battle
+-- speed makes you go first, differences between attack and special attack. all
+of this explaining should take no more than five minutes.
+
+man...lot of stuff to design. i need to make a simple plan for how to
+start. because it's all connected in this web -- everything affects everything
+else. so i need to pick the easiest way to start without getting caught with the
+chicken and the egg.
+
+here's the web linearized:
+- souls
+- moves
+- passives
+- items
+- relative stat balance
+
+btw here's another idea, gotta do it: each move falls into attack, block, or
+grab. there are many different kinds of these moves. 
+
+here's another idea: at the start, you only have to balance the souls that
+the player can use. for all the souls that opponents have, you can just hardcode
+their stats. 
+** 10/17/2020: [design] story 1
+awaken in the broom closet.
+
+what does it even feel like to play this game? what is the flow of the gameplay?
+i like the pace of undertale. a segment of game. talk to some people. play a
+boss. 
+
+this game is a little different, because there aren't so many minigames to break
+up the pace of the game and keep it fresh. but it's also very similar -- a small
+world, very foreign to our own but still somehow adjacent, that exposes itself
+through characters. 
+
+i like characters who say funny things, like:
+OOH HOO HOO!
+
+so, you awaken in a janitor's closet. you meet a young boy of about ten who was
+killed in gruesome and pointless accident at school about a hundred years
+ago. he is your perky guide to the underworld, as well as your first soul. he
+gives you the rundown about where you are -- limbo -- and how everything works
+here. some weakling trainer happens by, and you kick the shit out of him. oliver
+teaches you how to battle. 
+
+the next thing you need is some kind of goal. the main goal is to extract
+yourself from the underworld. you will do this by reaching the end of the eighth
+grade hall, where levi and o'doyle are holed up. their souls have begun to get
+out of control, after they discovered some kind of black magick talisman which
+has granted them immense power. and, of course, word has it that said talisman
+has the power to eject souls from limbo. just what you need...!
+
+but to get there, we need subplots. we need guide points. the structure of these
+guide points is easy. they follow the three halls of the school. and so the
+first one follows you through the sixth grade hall. but what exactly are you
+doing?
+
+here are some ideas:
+- to get to the seventh grade hall, you need some key. 
+- the exit of o'doyle and levi from the sixth grade hall has left a power
+  vacuum. they could probably help you get farther, but everything's in such
+  disarray...
+
+i actually like the second one quite a bit. there is a lot of room for
+flavor. the idea of a wing of hell in revolt is a good setup for why you're
+fighting these people all the time. you could have a cool boss battle at the end
+where there are several interesting characters vying for the new title of king
+of sixth grade. and you must pick amongst them, or they tag team you, or run you
+through a gauntlet. 
+** 10/18/2020: [design] story 2
+ah so yes, there is some power struggle amongst the sixth graders. your first
+task is to become their king -- you don't know that you're to become their king
+of course, but you will progress through their domain until you defeat the
+strongest among them. 
+* plot
+** intro
+*** an introduction!
+ Open up in an everyday elementary school. Rows of particle board desks, wide
+ rectangular fluorescent lights, concrete painted white on all four sides. The
+ kids are all sitting, faces down intently at their exams. They can't be more
+ than ten or eleven years old. One boy nervously chews a pencil while he tries to
+ work out how to add fractions for the hundredth time. All is as it should be.
+
+ Except there is pre-pubescent trouble brewing. D. Boon, glasses thick as
+ coasters, rail thin, slightly hunched shoulders, sits at his desk trying
+ desperately to pretend that he hasn't finished his exam. He traces his pencil
+ around the same section of the page, writing, erasing, leaned over in feigned
+ concentration. But he's not doing a very good job of it, because he feels
+ something damp stick against his shoulder. The dreaded spitball. It would seem
+ like someone else is finished with their test too -- finished, or doesn't care.
+
+ "Lemme see your /answers/, Boon." It's O'Doyle. He's big for his age, already a
+ solid five nine, and fat to boot. His face shows the promise of acne, his
+ jawline the promise of coming in -- puberty is soon to come to him. But for now,
+ his malice is merely that of a childhood bully. Nothing so insidious as the
+ social schemes of high school. 
+
+ O'Doyle is a regular thorn in Boon's side. He's smart enough to know how to push
+ Boon's buttons -- not just some brainless mudslinger. And more importantly, he's
+ physically imposing. He's always saying some shit to him, not just isolated
+ incidents of violence. 
+
+ "..." 
+
+ Boon stares ahead intently, focused /hard/ on not reacting. He wants to get the
+ teacher's attention, but she's slumped back in her chair, dozed off reading a
+ novel with a well-oiled Scottish man on the cover.
+
+ /Just don't say anything and he'll go away/
+
+ "Come on Boon, if I don't pass the fifth grade my dad'll /beat/ me." He delivers
+ it with the quality of a joke he knows is too black for someone his age.
+
+ A soft poke comes from from Boon's other side. "Yeah, Boon, I need the answers
+ too. Heh heh." Tweedle-dee and Tweedle-dum, O'Doyle and Levi. Dynamic duos for all
+ time. Levi is a /lot/ dumber than O'Doyle, but also morbidly larger and
+ decidedly meaner.
+
+ POKE. The first one just got his attention, but the second one breaks
+ skin. "STOP," Boon can't help but cry out in pain and frustration. The teacher
+ snaps awake. 
+
+ "WHAT is going ON? You're supposed to be taking a test!"
+
+ Boon doesn't say anything -- he knows she won't punish him, but he doesn't want
+ to deal with the two of them. He puts his head down and shrugs
+ half-heartedly. O'Doyle and Levi find a sudden interest on the cement blocks on
+ the other side of the room. Mrs. Miller sees their guilt and says, "Let me speak
+ to the three of you. After class."
+
+ --- 3 PM
+
+ A bell tolls as the scene is black. It's a school bell, but it's slightly
+ dissonant.
+
+ Cut out, cut back in. Mrs. Miller is finishing up some lesson, but the bell cuts
+ her off before she has a chance to finish. Boon tries to slip out quickly, but
+ she catches him. She sits the three of them down in the front row and starts
+ asking questions. The story comes out -- she takes Boon's side, of course, as
+ the sweet, bright boy. She asks to see Boon's side, and when she sees a prick of
+ crusted over blood, she becomes serious. 
+
+ "This is worse than I thought. You realize what this means, right? This means
+ you committed a /violent act/. I have no choice but to suspend you both for a
+ week."
+
+ "A week?!", O'Doyle cries out. "But my dad's going to kill me! Please,
+ Mrs. Miller, I'll do anything, I'll even apologize to Boon here. Watch: Boon,
+ I'm sorry." 
+
+ "I'm sorry, Richard, but there's nothing I can do. It's county policy. Now you
+ kids go before the buses leave."
+
+ --- Outside the classroom
+
+ Boon hangs back for just a minute, tying his shoe more slowly than he ever has
+ before. He finally leaves, starts down the hallway, and almost makes it to the
+ bus parking lot. But he gets stopped -- by who else? And they're mad, this
+ time. 
+
+ "I'm done screwing around. I'm gonna show you what happens when you screw with
+ someone you shouldn't!"
+
+ Levi sneers at him and pushes him in the locker. O'Doyle throws a sucker punch
+ as Boon cowers back into the wall of lockers. Levi picks him up and disables
+ him by putting him in a bear hug. They walk the way they came from, past a few
+ classrooms, and stop before a janitor's closet.  
+
+ "It's Friday. Let's see how you like being suspended this weekend."
+
+ With that, he throws Boon into the closet. His vision is starting to fade. On
+ the ground, he sees Levi walk up and loom over him. He didn't realize how big he
+ was. He wonders if his dad is disappointed that he's not bigger. He wonders
+ what's for dinner. How's he going to turn his homework in tomorrow? Wait, isn't
+ tomorrow Saturday? Or is it Tuesday? He barely has time to realize that he's
+ blacking out when Levi rears his heavy, booted foot back and and gives him
+
+ One.
+
+ Last.
+
+ KICK.
+
+ "Don't mess with me."
+
+*** an indeterminate amount of time later
+ when boon comes to, he's in a room that looks exactly like the janitor's closet
+ that he blacked out in, but twisted. it's slightly degraded, it looks wrong, the
+ music is droning and warbling. 
+
+ there is  a young boy standing over him, prodding him and cooling his
+ face with a damp rag. the boy looks to be younger than boon, about ten years
+ old. he's dressed in an old time schoolboy's uniform -- jacket, necktie, tucked
+ into shorts with a pair of black oxfords and long socks. he still has a child's
+ chubbiness and red cheeks, and he speaks formally like someone of old money. he
+ introduces himself as oliver. 
+
+ he doesn't seem surprised to see you. you ask him where you are, and he replies
+ that you are in limbo. souls who cannot pass into the afterlife live on this
+ plane. in particular, souls who still have an unresolved connection to the
+ school are trapped in this place, which is the mirrored version of the school in
+ this realm. new such souls come through here pretty often, and this is the place
+ where they land. it's kind of his job to man the station and usher through any
+ new souls that come here.
+
+ "does this mean that i'm dead," you ask. normally yes, he says, but something is
+ different about you. your soul still has a physical component. even though the
+ souls here have not fully moved to the spiritual realm, they are still fully
+ composed of spirit. 
+
+ next logical question: can i get back? oliver pauses. he's not entirely sure --
+ he has never seen anyone like you come through here. but then again, there are a
+ lot of weird things going on right now. maybe we should go talk to the
+ librarian. he'll know what to do.
+*** talking to the librarian
+ you walk out of the janitor's closet into the lobby of a school. the lobby of
+ your school, in fact. but just like the closet, something is off about
+ it. moreover, it has a slight resemblance to a shanty town -- a place that's
+ been co-opted for something beyond its original purpose. it's not like a favela,
+ but it definitely has a thrown together vibe to it. you can tell that the, shall
+ we say high class souls are not who resides here. 
+
+ from the lobby, you can get to a couple places. the cafeteria has been co-opted
+ into the town square. there are shops here, there are spots of congregation (do
+ souls need to eat...?). there are a few rooms for the teachers that don't belong
+ in any particular grade -- art, music. the principal's office is there, and it
+ looks extremely ominous, like how a ten year old imagines the principal's
+ office. there's also a secretary's office, and the vice principal's office is
+ attached to it. 
+
+ but you're headed to the library. the library isn't small per se, but it's kept
+ more like the personal library of a wealthy man than an elementary school
+ library. it's cozy, and (just like its keeper) it's refined. as you enter, the
+ librarian is attending carefully to the goings of his library. he has his
+ glasses pushed down to his nose, carefully reading the label on a book from a
+ stack of unsorted books on a cart. he looks up as you come in.
+
+ "well hello, oliver. did you bring us another new one?" he is neither an old man
+ nor a young man, but he gives off an air of...more than wisdom or
+ learnedness. when he says this to you, it seems as if he already has complete
+ knowledge of the situation and what's going down. 
+
+ "yes, sir. his name's boon. but, um, sir, he seems to still be..._alive_..."
+
+ "alive, is that right? oliver, could you fetch my other pair of glasses from my
+ desk?"
+
+ "yes, sir!" oliver scampers quickly to his desk and returns with the
+ glasses. the librarian puts them on and takes a few steps toward boon. 
+
+ "open your mouth and say 'ahhhhh'," the librarian says. boon does so, and the
+ librarian replies, "well i'll be had! you're right oliver, this young man is
+ suffering from an acute case of hypervivitosis. in other words -- he's alive!"
+
+ "well, lad, what are you doing here?" he asks boon
+
+ boon looks down, quiet, and tells the librarian the story all the way up to him
+ waking up and seeing oliver over him. "i didn't mean to tattle on them. i don't
+ understand why they hurt me so bad. and now...i think i'm dying."
+
+ the librarian takes a thoughtful step back. his voice grows more serious. "you
+ were right to bring him here, oliver. things are not right in our realm. those
+ two souls have warped the fabric of the two realities."
+
+ he goes on to explain: two souls recently manifested here -- the souls of the
+ two boys who beat you. but, like you, something was wrong with them. they were
+ still, in part, alive. they quickly became powerful, and they've taken control
+ of most of this realm. in fact, only the hub remains. and now that you have
+ arrived, it seems that fate itself is pulling you together.
+
+ "boon, do you know how to battle?" the librarian asks
+ 
+ "i...i'm ten..." boon replies
+
+ "right, and quick as a whip you are." the librarian goes onto explain: souls
+ fracture when they come to this realm. more fractured ones are not as human as
+ the ones you see, but are powerful in the way a feral animal is powerful. some
+ may harness them and use them to battle. i have such a fragment here -- go ahead
+ and try it. and you learn to battle, et. cetera. 
+
+ after you've learned the battle mechanics, the librarian says, "hm, i'm not
+ surprised that you're one of the ones who can control fractured souls. mother
+ fate has special plans for you, boon."
+
+ "i can't say what you need to do, son. i doubt you can return to your old life,
+ but it is possible that you could return to your realm. figuring out how to get
+ into the sixth grade hall isn't a bad place to start -- i'm sure if you find out
+ what's going on there, you'll have some clue to getting back to your realm." the
+ librarian says.
+
+ "but i don't know anybody here. how will i figure out how to get there?"
+
+ "i have a feeling that what is meant to be will find its way to you. why don't
+ you investigate? go talk to some people. i'm sure you will find something," he
+ finishes with almost a smile and a wink about him. 
+
+ he gives you a brief rundown of the places in the hub. 
+
+ "alright? try not to worry yourself too much, son. these things have a way of
+ working themselves out." the librarian says
+
+ "..."
+
+ "..."
+
+ (i'm not sure what boon says here. something kind of whimpering)
+** interlude 1: barbara ann
+*** finding the portal
+ boon and oliver step outside the library. they take a few steps, and oliver
+ stops. 
+
+ "you know, i'm like that soul you have"
+
+ "what?" boon asks
+
+ "feral. i'm not fractured like they are, but i once was. it's been so long i can
+ barely remember it, but i was, and i never fully healed. you can battle with me,
+ boon. i don't know why, but it feels like the right thing to do."
+
+ "okay, oliver. i don't understand this world. but if you think it's the right
+ thing to do, then i'll do it."
+
+ "i do. look, i don't know how we're going to get to the sixth grade hall, but
+ something in me tells me we have to try! why don't we go talk to people in the
+ cafeteria?"
+
+ boon and oliver take the short walk over to the cafeteria. the cafeteria is a
+ large room -- it's the hub of the hub, and it's really more like a town square
+ than a room unto itself. it's laid out kind of like downtown mountain view. in
+ the middle are a few lanes of long cafeteria tables and chairs, with different
+ souls idling at them. the sides are lined with different kinds of shops -- the
+ equivalent of the armory, the apothecary, places of hangout, houses. 
+
+ the air is tense, slightly abuzz, with the air of an event that is not
+ completely known. there are a few main clumps of people sitting at the tables. 
+
+ the pair walk up to one of the clumps. there are a lot of people, and depending
+ on who you talk to, you get a slightly different answer. the conversations are
+ not long form here, but they are certainly not one liners. there are pieces of
+ lore, pieces of humanity in all of these conversations. souls telling you how
+ they died, souls bitching about their day to day problems, gossiping about the
+ hall blockages. one soul tells you not to talk about getting into the halls too
+ loudly. some people haven't heard anything about getting into sixth grade hall,
+ one person mentions that it's a shame about that girl barbara, another says that
+ it seems kind of fishy. 
+
+ ultimately, boon and oliver take the hint.
+*** the art room
+ boon and oliver walk into the art room. it's tucked off in a far corner of the
+ hub, and when you walk in it is clear that it has not been occupied in a long
+ time. the lights have a low, ominous hum, and they occasionally flicker. there
+ are easels and paint supplies lying around. the teacher's desk is in the front
+ left corner, and is scattered with papers. there are two rows of three long
+ desks, for students to work on, that are covered in half finished drawings. 
+
+ "something doesn't feel right in here, sir!"
+
+ "i'm not even dead and i can feel it," says boon. "and why is this place still
+ an art class? the cafeteria here didn't look like the cafeteria in my world."
+
+ "it's hard for me to remember, but things are different here...some things can
+ change very quickly in this realm, but some things kind of, uhm, _push back_
+ against change..." oliver replies
+
+ "well, this place isn't very big. i can't see where this girl would be
+ hiding. and besides, we don't even know if she's who we're looking for. maybe we
+ should go back to the cafeteria?"
+
+ "i have a funny feeling about this place! when i was alive, my daddy would tell
+ me: if you want to have an adventure, keep your eyes open and be patient. well,
+ let's keep our eyes open."
+
+ "okay. well, let's look around then."
+
+ they look around a bit. inspecting the teacher's desk shows the teacher's
+ personal diary. they are dissatisfied with life. their students don't care,
+ their parents don't care, they want to dedicate themselves to something real but
+ the whole world just feels like bullshit @polish. there are childish and
+ innocent drawings scattered around the desks. but overall, nothing sticks out as
+ overly strange.
+
+ on the back wall, there is a large painting. it's a knot, worked in a finely
+ detailed but impressionistic oil painting. the knot is loose, and it looks like
+ there is a thread on the knot that would unravel the whole thing if you gave it
+ a gentle tug. 
+
+ boon looks at the painting and says to himself, "oh? what's this?"
+ he reaches his hand out, half in a trance, and goes as if to pull on the
+ knot. "it's almost as if you could undo it..."
+
+ as he moves his hand down, the room begins to fuzz out. oliver asks him a
+ question in passing, but he can't hear it over the growing thrumming and pulsing
+ of the room. it pulses in and out like it has a beating heart of its own.
+
+ "...boon....wh....you.....ing?" oliver is almost completely inaudible now
+
+ boon's hand comes all the way down on the painting. the world warps and turns
+ and contracts to a point. boon hears oliver yelling. but it's too late, and as
+ quickly as it expanded it contracts back to normal size.
+
+*** come take my hand
+when boon and oliver get their bearings, they realize that they are not in the
+room they were just in. they are in a closet of old, forgotten paintings. chief
+and largest among them is the painting that drew boon in -- but instead of a
+loosely knotted piece of rope, it is cinched completely tight. the room is
+small, dark, and dusty -- it is clearly a storage closet of sorts, not a
+gallery.
+
+"are you alright, sir?"
+
+"wh..where are we? and stop calling me sir! i don't even know how i got us here,
+and i'm barely ten years old!"
+
+"sorry, s--sorry."
+
+as they chat, they hear a knock on the door.
+
+"hey! hey! i can hear you in there! come out, i've been stuck here forever,
+please help me! i think your door is locked from the inside" a young, feminine
+voice calls from outside.
+
+"do you think that could be barbara?" oliver asks
+
+"it sounds like a girl...but what if it's a trap? we don't even know where we
+are right now! we should stay put until...someone comes to find us. or until
+we're ready to go out."
+
+"i think we're right jammed in this one, boon," oliver says nervously. "a prep
+school boy should be self sufficient," he says, panic rising and convincing
+himself, "and extricate (/huff/) himself from all manner (huff) of ungainly
+(GAAAAAAASP)"
+
+"oliver? are you okay?"
+
+"oh yes, sir, yes (huff) sir. just a bit of the old asthma." oliver says, taking
+a deep breath.
+
+BANG, BANG, BANG. "what are you DOING in there? get out here and help me!"
+
+"okay, okay. here goes..." says boon.
+
+they walk out to find themselves in a room that is like a darker, twisted
+version of the art room they just came from. the paintings strewn through the
+room are surreal and slightly horrific -- ultra realistic oil paintings of a
+goat and a dog successfully sewn together at the abdomen, men in dark black
+robes melting their fingers like candlewax over tins of burning sage, sinister
+cities of fractals expanding in burnt orange in black. the black work desks are
+now covered in occult symbols and frantic writing. but it is not satanic and
+horrifying so much as it is _wrong_. the paint cups have names like "the
+rainslick summer dreams of our dead forefathers", and "two forks gently making
+love in the moonlight", and "the lord our god laying his tendrils unto
+us". something does not make sense about this space. the papers on the teacher's
+desk now reads like an entry from bots of new york e.g.
+
+"My wife can make an omelette just like a king. You’re right. She’s a little
+scary. She likes to get a little scary. But not a little scary. A little scary
+but not a little scary. A little scary but not a little scary. A little like
+this: a homeless man sleeps on the curb. A drug lord guards the grave. And a
+little scary-- an arsonist sits on the bench. Now put the lunchbox away, because
+I’m gonna be the first to tell you—it doesn’t matter how much you pound this
+shit. If my wife says it matters, you’ll fucking live for three minutes."
+
+and right by the door, there is a young woman. she looks to be about sixteen,
+and looks like she was a cheerleader in her past life: short, with a thin but
+muscular frame, blonde hair, washed out blue eyes, and a semipermanent pout on
+her face. she looks up and down the pair, and a look of horror creeps across her
+face.
+
+"oh, jesus christ! i've been stuck here for god knows how long and they send two
+_ten year olds_ to come get me?! have you guys even hit _puberty_ yet?"
+
+boon and oliver look at each other, surprised, and don't know what to say to
+this.
+
+"well? they sent you, right? my boyfriend johnny and my friends? are you going
+to save me or what?"
+
+"uhm, actually ma'am, nobody sent us. we were hoping to get into the sixth
+grade, and we heard you used to go there a lot. but nobody could find you...so
+we went to look in the art room." oliver says
+
+"and you got sucked into here, right?" she asks. "by the picture of the rope?"
+
+boon nods vigorously, glad that he hasn't gone insane, and says, "right! the
+picture of the half knot!"
+
+"well, yes, we're not sure how it happened, but here we are," oliver replies
+
+she pauses for a second, building a slow glare. she's still paused. the silence
+hangs until it's almost uncomfortable, and then she says
+
+"HERE YOU ARE?? i can't believe you idiots got stuck looking for me and now i
+have to take care of you" barb says
+
+"i'm sorry ma'am, but if i could be so bold as to say that boon and i have some
+experience battling. we should be more than capable of taking care of
+ourselves!" oliver says
+
+"trading card battles don't count. how the hell am i supposed to get past all
+those thugs outside when i have to babysit at the same time?" barb replies
+
+"uhm, did you say _thugs_?" boon asks
+
+"i know you said you didn't come to rescue me, but are you really that stupid?
+everyone has heard about those thugs that took over the three grade halls. well,
+wherever we are, they're here, too."
+
+"i told you we should wait for someone to come find us, oliver!", boon says
+
+"er, pardon me, ma'am, but...where _are_ we?" oliver asks
+
+"well, if i knew, i wouldn't be here to explain it to you, now would i?" barb
+snaps back
+
+"i suppose so," oliver says, prompting a glare from barb.
+
+"we have to be somewhere in the school, because otherwise all those guards
+wouldn't be here. but i've never even heard of a place like this. everything
+feels so _wrong_ here. and that thing with the painting...this is so stupid!"
+
+"are you sure there isn't any way we can wait for someone to come find us?" boon
+asks 
+
+"what's wrong with you? why do you want to sit here like a log so bad? i've been
+here forever and no one else has come around yet. it's like my dad always told
+me: if you have a problem, go solve it. i just hope you don't slow me down
+getting out of here."
+
+"uhm, ma'am, have you considered the possibility of escaping by _stealth_?"
+oliver asks
+
+"of course i have! how stupid do you think i am? but there's nowhere to hide. i
+looked around a little bit already. besides, what do you think this is, metal
+gear solid?"
+
+the three finish making plans and set out.
+*** rockin' and a-rollin'
+they walk out the door and enter...a room that looks precisely like the one they
+were just in. they question among themselves: did we just walk through a
+non-euclidean door? but no, there was no entrance door into the last room. it's
+just like this. they walk out of the little entryway and are discovered by a
+guard. once he's dispatched, boon is pretty shaky. oliver consoles him by
+telling him that it's not like he _killed_ the guard or anything, and that what
+happens to defeated souls is a bit, erm, metaphysically difficult. barb
+complains that she broke a nail.
+
+they try the door, but they feel that it's locked. barb notices that the rooms
+are subtly different, having been stuck in hers for weeks. they look around,
+they find the clues, and they open the door.
+
+@quest(chickenshit larry)
+the second room is very similar. the third room as well, though in that room
+there is a guard hiding in the broom closet. if you open it, he yells in
+terror. you can talk to him -- he's stuck here, and he can't say where here is
+exactly, but the place feels so wrong and he's _heard_ what the boss told him
+about souls who get killed twice and he's so chickenshit terrified and -- and
+you can choose to fight him or let him go (but you get experience both ways).
+
+either way, chickenshit larry tells you: these rooms go on forever. the way to
+get back is via the supply closets. they all have a special switch you can pull
+that open you back up to the portal room. he shows you the switch, whether you
+dispatch him or not. 
+
+the switch opens up a set of stairs. you walk down, and come to a large room
+that looks almost like a larger version of the storage closet you were
+in. except, instead of containing just a few put-away supplies, this looks like
+it has everything that ever passed unused through this art room. there are dusty
+canvases, paints and oils from the early ninteen hundreds, tarps over what
+appear to be huge scupltures, stacks and stacks of old paint cans. the room
+feels open, but is ultimately a long rectangle with a path through loosely
+defined by the gaps between the shit. there are three more battles here. 
+
+at the far end of the warehouse, the trio spots it: the knot painting. a third
+loop has been added to it, and it is cinched completely tight. 
+
+"well, i guess that's our way out..." boon says
+
+they walk over to the painting. but as they approach it, someone drops down as
+if from the rafters. he is a huge man, with skinny legs and a giant barrel of a
+torso. he wears a workman's clothes: overall styled dungarees, suspenders, white
+t-shirt, boots. he has a scraggly, thick mustache that peeks over his upper lip,
+and his head is shaved. his face is hard and worn. when he speaks, he booms over
+everyone and everything. his name is Charles van der Meulen, dutch immigrant
+from the thirties, took up a job working construction on 'scrapers but met an
+untimely death at the hands of a loose crane boom and several hundred feet of
+air time. @polish(could his name symbolise something? the ties that have begun
+to bind them)
+
+"i knew i'd catch you little fuckers here!"
+
+"we're just trying to get back to our realm, sir!", oliver says
+
+"right, which is how you ended up in this little honeypot we set up. the only
+way you could have ended up here is by using the fake portal to sixth grade that
+we put up over the real one", charles says
+
+the group shares a look. 
+
+"i guess you're not going to let us go, then?" boon asks
+
+"HELL NO! I'M GONNA HAMMER JACK YOU LITTLE BUGS INTO THE GROUND!! BWA HA HA HA
+HA !!!"
+
+so you battle, and the trio wins (of course). and after you battle, you get one
+of those scenes where the newly-vanquished villain speaks to you to advance the
+plot forward a bit before he keels over for good. and charles swears up and down
+that he won't open his lips about a single thing, 
+** dungeon 1: sixth grade
+*** in knowledge, there is power
+** old notes
+Boon wakes up. He's in a place that looks like 
+
+all of this twisted world is a school -- of course it is. dungeons are made of
+wings of the school. limbo, then the lower classmen, and then finally: the eigth
+graders. the big shits. each dungeon is made of rooms of the school. classrooms
+where students and damned teachers reside. the janitor's closet, which might
+have an enemy like a huge lice. the nurse's office. 
+
+you must make it to the principal's office at the end of eighth grade hall to
+battle the final boss
+
+
+LIMBO. 
+it's a place where the souls of fifth graders are trapped when they
+can't ascend to middle school. some of them got held back -- their minds and
+souls couldn't recover socially from being a sixth grader in fifth grade. some
+of them moved away and could never adjust to their new lives, clinging to the
+brief happy days at the end of their childhood. some of them died. but for
+whatever reason, their souls remain here at the bridge between fifth grade and
+sixth grade. 
+
+what kind of places would be in limbo? well, all kinds of places. it's places
+that people could not move on from, for some reason. their favorite teacher's
+class room. the basketball court where they had to feel so physically
+inadequate. it's the turnaround where they had to wait for their abusive father
+to arrive, drunk, to take them home. it's where they took the math test that
+made them feel permanently stupid. it's the lunch room where they felt socially
+isolated for months on end. 
+
+everything is a little bit backwards in limbo. the music is geogaddi, off center
+dissonance that warbles around a specific note. rewound tape loops. maybe the
+rest of the game has some goofy darkness, but i don't know about this place. i
+guess now is a good time to think of the tone of the game more. on one hand, i
+like the idea of something dark and lonesome and low and a bit unsettling, blues
+and earthy algae spaceship faux organic greens, warbling synthesizers, sinister,
+lost. like a neil gaiman comic. but i also love how absurd it sounds to battle old
+headmasters and science teachers and jocks like they're animals. they lose some
+human part of themselves which makes them hold back, but they retain enough to
+be recognizable as human. the fact that they are taking it as a serious eternal
+struggle when they're really just locked in a meaningless fight commanded by a
+fifth grader is grimly hilarious. also like a neil gaiman comic. i don't want to
+lose that for the sake of being Grim Dark. 
+
+i think one of the best things undertale did was have dialogue scenes. you don't
+have to be able to say anything meaningful (altho in undertale you could). just
+the fact that they are talking to you, doing more than just walking over and
+battling, that's awesome. 
+
+i do want this game to be funny. simple and funny. 
+
+who's your sidekick? definitely some former person at the school. what about a
+fourth grader. one who was killed at the school in some violent (but ultimately
+accidental) way. he's very meek, timid, and proper. he wants to avoid offending,
+but he's also been around for a /long/ time, so he's actually quite savvy as to
+how things work down here. 
+
+something isn't right here. it's twisted, inverted. things have a set way of
+working here, and it's becoming /wrong/. turns out, that thing is levi and
+o'doyle becoming the kings of hell. they're the final boss.
+
+you have some sidekick who cheerfully tells you about the world you
+inhabit. maybe they could even be your starter? 
+
+creatures are the souls of everyday things. simple things, maybe even things
+that aren't jazzed up at all. like, a dog that is just a dog. a chair. slightly
+anthropomorphic, maybe. 
+
+if that's the case, how do you differentiate creatures? you can't have lamp learn
+fire blast but not ice beam -- how do you reconcile that? could i pare down some
+of the types i have? actually, ditching types might not be a bad idea. or make
+the type system another RPS. that way you have two simple RPS stacked on top of
+each other. either way, struggling with the idea of how to give meaningful,
+simple competitive flavor when the creatures are literally things like a fucking
+table and a chair. 
+
+ordinary things: table, chair, basketball, jacket, pencil
+
+OOH
+
+what if instead of the creatures being ordinary things, they are the spirits of
+people who were left behind 
+
+and the fact that multiple people can control them is because their soul splits
+and shards -- it's not whole, so it can't be conscious, but each part of it
+contains enough of them to be selfsame.
+
+let's make the type RPS visually simple. what about jocks > nerds > teachers? or
+something more complicated: the damned (souls that are tragically trapped at the
+school), the unborn (souls that never matured enough to leave the school), the
+normals (souls attached to a real, active student in the material world). but
+that doesn't quite make sense -- normal souls aren't going to be creatures
+here. will they? it would be pretty fucking funny if you could catch and train
+dylan driver. 
+
+the damned are good at attacking. they are angry and resentful, and they want to
+hurt you as they have been hurt.
+
+the unborn are good at grabbing. they are immature. they could never stand on
+two solid feet and make it in life. they're just grabbing at whatever they can. 
+ 
+the normals are good at defending. they don't want to be pulled into the world
+of souls -- they enjoy living. so they are built to do that. 
+* clock
+:LOGBOOKg:
+CLOCK: [2021-02-22 Mon 14:06]--[2021-02-22 Mon 15:48] =>  1:42
+CLOCK: [2021-02-21 Sun 22:49]--[2021-02-21 Sun 23:05] =>  0:16
+CLOCK: [2021-02-21 Sun 17:14]--[2021-02-21 Sun 19:17] =>  2:03
+CLOCK: [2021-02-21 Sun 00:31]--[2021-02-21 Sun 01:37] =>  1:06
+CLOCK: [2021-02-20 Sat 11:47]--[2021-02-20 Sat 12:27] =>  0:40
+CLOCK: [2021-02-19 Fri 14:00]--[2021-02-19 Fri 15:45] =>  1:45
+CLOCK: [2021-02-18 Thu 19:35]--[2021-02-18 Thu 21:13] =>  1:38
+CLOCK: [2021-02-17 Wed 16:00]--[2021-02-17 Wed 17:00] =>  1:00
+CLOCK: [2021-02-16 Tue 21:27]--[2021-02-16 Tue 23:27] =>  2:00
+CLOCK: [2021-02-15 Mon 16:30]--[2021-02-15 Mon 17:14] =>  0:44
+CLOCK: [2021-02-15 Mon 14:14]--[2021-02-15 Mon 15:54] =>  1:40
+CLOCK: [2021-02-14 Sun 15:17]--[2021-02-14 Sun 16:40] =>  1:23
+CLOCK: [2021-02-14 Sun 11:03]--[2021-02-14 Sun 11:27] =>  0:24
+CLOCK: [2021-02-13 Sat 21:52]--[2021-02-14 Sun 00:12] =>  2:20
+CLOCK: [2021-02-12 Fri 19:15]--[2021-02-12 Fri 21:45] =>  2:30
+CLOCK: [2021-02-12 Fri 16:33]--[2021-02-12 Fri 17:52] =>  1:19
+CLOCK: [2021-02-11 Thu 16:54]--[2021-02-11 Thu 17:24] =>  0:30
+CLOCK: [2021-02-10 Wed 21:58]--[2021-02-10 Wed 23:58] =>  1:00
+CLOCK: [2021-02-10 Wed 16:09]--[2021-02-10 Wed 16:43] =>  0:34
+CLOCK: [2021-02-09 Tue 23:15]--[2021-02-10 Wed 00:29] =>  1:14
+CLOCK: [2021-02-09 Tue 17:19]--[2021-02-09 Tue 18:29] =>  1:10
+CLOCK: [2021-02-08 Mon 16:52]--[2021-02-08 Mon 17:13] =>  0:21
+CLOCK: [2021-02-08 Mon 14:02]--[2021-02-08 Mon 14:31] =>  0:29
+CLOCK: [2021-02-07 Sun 21:25]--[2021-02-07 Sun 22:25] =>  1:00
+CLOCK: [2021-02-06 Sat 18:11]--[2021-02-06 Sat 19:01] =>  0:50
+CLOCK: [2021-02-06 Sat 12:55]--[2021-02-06 Sat 14:45] =>  1:50
+CLOCK: [2021-02-05 Fri 16:00]--[2021-02-05 Fri 17:32] =>  1:32
+CLOCK: [2021-02-04 Thu 19:30]--[2021-02-04 Thu 21:58] =>  2:28
+CLOCK: [2021-02-03 Wed 20:11]--[2021-02-03 Wed 21:12] =>  1:01
+CLOCK: [2021-02-02 Tue 20:20]--[2021-02-02 Tue 21:46] =>  1:26
+CLOCK: [2021-02-01 Mon 21:48]--[2021-02-01 Mon 22:36] =>  0:48
+CLOCK: [2021-02-01 Mon 20:41]--[2021-02-01 Mon 21:17] =>  0:36
+CLOCK: [2021-01-31 Sun 12:00]--[2021-01-31 Sun 13:00] =>  1:00
+CLOCK: [2021-01-30 Sat 15:00]--[2021-01-30 Sat 16:20] =>  1:20
+CLOCK: [2021-01-30 Sat 12:49]--[2021-01-30 Sat 14:25] =>  1:36
+CLOCK: [2021-01-29 Fri 20:08]--[2021-01-29 Fri 22:48] =>  2:40
+CLOCK: [2021-01-28 Thu 21:59]--[2021-01-28 Thu 23:28] =>  1:29
+CLOCK: [2021-01-27 Wed 17:41]--[2021-01-27 Wed 18:35] =>  0:54
+CLOCK: [2021-01-26 Tue 20:25]--[2021-01-26 Tue 22:37] =>  2:12
+CLOCK: [2021-01-26 Tue 16:35]--[2021-01-26 Tue 19:04] =>  2:29
+CLOCK: [2021-01-26 Tue 12:05]--[2021-01-26 Tue 14:07] =>  2:02
+CLOCK: [2021-01-26 Tue 00:52]--[2021-01-26 Tue 02:04] =>  1:12
+CLOCK: [2021-01-25 Mon 20:58]--[2021-01-25 Mon 22:48] =>  1:50
+CLOCK: [2021-01-24 Sun 21:17]--[2021-01-24 Sun 23:17] =>  2:00
+CLOCK: [2021-01-23 Sat 23:36]--[2021-01-24 Sun 00:27] =>  0:51
+CLOCK: [2021-01-22 Fri 23:57]--[2021-01-23 Sat 01:25] =>  1:28
+CLOCK: [2021-01-22 Fri 22:27]--[2021-01-22 Fri 22:57] =>  0:30
+CLOCK: [2021-01-21 Thu 20:37]--[2021-01-21 Thu 23:10] =>  2:33
+CLOCK: [2021-01-20 Wed 22:00]--[2021-01-20 Wed 23:57] =>  1:57
+CLOCK: [2021-01-19 Tue 21:55]--[2021-01-20 Wed 00:01] =>  2:06
+CLOCK: [2021-01-18 Mon 23:02]--[2021-01-19 Tue 00:19] =>  1:17
+CLOCK: [2021-01-18 Mon 20:30]--[2021-01-18 Mon 21:39] =>  1:09
+CLOCK: [2021-01-17 Sun 22:20]--[2021-01-17 Sun 22:54] =>  0:34
+CLOCK: [2021-01-17 Sun 00:54]--[2021-01-17 Sun 01:55] =>  1:01
+CLOCK: [2021-01-15 Fri 16:46]--[2021-01-15 Fri 17:10] =>  0:24
+CLOCK: [2021-01-15 Fri 15:26]--[2021-01-15 Fri 16:07] =>  0:41
+CLOCK: [2021-01-15 Fri 00:25]--[2021-01-15 Fri 00:56] =>  0:31
+CLOCK: [2021-01-14 Thu 20:43]--[2021-01-14 Thu 22:07] =>  1:24
+CLOCK: [2021-01-13 Wed 23:00]--[2021-01-14 Thu 00:08] =>  1:08
+CLOCK: [2021-01-13 Wed 00:30]--[2021-01-13 Wed 00:57] =>  0:27
+CLOCK: [2021-01-12 Tue 20:15]--[2021-01-12 Tue 21:40] =>  1:25
+CLOCK: [2021-01-11 Mon 22:29]--[2021-01-11 Mon 23:33] =>  1:04
+CLOCK: [2021-01-11 Mon 00:23]--[2021-01-11 Mon 00:52] =>  0:29
+CLOCK: [2021-01-10 Sun 10:20]--[2021-01-10 Sun 11:10] =>  0:50
+CLOCK: [2021-01-09 Sat 19:22]--[2021-01-09 Sat 19:57] =>  0:35
+CLOCK: [2021-01-08 Fri 20:54]--[2021-01-08 Fri 22:15] =>  1:21
+CLOCK: [2021-01-07 Thu 17:59]--[2021-01-07 Thu 18:56] =>  0:57
+CLOCK: [2021-01-06 Wed 23:27]--[2021-01-06 Wed 23:56] =>  0:29
+CLOCK: [2021-01-05 Tue 11:59]--[2021-01-06 Wed 00:35] =>  0:36
+CLOCK: [2021-01-04 Mon 22:01]--[2021-01-04 Mon 23:10] =>  1:09
+CLOCK: [2021-01-04 Mon 12:54]--[2021-01-04 Mon 13:29] =>  0:35
+CLOCK: [2021-01-03 Sun 16:19]--[2021-01-03 Sun 17:06] =>  0:47
+CLOCK: [2021-01-02 Sat 22:58]--[2021-01-03 Sun 00:05] =>  1:07
+CLOCK: [2021-01-01 Fri 21:39]--[2021-01-01 Fri 22:40] =>  1:01
+:END:
+* other games
+https://store.steampowered.com/app/256460/Cosmic_Star_Heroine/
+cosmic star heroine. an RPG styled after chrono trigger with no random
+encounters. 
+
+https://store.steampowered.com/app/251150/The_Legend_of_Heroes_Trails_in_the_Sky/
+
+https://indie-fund.com/games/hyper-light-drifter
+gorgeous pixel art.
+* artists
+** /u/skeddles
+excellent colors, some cool landscape ones. also some goofy pokemon-esque
+creature sprites.
+https://www.reddit.com/r/PixelArt/comments/lbumn0/oc_crisp_mountain_air/
+https://www.reddit.com/r/PixelArt/comments/hnjglo/rhacos_rider/
+https://www.reddit.com/r/PixelArt/comments/bjx0yg/some_pokemon_sprites_i_made_out_of_drawings_from/
+** /u/iviqrr
+very cool style...saturated colors, some really really cool creature-like large
+sprites. seems quite prolific.
+https://www.reddit.com/r/PixelArt/comments/jps2bv/oc_shieldbearer/
+https://www.reddit.com/r/PixelArt/comments/l64x73/oc_chatternose/
+https://www.reddit.com/r/PixelArt/comments/l2ro3v/oc_cursed_tiki/
+** /u/verysillyhats
+fine, detailed sprites. does portraits + buildings + sprites + landscapes. dude
+writes comics too.
+https://www.reddit.com/r/PixelArt/comments/iv50oz/a_few_of_my_latest_creatures_from_my_1000/
+https://i.redd.it/lolcaujmeuu51.jpg
+** EdelweissPkmn
+cool, detailed versions that still give off a GBC pokemon vibe
+https://twitter.com/edelweisspkmn?lang=en

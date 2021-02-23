@@ -3554,8 +3554,8 @@ two solid feet and make it in life. they're just grabbing at whatever they can.
 the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
-:LOGBOOK:
-CLOCK: [2021-02-22 Mon 14:06]
+:LOGBOOKg:
+CLOCK: [2021-02-22 Mon 14:06]--[2021-02-22 Mon 15:48] =>  1:42
 CLOCK: [2021-02-21 Sun 22:49]--[2021-02-21 Sun 23:05] =>  0:16
 CLOCK: [2021-02-21 Sun 17:14]--[2021-02-21 Sun 19:17] =>  2:03
 CLOCK: [2021-02-21 Sun 00:31]--[2021-02-21 Sun 01:37] =>  1:06

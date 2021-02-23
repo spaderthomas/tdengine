@@ -5,7 +5,6 @@ Interactable = tdengine.entity('Interactable')
 function Interactable:init(params)
    tdengine.register_interactable(self.id)
    tdengine.register_raycastable(self.id)
-   tdengine.disable_collision_detection(self.id)
    self.on_interaction_name = params.on_interaction
 end
 

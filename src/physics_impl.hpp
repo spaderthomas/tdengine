@@ -138,7 +138,6 @@ void PhysicsEngine::update(float dt) {
 
 		for (auto& [id, other] : collidable) {
 			if (id == request.entity) continue;
-			if (!other.collision_detection_enabled) continue;
 
 			auto other_box = Center_Box::from_entity(id);
 
@@ -212,6 +211,7 @@ Position* PhysicsEngine::get_position(int entity) {
 
 void PhysicsEngine::remove_entity(int entity) {
 	collidable.erase(entity);
+	raycast.erase(entity);
 }
 
 PhysicsEngine& get_physics_engine() {
@@ -219,7 +219,25 @@ PhysicsEngine& get_physics_engine() {
 	return engine;
 }
 
-// @slow
+void InteractionSystem::add_interactable(int entity, Interactable interactable) {
+	interactables[entity] = interactable;
+}
+
+Interactable* InteractionSystem::get_interactable(int entity) {
+	auto it = interactables.find(entity);
+	if (it == interactables.end()) {
+		return nullptr;
+	}
+
+	return &(it->second);
+}
+
+void InteractionSystem::remove_entity(int entity) {
+	interactables.erase(entity);
+	if (interacted_with == entity) entity = -1;
+}
+
+
 void InteractionSystem::update(float dt) {
 	// Reset shit from the previous frame
 	interacted_with = -1;
@@ -227,36 +245,26 @@ void InteractionSystem::update(float dt) {
 	if (player < 0) return;
 	if (!check_for_interactions) return;
 
-	// We're going to check the player's box against all the boxes we've registered
-	// as interactable. If we find a match, we'll mark it down. When the entity'
-	// system runs, it will ask us whether we found an interaction and, if so,
-	// run a callback on the entity that was hit.		
-	tdns_log.write("Checking for interactions");
 	auto& physics = get_physics_engine();
+	auto make_box = [](int entity) {
 
-	auto player_collider = physics.get_collider(player);
-	auto player_position = physics.get_position(player);
-	if (!player_collider || !player_position) {
-		std::string message = "@no_physics_for_player, ";
-		message += std::to_string(player);
-		tdns_log.write(message);
-	}
-	Center_Box player_box;
-	player_box.origin = *player_position;
-	player_box.extents = player_collider->extents;
+	};
+	
+	Center_Box player_box = Center_Box::from_entity(player);
 
-	for (auto& interactable : interactables) {
-		auto position = physics.get_position(interactable.entity);
+	for (const auto& [entity, interactable] : interactables) {
+		auto position = physics.get_position(entity);
 		if (!position) {
-			std::string message = "@no_position_for_interactable, ";
-			message += std::to_string(interactable.entity);
+			std::string message = "@no_physics_for_interactable, ";
+			message += std::to_string(entity);
 			tdns_log.write(message);
+			continue;
 		}
-		
+
 		Center_Box interactable_box;
 		interactable_box.origin = *position + interactable.offset;
 		interactable_box.extents = interactable.extents;
-
+		
 		glm::vec2 penetration;
 		if (are_boxes_colliding(player_box, interactable_box, penetration)) {
 			interacted_with = interactable.entity;

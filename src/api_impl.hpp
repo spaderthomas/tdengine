@@ -7,8 +7,11 @@ void API::free_entity(int entity) {
 	auto& entity_manager = get_entity_manager();
 	auto& physics_engine = get_physics_engine();
 	auto& render_engine = get_render_engine();
+	auto& interaction_system = get_interaction_system();
+	
 	render_engine.remove_entity(entity);
 	physics_engine.remove_entity(entity);
+	interaction_system.remove_entity(entity);
 	entity_manager.destroy_entity(entity);
 }
 
@@ -189,28 +192,20 @@ void API::register_collider(int entity) {
 	collider.entity = entity;
 
 	auto entity_ptr = entity_manager.get_entity(entity);
-	if (!entity_ptr->has_component("BoundingBox")) {
-		std::string message = "Called register_collider() for ";
-		message += entity_ptr->debug_string() + " but it did not have a BoundingBox";
-		message += ". Using default bounding box extents.";
-		tdns_log.write(message, Log_Flags::File);
-
-		collider.extents.x = 0;
-		collider.extents.y = 0;	
-	} else {
-		auto box = Lua.get_component(entity, "BoundingBox");
-		collider.extents.x = box["extents"]["x"];
-		collider.extents.y = box["extents"]["y"];
-		collider.offset.x = box["offset"]["x"];
-		collider.offset.y = box["offset"]["y"];	
-	}
+	if (!entity_ptr->has_component("BoundingBox")) return;
+	auto box = Lua.get_component(entity, "BoundingBox");
+	
+	collider.extents.x = box["extents"]["x"];
+	collider.extents.y = box["extents"]["y"];
+	collider.offset.x = box["offset"]["x"];
+	collider.offset.y = box["offset"]["y"];	
 	
 	auto& physics_engine = get_physics_engine();
 	physics_engine.add_collider(entity, collider);
 	physics_engine.add_raycast(entity, collider);
 }
 
-void register_raycastable(int entity) {
+void API::register_raycastable(int entity) {
 	auto& entity_manager = get_entity_manager();
 
 	Collider collider;
@@ -218,8 +213,8 @@ void register_raycastable(int entity) {
 
 	auto entity_ptr = entity_manager.get_entity(entity);
 	if (!entity_ptr->has_component("BoundingBox")) return;
-	
 	auto box = Lua.get_component(entity, "BoundingBox");
+	
 	collider.extents.x = box["extents"]["x"];
 	collider.extents.y = box["extents"]["y"];
 	collider.offset.x = box["offset"]["x"];
@@ -227,19 +222,6 @@ void register_raycastable(int entity) {
 	
 	auto& physics_engine = get_physics_engine();
 	physics_engine.add_raycast(entity, collider);
-}
-
-void API::disable_collision_detection(int entity) {
-	auto& physics_engine = get_physics_engine();
-	auto collider = physics_engine.get_collider(entity);
-	if (!collider) {
-		std::string message = "@disable_collision_detection:no_collider, ";
-		message += std::to_string(entity);
-		tdns_log.write(message);
-		return;
-	}
-	
-	collider->collision_detection_enabled = false;
 }
 
 sol::object API::ray_cast(float x, float y) {
@@ -270,7 +252,7 @@ void API::register_interactable(int entity) {
 	interactable.offset.y = box["offset"]["y"];	
 
 	auto& system = get_interaction_system();
-	system.interactables.push_back(interactable);
+	system.add_interactable(entity, interactable);
 }
 
 sol::object API::sprite_size(std::string name) {
@@ -502,7 +484,6 @@ void register_lua_api() {
 	state["tdengine"]["register_position"] = &register_position;
 	state["tdengine"]["register_collider"] = &register_collider;
 	state["tdengine"]["register_raycastable"] = &register_raycastable;
-	state["tdengine"]["disable_collision_detection"] = &disable_collision_detection;
 	state["tdengine"]["register_interactable"] = &register_interactable;
 	state["tdengine"]["do_interaction_check"] = &do_interaction_check;
 	state["tdengine"]["register_player"] = &register_player;

@@ -102,6 +102,14 @@ return {
     },
     {
       components = {
+        Animation = {
+          animations = {
+            box16 = {
+              "box16.png"
+            }
+          },
+          current = "box16"
+        },
         BoundingBox = {
           extents = {
             x = 0.099479168653488159,
@@ -117,20 +125,12 @@ return {
             x = 0.25026038289070129,
             y = 0.2906481921672821
           }
-        },
-		Animation = {
-		   animations = {
-			  box16 = {
-				 'box16.png'
-			  }
-		   },
-		   current = 'box16'
-		}
+        }
       },
       name = "Interactable",
       params = {
-		 on_interaction = 'demo'
-	  }
+        on_interaction = "demo"
+      }
     }
   }
 }
