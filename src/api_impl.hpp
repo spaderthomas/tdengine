@@ -469,10 +469,11 @@ void API::log(const char* message, uint8_t flags) {
 	tdns_log.write(message, flags);
 }
 
-void API::fade_screen() {
+void API::fade_screen(float time) {
 	auto& render_engine = get_render_engine();
 	render_engine.is_fading = true;
-	render_engine.fade_time_remaining = seconds_per_update * 60;
+	render_engine.fade_time = time;
+	render_engine.fade_time_remaining = time * 2;
 }
 
 

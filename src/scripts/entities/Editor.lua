@@ -72,11 +72,6 @@ function Editor:init(params)
 end
 
 function Editor:update(dt)
-  tdengine.do_once(function()
-	  print(inspect(tdengine.screen_dimensions()))
-	  --tdengine.fade_screen()
-  end)
-	  
   -- If we reloaded the scene or something, our handle is invalid
    if self.selected and not self.selected.alive then
 	self.selected = nil

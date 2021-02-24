@@ -1,10 +1,13 @@
 struct Shader {
 	std::string name;
+	std::string vs_path;
+	std::string fs_path;
 	uint id;
 	uint num_uniforms;
 	std::vector<std::string> uniforms_set_this_call;
 	
 	static int active;
+	static char compilation_status[512];
 
 	void init(std::string vs_path, std::string fs_path, std::string name);
 	unsigned int get_uniform_loc(const char* name);
@@ -22,10 +25,14 @@ struct Shader {
 	void end();
 };
 int Shader::active = -1;
+char Shader::compilation_status[512];
 
-Shader textured_shader;
-Shader highlighted_shader;
-Shader solid_shader;
-Shader text_shader;
-Shader fade_shader;
 void init_shaders();
+
+struct ShaderManager {
+	std::map<std::string, Shader> shaders;
+	
+	void add(std::string vs_path, std::string fs_path, std::string name);
+	Shader* get(const char* name);
+};
+ShaderManager& get_shader_manager();	

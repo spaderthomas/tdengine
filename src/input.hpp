@@ -259,7 +259,6 @@ void GLFW_Error_Callback(int err, const char* msg) {
 }
 
 void GLFW_Window_Size_Callback(GLFWwindow* window, int width, int height) {
-	tdns_log.write("window size callback");
 	use_arbitrary_screen_size(height, width);
 }
 

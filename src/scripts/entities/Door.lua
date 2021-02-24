@@ -35,7 +35,9 @@ function Door:on_collision(other)
 	  tdengine.load_scene_from_disk
 	}
 	for index, loader in pairs(loaders) do
-	  if loader(self.where) then break end
+	   if loader(self.where) then
+		  tdengine.fade_screen(.5)
+	   end
 	end
   end
 end

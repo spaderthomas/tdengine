@@ -77,9 +77,11 @@ void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 	p1 = gl_from_screen(p1);
 	p2 = gl_from_screen(p2);
 	auto draw = [p1, p2, color]() -> void {
+		auto& shaders = get_shader_manager();
+		auto& solid_shader = *shaders.get("solid");
+
 		solid_shader.begin();
-		glm::vec4 color_ = color; //@hack So I can pass as a reference everywhere else. maybe make it a pointer? but then inconsistent :(
-		solid_shader.set_vec4("color", color_);
+		solid_shader.set_vec4("color", color);
 
 		SRT transform = SRT::no_transform();
 		transform.scale = p2 - p1;
@@ -101,6 +103,9 @@ void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
 void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
 	basis = gl_from_screen(basis);
 	auto draw = [basis, color]() -> void {
+		auto& shaders = get_shader_manager();
+		auto& solid_shader = *shaders.get("solid");
+
 		solid_shader.begin();
 		solid_shader.set_vec4("color", color);
 		SRT transform = SRT::no_transform();
@@ -121,12 +126,17 @@ void draw_line_from_origin(glm::vec2 basis, glm::vec4 color) {
 
 void draw_rect_filled_screen(glm::vec2 origin, glm::vec2 extents, glm::vec4 color) {
 	auto draw = [origin, extents, color]() -> void {
+		auto& shaders = get_shader_manager();
+		auto& solid_shader = *shaders.get("solid");
+
+		solid_shader.begin();
+
 		auto transform = SRT::no_transform();
 		transform.translate = gl_from_screen(origin);
 		transform.scale = extents;
 		auto trans_mat = mat3_from_transform(transform);
-		solid_shader.begin();
 		solid_shader.set_mat3("transform", trans_mat);
+		
 		solid_shader.set_vec4("color", color);
 
 		auto& asset_manager = get_asset_manager();
@@ -228,16 +238,17 @@ void RenderEngine::remove_entity(int entity) {
 		}
 	}
 }
-void RenderEngine::render() {
-	render_scene();
-	render_text();
-	render_primitives();
+
+void RenderEngine::render(float dt) {
+	render_scene(dt);
+	render_text(dt);
+	render_primitives(dt);
 	
 	//if (fade_time_remaining <= 0) is_fading = false;
 	//is_fading = false;
 }
 
-void RenderEngine::render_scene() {
+void RenderEngine::render_scene(float dt) {
 	if (is_fading) {
 		glViewport(0, 0, 2560, 1440);
 		glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
@@ -249,7 +260,11 @@ void RenderEngine::render_scene() {
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
 	glEnableVertexAttribArray(0);
 
-	Shader* shader = &textured_shader;
+	auto& shaders = get_shader_manager();
+	Shader* shader = shaders.get("textured");
+	Shader* highlighted_shader = shaders.get("highlighted");
+	Shader* textured_shader = shaders.get("textured");
+
 	shader->begin();
 	shader->set_int("sampler", 0);
 
@@ -268,17 +283,17 @@ void RenderEngine::render_scene() {
 	for (auto& element : render_list) {
 		// Swap shader based on flags
 		if (has_flag(element.flags, Render_Flags::Highlighted)) {
-			if (shader != &highlighted_shader) {
+			if (shader != highlighted_shader) {
 				shader->end();
-				shader = &highlighted_shader;
+				shader = highlighted_shader;
 				shader->begin();
 				shader->set_int("sampler", 0);
 			}
 		}
 		else {
-			if (shader != &textured_shader) {
+			if (shader != textured_shader) {
 				shader->end();
-				shader = &textured_shader;
+				shader = textured_shader;
 				shader->begin();
 				shader->set_int("sampler", 0);
 			}
@@ -315,46 +330,50 @@ void RenderEngine::render_scene() {
 	render_list.clear();
 
 	if (is_fading) {
-		static int count = 0;
-		GLubyte* pixels = (GLubyte*) calloc(2560 * 1440, sizeof(GLubyte) * 4);
-		glReadPixels(0, 0, 2560, 1440, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
-
-		std::string path = absolute_path("framebuffer" + std::to_string(count++) + ".bmp");
-		//stbi_write_bmp(path.c_str(), 2560, 1440, 4, pixels); // 
-
 		glViewport(0, 0, screen_x, screen_y);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
 		
 		glBindTexture(GL_TEXTURE_2D, color_buffer);
-		fade_shader.begin();
-		fade_shader.set_int("screen", 0);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), square_tex_coords_offset);
 		glEnableVertexAttribArray(1);
-		fade_shader.check();
+
+		shader = shaders.get("fade");
+		shader->begin();
+		shader->set_int("screen", 0);
+
+		float time = glm::abs((fade_time_remaining - fade_time) / fade_time);
+		shader->set_float("time", time);
+		fade_time_remaining -= dt;
+		is_fading = fade_time_remaining > 0;
+		
+		shader->check();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		fade_shader.end();
+		
+		shader->end();
 	}
 }
 
-void RenderEngine::render_text() {
+void RenderEngine::render_text(float dt) {
 	bind_sprite_buffers();
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
 	glEnableVertexAttribArray(0);
-	
-	text_shader.begin();
+
+	auto& shaders = get_shader_manager();
+	auto shader = shaders.get("text");
+	shader->begin();
 
 	// Text is raw 2D, so just use an orthographic projection
 	SRT transform = SRT::no_transform();
 	glm::mat3 mat = mat3_from_transform(transform);
-	text_shader.set_mat3("transform", mat);
-	text_shader.set_int("sampler", 0);
+	shader->set_mat3("transform", mat);
+	shader->set_int("sampler", 0);
 
 	glBindBuffer(GL_ARRAY_BUFFER, font_vert_buffer);
 	glBindVertexArray(font_vao);
 
 	for (const auto& info : text_infos) {
 		auto color = has_flag(info.flags, Text_Flags::Highlighted) ? Colors::TextHighlighted : Colors::TextWhite;
-		text_shader.set_vec3("text_color", color);
+		shader->set_vec3("text_color", color);
 
 		auto px_point = px_from_screen(info.point);
 		for (auto c : info.text) {
@@ -396,17 +415,17 @@ void RenderEngine::render_text() {
 			glBindTexture(GL_TEXTURE_2D, freetype_char.texture);
 			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
 			
-			text_shader.check();
+			shader->check();
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		
 			px_point.x += (freetype_char.advance / 64);
 		}
 	}
-	text_shader.end();
+	shader->end();
 	text_infos.clear();
 }
 
-void RenderEngine::render_primitives() {
+void RenderEngine::render_primitives(float dt) {
 	for (auto& draw_func : primitives) {
 		draw_func();
 	}

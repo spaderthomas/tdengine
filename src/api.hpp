@@ -44,6 +44,6 @@ void        save_layout(const char* name);
 int         count_frames(std::string animation);
 void        screen(const char* dimension);
 void        log(const char* message, uint8_t flags);
-void        fade_screen();
+void        fade_screen(float time);
 }
 void register_lua_api();

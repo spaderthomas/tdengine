@@ -1,1 +1,1 @@
-tdengine.fade_screen()
+tdengine.fade_screen(.5)

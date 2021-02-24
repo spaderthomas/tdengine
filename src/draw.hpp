@@ -37,16 +37,17 @@ struct RenderEngine {
 
 	bool is_fading = false;
 	float fade_time_remaining = 0.f;
+	float fade_time;
 	uint frame_buffer;
 	uint color_buffer;
 	uint depth_buffer;
 
 	void init();
 	void remove_entity(int entity);
-	void render();
-	void render_text();
-	void render_scene();
-	void render_primitives();
+	void render(float dt);
+	void render_text(float dt);
+	void render_scene(float dt);
+	void render_primitives(float dt);
 	Camera& get_camera();
 };
 

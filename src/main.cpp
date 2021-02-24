@@ -37,6 +37,7 @@ int main() {
 	// (even though you shouldn't have to) and to initialize them
 	auto& asset_manager      = get_asset_manager();
 	auto& input_manager      = get_input_manager();
+	auto& shader_manager     = get_shader_manager();
 	auto& render_engine      = get_render_engine();
 	auto& entity_manager     = get_entity_manager();
 	auto& component_manager  = get_component_manager();
@@ -87,7 +88,7 @@ int main() {
 		interaction_system.update(seconds_per_update);
 		update_system.update(seconds_per_update);
 
-		render_engine.render();
+		render_engine.render(seconds_per_update);
 
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());

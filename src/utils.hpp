@@ -116,7 +116,7 @@ glm::vec3 tdns_normalize(glm::vec3 vec) {
 	return glm::normalize(vec);
 }
 
-#define TDENGINE_FLOATEQ_EPSILON .005
+#define TDENGINE_FLOATEQ_EPSILON .00005
 bool float_almost_equals(float a, float b) {
 	return glm::abs(a - b) < TDENGINE_FLOATEQ_EPSILON;
 }
@@ -710,6 +710,11 @@ struct FileWatcher {
 	void watch(AbsolutePath file, FileChangedCallback on_change) {
 		time_map[file.path] = std::filesystem::last_write_time(file.path);
 		action_map[file.path] = on_change;
+	}
+
+	void watch(std::string file, FileChangedCallback on_change) {
+		time_map[file] = std::filesystem::last_write_time(file);
+		action_map[file] = on_change;
 	}
 
 	void update() {
