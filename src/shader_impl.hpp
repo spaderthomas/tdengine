@@ -128,4 +128,5 @@ void init_shaders() {
 	highlighted_shader.init(absolute_path("asset/shaders/textured.vs"), absolute_path("asset/shaders/highlighted.fs"), "highlighted");
 	solid_shader.init(absolute_path("asset/shaders/solid.vs"), absolute_path("asset/shaders/solid.fs"), "solid");
 	text_shader.init(absolute_path("asset/shaders/textured.vs"), absolute_path("asset/shaders/text.fs"), "text");
+	fade_shader.init(absolute_path("asset/shaders/fade.vs"), absolute_path("asset/shaders/fade.fs"), "fade");
 }

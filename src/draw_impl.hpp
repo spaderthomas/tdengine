@@ -324,14 +324,15 @@ void RenderEngine::render_scene() {
 
 		glViewport(0, 0, screen_x, screen_y);
 		glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
-
+		
 		glBindTexture(GL_TEXTURE_2D, color_buffer);
-		textured_shader.begin();
-		textured_shader.set_int("sampler", 0);
+		fade_shader.begin();
+		fade_shader.set_int("screen", 0);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), square_tex_coords_offset);
 		glEnableVertexAttribArray(1);
+		fade_shader.check();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		textured_shader.end();
+		fade_shader.end();
 	}
 }
 

@@ -27,4 +27,5 @@ Shader textured_shader;
 Shader highlighted_shader;
 Shader solid_shader;
 Shader text_shader;
+Shader fade_shader;
 void init_shaders();

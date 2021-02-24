@@ -164,11 +164,6 @@ std::vector<float> square_verts = {
 	-1.f, -1.f,
 	-1.f,  1.f
 };
-glm::vec3 screen_bottom_right = glm::vec3(1.f, 1.f, 1.f);
-glm::vec3 screen_top_right = glm::vec3(1.f, -1.f, 1.f);
-glm::vec3 screen_top_left = glm::vec3(-1.f, -1.f, 1.f);
-glm::vec3 screen_bottom_left = glm::vec3(-1.f, 1.f, 1.f);
-
 std::vector<uint> square_indices = {
 	0, 1, 2,
 	2, 0, 3
