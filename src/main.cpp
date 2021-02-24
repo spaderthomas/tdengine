@@ -33,6 +33,8 @@ int main() {
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
 
+	// These are all function static globals -- access them now to ensure they exist
+	// (even though you shouldn't have to) and to initialize them
 	auto& asset_manager      = get_asset_manager();
 	auto& input_manager      = get_input_manager();
 	auto& render_engine      = get_render_engine();
@@ -42,7 +44,9 @@ int main() {
 	auto& physics_engine     = get_physics_engine();
 	auto& interaction_system = get_interaction_system();
 	auto& update_system      = get_update_system();
-	
+
+	render_engine.init();
+
 	init_shaders();
 	init_mesh();
 	init_assets();
@@ -52,6 +56,7 @@ int main() {
 	init_gl();
 
 	Lua.init();
+
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {

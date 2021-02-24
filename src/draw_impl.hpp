@@ -22,7 +22,6 @@ void init_gl() {
 	// Fill GPU sprite buffers
 	glBindVertexArray(Sprite::vao);
 	std::vector<float> vert_data;
-	std::vector<float> tex_coords;
 	
 	concat(vert_data, square_verts);
 	
@@ -187,6 +186,35 @@ RenderEngine& get_render_engine() {
 	return engine;
 }
 
+void RenderEngine::init() {
+	glGenFramebuffers(1, &frame_buffer);
+	glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
+
+	// Generate the color buffer, allocate GPU memory for it, and attach it to the frame buffer
+	glGenTextures(1, &color_buffer);
+	glBindTexture(GL_TEXTURE_2D, color_buffer);	
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2560, 1440, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_buffer, 0);
+	
+	// Ditto for the depth buffer
+	// glGenRenderbuffers(1, &depth_buffer);
+	// glBindRenderbuffer(GL_RENDERB, depth_buffer);
+	// glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, screen_x, screen_y);
+	// glBindRenderbuffer(GL_RENDERBUFFER, 0);
+
+	// glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depth_buffer);
+
+	auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+	if (status != GL_FRAMEBUFFER_COMPLETE) {
+		tdns_log.write("@incomplete_frame_buffer: " + std::to_string(status));
+	}
+
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
 Camera& RenderEngine::get_camera() {
 	return camera;
 }
@@ -200,8 +228,23 @@ void RenderEngine::remove_entity(int entity) {
 		}
 	}
 }
-
 void RenderEngine::render() {
+	render_scene();
+	render_text();
+	render_primitives();
+	
+	//if (fade_time_remaining <= 0) is_fading = false;
+	//is_fading = false;
+}
+
+void RenderEngine::render_scene() {
+	if (is_fading) {
+		glViewport(0, 0, 2560, 1440);
+		glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
+		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+	
 	bind_sprite_buffers();
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
 	glEnableVertexAttribArray(0);
@@ -271,8 +314,32 @@ void RenderEngine::render() {
 	shader->end();
 	render_list.clear();
 
+	if (is_fading) {
+		static int count = 0;
+		GLubyte* pixels = (GLubyte*) calloc(2560 * 1440, sizeof(GLubyte) * 4);
+		glReadPixels(0, 0, 2560, 1440, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+
+		std::string path = absolute_path("framebuffer" + std::to_string(count++) + ".bmp");
+		//stbi_write_bmp(path.c_str(), 2560, 1440, 4, pixels); // 
+
+		glViewport(0, 0, screen_x, screen_y);
+		glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
+
+		glBindTexture(GL_TEXTURE_2D, color_buffer);
+		textured_shader.begin();
+		textured_shader.set_int("sampler", 0);
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), square_tex_coords_offset);
+		glEnableVertexAttribArray(1);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		textured_shader.end();
+	}
+}
+
+void RenderEngine::render_text() {
+	bind_sprite_buffers();
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
+	glEnableVertexAttribArray(0);
 	
-	// Render text
 	text_shader.begin();
 
 	// Text is raw 2D, so just use an orthographic projection
@@ -336,8 +403,9 @@ void RenderEngine::render() {
 	}
 	text_shader.end();
 	text_infos.clear();
-	
-	// Finally, render all the primitives on top of the screen in the order they were queued.
+}
+
+void RenderEngine::render_primitives() {
 	for (auto& draw_func : primitives) {
 		draw_func();
 	}

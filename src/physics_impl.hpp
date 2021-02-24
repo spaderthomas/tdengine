@@ -246,11 +246,11 @@ void InteractionSystem::update(float dt) {
 	if (!check_for_interactions) return;
 
 	auto& physics = get_physics_engine();
-	auto make_box = [](int entity) {
 
-	};
-	
-	Center_Box player_box = Center_Box::from_entity(player);
+	Center_Box vision;
+	vision.origin = *physics.get_position(player);
+	vision.origin += player_vision.offset;
+	vision.extents += player_vision.extents;
 
 	for (const auto& [entity, interactable] : interactables) {
 		auto position = physics.get_position(entity);
@@ -266,7 +266,7 @@ void InteractionSystem::update(float dt) {
 		interactable_box.extents = interactable.extents;
 		
 		glm::vec2 penetration;
-		if (are_boxes_colliding(player_box, interactable_box, penetration)) {
+		if (are_boxes_colliding(vision, interactable_box, penetration)) {
 			interacted_with = interactable.entity;
 			tdns_log.write("found interaction, " + std::to_string(interacted_with));
 

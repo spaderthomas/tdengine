@@ -180,10 +180,10 @@ void create_texture_atlas(std::string assets_dir) {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
+	// Give it the image data
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, 0, GL_RGBA, GL_UNSIGNED_BYTE, atlas_data);
 	glGenerateMipmap(GL_TEXTURE_2D);
 
-	// Give it the image data
 	atlas->width = REGULAR_ATLAS_SIZE;
 	atlas->height = REGULAR_ATLAS_SIZE;
 	atlas->num_channels = 4;

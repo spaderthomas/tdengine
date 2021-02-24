@@ -30,6 +30,10 @@ return {
 	   offset = { x = 0, y = -.06 },
 	},
 	Movement = {},
-	Input = {}
+	Input = {},
+	PlayerVision = {
+	  extents = { x = .03, y = .15 },
+	  offset = { x = 0, y = .04 },
+	}
   }
 }

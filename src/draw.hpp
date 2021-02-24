@@ -1,4 +1,3 @@
-
 struct Camera {
 	float x;
 	float y;
@@ -36,8 +35,18 @@ struct RenderEngine {
 	std::vector<TextRenderInfo> text_infos;
 	Camera camera;
 
+	bool is_fading = false;
+	float fade_time_remaining = 0.f;
+	uint frame_buffer;
+	uint color_buffer;
+	uint depth_buffer;
+
+	void init();
 	void remove_entity(int entity);
 	void render();
+	void render_text();
+	void render_scene();
+	void render_primitives();
 	Camera& get_camera();
 };
 

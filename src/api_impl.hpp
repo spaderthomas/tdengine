@@ -109,6 +109,21 @@ sol::object API::all_components(int id) {
 void API::register_player(int entity) {
 	auto& interaction = get_interaction_system();
 	interaction.player = entity;
+
+	auto& entity_manager = get_entity_manager();
+	auto vision = Lua.get_component(entity, "PlayerVision");
+	if (!vision) {
+		tdns_log.write("@no_vision_for_player");
+	}
+
+	Collider collider;
+	collider.entity = entity;
+	collider.extents.x = vision["extents"]["x"];
+	collider.extents.y = vision["extents"]["y"];
+	collider.offset.x = vision["offset"]["x"];
+	collider.offset.y = vision["offset"]["y"];
+
+	interaction.player_vision = collider;
 }
 
 void API::draw_entity(int entity) {
@@ -454,6 +469,12 @@ void API::log(const char* message, uint8_t flags) {
 	tdns_log.write(message, flags);
 }
 
+void API::fade_screen() {
+	auto& render_engine = get_render_engine();
+	render_engine.is_fading = true;
+	render_engine.fade_time_remaining = seconds_per_update * 60;
+}
+
 
 void register_lua_api() {
 	auto& state = Lua.state;
@@ -495,6 +516,7 @@ void register_lua_api() {
 	state["tdengine"]["ray_cast"] = &ray_cast;
 	state["tdengine"]["screen"] = &screen;
 	state["tdengine"]["log"] = &API::log;
+	state["tdengine"]["fade_screen"] = &API::fade_screen;
 
 	state["tdengine"]["draw"] = state.create_table();
 	state["tdengine"]["draw"]["entity"] = &draw_entity;	

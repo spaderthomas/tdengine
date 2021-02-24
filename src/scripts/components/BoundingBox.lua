@@ -23,7 +23,6 @@ function BoundingBox:draw(color)
 
    local editor = tdengine.find_entity('Editor')
    if editor and editor.selected then
-	  print(editor.selected.id, self.parent.id)
 	  if editor.selected.id == self.parent.id then
 		 color = tdengine.colors.blue
 	  end

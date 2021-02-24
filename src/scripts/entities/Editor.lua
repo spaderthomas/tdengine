@@ -72,6 +72,11 @@ function Editor:init(params)
 end
 
 function Editor:update(dt)
+  tdengine.do_once(function()
+	  print(inspect(tdengine.screen_dimensions()))
+	  --tdengine.fade_screen()
+  end)
+	  
   -- If we reloaded the scene or something, our handle is invalid
    if self.selected and not self.selected.alive then
 	self.selected = nil
@@ -325,20 +330,7 @@ function Editor:check_for_new_selection()
 	end
 	imgui.EndPopup()
   end
-
-  if imgui.BeginPopupModal('dogdog') then
-	print('hi')
-	local id = '##main_context_menu:add_entity'
-	if imgui.InputText(id, 63) then
-	  print(imgui.InputTextContents(id))
-	end
-	imgui.EndPopup()
-  end
   imgui.PopStyleVar()
-end
-
-function Editor:draw_tools()
-
 end
 
 function Editor:entity_viewer()
@@ -572,8 +564,6 @@ function Editor:scene_viewer()
 		  }
 		end
 
-		print(inspect(data))
-
 		-- Create the entity and load it with the data we just made
 		local id = tdengine.create_entity(data.name, data)
 		if not id then
@@ -581,7 +571,6 @@ function Editor:scene_viewer()
 		  return
 		end
 		
-		--print(inspect(self.geometry))
 		self.use_geometry = false
 		self.geometry = {
 		  origin = tdengine.vec2(0, 0),

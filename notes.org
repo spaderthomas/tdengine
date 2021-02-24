@@ -1,7 +1,4 @@
 * rules
-  :LOGBOOK:
-  CLOCK: [2021-02-23 Tue 15:47]
-  :END:
 RULE #1: focus on the precursors (curiousity, community, experimentation,
 expression)
 
@@ -145,6 +142,10 @@ lua_setfield(state, -2, "9");
 
 return 1;
 #+END_SRC
+** opengl
+*** rendering to a texture
+texture = for sampling
+render buffer = no sampling, gpu can optimize it because it knows this
 * pin
 ** demo code tasks
 - a fade-in / depixelate shader (for waking up)
@@ -459,6 +460,12 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/23/2021
+fade in shader (not mentally prepared to write today lol)
+
+render the scene to a texture
+then draw the texture with GL_QUAD the fade shader
+** 02/21/2021
 ** 02/20/2021
 hot idea: here's my problem. let's say i want to make a bunch of things you can
 interact with -- signs, pictures, flowers, whatever. they are all pretty much
@@ -498,7 +505,6 @@ the position, though, because it's tied to the entity position.
 want it to live in the backend just because it's math, and i like
 math/collisions to live in the backend. really really same pattern as the
 physics engine, just with a different set of boxes!
-** 02/18/2021
 ** 02/17/2021
 feel like i'm bikeshedding here
 
@@ -512,7 +518,6 @@ only thing on disk are the template files. when you leave a scene, i save the
 state into a table that lives in memory. one entry in the table for each
 scene. when i load the scene, i check the table for the requested scene. if it's
 there, i use it. if it's not, i use the template. 
-** 02/16/2021
 ** 02/15/2021
 good stuff...
 
@@ -650,7 +655,6 @@ gonna copy and paste
      able to be saved and loaded
 
 how do i want to be able to name and locate these variables?
-** 02/11/2021
 ** 02/10/2021 [code] planning
 need to put the set nodes into ded -- problem i'm running into is twofold:
 1. i do not have input text in lua. this is because input text takes a char*,
@@ -716,15 +720,11 @@ darn easy.
 need to add doors
 
 need to be able to save out scenes
-** 02/09/2021
-** 02/08/2021
 ** 02/07/2021
 code hard
 
 - store indices into the text to denote lines instead of splitting it literally
   into separate lines
-** 02/06/2021
-** 02/05/2021
 ** 02/04/2021
 handle set nodes
 handle choice nodes
@@ -865,7 +865,6 @@ not sure where exactly it lives
 
 dialogue action just keeps current node, traverses the graph using input, calls
 into text box api when it inits or needs a new chunk rendered
-** 01/31/2021
 ** 01/30/2021
 pros of static linking:
 - i don't have to include any libraries with the game
@@ -3557,7 +3556,8 @@ two solid feet and make it in life. they're just grabbing at whatever they can.
 the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
-:LOGBOOKg:
+:LOGBOOK:
+CLOCK: [2021-02-23 Tue 16:47]
 CLOCK: [2021-02-22 Mon 14:06]--[2021-02-22 Mon 15:48] =>  1:42
 CLOCK: [2021-02-21 Sun 22:49]--[2021-02-21 Sun 23:05] =>  0:16
 CLOCK: [2021-02-21 Sun 17:14]--[2021-02-21 Sun 19:17] =>  2:03
