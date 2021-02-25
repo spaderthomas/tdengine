@@ -222,6 +222,10 @@ function Editor:handle_input()
     tdengine.internal.toggle_console()
   end
   input:set_channel(tdengine.InputChannel.Editor)
+
+  if input:was_pressed(GLFW.Keys.F1) then
+	tdengine.ustep_mode()
+  end
 end
 
 function Editor:adjust_camera()

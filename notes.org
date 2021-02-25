@@ -205,6 +205,7 @@ render buffer = no sampling, gpu can optimize it because it knows this
    - high priority, but no use in doing this until you HAVE game state that's
      able to be saved and loaded
 ** 02/25: design from closet -> library
+- fix animations
 - write closet cutscene
 - write closet dialogue
 - make a preliminary list of locales + short descriptions

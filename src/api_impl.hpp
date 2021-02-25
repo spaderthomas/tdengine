@@ -126,63 +126,47 @@ void API::register_player(int entity) {
 	interaction.player_vision = collider;
 }
 
-void API::draw_entity(int entity) {
+void API::draw_entity(int id) {
 	auto& entity_manager = get_entity_manager();
-	auto entity_ptr = entity_manager.get_entity(entity);
+	auto entity = entity_manager.get_entity(id);
 	
 	// Grab the relevant components
-	auto check_component_exists = [entity_ptr](auto component, std::string component_type) -> bool {
+	auto check_component_exists = [entity](auto component, std::string component_type) -> bool {
 		if (component) return true;
-		
-		tdns_log.write("Called draw_entity(), but entity had no" + component_type + " component");
-		tdns_log.write("Entity name: " + entity_ptr->get_name());
-		tdns_log.write("Entity ID: " + entity_ptr->get_id());
+
+		std::string message = "@draw_missing_component: " + entity->debug_string();
+		message += ", " + component_type;
+		tdns_log.write(message);
 		return false;
 	};
 	
-	auto graphic_ptr = entity_ptr->get_component("Graphic");
+	auto graphic_ptr = entity->get_component("Graphic");
 	if (!check_component_exists(graphic_ptr, "Graphic")) return;
 	auto graphic = Lua.get_component(graphic_ptr);
 	
-	auto animation_ptr = entity_ptr->get_component("Animation");
+	auto animation_ptr = entity->get_component("Animation");
 	if (!check_component_exists(animation_ptr, "Animation")) return;
 	auto animation = Lua.get_component(animation_ptr);
+
+	// Get the sprite fron the Animation component, and make sure it exists
+	auto& asset_manager = get_asset_manager();
+
+	std::string sprite_name = animation["sprite"];
+	auto sprite = asset_manager.get_asset<Sprite>(sprite_name);
+	if (!sprite) {
+		tdns_log.write("@draw_entity:nullptr_sprite: " + sprite_name);
+		return;
+	}
+	if (!sprite->is_initialized()) {
+		tdns_log.write("@draw_entity:uninitialized_sprite: " + sprite->name);
+		return;
+	}
 
 	// Fill out the RenderElement
 	Render_Element r;
 	r.flags = static_cast<Render_Flags>(graphic["flags"]);
 	r.layer = graphic["layer"];
-	r.entity = entity;
-
-	// Get the sprite for the requested frame
-	std::string animation_name = animation["current"];
-	int frame = animation["frame"];
-
-	auto& asset_manager = get_asset_manager();
-	Animation* animation_p = asset_manager.get_asset<Animation>(animation_name);
-	if (!animation_p) {
-		tdns_log.write("Could not find animation: " + animation_name, Log_Flags::File);
-		return;
-	}
-
-	auto sprite_name = animation_p->get_frame(frame);
-	auto sprite = asset_manager.get_asset<Sprite>(sprite_name);
-	if (!sprite) {
-		tdns_log.write("Could not find sprite: " + sprite_name);
-		return;
-	}
-
-	if (!sprite) {
-		tdns_log.write("Trying to render, but sprite returned was invalid (nullptr).");
-		tdns_log.write("Animation was: " + animation_name);
-		tdns_log.write("Frame was: " + std::to_string(frame));
-		return;
-	}
-	if (!sprite->is_initialized()) {
-		tdns_log.write("Trying to render, but the sprite was uninitialized. Sprite was: " + sprite->name);
-		return;
-	}
-
+	r.entity = id;
 	r.sprite = sprite;
 
 	auto& render_engine = get_render_engine();
@@ -454,6 +438,10 @@ void API::log(const char* message, uint8_t flags) {
 	tdns_log.write(message, flags);
 }
 
+void API::use_step_mode() {
+	step_mode = true;
+}
+
 void API::fade_screen(float time) {
 	auto& render_engine = get_render_engine();
 	render_engine.is_fading = true;
@@ -501,6 +489,7 @@ void register_lua_api() {
 	state["tdengine"]["ray_cast"] = &ray_cast;
 	state["tdengine"]["screen"] = &screen;
 	state["tdengine"]["log"] = &API::log;
+	state["tdengine"]["ustep_mode"] = &API::use_step_mode;
 	state["tdengine"]["fade_screen"] = &API::fade_screen;
 
 	state["tdengine"]["draw"] = state.create_table();

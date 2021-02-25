@@ -474,6 +474,7 @@ bool show_imgui_demo = false;
 bool show_console = false;
 bool print_framerate = false;
 bool send_kill_signal = false;
+bool step_mode = false;
 const char* layout_to_load = nullptr; // Set this string to pick up a new layout next tick
 
 
@@ -598,7 +599,7 @@ float Sine_Func::eval_at(float point) {
 	return amp * glm::sin(period * point - phase_shift);
 }
 
-size_t hash_label(const char* label) {
+size_t hash_label(const char* label) {
 	constexpr size_t prime = 31;
 	
 	size_t result = 0;

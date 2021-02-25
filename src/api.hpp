@@ -43,6 +43,7 @@ void        use_layout(const char* name);
 void        save_layout(const char* name);
 void        screen(const char* dimension);
 void        log(const char* message, uint8_t flags);
+void        use_step_mode();
 void        fade_screen(float time);
 }
 void register_lua_api();

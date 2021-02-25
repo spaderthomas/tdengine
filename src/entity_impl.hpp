@@ -74,7 +74,7 @@ std::string Entity::get_name() {
 }
 
 std::string Entity::debug_string() {
-	return get_name() + "(" + std::to_string(get_id()) + ")";
+	return std::to_string(get_id()) + ", " + name;
 }
 
 void Entity::update(float dt) {

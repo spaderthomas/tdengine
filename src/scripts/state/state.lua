@@ -1,4 +1,5 @@
 tdengine.state = {
+   ['engine:disable_delay_actions'] = true,
    ['demo:001:heard_about_the_dead'] = false,
    ['demo:002:likes_psychedelic'] = false,
    ['demo:003:likes_americana'] = false,
