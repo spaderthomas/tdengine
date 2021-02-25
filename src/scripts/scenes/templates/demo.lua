@@ -5,7 +5,7 @@ return {
         Animation = {
           animations = {
             classroom_background = {
-              "classroom.png"
+              { sprite = "classroom.png", time = 1 }
             }
           },
           current = "classroom_background"
@@ -121,7 +121,7 @@ return {
 		Animation = {
 		   animations = {
 			  box16 = {
-				 'box16.png'
+				{ sprite = 'box16.png', time = 1 }
 			  }
 		   },
 		   current = 'box16'

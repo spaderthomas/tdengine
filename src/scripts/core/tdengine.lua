@@ -669,6 +669,49 @@ function tdengine.color32(r, g, b, a)
    return r + g + b + a
 end
 
+
+local vec2_mixin = {
+   unpack = function(self)
+	  return self.x, self.y
+   end,
+   add = function(self, other)
+	  return tdengine.vec2(self.x + other.x, self.y + other.y)
+   end,
+   subtract = function(self, other)
+	  return tdengine.vec2(self.x - other.x, self.y - other.y)
+   end,
+   scale = function(self, scalar)
+	  return tdengine.vec2(self.x * scalar, self.y * scalar)
+   end,
+   truncate = function(self, digits)
+	  return tdengine.vec2(truncate(self.x, digits), truncate(self.y, digits))
+   end,
+   abs = function(self)
+	  return tdengine.vec2(math.abs(self.x), math.abs(self.y))
+   end
+}
+
+tdengine.vec2_impl = create_class('vec2_impl')
+add_new_to_class(tdengine.vec2_impl, tdengine)
+tdengine.vec2_impl:include(vec2_mixin)
+tdengine.vec2 = function(x, y)
+   local vec = tdengine.vec2_impl:new()
+
+   if type(x) == 'table' then
+	  vec.x = x.x
+	  vec.y = x.y
+	  return vec
+   else
+	  vec.x = x
+	  vec.y = y
+	  return vec
+   end
+end
+
+function tdengine.frames(n)
+  return n / 60
+end
+
 function delete(array, value)
    local len = #array
    
@@ -709,44 +752,6 @@ end
 
 function is_space(c)
    return c == ' '
-end
-
-local vec2_mixin = {
-   unpack = function(self)
-	  return self.x, self.y
-   end,
-   add = function(self, other)
-	  return tdengine.vec2(self.x + other.x, self.y + other.y)
-   end,
-   subtract = function(self, other)
-	  return tdengine.vec2(self.x - other.x, self.y - other.y)
-   end,
-   scale = function(self, scalar)
-	  return tdengine.vec2(self.x * scalar, self.y * scalar)
-   end,
-   truncate = function(self, digits)
-	  return tdengine.vec2(truncate(self.x, digits), truncate(self.y, digits))
-   end,
-   abs = function(self)
-	  return tdengine.vec2(math.abs(self.x), math.abs(self.y))
-   end
-}
-
-tdengine.vec2_impl = create_class('vec2_impl')
-add_new_to_class(tdengine.vec2_impl, tdengine)
-tdengine.vec2_impl:include(vec2_mixin)
-tdengine.vec2 = function(x, y)
-   local vec = tdengine.vec2_impl:new()
-
-   if type(x) == 'table' then
-	  vec.x = x.x
-	  vec.y = x.y
-	  return vec
-   else
-	  vec.x = x
-	  vec.y = y
-	  return vec
-   end
 end
 
 tdengine.op_or, tdengine.op_xor, tdengine.op_and = 1, 3, 4

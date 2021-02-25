@@ -46,6 +46,7 @@ bool point_inside_entity(float x, float y, int entity);
 bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration);
 bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration);
 bool are_entities_colliding(int a, int b, glm::vec2& penetration);
+Center_Box box_from_collider(Position position, Collider collider);
 
 struct PhysicsEngine {
 	std::map<int, Position> positions;
@@ -67,6 +68,7 @@ struct PhysicsEngine {
 	void      add_position(int entity, Position position);
 	Position* get_position(int entity);
 	void      remove_entity(int entity);
+	int       ray_cast(float x, float y);
 };
 PhysicsEngine& get_physics_engine();
 

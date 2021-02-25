@@ -154,7 +154,7 @@ int EntityManager::create_entity(std::string name) {
 	auto it = inserted.first;
 	Entity& entity = *it->second;
 
-	tdns_log.write("@entity_create: " + name + ", " + std::to_string(entity.id), Log_Flags::File);
+	tdns_log.write("@entity_create: " + std::to_string(entity.id) + ", " + name, Log_Flags::File);
 
 	return entity.id;
 }

@@ -4,24 +4,24 @@ return {
     Animation = {
 	  animations = {
 	    boon_stand = {
-		  'boon_stand_001.png'
+		  { sprite = 'boon_stand_001.png', time = tdengine.frames(8) }
 		},
 		boon_walkdown = {
-		  'boon_walkdown_001.png',
-	      'boon_walkdown_002.png',
-	      'boon_walkdown_003.png',
-	      'boon_walkdown_004.png',
-	      'boon_walkdown_005.png',
-	      'boon_walkdown_006.png'
+		  { sprite = 'boon_walkdown_001.png', time = tdengine.frames(8) },
+	      { sprite = 'boon_walkdown_002.png', time = tdengine.frames(8) },
+	      { sprite = 'boon_walkdown_003.png', time = tdengine.frames(8) },
+	      { sprite = 'boon_walkdown_004.png', time = tdengine.frames(8) },
+	      { sprite = 'boon_walkdown_005.png', time = tdengine.frames(8) },
+	      { sprite = 'boon_walkdown_006.png', time = tdengine.frames(8) },
 		},
 		boon_surprise = {
-		  'boon_surprise_001.png',
-	      'boon_surprise_002.png',
-	      'boon_surprise_003.png',
-	      'boon_surprise_004.png',
+		  { sprite = 'boon_surprise_001.png', time = tdengine.frames(8) },
+	      { sprite = 'boon_surprise_002.png', time = tdengine.frames(8) },
+	      { sprite = 'boon_surprise_003.png', time = tdengine.frames(8) },
+	      { sprite = 'boon_surprise_004.png', time = tdengine.frames(8) },
 		}
 	  },
-	  current = 'boon_stand'
+	  current = 'boon_walkdown'
 	},
 	Physics = {},
 	Position = {},

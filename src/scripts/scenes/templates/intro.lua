@@ -27,7 +27,7 @@ return {
         Animation = {
           animations = {
             bg_intro = {
-              "bg_intro.png"
+              { sprite = "bg_intro.png", time = 1 }
             }
           },
           current = "bg_intro"

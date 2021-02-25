@@ -3,9 +3,9 @@ local GLFW = require('glfw')
 
 Interactable = tdengine.entity('Interactable')
 function Interactable:init(params)
-   tdengine.register_interactable(self.id)
-   tdengine.register_raycastable(self.id)
-   self.on_interaction_name = params.on_interaction
+  tdengine.register_interactable(self.id)
+  tdengine.register_raycastable(self.id)
+  self.on_interaction_name = params.on_interaction
 end
 
 function Interactable:pre_save()

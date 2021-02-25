@@ -38,7 +38,7 @@ function Animation:update(dt)
    else
 	  local entity = tdengine.find_entity(self.entity)
 	  local animation = entity:get_component('Animation')
-	  self.done = animation.done
+	  self.done = animation.finished_one_loop
    end
 end
 

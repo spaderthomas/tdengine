@@ -242,10 +242,9 @@ void API::register_raycastable(int entity) {
 sol::object API::ray_cast(float x, float y) {
 	auto& physics_engine = get_physics_engine();
 
-	for (const auto& [entity, collider] : physics_engine.raycast) {
-		if (point_inside_entity(x, y, entity)) {
-			return Lua.state["tdengine"]["entities"][entity];
-		}
+	auto entity = physics_engine.ray_cast(x, y);
+	if (entity >= 0) {
+		return Lua.state["tdengine"]["entities"][entity];
 	}
 
 	return sol::make_object(Lua.state, sol::lua_nil);
@@ -308,8 +307,6 @@ void API::teleport_entity(int entity, float x, float y) {
 	physics_engine.requests.push_back(request);	
 }
 
-
-
 void API::register_animation(std::string name, std::vector<std::string> frames) {
 	tdns_log.write("Registering animation: " + name, Log_Flags::File);
 	
@@ -320,18 +317,6 @@ void API::register_animation(std::string name, std::vector<std::string> frames) 
 
 	auto& asset_manager = get_asset_manager();
 	asset_manager.add_asset<Animation>(name, animation);
-}
-
-int API::count_frames(std::string animation) {
-	auto& asset_manager = get_asset_manager();
-	Animation* asset = asset_manager.get_asset<Animation>(animation);
-	if (!asset) {
-		tdns_log.write("Asked for animation's frames, but could not find that animation", Log_Flags::File);
-		tdns_log.write("Animation name: " + animation, Log_Flags::File);
-		return 0;
-	}
-	
-	return asset->frames.size();
 }
 
 void API::enable_input_channel(int channel) {
@@ -493,7 +478,6 @@ void register_lua_api() {
 	state["tdengine"]["free_component"] = &free_component;
 	state["tdengine"]["component_name"] = &component_name;
 	state["tdengine"]["register_animation"] = &register_animation;
-	state["tdengine"]["count_frames"] = &count_frames;
 	state["tdengine"]["enable_input_channel"] = &enable_input_channel;
 	state["tdengine"]["disable_input_channel"] = &disable_input_channel;
 	state["tdengine"]["is_down"] = &is_down;

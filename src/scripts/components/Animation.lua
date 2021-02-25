@@ -5,23 +5,28 @@ function Animation:init(params)
    -- By default, animations live in the prefab of the entity. Not being changed at runtime.
    -- Only need to save them when we can't define in the prefab (like Background)
    self:should_save(false)
-   
-   self.frame = 0
-   self.time_to_next = DEFAULT_FRAME_TIME
-   self.loop = true
-   self.done = false
 
+   -- All the animation data
    self.animations = params.animations or {}
-   self:batch_add(self.animations)
 
-   self.current = ''
-   self.last = ''
-   local current = params.current or nil
-   if current then
-	  self.current = current
-	  self.last = current
-	  self:begin(self.current)
+   self.current_animation = {
+	 name = '',
+	 data = {}
+   }
+   self.last_animation = ''
+   if params.current then
+	  self.last_animation = params.current
+	  self:begin(params.current)
    end
+
+   -- Stuff to calculate what we're doing on update
+   self.frame = 1
+   self.time_to_next = 0
+   self.loop = true
+   self.finished_one_loop = false
+
+   -- The engine will read from this when you ask it to draw
+   self.sprite = ''
 end
 
 -- Some entities need to save out their animation table, because they are built
@@ -35,47 +40,47 @@ function Animation:save()
 end
 
 function Animation:update(dt)
-   self.time_to_next = self.time_to_next - dt
-   if self.time_to_next <= 0 then
-	  local count = tdengine.count_frames(self.current)
-	  if self.loop then
-		 if (self.frame + 1) >= count then
-			-- Not sure if this is totally correct...? This is here because I need
-			-- a way to signal to the action that triggers it that it can unblock.
-			self.done = true
-		 end
-		 self.frame = (self.frame + 1) % count
-	  else
-		 -- We finished; reset to the last animation and loop it
-		 self.frame = self.frame + 1
-		 if self.frame >= count then
-			self.frame = 0
-			self.current = self.last
+  local data = self.animations[self.current]
+  self.time_to_next = self.time_to_next - dt
 
-			-- Maybe it makes more sense to hang on the last frame rather than
-			-- remember the last animation?
-			self.loop = true
-			self.done = true
-		 end
+  -- Move onto the next frame
+  if self.time_to_next <= 0 then
+	if self.loop then
+	  if (self.frame + 1) >= self.current_animation.count then
+		self.finished_one_loop = true
 	  end
-	  self.time_to_next = DEFAULT_FRAME_TIME
-   end
-end
+	  self.frame = (self.frame + 1) % self.current_animation.count
+	else
+	  self.frame = self.frame + 1
+	  -- If we finished the whole animation, revert to the last one we were using
+	  if self.frame >= self.current_animation.count then
+		self.finished_one_loop = true
+		
+		local params = { loop = true }
+		self:begin(self.last, params)
+	  end
+	end
 
-function Animation:add(name, frames)
-   tdengine.register_animation(name, frames)
-end
-
-function Animation:batch_add(animations)
-   for name, frames in pairs(animations) do
-	  tdengine.register_animation(name, frames)
-   end
+	-- Otherwise,
+	local next_frame = self.current_animation.data[frame]
+	tdengine.do_once(function() print(inspect(self.current_animation)) end)
+	if true then return end
+	self.sprite = next_frame.name
+	self.time_to_next = next_frame.time
+  end
 end
 
 function Animation:begin(name, params)
    params = params or {}
-   self.loop = ternary(params.loop, true, false)
-   self.done = false
-   self.current = name
-   self.frame = 0
+   self.loop = params.loop or false
+   self.finished_one_loop = false
+   self.frame = 1
+   self.current_animation = {
+	 name = name,
+	 data = self.animations[name],
+	 count = table.getn(self.animations[name])	
+   }
+   self.time_to_next = self.current_animation.data[1].time
+   self.sprite = self.current_animation.data[1].sprite
+   print(inspect(self))
 end

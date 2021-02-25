@@ -58,6 +58,13 @@ Center_Box Center_Box::from_points(Points_Box& points) {
 	return box;
 }
 
+Center_Box box_from_collider(Position* position, Collider* collider) {
+	Center_Box box;
+	box.origin = *position + collider->offset;
+	box.extents = collider->extents;
+	return box;
+}
+
 Center_Box Center_Box::from_entity(int entity) {
 	Center_Box box;
 	
@@ -100,6 +107,7 @@ bool point_inside_box(glm::vec2& screen_pos, Center_Box& box) {
 
 	return false;
 }
+
 bool point_inside_entity(float x, float y, int entity) {
 	auto& physics_engine = get_physics_engine();
 	auto position = physics_engine.get_position(entity);
@@ -117,6 +125,7 @@ bool point_inside_entity(float x, float y, int entity) {
 
 	return inside_x && inside_y;
 }
+
 
 void PhysicsEngine::update(float dt) {
 	collisions.clear();
@@ -196,6 +205,30 @@ Collider* PhysicsEngine::get_raycast(int entity) {
 	return &(it->second);
 }
 
+int PhysicsEngine::ray_cast(float x, float y) {
+	glm::vec2 cursor(x, y);
+
+	auto check_single_entity = [&](auto id, auto collider) {
+		auto position = get_position(id);
+		auto box = box_from_collider(position, collider);
+		if (point_inside_box(cursor, box)) {
+			return true;
+		}
+		
+		return false;
+	};
+		
+	for (auto& [id, collider] : collidable) {
+		if (check_single_entity(id, &collider)) return id;
+	}
+	
+	for (auto& [id, collider] : raycast) {
+		if (check_single_entity(id, &collider)) return id;
+	}
+
+	return -1;
+}
+
 void PhysicsEngine::add_position(int entity, Position position) {
 	positions[entity] = position;
 }
@@ -203,6 +236,7 @@ void PhysicsEngine::add_position(int entity, Position position) {
 Position* PhysicsEngine::get_position(int entity) {
 	auto it = positions.find(entity);
 	if (it == positions.end()) {
+		tdns_log.write("@no_position: " + std::to_string(entity));
 		return nullptr;
 	}
 

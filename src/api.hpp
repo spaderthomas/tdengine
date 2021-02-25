@@ -41,7 +41,6 @@ void        draw_text(std::string text, float x, float y, int flags);
 void        toggle_console();
 void        use_layout(const char* name);
 void        save_layout(const char* name);
-int         count_frames(std::string animation);
 void        screen(const char* dimension);
 void        log(const char* message, uint8_t flags);
 void        fade_screen(float time);

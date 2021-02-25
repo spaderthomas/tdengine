@@ -4,15 +4,15 @@ return {
     Animation = {
 	  animations = {
 	    oliver_stand = {
-		  'oliver_stand_001.png'
+		  { sprite = 'oliver_stand_001.png', time = tdengine.frames(8) },
 		},
 		oliver_walkdown = {
-		   'wilson_walkdown_001.png',
-		   'wilson_walkdown_002.png',
-		   'wilson_walkdown_003.png',
-		   'wilson_walkdown_004.png',
-		   'wilson_walkdown_005.png',
-		   'wilson_walkdown_006.png'
+		  { sprite = 'wilson_walkdown_001.png', time = tdengine.frames(8) },
+		  { sprite = 'wilson_walkdown_002.png', time = tdengine.frames(8) },
+		  { sprite = 'wilson_walkdown_003.png', time = tdengine.frames(8) },
+		  { sprite = 'wilson_walkdown_004.png', time = tdengine.frames(8) },
+		  { sprite = 'wilson_walkdown_005.png', time = tdengine.frames(8) },
+		  { sprite = 'wilson_walkdown_006.png', time = tdengine.frames(8) },
 		}
 	  },
 	  current = 'oliver_stand'
