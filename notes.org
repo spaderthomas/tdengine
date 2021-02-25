@@ -74,6 +74,11 @@ something is F'd in entity update. maybe reserve console output for prints and
 write lua errors to the log? maybe keep a cache of messages we print out every
 frame and don't double print them (unless a file is reloaded...?)
 
+now that i have a pattern for ImGui::InputXXX in lua, i should make
+the entity's fields editable. 
+
+sprite buttons for adding entities?
+
 @logging
 log channels
 
@@ -166,7 +171,7 @@ render buffer = no sampling, gpu can optimize it because it knows this
   - how they are triggered
   - how data is stored for them
   - battle loop
-** february 12th prioritized list
+** 02/12: code from closet -> dungeon 1
 1. add 'set' nodes to dialogue editor
    - figure out where the state they touch lives
    - test ded
@@ -199,6 +204,22 @@ render buffer = no sampling, gpu can optimize it because it knows this
 9. load up highly custom + specific game state for playtesting
    - high priority, but no use in doing this until you HAVE game state that's
      able to be saved and loaded
+** 02/25: design from closet -> library
+- write closet cutscene
+- write closet dialogue
+- make a preliminary list of locales + short descriptions
+- design the hub's layout
+- make a background for the hub's layout
+- popup when you leave the closet to give directions
+- cop art assets from another game:
+  - two people facing each other and talking
+  - npc walking
+  - bunch of npcs just standing around
+- add a few dumb NPCs to the lobby
+- dialogue when you get to the main lobby area
+- add doors to the other places in the hub
+- code to disable the doors
+- update doors to have a location to spawn on the other side
 * ideas
 ** quests
 *** domestic dispute
@@ -368,6 +389,34 @@ of victorian england.
 
 souls are remarkably like ordinary people just trying to make it through their
 lives (or, well, afterlives)
+** hub
+*** lobby
+the lobby is a small, interstitial area. it seems fairly busy at all
+times. there's a mix of people just posted up here, people stopped in
+conversation, and people walking to and fro. 
+
+an old teacher's soul whose mind has not adjusted to the afterlife, and holds
+raving lessons in the town square
+*** jazz bar
+a jazz bar, located in the old the music room. it's poorly lit, not
+club-loud but loud and seemingly buzzing with people at all
+times. it is laid out like this:
++ m   ddd  t  bbbbbb   tt +
+| mm  ddd    tt       t   |
++ m   ddd  tt    x      tt+
+
+m = music
+d = dancing
+t = table
+b = bar
+x = door
+
+there's a tight and funky groove going at all times. 
+*** shop
+*** cafeteria
+*** li
+*** library
+
 ** themes
 when bad things happen to you, you want desperately to return to your old
 life. but you can't -- not even if you solve the bad thing and return your
@@ -460,6 +509,63 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/25/2021: hub design
+my main question: how are all the "inner locales" set up? so it's
+pretty easy to set up the main stuff -- the library, the cafeteria,
+the band room -- because they are just rooms that come off the main
+little lobby region. but what about the stuff inside them?
+
+it's going to be...maybe overwhelming isn't the right word. but there
+will be too much stuff too quickly if everything in, say, the
+cafeteria is totally out in the open. i wanted to have something like:
+- a bar where people congregate
+- a diner
+- shops
+
+but i want to stick with the school theme. you can't have buildings
+inside the school, because that doesn't make any sense. my best idea
+at the moment is that it's like a shanty town setup, where the stuff
+that has been set up is just kind thrown up from what you
+have. curtains and poles and whatnot. but i don't like that. 
+
+maybe the solution is to not nest locales. so instead of the cafeteria
+being this huge place that has everything, it's just the diner. and
+maybe the music room is like the bar. 
+
+also: classrooms! i forgot about classrooms
+
+ok, feeling kind of unfocused -- not today in particular, but in the
+general sense. i need to make another breakdown so i know what i'm
+working on and when i am done with it. 
+
+- brainstorm characters for the lobby
+- add a few dumb NPCs to the lobby
+- make a preliminary list of locales + short descriptions
+- design the hub's layout
+- make a background for the hub's layout
+- write closet dialogue
+- popup when you leave the closet to give directions
+- dialogue when you get to the main lobby area
+- code to prevent you from getting into most places
+- update doors to have a location to spawn on the other side
+- cop art assets from another game:
+  - two people facing each other and talking
+  - npc walking
+  - bunch of npcs just standing around
+** 02/24/2021
+i was going to talk about designing the overworld, but i am sleepy
+now. 
+
+i will jot down one idea though: maybe i store scenes as totally
+different depending on where you are in the game? you either have
+conditional logic slash simple state machine or you store them
+separately. storing them separately kind of sounds like garbage
+though. don't think about it too much :) 
+
+i need a general layout for the overworld. so that when i lay it out
+in the game, it feels something like a game. that's all! 
+- look at locales in other games for inspiration
+- decide, tentatively, how many places there are in the hub
 ** 02/23/2021
 fade in shader (not mentally prepared to write today lol)
 
@@ -3029,126 +3135,126 @@ strongest among them.
  "Don't mess with me."
 
 *** an indeterminate amount of time later
- when boon comes to, he's in a room that looks exactly like the janitor's closet
- that he blacked out in, but twisted. it's slightly degraded, it looks wrong, the
- music is droning and warbling. 
+when boon comes to, he's in a room that looks exactly like the janitor's closet
+that he blacked out in, but twisted. it's slightly degraded, it looks wrong, the
+music is droning and warbling. 
 
- there is  a young boy standing over him, prodding him and cooling his
- face with a damp rag. the boy looks to be younger than boon, about ten years
- old. he's dressed in an old time schoolboy's uniform -- jacket, necktie, tucked
- into shorts with a pair of black oxfords and long socks. he still has a child's
- chubbiness and red cheeks, and he speaks formally like someone of old money. he
- introduces himself as oliver. 
+there is  a young boy standing over him, prodding him and cooling his
+face with a damp rag. the boy looks to be younger than boon, about ten years
+old. he's dressed in an old time schoolboy's uniform -- jacket, necktie, tucked
+into shorts with a pair of black oxfords and long socks. he still has a child's
+chubbiness and red cheeks, and he speaks formally like someone of old money. he
+introduces himself as oliver. 
 
- he doesn't seem surprised to see you. you ask him where you are, and he replies
- that you are in limbo. souls who cannot pass into the afterlife live on this
- plane. in particular, souls who still have an unresolved connection to the
- school are trapped in this place, which is the mirrored version of the school in
- this realm. new such souls come through here pretty often, and this is the place
- where they land. it's kind of his job to man the station and usher through any
- new souls that come here.
+he doesn't seem surprised to see you. you ask him where you are, and he replies
+that you are in limbo. souls who cannot pass into the afterlife live on this
+plane. in particular, souls who still have an unresolved connection to the
+school are trapped in this place, which is the mirrored version of the school in
+this realm. new such souls come through here pretty often, and this is the place
+where they land. it's kind of his job to man the station and usher through any
+new souls that come here.
 
- "does this mean that i'm dead," you ask. normally yes, he says, but something is
- different about you. your soul still has a physical component. even though the
- souls here have not fully moved to the spiritual realm, they are still fully
- composed of spirit. 
+"does this mean that i'm dead," you ask. normally yes, he says, but something is
+different about you. your soul still has a physical component. even though the
+souls here have not fully moved to the spiritual realm, they are still fully
+composed of spirit. 
 
- next logical question: can i get back? oliver pauses. he's not entirely sure --
- he has never seen anyone like you come through here. but then again, there are a
- lot of weird things going on right now. maybe we should go talk to the
- librarian. he'll know what to do.
-*** talking to the librarian
- you walk out of the janitor's closet into the lobby of a school. the lobby of
- your school, in fact. but just like the closet, something is off about
- it. moreover, it has a slight resemblance to a shanty town -- a place that's
- been co-opted for something beyond its original purpose. it's not like a favela,
- but it definitely has a thrown together vibe to it. you can tell that the, shall
- we say high class souls are not who resides here. 
+next logical question: can i get back? oliver pauses. he's not entirely sure --
+he has never seen anyone like you come through here. but then again, there are a
+lot of weird things going on right now. maybe we should go talk to the
+librarian. he'll know what to do.
+*** discovering the overworld
+you walk out of the janitor's closet into the lobby of a school. the lobby of
+your school, in fact. but just like the closet, something is off about
+it. moreover, it has a slight resemblance to a shanty town -- a place that's
+been co-opted for something beyond its original purpose. it's not like a favela,
+but it definitely has a thrown together vibe to it. you can tell that the, shall
+we say high class souls are not who resides here. 
 
- from the lobby, you can get to a couple places. the cafeteria has been co-opted
- into the town square. there are shops here, there are spots of congregation (do
- souls need to eat...?). there are a few rooms for the teachers that don't belong
- in any particular grade -- art, music. the principal's office is there, and it
- looks extremely ominous, like how a ten year old imagines the principal's
- office. there's also a secretary's office, and the vice principal's office is
- attached to it. 
+from the lobby, you can get to a couple places. the cafeteria has been co-opted
+into the town square. there are shops here, there are spots of congregation (do
+souls need to eat...?). there are a few rooms for the teachers that don't belong
+in any particular grade -- art, music. the principal's office is there, and it
+looks extremely ominous, like how a ten year old imagines the principal's
+office. there's also a secretary's office, and the vice principal's office is
+attached to it. 
+*** the library
+but you're headed to the library. the library isn't small per se, but it's kept
+more like the personal library of a wealthy man than an elementary school
+library. it's cozy, and (just like its keeper) it's refined. as you enter, the
+librarian is attending carefully to the goings of his library. he has his
+glasses pushed down to his nose, carefully reading the label on a book from a
+stack of unsorted books on a cart. he looks up as you come in.
 
- but you're headed to the library. the library isn't small per se, but it's kept
- more like the personal library of a wealthy man than an elementary school
- library. it's cozy, and (just like its keeper) it's refined. as you enter, the
- librarian is attending carefully to the goings of his library. he has his
- glasses pushed down to his nose, carefully reading the label on a book from a
- stack of unsorted books on a cart. he looks up as you come in.
+"well hello, oliver. did you bring us another new one?" he is neither an old man
+nor a young man, but he gives off an air of...more than wisdom or
+learnedness. when he says this to you, it seems as if he already has complete
+knowledge of the situation and what's going down. 
 
- "well hello, oliver. did you bring us another new one?" he is neither an old man
- nor a young man, but he gives off an air of...more than wisdom or
- learnedness. when he says this to you, it seems as if he already has complete
- knowledge of the situation and what's going down. 
+"yes, sir. his name's boon. but, um, sir, he seems to still be..._alive_..."
 
- "yes, sir. his name's boon. but, um, sir, he seems to still be..._alive_..."
+"alive, is that right? oliver, could you fetch my other pair of glasses from my
+desk?"
 
- "alive, is that right? oliver, could you fetch my other pair of glasses from my
- desk?"
+"yes, sir!" oliver scampers quickly to his desk and returns with the
+glasses. the librarian puts them on and takes a few steps toward boon. 
 
- "yes, sir!" oliver scampers quickly to his desk and returns with the
- glasses. the librarian puts them on and takes a few steps toward boon. 
+"open your mouth and say 'ahhhhh'," the librarian says. boon does so, and the
+librarian replies, "well i'll be had! you're right oliver, this young man is
+suffering from an acute case of hypervivitosis. in other words -- he's alive!"
 
- "open your mouth and say 'ahhhhh'," the librarian says. boon does so, and the
- librarian replies, "well i'll be had! you're right oliver, this young man is
- suffering from an acute case of hypervivitosis. in other words -- he's alive!"
+"well, lad, what are you doing here?" he asks boon
 
- "well, lad, what are you doing here?" he asks boon
+boon looks down, quiet, and tells the librarian the story all the way up to him
+waking up and seeing oliver over him. "i didn't mean to tattle on them. i don't
+understand why they hurt me so bad. and now...i think i'm dying."
 
- boon looks down, quiet, and tells the librarian the story all the way up to him
- waking up and seeing oliver over him. "i didn't mean to tattle on them. i don't
- understand why they hurt me so bad. and now...i think i'm dying."
+the librarian takes a thoughtful step back. his voice grows more serious. "you
+were right to bring him here, oliver. things are not right in our realm. those
+two souls have warped the fabric of the two realities."
 
- the librarian takes a thoughtful step back. his voice grows more serious. "you
- were right to bring him here, oliver. things are not right in our realm. those
- two souls have warped the fabric of the two realities."
+he goes on to explain: two souls recently manifested here -- the souls of the
+two boys who beat you. but, like you, something was wrong with them. they were
+still, in part, alive. they quickly became powerful, and they've taken control
+of most of this realm. in fact, only the hub remains. and now that you have
+arrived, it seems that fate itself is pulling you together.
 
- he goes on to explain: two souls recently manifested here -- the souls of the
- two boys who beat you. but, like you, something was wrong with them. they were
- still, in part, alive. they quickly became powerful, and they've taken control
- of most of this realm. in fact, only the hub remains. and now that you have
- arrived, it seems that fate itself is pulling you together.
+"boon, do you know how to battle?" the librarian asks
 
- "boon, do you know how to battle?" the librarian asks
- 
- "i...i'm ten..." boon replies
+"i...i'm ten..." boon replies
 
- "right, and quick as a whip you are." the librarian goes onto explain: souls
- fracture when they come to this realm. more fractured ones are not as human as
- the ones you see, but are powerful in the way a feral animal is powerful. some
- may harness them and use them to battle. i have such a fragment here -- go ahead
- and try it. and you learn to battle, et. cetera. 
+"right, and quick as a whip you are." the librarian goes onto explain: souls
+fracture when they come to this realm. more fractured ones are not as human as
+the ones you see, but are powerful in the way a feral animal is powerful. some
+may harness them and use them to battle. i have such a fragment here -- go ahead
+and try it. and you learn to battle, et. cetera. 
 
- after you've learned the battle mechanics, the librarian says, "hm, i'm not
- surprised that you're one of the ones who can control fractured souls. mother
- fate has special plans for you, boon."
+after you've learned the battle mechanics, the librarian says, "hm, i'm not
+surprised that you're one of the ones who can control fractured souls. mother
+fate has special plans for you, boon."
 
- "i can't say what you need to do, son. i doubt you can return to your old life,
- but it is possible that you could return to your realm. figuring out how to get
- into the sixth grade hall isn't a bad place to start -- i'm sure if you find out
- what's going on there, you'll have some clue to getting back to your realm." the
- librarian says.
+"i can't say what you need to do, son. i doubt you can return to your old life,
+but it is possible that you could return to your realm. figuring out how to get
+into the sixth grade hall isn't a bad place to start -- i'm sure if you find out
+what's going on there, you'll have some clue to getting back to your realm." the
+librarian says.
 
- "but i don't know anybody here. how will i figure out how to get there?"
+"but i don't know anybody here. how will i figure out how to get there?"
 
- "i have a feeling that what is meant to be will find its way to you. why don't
- you investigate? go talk to some people. i'm sure you will find something," he
- finishes with almost a smile and a wink about him. 
+"i have a feeling that what is meant to be will find its way to you. why don't
+you investigate? go talk to some people. i'm sure you will find something," he
+finishes with almost a smile and a wink about him. 
 
- he gives you a brief rundown of the places in the hub. 
+he gives you a brief rundown of the places in the hub. 
 
- "alright? try not to worry yourself too much, son. these things have a way of
- working themselves out." the librarian says
+"alright? try not to worry yourself too much, son. these things have a way of
+working themselves out." the librarian says
 
- "..."
+"..."
 
- "..."
+"..."
 
- (i'm not sure what boon says here. something kind of whimpering)
+(i'm not sure what boon says here. something kind of whimpering)
 ** interlude 1: barbara ann
 *** finding the portal
  boon and oliver step outside the library. they take a few steps, and oliver
@@ -3555,8 +3661,32 @@ two solid feet and make it in life. they're just grabbing at whatever they can.
  
 the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
+* script
+** intro
+*** an introduction!
+*** an indeterminate amount of time later
+- player control is disabled
+- the screen fades in from black
+- boon is lying down in a sleeping/unconscious animation
+- the sleeping animation holds for a few seconds
+- a dialogue pops up; oliver asks if boon can hear him
+- boon plays another animation. his Zs trail off, you hear + see an
+  exclamation point, and he bolts up
+- boon and oliver have their introductory dialogue
+- oliver walks toward boon and disappears (as he is following him)
+- player control is enabled
+
+- oliver
+- player
+- geometry for the shelving that surrounds them
+- interactables on the shelves
+  - just pop up dialogue with flavor text
+- door
+*** discovering the overworld
+
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-25 Thu 16:29]
 CLOCK: [2021-02-24 Wed 18:33]--[2021-02-24 Wed 19:53] =>  1:20
 CLOCK: [2021-02-23 Tue 16:47]--[2021-02-23 Tue 20:47] =>  4:00
 CLOCK: [2021-02-22 Mon 14:06]--[2021-02-22 Mon 15:48] =>  1:42
