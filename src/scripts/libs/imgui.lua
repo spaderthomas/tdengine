@@ -73,6 +73,7 @@ end
 imgui.extensions.Table = function(name, t, ignore, imgui_id)
    ignore = ignore or {}
    imgui_id = imgui_id or '##' .. name
+   name = name .. imgui_id
    
    if imgui.TreeNode(name) then
 	  imgui.extensions.TableMembers(name, t, ignore, imgui_id)

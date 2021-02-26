@@ -27,7 +27,11 @@ return {
             x = 0.14625518023967743,
             y = 0.45921644568443298
           }
-        }
+        },
+		Animation = {
+		  current = 'boon_stand',
+		  loop = true
+		}
       },
       name = "Player",
       params = {}

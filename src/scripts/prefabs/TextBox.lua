@@ -7,7 +7,7 @@ return {
 	  Animation = {
 		 animations = {
 			text_box = {
-			   'text_box.png'
+			  { sprite = 'text_box.png', time = 1 }
 			}
 		 },
 		 current = 'text_box'

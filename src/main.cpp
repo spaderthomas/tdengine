@@ -53,7 +53,7 @@ int main() {
 	init_assets();
 	init_fonts();
 	init_gl();
-	Lua.init();
+	init_lua();
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {
@@ -90,7 +90,7 @@ int main() {
 			update_system.update(seconds_per_update);
 
 			render_engine.render(seconds_per_update);
-
+			
 			ImGui::Render();
 			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		

@@ -10,6 +10,10 @@ function Input:was_pressed(key)
   return tdengine.was_pressed(key, self.channel)
 end
 
+function Input:was_released(key)
+  return tdengine.was_released(key, self.channel)
+end
+
 function Input:is_down(key)
   return tdengine.is_down(key, self.channel)
 end

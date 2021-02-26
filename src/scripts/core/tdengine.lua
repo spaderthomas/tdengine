@@ -1,40 +1,40 @@
 -- Callbacks
 function update_entity(id, dt)
-   local entity = tdengine.entities[id]
-   if entity then
-	  entity:update(dt)
-	  return
-   end
+  local entity = tdengine.entities[id]
+  if entity then
+	entity:update(dt)
+	return
+  end
 end
 
 function update_component(id, dt)
-   local component = tdengine.components[id]
-   component:update(dt)
+  local component = tdengine.components[id]
+  component:update(dt)
 end
 
 function on_collision(id, other)
-   local entity = tdengine.entities[id]
-   local other = tdengine.entities[other]
+  local entity = tdengine.entities[id]
+  local other = tdengine.entities[other]
 
-   if not entity or not other then
-	  print('some entity did not exist for on_collision')
-   end
-   
-   if entity.on_collision then
-	  entity:on_collision(other)
-   end
+  if not entity or not other then
+	print('some entity did not exist for on_collision')
+  end
+  
+  if entity.on_collision then
+	entity:on_collision(other)
+  end
 end
 
 function on_interaction(id)
-   local entity = tdengine.entities[id]
+  local entity = tdengine.entities[id]
 
-   if not entity then
-	  print('@no_entity_on_interaction, ' .. tostring(id))
-   end
-   
-   if entity.on_interaction then
-	  entity:on_interaction()
-   end
+  if not entity then
+	print('@no_entity_on_interaction, ' .. tostring(id))
+  end
+  
+  if entity.on_interaction then
+	entity:on_interaction()
+  end
 end
 
 function tdengine.find_entity(name)
@@ -337,8 +337,6 @@ local action_mixin = {
   remove_imgui_ignore = function(self, member_name)
 	 self.imgui_ignore[member_name] = false
   end,
-  block = true,
-  done = false,
   imgui_ignore = {
 	 class = true,
 	 parent = true,
@@ -483,51 +481,62 @@ function tdengine.load_scene_from_disk(name)
 end
 
 function tdengine.create_action(name, params)
-   ActionType = tdengine.actions[name]
-   if ActionType ~= nil then
-	  local action = ActionType:new()
-	  if contains(params, 'block') then
-		 action.block = params.block
-	  end
-	  
-	  action:init(params)
-	  return action
-   else
-	  print('create_action(): could not find action: ' .. name)
-   end
+  ActionType = tdengine.actions[name]
+  if ActionType ~= nil then
+	local action = ActionType:new()
 
-   return nil
+	-- Set up some default params
+	action.name = name
+	action.block = true
+	action.done = false
+	
+	if contains(params, 'block') then
+	  action.block = params.block
+	end
+
+	-- Run action-specific init code
+	action:init(params)
+	
+	return action
+  else
+	print('create_action(): could not find action: ' .. name)
+  end
+
+  return nil
 end
 
-function tdengine.begin_cutscene(name)
-   local module_path = 'cutscenes/' .. name
-   package.loaded[module_path] = nil
-   local cutscene = require(module_path)
+function tdengine.begin_cutscene(name, params)
+  params = params or {}
+  local module_path = 'cutscenes/' .. name
+  package.loaded[module_path] = nil
+  local cutscene = require(module_path)
 
-   tdengine.active_cutscene = {
-	  name = name,
-	  actions = {}
-   }
-   for index, data in pairs(cutscene) do
-	  local action = tdengine.create_action(data.name, data)
-	  tdengine.active_cutscene.actions[index] = action
-   end
+  tdengine.active_cutscene = {
+	name = name,
+	actions = {}
+  }
+  for index, data in pairs(cutscene) do
+	local action = tdengine.create_action(data.name, data)
+	tdengine.active_cutscene.actions[index] = action
+  end
+
+  if params.step then tdengine.step_mode() end
 end
 
 function tdengine.update_actions(dt, actions)
-   local done = true
-   for index, action in pairs(actions) do
-	  if not action.done then
-		 action:update(dt)
-		 done = false
+  local done = true
+  for index, action in pairs(actions) do
+	if not action.done then
+	  action:update(dt)
+	  done = false
 
-		 if action.block then
-			break
-		 end
+	  if action.block then
+		break
 	  end
-   end
+	end
+  end
 
-   return done
+  return done
 end
 
 function tdengine.update_cutscene(dt)

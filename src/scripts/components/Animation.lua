@@ -19,8 +19,7 @@ function Animation:init(params)
    self.animations = params.animations or {}
 
    self.last_animation = params.current
-   print(params.current)
-   self:begin(params.current)
+   self:begin(params.current, params)
 end
 
 -- Some entities need to save out their animation table, because they are built
@@ -29,36 +28,43 @@ end
 function Animation:save()
    return {
 	  animations = self.animations,
-	  current = self.current
+	  current = self.current_animation.name
    }
 end
 
 function Animation:update(dt)
   local data = self.animations[self.current]
   self.time_to_next = self.time_to_next - dt
+  self.finished_this_frame = false
 
   -- Move onto the next frame
   if self.time_to_next <= 0 then
 	self.frame = self.frame + 1
-	self.finished_one_loop = true
 
 	-- If we're finished, move onto the next animation
-	if (self.frame + 1) > self.current_animation.count then
+	if self.frame > self.current_animation.count then
 	  if self.loop then
 		-- @hack: If we kicked this thing off with any other params, they will get lost when
 		-- we start looping. Not a problem now.
 		local params = { loop = true }
 		self:begin(self.current_animation.name, params)
-	  else 
-		local params = { loop = true }
-		self:begin(self.last_animation, params)
+	  else
+		-- You can ask to loop an animation after your request is done
+		if self.play_when_finished then
+		  self:begin(self.play_when_finished, { loop = true })
+		-- But if you don't, we're going to stick to the last frame of this animation
+		else
+		  return
+		end
 	  end
-	end
 
+	  self.played_requested_animation = true
+	  self.finished_this_frame = true
+	end
+	
 	-- Otherwise, advance the frame
-	local next_frame = self.current_animation.data[frame]
-	if true then return end
-	self.sprite = next_frame.name
+	local next_frame = self.current_animation.data[self.frame]
+	self.sprite = next_frame.sprite
 	self.time_to_next = next_frame.time
   end
 end
@@ -66,7 +72,9 @@ end
 function Animation:begin(name, params)
   params = params or {}
   self.loop = params.loop or false
-  self.finished_one_loop = false
+  self.play_when_finished = params.play_when_finished or nil
+  self.played_requested_animation = false
+  self.finished_this_frame = false
   
   self.frame = 1
   self.current_animation = {

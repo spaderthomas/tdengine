@@ -26,6 +26,7 @@ void        register_animation(std::string name, std::vector<std::string> frames
 void        enable_input_channel(int channel);
 void        disable_input_channel(int channel);
 bool        was_pressed(GLFW_KEY_TYPE id, int mask = INPUT_MASK_NONE);
+bool        was_released(GLFW_KEY_TYPE id, int mask = INPUT_MASK_NONE);
 bool        is_down(GLFW_KEY_TYPE id, int mask = INPUT_MASK_NONE);
 bool        was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask = INPUT_MASK_NONE);
 sol::object screen_dimensions();

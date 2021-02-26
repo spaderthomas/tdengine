@@ -2,8 +2,8 @@ local Dialogue = tdengine.action('Dialogue')
 local GLFW = require('glfw')
 
 function Dialogue:init(params)
-   self.name = params.dialogue
-   self.data = tdengine.load_dialogue(self.name)
+   self.which = params.dialogue
+   self.data = tdengine.load_dialogue(self.which)
    self.waiting = false
    self.choosing = false
    self.choice = nil
@@ -20,7 +20,7 @@ function Dialogue:init(params)
    end
    
    if message then
-	  message = message .. 'Dialogue was: ' .. self.name
+	  message = message .. 'Dialogue was: ' .. self.which
 	  print(message)
 	  
 	  self.done = true
@@ -126,7 +126,7 @@ function Dialogue:update(dt)
 	  end
 	  self.text_box:highlight_choice(self.choice)
 
-	  if tdengine.was_pressed(GLFW.Keys.ENTER, tdengine.InputChannel.Game) then
+	  if tdengine.was_pressed(GLFW.Keys.SPACE, tdengine.InputChannel.Game) then
 		 self.current = self.current[self.choice]
 		 self.text_box:highlight_choice(-1)
 		 self.choosing = false
@@ -136,7 +136,7 @@ function Dialogue:update(dt)
 	  local waiting = self.text_box.waiting
 	  local done_with_node = self.text_box.done
 	  
-	  if tdengine.was_pressed(GLFW.Keys.ENTER, tdengine.InputChannel.Game) then
+	  if tdengine.was_pressed(GLFW.Keys.SPACE, tdengine.InputChannel.Game) then
 		 if not self.text_box.done then
 			self.text_box:skip()
 		 else

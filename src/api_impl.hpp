@@ -324,6 +324,11 @@ bool API::was_pressed(GLFW_KEY_TYPE id, int mask) {
 	return manager.was_pressed(id, mask);
 }
 
+bool API::was_released(GLFW_KEY_TYPE id, int mask) {
+	auto& manager = get_input_manager();
+	return manager.was_released(id, mask);
+}
+
 bool API::was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask) {
 	auto& manager = get_input_manager();
 	return manager.chord(mod_key, cmd_key, mask);
@@ -440,6 +445,7 @@ void API::log(const char* message, uint8_t flags) {
 
 void API::use_step_mode() {
 	step_mode = true;
+	show_console = false;
 }
 
 void API::fade_screen(float time) {
@@ -470,6 +476,7 @@ void register_lua_api() {
 	state["tdengine"]["disable_input_channel"] = &disable_input_channel;
 	state["tdengine"]["is_down"] = &is_down;
 	state["tdengine"]["was_pressed"] = &was_pressed;
+	state["tdengine"]["was_released"] = &was_pressed;
 	state["tdengine"]["was_chord_pressed"] = &was_chord_pressed;
 	state["tdengine"]["cursor"] = &cursor;
 	state["tdengine"]["camera"] = &camera;
@@ -489,7 +496,7 @@ void register_lua_api() {
 	state["tdengine"]["ray_cast"] = &ray_cast;
 	state["tdengine"]["screen"] = &screen;
 	state["tdengine"]["log"] = &API::log;
-	state["tdengine"]["ustep_mode"] = &API::use_step_mode;
+	state["tdengine"]["step_mode"] = &API::use_step_mode;
 	state["tdengine"]["fade_screen"] = &API::fade_screen;
 
 	state["tdengine"]["draw"] = state.create_table();

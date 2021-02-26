@@ -1,51 +1,41 @@
 return {
-   {
-	  name = 'Sound',
-	  sound = 'intro_theme_001',
-	  loop = true,
-	  block = false
-   },
-   {
-	  name = 'Delay',
-	  time = 1
+  {
+	name = 'Sound',
+	sound = 'intro_theme_001',
+	loop = true,
+	block = false
   },
-   {
-	  name = 'FadeIn',
-	  time = 3
-   },
-   {
-	  name = 'Delay',
-	  time = 1
-   },
-   {
-	  name = 'Compound',
-	  actions = {
-		 {
-			name = 'Animation',
-			entity = 'Player',
-			animation = 'boon_surprise',
-			loop = false,
-		 },
-		 {
-			name = 'Delay',
-			time = 1
-		 },
-		 {
-			name = 'Animation',
-			entity = 'Oliver',
-			animation = 'oliver_walkdown',
-			loop = false,
-			block = false
-		 },
-		 {
-			name = 'Sound',
-			sound = 'surprise',
-			block = false
-		 }
-	  }
-   },
-   {
-	  name = 'Dialogue',
-	  dialogue = 'evan'
-   }
+  {
+	name = 'Delay',
+	time = 1
+  },
+  {
+	name = 'FadeIn',
+	time = 3
+  },
+  {
+	name = 'Delay',
+	time = 1
+  },
+  {
+	name = 'Animation',
+	entity = 'Player',
+	animation = 'boon_surprise',
+	play_when_finished = 'boon_stand',
+	wait_for_current_animation = true,
+	loop = false,
+  },
+  {
+	name = 'Delay',
+	time = 1
+  },
+  {
+	name = 'Sound',
+	sound = 'surprise',
+	block = false
+  },
+  {
+	name = 'Dialogue',
+	dialogue = 'test_001'
+  }
 }

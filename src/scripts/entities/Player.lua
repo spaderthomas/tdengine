@@ -23,6 +23,21 @@ function Player:handle_movement()
   if input:is_down(GLFW.Keys.L) then
 	movement:move(.5, 0)
   end
+
+  local animation = self:get_component('Animation')
+  if input:was_pressed(GLFW.Keys.I) then
+	animation:begin('boon_walkup', { loop = true })
+  end
+  if input:was_pressed(GLFW.Keys.K) then
+	animation:begin('boon_walkdown', { loop = true })
+  end
+
+  self.is_i_down = input:is_down(GLFW.Keys.I)
+  if (not input:is_down(GLFW.Keys.I)) and (not input:is_down(GLFW.Keys.K)) then
+	local editor = tdengine.find_entity('Editor')
+	print('standing on: ' .. tostring(editor.frame))
+	animation:begin('boon_stand', { loop = true })
+  end
 end
 
 function Player:update(dt)

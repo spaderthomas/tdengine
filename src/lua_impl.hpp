@@ -15,8 +15,10 @@ void LuaState::prepend_to_search_path(std::string directory) {
 	state["package"]["path"] = new_path;
 }
 
-int LuaState::init() {
-	state.open_libraries(
+void init_lua() {
+	auto& lua_manager = Lua;
+	
+	lua_manager.state.open_libraries(
         sol::lib::base,
 		sol::lib::package,
 		sol::lib::debug,
@@ -27,43 +29,26 @@ int LuaState::init() {
 		sol::lib::jit,
 		sol::lib::io);
 	
-	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
-	prepend_to_search_path(absolute_path(path_join({"src", "scripts", "core"})));
-	prepend_to_search_path(absolute_path(path_join({"src", "scripts"})));
+	lua_manager.prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
+	lua_manager.prepend_to_search_path(absolute_path(path_join({"src", "scripts", "core"})));
+	lua_manager.prepend_to_search_path(absolute_path(path_join({"src", "scripts"})));
 
 	LoadImguiBindings();
 
-	sol::usertype<Entity> entity_type = state.new_usertype<Entity>("Entity");
-	entity_type["update"] = &Entity::update;
-	entity_type["add_component"] = &Entity::add_component;
-	entity_type["get_component"] = &Entity::get_component;
-	entity_type["has_component"] = &Entity::has_component;
-	entity_type["all_components"] = &Entity::all_components;
-	entity_type["get_name"] = &Entity::get_name;
-	entity_type["get_id"] = &Entity::get_id;
-
-	sol::usertype<Component> component_type = state.new_usertype<Component>("Component");
-	component_type["update"] = &Component::update;
-	component_type["get_name"] = &Component::get_name;
-	component_type["get_id"] = &Component::get_id;
-	component_type["get_entity"] = &Component::get_entity;
-
 	register_lua_api();
 	
-	script_dir(RelativePath("libs"));
-	script_dir(RelativePath("core"));
+	lua_manager.script_dir(RelativePath("libs"));
+	lua_manager.script_dir(RelativePath("core"));
 
-	state.script("tdengine.bootstrap()");
+	lua_manager.state.script("tdengine.bootstrap()");
 	
-	script_dir(RelativePath("state"));
-	script_dir(RelativePath("entities"));
-	script_dir(RelativePath("components"));
-	script_dir(RelativePath("scenes"));
-	script_dir(RelativePath("actions"));
+	lua_manager.script_dir(RelativePath("state"));
+	lua_manager.script_dir(RelativePath("entities"));
+	lua_manager.script_dir(RelativePath("components"));
+	lua_manager.script_dir(RelativePath("scenes"));
+	lua_manager.script_dir(RelativePath("actions"));
 
-	state.script("tdengine.load_editor()");
-
-	return 0;
+	lua_manager.state.script("tdengine.load_editor()");
 }
 
 void LuaState::script_dir(ScriptPath path) {

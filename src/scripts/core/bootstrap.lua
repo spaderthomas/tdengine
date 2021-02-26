@@ -18,8 +18,11 @@ function tdengine.bootstrap()
    tdengine.loaded_scene = { name = '', path = '' }
    tdengine.active_cutscene = nil
 
-   -- Set up console shortcuts
    tdengine.console_pipe = ''
+   tdengine.load_console_shortcuts()
+end
+
+function tdengine.load_console_shortcuts()
    local console_shortcuts = {
 	  scene = {
 		 help = 'load a scene from a template located in src/scripts/scenes/templates',
@@ -50,11 +53,11 @@ function tdengine.bootstrap()
 		 proc = function(name)
 			local module_path = 'layouts/console/' .. name
 			package.loaded[module_path] = nil
-			local status = pcall(require, module_path)
+			local status, err = pcall(require, module_path)
 			if not status then
-			   local message = 'console() :: could not find console script.'
-			   message = message .. 'requested script was: ' .. name
+			   local message = 'q(): error runing quickscript: ' .. name
 			   print(message)
+			   print(err)
 			end
 		 end
 	  }
@@ -75,7 +78,7 @@ function tdengine.bootstrap()
 	  _G[name] = data.proc
    end
 end
-
+	
 function tdengine.load_editor()
    tdengine.create_entity('Editor', {})
 end

@@ -4,7 +4,6 @@ struct LuaState {
 	sol::state_view state;
 
 	LuaState();
-	int init();
 	int require(std::string script_name);
 	void require_all();
 	int reload(std::string script_name);
@@ -18,3 +17,4 @@ struct LuaState {
 	sol::table get_component(int entity, std::string which);
 } Lua;
 
+void init_lua();

@@ -107,7 +107,11 @@ return {
             x = 0.18822172284126282,
             y = 0.38856568932533264
           }
-        }
+        },
+	    Animation = {
+		  current = 'boon_sleep',
+		  loop = true
+		}
       },
       name = "Player",
       params = {}

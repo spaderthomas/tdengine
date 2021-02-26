@@ -82,7 +82,7 @@ function Editor:update(dt)
   self:handle_input()
   
   imgui.SetNextWindowSize(300, 300)
-  imgui.Begin("tded v2.0", true)
+  imgui.Begin("engine", true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
   
@@ -97,6 +97,7 @@ function Editor:update(dt)
 
   self:state_viewer()
   self:scene_viewer()
+  self:cutscene_viewer()
   
   imgui.End() -- dashboard
 
@@ -224,7 +225,7 @@ function Editor:handle_input()
   input:set_channel(tdengine.InputChannel.Editor)
 
   if input:was_pressed(GLFW.Keys.F1) then
-	tdengine.ustep_mode()
+	tdengine.step_mode()
   end
 end
 
@@ -771,7 +772,7 @@ function Editor:output_slot(id)
 end
 
 function Editor:dialogue_editor()
-  imgui.Begin('Dialogue Editor', true)
+  imgui.Begin('dialogue', true)
 
   -- Draw the sidebar
   imgui.BeginChild('sidebar', 500, 0)
@@ -1250,4 +1251,40 @@ function Editor:state_viewer()
 	end
   end
   imgui.End('state')
+end
+
+
+function Editor:cutscene_descriptor()
+  if tdengine.active_cutscene then
+	return 'src/scripts/cutscenes/' .. tdengine.active_cutscene.name .. '.lua'
+  end
+
+  return 'no cutscene active'
+end
+
+function Editor:cutscene_viewer()
+  imgui.Begin('cutscene')
+  imgui.Text(self:cutscene_descriptor())
+
+  if tdengine.active_cutscene then
+	for index, action in pairs(tdengine.active_cutscene.actions) do
+	  local id = '##cutscene_viewer:' .. tostring(index)
+	  imgui.PushID(id)
+	  
+	  if action.name == 'Compound' then
+		if imgui.TreeNode('Compound' .. id) then
+		  for child_index, child_action in pairs(action.actions) do
+			local id = '##cutscene_viewer:nested:' .. tostring(child_index)
+			imgui.extensions.Table(child_action.name, child_action, {}, id)
+		  end
+		  imgui.TreePop()
+		end
+	  else
+		imgui.extensions.Table(action.name, action)
+	  end
+	  imgui.PopID()
+	end
+  end
+  
+  imgui.End()
 end

@@ -40,7 +40,12 @@ struct InputManager {
 		if (!(this->mask & channel)) return false;
 		return is_down[id] && !was_down[id];
 	}
-
+	
+	bool was_released(GLFW_KEY_TYPE id, int channel = INPUT_MASK_ALL) {
+		if (!(this->mask & channel)) return false;
+		return !is_down[id] && was_down[id];
+	}
+	
 	bool is_mod_down(GLFW_KEY_TYPE mod_key, int channel = INPUT_MASK_ALL) {
 		if (!(this->mask & channel)) return false;
 		
