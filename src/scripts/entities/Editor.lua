@@ -82,7 +82,7 @@ function Editor:update(dt)
   self:handle_input()
   
   imgui.SetNextWindowSize(300, 300)
-  imgui.Begin("engine", true)
+  imgui.Begin('engine', true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
   
@@ -94,6 +94,40 @@ function Editor:update(dt)
   imgui.extensions.Vec2('cursor (world)', tdengine.screen_to_world(cursor))
 
   imgui.Text('editor state: ' .. self.state)
+
+  if imgui.Button('set up rendering test') then
+	 local position = tdengine.vec2(0, 0)
+	 for i = 1, 1000 do
+		local data = {
+		   components = {
+			  Position = { world = position }
+		   }
+		}
+		local entity = tdengine.create_entity('Oliver', data)
+
+		position.x = position.x + .1
+		if position.x > .9 then
+		   position.x = 0
+		   position.y = position.y + .1
+		end
+	 end
+  end
+
+  if imgui.Button('tear down rendering test') then
+	 for id, entity in pairs(tdengine.entities) do
+		if entity:get_name() == 'Oliver' then
+		   tdengine.destroy_entity(id)
+		end
+	 end
+  end
+
+  local olivers = 0
+  for id, entity in pairs(tdengine.entities) do
+	 if entity:get_name() == 'Oliver' then
+		olivers = olivers + 1
+	 end
+  end
+  imgui.Text('olivers: ' .. tostring(olivers))
 
   self:state_viewer()
   self:scene_viewer()
@@ -219,7 +253,7 @@ function Editor:handle_input()
   end
 
   input:set_channel(tdengine.InputChannel.All)
-  if input:was_pressed(GLFW.Keys.LEFT_CONTROL) then
+  if input:was_pressed(GLFW.Keys.LEFT_ALT) then
     tdengine.internal.toggle_console()
   end
   input:set_channel(tdengine.InputChannel.Editor)

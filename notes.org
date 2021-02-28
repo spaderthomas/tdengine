@@ -41,15 +41,6 @@ Tags in the code itself
 @paths: i hate paths
 @slow: yea
 * code
-@render_refactor
-Stop baking texture atlases, texture coordinates, etc on startup. 
-Font rendering API
-Stop rendering primitives with vector<std::function> probably
-Initialize font VAOs and stuff in init_gl(), not init_fonts()
-I'm generating a unique texture for every character?
-Use the shader uniform to translate character instead of generating new vertices
-every time?
-
 @lua_init
 Stop storing entity classes as part of the global table, e.g:
 Player = tdengine.entity('Player')
@@ -69,15 +60,18 @@ Player = tdengine.entity('Player')
 Needing to register a collider to render something is jank
 
 @editor
-need a way to stop having messages spam the fuck out of me -- like when
+- need a way to stop having messages spam the fuck out of me -- like when
 something is F'd in entity update. maybe reserve console output for prints and
 write lua errors to the log? maybe keep a cache of messages we print out every
 frame and don't double print them (unless a file is reloaded...?)
 
-now that i have a pattern for ImGui::InputXXX in lua, i should make
-the entity's fields editable. 
+- now that i have a pattern for ImGui::InputXXX in lua, i should make
+  the entity's fields editable. 
+- sprite buttons for adding entities?
+- 02/27/21: caps lock as left control is broken. right control is also
+  broken -- may be related?
 
-sprite buttons for adding entities?
+
 
 @logging
 log channels
@@ -87,6 +81,40 @@ in my door, in on_collision, i destroy a bunch of entities...but those entities'
 ids might be in the list of things that had a collision and need to be
 processed. pretty sure this can be fixed by just enhancing deallocate_entity or
 whatever it's called to fully remove it from physics engine-
+
+** @render_refactor
+- Stop baking texture atlases, texture coordinates, etc on startup. 
+- Stop rendering primitives with vector<std::function> probably
+- Initialize font VAOs and stuff in init_gl(), not init_fonts()
+- I'm generating a unique texture for every character?
+- Use the shader uniform to translate character instead of generating
+  new vertices every time?
+
+Here's how I have the buffers set up now:
+There is a vertex buffer and element buffer for all the sprite
+data. The vertex holds the vertices (just the screen-sized square's
+vertices), and then all the texcoords. The element buffer holds just
+six integers, the indices for the square.
+
+The VAOs are set up on every frame. At the beginning of the render, I
+set up the attribute pointer for the vertices. Before I draw each
+individual entity, I set up the attribute pointer for the texture
+coordinates, because every entity has a different offset. 
+
+I know that's wrong: You're supposed to set up attribute pointers once
+(I'm pretty sure). But what if your data changes? If that happens,
+then unless the sizes match, the offset is going to be different. And
+moreover, how do I solve my case for texture coordinates? I need to
+tell the GPU where this specific entity's texture coordinates are. The
+other thing I could see doing is to fill up the whole buffer so it's
+lined up every frame, but I was under the impression that fucking with
+GPU memory was expensive -- that you'd bind a ton of data at the start
+and then roll with it.
+
+I know people can't store every mesh they will ever meed to draw in
+the GPU at once. Do people use different VAOs for every object? One
+for the whole game?  Somewhere in the middle, and if so, how do they
+group them?
 * learn
 ** lua
 *** metamethods
@@ -207,6 +235,7 @@ render buffer = no sampling, gpu can optimize it because it knows this
 ** 02/25: design from closet -> library
 - fix animations
 - write closet cutscene
+
 - write closet dialogue
 - make a preliminary list of locales + short descriptions
 - design the hub's layout
@@ -510,6 +539,46 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 02/27/2021
+| olivers | draw? | update | rel/dbg | FPS |
+|---------+-------+--------+---------+-----|
+|     100 | true  | per    | debug   | 275 |
+|     100 | false | per    | debug   | 400 |
+|     500 | true  | per    | debug   |  57 |
+|     500 | false | per    | debug   | 115 |
+|    1000 | true  | per    | debug   |  34 |
+|    1000 | false | per    | debug   |  55 |
+|     100 | true  | batch  | debug   | 350 |
+|     100 | false | batch  | debug   | 530 |
+|     500 | true  | batch  | debug   |  65 |
+|     500 | false | batch  | debug   | 150 |
+|    1000 | true  | batch  | debug   |  40 |
+|    1000 | false | batch  | debug   |  85 |
+|     100 | true  | batch  | release | 650 |
+|     100 | false | batch  | release | 800 |
+|    1000 | true  | batch  | release | 120 |
+|    1000 | false | batch  | release | 210 |
+
+building in release mode (just replace -g with -O2 in tdbuild compiler command)
+/usr/bin/g++ -std=c++17 -O2 -pthread -fmax-errors=10 /home/spader/programming/tdengine/src/imgui/imgui.cpp /home/spader/programming/tdengine/src/imgui/imgui_demo.cpp /home/spader/programming/tdengine/src/imgui/imgui_draw.cpp /home/spader/programming/tdengine/src/imgui/imgui_widgets.cpp /home/spader/programming/tdengine/src/imgui/imgui_tables.cpp /home/spader/programming/tdengine/src/glad.c /home/spader/programming/tdengine/src/main.cpp -I/home/spader/programming/tdengine/include -I/home/spader/programming/tdengine/include/lua -I/home/spader/programming/tdengine/include/freetype -I/home/spader/programming/tdengine/include/sol -o tdengine -lfreetype -lglfw -lluajit-5.1 -lGL -lX11 -lc -ldl -lstdc++fs 
+
+takeaways:
+- 50-60% of the time is spent in lua
+- sol is pretty lightweight. there are some places in the flame graph
+  where you're looking at 1% of execution time and then it's just sol
+  wrapping up small imgui calls that take .05%. but for the big items
+  (call into lua to update all entities), it's negligible.
+  - examples:
+	- 5.27% -> 8.46%
+	- 5.50% -> 8.19%
+	- 5.50% -> 17.47%
+- API::get_component is 6%.
+  - all filters into map lookups to get entity + component
+- API::entity_name is 5.27%
+- API::draw_entity is 17%
+  - again, everything is just in grabbing components
+- RenderEngine::render is 21.11%
+  - most of this is in sorting the render list
 ** 02/25/2021: hub design
 my main question: how are all the "inner locales" set up? so it's
 pretty easy to set up the main stuff -- the library, the cafeteria,
@@ -3687,6 +3756,8 @@ of souls -- they enjoy living. so they are built to do that.
 
 * clock
 :LOGBOOK:
+CLOCK: [2021-02-27 Sat 23:46]
+CLOCK: [2021-02-27 Sat 01:10]--[2021-02-27 Sat 02:07] =>  0:57
 CLOCK: [2021-02-25 Thu 21:39]--[2021-02-25 Thu 23:09] =>  1:30
 CLOCK: [2021-02-25 Thu 17:00]--[2021-02-25 Thu 20:00] =>  3:00
 CLOCK: [2021-02-24 Wed 18:33]--[2021-02-24 Wed 19:53] =>  1:20

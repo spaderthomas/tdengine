@@ -450,7 +450,7 @@ void API::use_step_mode() {
 
 void API::fade_screen(float time) {
 	auto& render_engine = get_render_engine();
-	render_engine.is_fading = true;
+	render_engine.render_to_frame_buffer = true;
 	render_engine.fade_time = time;
 	render_engine.fade_time_remaining = time * 2;
 }

@@ -35,12 +35,12 @@ struct RenderEngine {
 	std::vector<TextRenderInfo> text_infos;
 	Camera camera;
 
-	bool is_fading = false;
-	float fade_time_remaining = 0.f;
-	float fade_time;
+	bool render_to_frame_buffer = false;
 	uint frame_buffer;
 	uint color_buffer;
-	uint depth_buffer;
+	
+	float fade_time_remaining = 0.f;
+	float fade_time;
 
 	void init();
 	void remove_entity(int entity);

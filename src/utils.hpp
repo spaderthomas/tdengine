@@ -175,6 +175,7 @@ std::vector<float> square_tex_coords = {
 	0.f, 1.f,
 };
 GLvoid* square_tex_coords_offset;
+
 std::vector<float> line_verts = {
 	0.f, 0.f, 1.f,
 	1.f, 1.f, 1.f,

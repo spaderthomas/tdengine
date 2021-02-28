@@ -58,55 +58,47 @@ int main() {
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {
 		double frame_start_time = glfwGetTime();
+		
+		if (send_kill_signal) return 0;
 
 		file_watcher.update();
-
-		if (send_kill_signal) return 0;
 		
-		// SETUP
-		// Call all GLFW callbacks
 		glfwPollEvents();
 
 		bool run_update = true;
 		run_update = !step_mode || input_manager.was_pressed(GLFW_KEY_SPACE);
 		step_mode = step_mode && !input_manager.was_pressed(GLFW_KEY_ENTER);
 
-		if (run_update) {
-			// These have to happen before ImGui::NewFrame
-			fill_imgui_input();
-			load_imgui_layout();
-		
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		fill_imgui_input();
+		load_imgui_layout();
 
-			// MEAT
-			ImGui_ImplGlfwGL3_NewFrame();
-			if (show_imgui_demo) { ImGui::ShowDemoWindow(); }
-			if (show_console) { console.Draw("tdengine"); }
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+		ImGui_ImplGlfwGL3_NewFrame();
 		
+		if (show_imgui_demo) ImGui::ShowDemoWindow();
+		if (show_console) console.Draw("tdengine");
+			
+		if (run_update) {
 			entity_manager.update(seconds_per_update);
 			cutscene_manager.update(seconds_per_update);
 			physics_engine.update(seconds_per_update);
 			interaction_system.update(seconds_per_update);
 			update_system.update(seconds_per_update);
-
-			render_engine.render(seconds_per_update);
-			
-			ImGui::Render();
-			ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
-		
-			glfwSwapBuffers(g_window);
+		} else {
+			update_system.do_paused_update(seconds_per_update);
 		}
+		
+		render_engine.render(seconds_per_update);
+		ImGui::Render();
+		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
+		glfwSwapBuffers(g_window);
 
-		// The input manager needs to still work so we can do stuff in step mode
 		input_manager.end_frame();
 
-		if (run_update) {
-			// Wait until we hit the next frame time
-			framerate = 1.f / (glfwGetTime() - frame_start_time);
-			Lua.state["tdengine"]["framerate"] = framerate;
-			
-			while (glfwGetTime() - frame_start_time < seconds_per_update) {}
-		}
+		framerate = 1.f / (glfwGetTime() - frame_start_time);
+		Lua.state["tdengine"]["framerate"] = framerate;
+		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
 	}
 
 	return 0;

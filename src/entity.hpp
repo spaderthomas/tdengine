@@ -22,11 +22,13 @@ struct Entity {
 
 	Entity(std::string name, int id);
 	void update(float dt);
+	
 	Component* add_component(std::string name);
 	Component* get_component(std::string name);
 	bool has_component(std::string name);
 	void remove_component(std::string name);
 	std::vector<Component*> all_components();
+	
 	int get_id();
 	std::string get_name();
 	std::string debug_string();
@@ -41,6 +43,7 @@ struct EntityManager {
 	int create_entity(std::string name);
 	void destroy_entity(int id);
 	void update(float dt);
+	void do_paused_update(float dt);
 };
 EntityManager& get_entity_manager();
 
@@ -64,5 +67,6 @@ struct UpdateSystem {
 	void run_collision_callbacks(float dt);
 	void run_interaction_callback(float dt);
 	void run_entity_updates(float dt);
+	void do_paused_update(float dt);
 };
 UpdateSystem& get_update_system();

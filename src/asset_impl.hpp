@@ -242,18 +242,9 @@ void Mesh::bind() {
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 
 	// 0: Vertices
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), vert_offset);
 	glEnableVertexAttribArray(0);
-
-	// @spader 2020/10/02: This is dead code. We never draw a mesh that has a texture; it's only used for rectangles and lines
-	if (use_tex_coords) {
-		// 1: Texture coordinates
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), tex_coord_offset);
-		glEnableVertexAttribArray(1);
-	}
-	else {
-		glDisableVertexAttribArray(1);
-	}
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), vert_offset);
+	glDisableVertexAttribArray(1);
 }
 
 void Mesh::draw(GLuint mode) {

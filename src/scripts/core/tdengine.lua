@@ -1,4 +1,16 @@
 -- Callbacks
+function update_entities(dt)
+   for id, entity in pairs(tdengine.entities) do
+	  entity:update(dt)
+   end
+end
+
+function update_components(dt)
+   for id, component in pairs(tdengine.components) do
+	  component:update(dt)
+   end
+end
+
 function update_entity(id, dt)
   local entity = tdengine.entities[id]
   if entity then
@@ -76,7 +88,6 @@ function tdengine.create_entity(name, data)
    end
 
    if prefab then
-
 	  for name, component in pairs(prefab.components) do
 		 local param_components = data.components or {}
 

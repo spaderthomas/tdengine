@@ -8,5 +8,8 @@ end
 
 function Oliver:update(dt)
    local aabb = self:get_component('BoundingBox')
-   aabb:draw()
+   --aabb:draw()
+
+   local graphic = self:get_component('Graphic')
+   graphic.draw = true
 end

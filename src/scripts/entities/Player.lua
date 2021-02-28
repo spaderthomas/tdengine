@@ -35,7 +35,6 @@ function Player:handle_movement()
   self.is_i_down = input:is_down(GLFW.Keys.I)
   if (not input:is_down(GLFW.Keys.I)) and (not input:is_down(GLFW.Keys.K)) then
 	local editor = tdengine.find_entity('Editor')
-	print('standing on: ' .. tostring(editor.frame))
 	animation:begin('boon_stand', { loop = true })
   end
 end

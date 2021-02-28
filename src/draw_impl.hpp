@@ -42,6 +42,10 @@ void init_gl() {
 	
 	glBindBuffer(GL_ARRAY_BUFFER, Sprite::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_data.size() * sizeof(float), vert_data.data(), GL_STATIC_DRAW);
+
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
+
 	
 	
 	// Fill GPU mesh buffers
@@ -249,7 +253,7 @@ void RenderEngine::render(float dt) {
 }
 
 void RenderEngine::render_scene(float dt) {
-	if (is_fading) {
+	if (render_to_frame_buffer) {
 		glViewport(0, 0, 2560, 1440);
 		glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -257,8 +261,8 @@ void RenderEngine::render_scene(float dt) {
 	}
 	
 	bind_sprite_buffers();
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
-	glEnableVertexAttribArray(0);
+	//glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
+	//glEnableVertexAttribArray(0);
 
 	auto& shaders = get_shader_manager();
 	Shader* shader = shaders.get("textured");
@@ -329,9 +333,9 @@ void RenderEngine::render_scene(float dt) {
 	shader->end();
 	render_list.clear();
 
-	if (is_fading) {
+	if (render_to_frame_buffer) {
 		glViewport(0, 0, screen_x, screen_y);
-		glBindFramebuffer(GL_FRAMEBUFFER, 0); // back to default
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		
 		glBindTexture(GL_TEXTURE_2D, color_buffer);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), square_tex_coords_offset);
@@ -344,7 +348,7 @@ void RenderEngine::render_scene(float dt) {
 		float time = glm::abs((fade_time_remaining - fade_time) / fade_time);
 		shader->set_float("time", time);
 		fade_time_remaining -= dt;
-		is_fading = fade_time_remaining > 0;
+		render_to_frame_buffer = fade_time_remaining > 0;
 		
 		shader->check();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
@@ -354,10 +358,6 @@ void RenderEngine::render_scene(float dt) {
 }
 
 void RenderEngine::render_text(float dt) {
-	bind_sprite_buffers();
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
-	glEnableVertexAttribArray(0);
-
 	auto& shaders = get_shader_manager();
 	auto shader = shaders.get("text");
 	shader->begin();
