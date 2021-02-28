@@ -7,15 +7,11 @@ return {
   },
   {
 	name = 'Delay',
-	time = 1
-  },
-  {
-	name = 'FadeIn',
 	time = 3
   },
   {
-	name = 'Delay',
-	time = 1
+	 name = 'Dialogue',
+	 dialogue = 'jc_prod'
   },
   {
 	name = 'Animation',
@@ -26,16 +22,7 @@ return {
 	loop = false,
   },
   {
-	name = 'Delay',
-	time = 1
-  },
-  {
-	name = 'Sound',
-	sound = 'surprise',
-	block = false
-  },
-  {
 	name = 'Dialogue',
-	dialogue = 'test_001'
+	dialogue = 'jc_introduce'
   }
 }

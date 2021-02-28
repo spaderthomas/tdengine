@@ -28,11 +28,6 @@ function Dialogue:init(params)
    end
 
    
-   self.text_box = tdengine.find_entity('TextBox')
-   if not self.text_box then
-	  tdengine.create_entity('TextBox', {})
-	  self.text_box = tdengine.find_entity('TextBox')
-   end
 
    -- tdengine.text_box.use_avatar(self.current.who)
    -- tdengine.text_box.use_voice(self.current.voice)
@@ -113,6 +108,12 @@ function Dialogue:advance_until_input_needed()
 end
 
 function Dialogue:update(dt)
+  self.text_box = tdengine.find_entity('TextBox')
+  if not self.text_box then
+	tdengine.create_entity('TextBox', {})
+	self.text_box = tdengine.find_entity('TextBox')
+  end
+
    if not self.text_box.active then
 	  self:advance_until_input_needed()
    end

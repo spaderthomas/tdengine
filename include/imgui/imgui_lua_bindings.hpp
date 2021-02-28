@@ -565,8 +565,12 @@ namespace ImGuiWrapper {
 	void InputTextSetContents(const char* label, const char* contents) {
 		InputTextBuffer* buffer = get_input_text_buffer(label);
 		if (!buffer) {
-			tdns_log.write("You called InputTextContents, but passed an unknown label.");
+			tdns_log.write("@InputTextSetContents_unknown_label");
+			tdns_log.write(label);
+			add_input_text_buffer(label, 255);
+			buffer = get_input_text_buffer(label);
 		}
+
 
 		strncpy(buffer->data, contents, buffer->size);
 	}

@@ -228,22 +228,9 @@ void UpdateSystem::run_interaction_callback(float dt) {
 }
 
 void UpdateSystem::run_entity_updates(float dt) {
-	auto& lua_manager = Lua;
-	
-	sol::protected_function update_entities = lua_manager.state["update_entities"];
-	auto result = update_entities(dt);
-	if (!result.valid()) {
-		sol::error error = result;
-		tdns_log.write("@entity_update_failed");
-		tdns_log.write(error.what());
-	}
-
-	sol::protected_function update_cs = lua_manager.state["update_components"];
-	result = update_cs(dt);
-	if (!result.valid()) {
-		sol::error error = result;
-		tdns_log.write("@component_update_failed");
-		tdns_log.write(error.what());
+	auto& entity_manager = get_entity_manager();
+	for (auto& [id, entity] : entity_manager.entities) {
+		entity->update(dt);
 	}
 }
 
@@ -260,7 +247,7 @@ void UpdateSystem::do_paused_update(float dt) {
 		if (entity->get_name() == "Editor") {
 			entity->update(dt);
 		}
-
+		
 		auto graphic = entity->get_component("Graphic");
 		if (graphic) graphic->update(dt);
 	}

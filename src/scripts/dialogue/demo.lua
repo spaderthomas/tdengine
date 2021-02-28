@@ -44,7 +44,7 @@ return {
     kind = "Text",
     text = "i do say, my dear boy, when i was your age my uncle pulled me aside and asked me but a single question -- a question that has henceforth shaped my entire life! i implore you: dick or dong?",
     uuid = "d6cce35c-487a-458f-bab2-9032c2621f38",
-    who = "Asuka"
+    who = "Oliver"
   },
   ["f5c4daf4-54cd-491c-ada4-e0f40309b9f9"] = {
     children = {},

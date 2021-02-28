@@ -70,7 +70,7 @@ frame and don't double print them (unless a file is reloaded...?)
 - sprite buttons for adding entities?
 - 02/27/21: caps lock as left control is broken. right control is also
   broken -- may be related?
-
+- One-button tabbing between ImGui layouts
 
 
 @logging
@@ -3233,6 +3233,24 @@ next logical question: can i get back? oliver pauses. he's not entirely sure --
 he has never seen anyone like you come through here. but then again, there are a
 lot of weird things going on right now. maybe we should go talk to the
 librarian. he'll know what to do.
+**** script
+- player control is disabled
+- the screen fades in from black
+- boon is lying down in a sleeping/unconscious animation
+- the sleeping animation holds for a few seconds
+- a dialogue pops up; oliver asks if boon can hear him
+- boon plays another animation. his Zs trail off, you hear + see an
+  exclamation point, and he bolts up
+- boon and oliver have their introductory dialogue
+- oliver walks toward boon and disappears (as he is following him)
+- player control is enabled
+**** entities
+- oliver
+- player
+- geometry for the shelving that surrounds them
+- interactables on the shelves
+  - just pop up dialogue with flavor text
+- door
 *** discovering the overworld
 you walk out of the janitor's closet into the lobby of a school. the lobby of
 your school, in fact. but just like the closet, something is off about
@@ -3734,30 +3752,12 @@ of souls -- they enjoy living. so they are built to do that.
 * script
 ** intro
 *** an introduction!
-*** an indeterminate amount of time later
-- player control is disabled
-- the screen fades in from black
-- boon is lying down in a sleeping/unconscious animation
-- the sleeping animation holds for a few seconds
-- a dialogue pops up; oliver asks if boon can hear him
-- boon plays another animation. his Zs trail off, you hear + see an
-  exclamation point, and he bolts up
-- boon and oliver have their introductory dialogue
-- oliver walks toward boon and disappears (as he is following him)
-- player control is enabled
-
-- oliver
-- player
-- geometry for the shelving that surrounds them
-- interactables on the shelves
-  - just pop up dialogue with flavor text
-- door
 *** discovering the overworld
 
 * clock
 :LOGBOOK:
 CLOCK: [2021-02-27 Sat 23:46]
-CLOCK: [2021-02-27 Sat 01:10]--[2021-02-27 Sat 02:07] =>  0:57
+CLOCK: [2021-02-26 Fri 23:10]--[2021-02-27 Sat 00:07] =>  0:57
 CLOCK: [2021-02-25 Thu 21:39]--[2021-02-25 Thu 23:09] =>  1:30
 CLOCK: [2021-02-25 Thu 17:00]--[2021-02-25 Thu 20:00] =>  3:00
 CLOCK: [2021-02-24 Wed 18:33]--[2021-02-24 Wed 19:53] =>  1:20

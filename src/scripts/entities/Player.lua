@@ -32,11 +32,6 @@ function Player:handle_movement()
 	animation:begin('boon_walkdown', { loop = true })
   end
 
-  self.is_i_down = input:is_down(GLFW.Keys.I)
-  if (not input:is_down(GLFW.Keys.I)) and (not input:is_down(GLFW.Keys.K)) then
-	local editor = tdengine.find_entity('Editor')
-	animation:begin('boon_stand', { loop = true })
-  end
 end
 
 function Player:update(dt)

@@ -41,7 +41,6 @@ function Editor:init(params)
   self.use_geometry = false
   
   self.ded = {
-	input_id = '##ded_editor',
 	nodes = {},
 	layout_data = {},
 	loaded = '',
@@ -50,7 +49,9 @@ function Editor:init(params)
 	disconnecting = nil,
 	deleting = nil,
 	scrolling = tdengine.vec2(0, 0),
-	window_position = tdengine.vec2(0, 0)
+	window_position = tdengine.vec2(0, 0),
+	input_id = '##ded_editor',
+	set_who_id = '##ded:detail:set_entity'
   }
   
   -- Stored as screen coordinates, converted to world when we submit the geometry
@@ -789,6 +790,21 @@ function Editor:ded_full_path()
   return 'no file loaded'
 end
 
+function Editor:ded_select(id, node)
+  self.ded.selected = id
+
+  if node.who then
+	imgui.InputTextSetContents(self.ded.set_who_id, node.who)
+  end
+
+  local text = ternary(node.text, node.text, node.variable)
+  if node.kind == 'Text' or node.kind == 'Choice' then
+	imgui.InputTextSetContents(self.ded.input_id, text)
+  else
+	imgui.InputTextSetContents(self.ded.input_id, '')
+  end
+end
+
 function Editor:input_slot(id)
   local gnode = self.ded.layout_data[id]
   local canvas_world = tdengine.vec2(
@@ -848,36 +864,26 @@ function Editor:dialogue_editor()
   end
   imgui.SameLine()
   imgui.InputText(id, 63)
+
+  imgui.Separator()
   
-  imgui.Separator()
-  local active = false
-  local done = false
-  local point = 0
-  local max_point = 0
-  local text_box = tdengine.find_entity('TextBox')
-  if text_box then
-	active = text_box.active
-	done = text_box.done
-	point = text_box.point
-	max_point = text_box.max_point
-  end
-
-  imgui.Text('active: ' .. tostring(active))
-  imgui.Text('done: ' .. tostring(done))
-  imgui.Text('point: ' .. tostring(point))
-  imgui.Text('max_point: ' .. tostring(max_point))
-
-
-  imgui.Separator()
-  -- Detail view
+  -- @ded:detail
   local selected = self.ded.nodes[self.ded.selected]
   if selected then
-	imgui.Text(selected.kind .. ' Node')
+	imgui.extensions.VariableName('kind')
+	imgui.SameLine()
+	imgui.Text(selected.kind)
+
+	imgui.extensions.VariableName('uuid')
+	imgui.SameLine()
+	imgui.Text(selected.uuid)
 
 	if selected.kind == 'Text' then
-	  imgui.Text('entity: ')
+	  imgui.extensions.VariableName('who')
 	  imgui.SameLine()
-	  imgui.Text(selected.who)
+	  imgui.InputText(self.ded.set_who_id, 64)
+
+	  selected.who = imgui.InputTextContents(self.ded.set_who_id)
 	end
 	
 	if selected.kind == 'Set' then
@@ -899,6 +905,9 @@ function Editor:dialogue_editor()
 	end
 
 	if selected.kind == 'Text' or selected.kind == 'Choice' then
+	  imgui.extensions.VariableName('text')
+	  imgui.SameLine()
+
 	  imgui.PushTextWrapPos(0)
 	  imgui.Text(imgui.InputTextContents(self.ded.input_id))
 	  imgui.PopTextWrapPos()
@@ -924,7 +933,7 @@ function Editor:dialogue_editor()
 
 	  -- Display the node, and if clicked select it
 	  if imgui.MenuItem(self:ded_short_text(node)) then
-		self.ded.selected = node.uuid
+		self:ded_select(id, node)
 	  end
 
 	  -- Pop the color we pushed for the selected node!
@@ -948,6 +957,25 @@ function Editor:dialogue_editor()
 	imgui.Text('pos: ' .. self.pos.x .. ', ' .. self.pos.y)
   end   
 
+  imgui.Separator()
+  
+  local active = false
+  local done = false
+  local point = 0
+  local max_point = 0
+  local text_box = tdengine.find_entity('TextBox')
+  if text_box then
+	active = text_box.active
+	done = text_box.done
+	point = text_box.point
+	max_point = text_box.max_point
+  end
+
+  imgui.Text('active: ' .. tostring(active))
+  imgui.Text('done: ' .. tostring(done))
+  imgui.Text('point: ' .. tostring(point))
+  imgui.Text('max_point: ' .. tostring(max_point))
+  
   imgui.EndChild() -- Sidebar
 
   imgui.SameLine()
@@ -1044,13 +1072,7 @@ function Editor:dialogue_editor()
 	-- Figure out whether we're pressed, hovered, or dragged
 	local pressed = imgui.IsItemActive()
 	if pressed then
-	  self.ded.selected = id
-	  local text = ternary(node.text, node.text, node.variable)
-	  if node.kind == 'Text' or node.kind == 'Choice' then
-		imgui.InputTextSetContents(self.ded.input_id, text)
-	  else
-		imgui.InputTextSetContents(self.ded.input_id, '')
-	  end
+	  self:ded_select(id, node)
 
 	  -- If someone left clicked us, check whether they're trying to
 	  -- (dis)connect themselves to you
@@ -1244,7 +1266,7 @@ function Editor:dialogue_editor()
   if self.ded.selected then
 	local selected = self.ded.nodes[self.ded.selected]
 	if selected.kind == 'Text' or selected.kind == 'Choice' then
-	  imgui.InputTextContents(self.ded.input_id)
+	  selected.text = imgui.InputTextContents(self.ded.input_id)
 	end
   end
 
