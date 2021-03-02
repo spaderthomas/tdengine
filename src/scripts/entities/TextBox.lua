@@ -105,9 +105,6 @@ function TextBox:choose(choices)
 	  self.line_breaks[index] = line_breaks(choice)
 	  table.insert(self.text, choice)
    end
-
-   print(inspect(self.line_breaks))
-   print(inspect(self.text))
 end
 
 

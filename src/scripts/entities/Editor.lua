@@ -49,9 +49,12 @@ function Editor:init(params)
 	disconnecting = nil,
 	deleting = nil,
 	scrolling = tdengine.vec2(0, 0),
+	scroll_per_second = 100,
 	window_position = tdengine.vec2(0, 0),
 	input_id = '##ded_editor',
-	set_who_id = '##ded:detail:set_entity'
+	set_who_id = '##ded:detail:set_entity',
+	branch_on_id = '##ded:detail:set_branch_var',
+	branch_val_id = '##ded:detail:set_branch_val',
   }
   
   -- Stored as screen coordinates, converted to world when we submit the geometry
@@ -138,7 +141,7 @@ function Editor:update(dt)
 
   self:do_geometry()
 
-  self:dialogue_editor()
+  self:dialogue_editor(dt)
   
   local input = self:get_component('Input')
   
@@ -656,17 +659,20 @@ function Editor:make_dialogue_node(kind)
 	children = {},
 	uuid = tdengine.uuid()
   }
+  
   if kind == 'Text' then
 	node.text = ''
 	node.who = ''
-  end
-  if kind == 'Choice' then
+  elseif kind == 'Choice' then
 	node.text = ''
-  end
-  if kind == 'Set' then
+  elseif kind == 'Set' then
 	node.variable = 'buns'
 	node.value = true
+  elseif kind == 'Empty' then
+  elseif kind == 'Branch' then
+	 node.branch_on = 'buns'
   end
+  
   return node
 
 end
@@ -776,9 +782,13 @@ function Editor:ded_short_text(node)
 	  return string.sub(node.text, 0, max_size - 3) .. '...'
 	end
   elseif node.kind == 'Set' then
-	return 'set ' .. node.variable
+	 return 'set ' .. node.variable
+  elseif node.kind == 'Empty' then
+	 return 'empty node'
+  elseif node.kind == 'Branch' then
+	 return node.branch_on
   else
-	print('forgot to add new node type to Editor:ded_short_text(): ' .. node.kind)
+	print('Editor:ded_short_text(): missing entry: ' .. node.kind)
   end
 end
 
@@ -795,6 +805,10 @@ function Editor:ded_select(id, node)
 
   if node.who then
 	imgui.InputTextSetContents(self.ded.set_who_id, node.who)
+  end
+
+  if node.kind == 'Branch' then
+	imgui.InputTextSetContents(self.ded.branch_on_id, node.branch_on)
   end
 
   local text = ternary(node.text, node.text, node.variable)
@@ -821,7 +835,7 @@ function Editor:output_slot(id)
   return self:canvas_world_to_window_screen(canvas_world)
 end
 
-function Editor:dialogue_editor()
+function Editor:dialogue_editor(dt)
   imgui.Begin('dialogue', true)
 
   -- Draw the sidebar
@@ -865,6 +879,18 @@ function Editor:dialogue_editor()
   imgui.SameLine()
   imgui.InputText(id, 63)
 
+  if imgui.Button('Try It!', button_size.x, button_size.y) then
+	 tdengine.use_layout('tiny')
+
+	 local cutscene = {
+		{
+		   name = 'Dialogue',
+		   dialogue = self.ded.loaded
+		}
+	 }
+	 tdengine.do_cutscene_from_data(cutscene)
+  end
+
   imgui.Separator()
   
   -- @ded:detail
@@ -885,7 +911,7 @@ function Editor:dialogue_editor()
 
 	  selected.who = imgui.InputTextContents(self.ded.set_who_id)
 	end
-	
+
 	if selected.kind == 'Set' then
 	  imgui.Text('state: ')
 	  imgui.SameLine()
@@ -903,6 +929,16 @@ function Editor:dialogue_editor()
 		elseif value == 'false' then selected.value = false end
 	  end
 	end
+
+	if selected.kind == 'Branch' then
+	   imgui.extensions.VariableName('branch on')
+	   imgui.SameLine()
+
+	   if imgui.InputText(self.ded.branch_on_id, 64) then
+		  selected.branch_on = imgui.InputTextContents(self.ded.branch_on_id)
+	   end
+	end
+
 
 	if selected.kind == 'Text' or selected.kind == 'Choice' then
 	  imgui.extensions.VariableName('text')
@@ -1049,6 +1085,7 @@ function Editor:dialogue_editor()
 	imgui.SetCursorScreenPos(node_contents_cursor:unpack())
 	imgui.BeginGroup()
 	imgui.Text(node.kind)
+	
 	if node.kind == 'Text' then
 	  imgui.Text(self:ded_short_text(node))
 	elseif node.kind == 'Set' then
@@ -1057,7 +1094,9 @@ function Editor:dialogue_editor()
 	  --imgui.Text(tostring(node.value))
 	elseif node.kind == 'Choice' then
 	  imgui.Text(self:ded_short_text(node))
-	end
+	elseif node.kind == 'Branch' then
+	  imgui.Text(self:ded_short_text(node))
+	end	
 	imgui.EndGroup()
 
 	local contents_size = tdengine.vec2(imgui.GetItemRectSize())
@@ -1162,25 +1201,43 @@ function Editor:dialogue_editor()
   imgui.DrawList_ChannelsSetCurrent(0)
 
   local link_color = tdengine.color32(200, 200, 200, 255)
+  local backlink_color = tdengine.color32(200, 100, 100, 255)
   local disconnect_color = tdengine.color32(255, 0, 0, 255)
   local thickness = 2
 
   for id, node in pairs(self.ded.nodes) do
-	local p0 = self:output_slot(id)
+	local output_slot = self:output_slot(id)
 	local use_dc_prompt_color = self.ded.disconnecting == id
 	
 	local children = node.children
 	for index, child_id in pairs(children) do
-	  local p1 = self:input_slot(child_id)
+	  local input_slot = self:input_slot(child_id)
 
 	  use_dc_prompt_color = use_dc_prompt_color and self.hovered == child_id
-	  color = ternary(use_dc_prompt_color, disconnect_color, link_color)
-	  imgui.DrawList_AddBezierCurve(
-		p0.x, p0.y,
-		p0.x + 50, p0.y,
-		p1.x - 50, p1.y,
-		p1.x, p1.y,
-		color, thickness)
+
+	  -- The graph looks super messy if we hook nodes later in the graph
+	  -- to earlier nodes. So, instead of drawing the normal link, do a big
+	  -- curve that swings around the whole graph (use the average of the two
+	  -- slots' X coordinates for the peak)
+	  if input_slot.x < output_slot.x then
+		 local color = ternary(use_dc_prompt_color, disconnect_color, backlink_color)
+		 local average = output_slot:subtract(input_slot):scale(.5)
+		 imgui.DrawList_AddBezierCurve(
+			output_slot.x, output_slot.y,
+			output_slot.x - average.x, output_slot.y - 500,
+			input_slot.x, input_slot.y,
+			input_slot.x, input_slot.y,
+			color, thickness)
+	  else
+		 local color = ternary(use_dc_prompt_color, disconnect_color, link_color)
+		 local cp = tdengine.vec2(50, 0)
+		 imgui.DrawList_AddBezierCurve(
+			output_slot.x, output_slot.y,
+			output_slot.x + cp.x, output_slot.y,
+			input_slot.x - cp.x, input_slot.y,
+			input_slot.x, input_slot.y,
+			color, thickness)
+	  end
 	end
   end
 
@@ -1233,6 +1290,13 @@ function Editor:dialogue_editor()
 	  if imgui.MenuItem('Set') then
 		node = self:make_dialogue_node('Set')
 	  end
+	  if imgui.MenuItem('Empty') then
+		node = self:make_dialogue_node('Empty')
+	  end
+	  if imgui.MenuItem('Branch') then
+		node = self:make_dialogue_node('Branch')
+	  end
+
 
 	  if node then
 		self.ded.nodes[node.uuid] = node
@@ -1254,9 +1318,33 @@ function Editor:dialogue_editor()
   local middle_click = imgui.IsMouseDragging(2, 0)
   local clicked_on_node = imgui.IsAnyItemActive()
 
-  if canvas_hovered and middle_click and not clicked_on_node then
-	local delta = tdengine.vec2(imgui.MouseDelta())
-	self.ded.scrolling = self.ded.scrolling:add(delta)
+  if canvas_hovered and not clicked_on_node then
+	 if middle_click then
+		local delta = tdengine.vec2(imgui.MouseDelta())
+		self.ded.scrolling = self.ded.scrolling:add(delta)
+	 end
+
+	 local input = self:get_component('Input')
+	 input:set_channel(tdengine.InputChannel.ImGui)
+
+	 self.ded.scroll_per_second = 1000
+	 local delta = tdengine.vec2(0, 0)
+ 	 if input:is_down(GLFW.Keys.W) then
+		delta.y = delta.y + (self.ded.scroll_per_second * dt)
+	 end
+ 	 if input:is_down(GLFW.Keys.S) then
+		delta.y = delta.y - (self.ded.scroll_per_second * dt)
+	 end
+ 	 if input:is_down(GLFW.Keys.A) then
+		delta.x = delta.x + (self.ded.scroll_per_second * dt)
+	 end
+ 	 if input:is_down(GLFW.Keys.D) then
+		delta.x = delta.x - (self.ded.scroll_per_second * dt)
+	 end
+	 
+	 input:set_channel(tdengine.InputChannel.Editor)
+
+	 self.ded.scrolling = self.ded.scrolling:add(delta)
   end
 
   imgui.EndChild()

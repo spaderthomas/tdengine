@@ -30,7 +30,7 @@ function tdengine.load_console_shortcuts()
 	  },
 	  cutscene = {
 		 help = 'load and begin a cutscene from a file located in src/scripts/cutscenes',
-		 proc = function(...) tdengine.begin_cutscene(...) end
+		 proc = function(...) tdengine.do_cutscene_from_name(...) end
 	  },
 	  ded = {
 		 help = 'load a scene into the dialogue editor',

@@ -26,11 +26,6 @@ function Dialogue:init(params)
 	  self.done = true
 	  return
    end
-
-   
-
-   -- tdengine.text_box.use_avatar(self.current.who)
-   -- tdengine.text_box.use_voice(self.current.voice)
 end
 
 function Dialogue:find_entry_node()
@@ -45,49 +40,96 @@ function Dialogue:find_entry_node()
 end
 
 function Dialogue:process(node)
-   if node.kind == 'Text' then
-	  self:process_text(node)
+   print('node: ' .. inspect(node))
+   if not node then
+	  print('Dialogue:process(): tried to process a nil node')
+	  self.bad_branch = true
+   elseif node.kind == 'Text' then
+	  self.text_box:begin(node.text)
    elseif node.kind == 'Set' then
 	  self:process_set(node)
+   elseif node.kind == 'Empty' then
+	  return
+   elseif node.kind == 'Branch' then
+	  self.current = self:evaluate_branch(node)
+	  self:process(self.current)
    end
 end
 
 function Dialogue:process_set(node)
    local value = tdengine.state[node.variable]
    if value == nil then
-	  local message = 'Dialogue:process_set(): tried to set a variable, but it did not exist in the state. '
-	  message = message .. 'Variable was: ' .. node.variable
+	  local message = 'Dialogue:process_set(): @variable_does_not_exist: '
+	  message = message .. node.variable
 	  tdengine.log(message, tdengine.log_flags.default)
 	  return
    end
-
+   
    tdengine.state[node.variable] = node.value
 end
 
-function Dialogue:process_text(node)
-   self.text_box:begin(node.text)
+function Dialogue:evaluate_branch(node)
+   --package.loaded['debugger'] = nil
+   --local d = require('debugger')
+   --d.auto_where = 1
+   --d()
+   local child_index = -1
+   local branch_on = tdengine.branch[node.branch_on]
+   if branch_on then
+	  child_index = branch_on()
+	  print('branch on fn')
+   else
+	  local state = tdengine.state[node.branch_on]
+	  print('branch on state ' .. tostring(state))
+	  child_index = ternary(state, 1, 2)
+   end
+
+   local child_id = node.children[child_index]
+   local child = self.data[child_id]
+   if not child then return child end
+
+   while child and child.kind == 'Set' do
+	  self:process_set(child)
+	  child = self.data[child.children[1]]
+   end
+
+   return child
+end
+
+function Dialogue:finish()
+   local text_box = tdengine.find_entity('TextBox')
+   tdengine.destroy_entity(text_box:get_id())
+   
+   self.done = true
 end
 
 function Dialogue:advance_until_input_needed()
    local is_input_needed = false
    while not is_input_needed do
-	  if not self.current then
+	  if self.bad_branch then
+		 print('bad branch')
+		 self:finish()
+		 is_input_needed = true -- hack
+
+	  -- This is only true the first time you call this.
+	  elseif not self.current then
 		 self.current = self:find_entry_node()
 		 self:process(self.current)
 		 
 		 is_input_needed = self.current.kind == 'Text'
+      -- If the current node has no children, we're done!
 	  elseif #self.current.children == 0 then
-		 local text_box = tdengine.find_entity('TextBox')
-		 tdengine.destroy_entity(text_box:get_id())
-		 
-		 self.done = true
+		 self:finish()
 		 is_input_needed = true -- hack
+	  -- If the current node has one child, just eat it. You only need to wait for
+	  -- input if the next node is a Text node (because Text nodes don't advance
+	  -- until the player hits the space bar)
 	  elseif #self.current.children == 1 then
 		 self.current = self.data[self.current.children[1]]
 		 self:process(self.current)
 		 
-		 is_input_needed = self.current.kind == 'Text'
-
+		 is_input_needed = self.current and self.current.kind == 'Text'
+      -- > 1 child means you hit a choice node
 	  elseif #self.current.children > 1 then
 		 self.choosing = true
 		 self.choice = 1
@@ -95,8 +137,18 @@ function Dialogue:advance_until_input_needed()
 		 local children = {}
 		 local choices = {}
 		 for index, id in pairs(self.current.children) do
-			table.insert(children, self.data[id])
-			table.insert(choices, self.data[id].text)
+			local child = self.data[id]
+			if child.kind == 'Choice' then
+			   table.insert(children, child)
+			   table.insert(choices, self.data[id].text)
+			elseif child.kind == 'Branch' then
+			   local maybe_choice = self:evaluate_branch(child)
+			   if maybe_choice then
+				  assert(maybe_choice.kind == 'Choice', 'need choice node')
+				  table.insert(children, maybe_choice)
+				  table.insert(choices, maybe_choice.text)
+			   end
+			end
 		 end
 		 self.current = children
 

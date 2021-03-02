@@ -516,8 +516,16 @@ function tdengine.create_action(name, params)
   return nil
 end
 
-function tdengine.begin_cutscene(name, params)
-  params = params or {}
+function tdengine.do_cutscene_from_data(data)
+   tdengine.active_cutscene = {
+	name = 'anonymous_cutscene',
+	actions = {}
+   }
+   
+  tdengine.load_actions(data)
+end
+
+function tdengine.do_cutscene_from_name(name)
   local module_path = 'cutscenes/' .. name
   package.loaded[module_path] = nil
   local cutscene = require(module_path)
@@ -526,12 +534,15 @@ function tdengine.begin_cutscene(name, params)
 	name = name,
 	actions = {}
   }
+  
+  tdengine.load_actions(cutscene)
+end
+
+function tdengine.load_actions(cutscene)
   for index, data in pairs(cutscene) do
 	local action = tdengine.create_action(data.name, data)
 	tdengine.active_cutscene.actions[index] = action
-  end
-
-  if params.step then tdengine.step_mode() end
+  end   
 end
 
 function tdengine.update_actions(dt, actions)

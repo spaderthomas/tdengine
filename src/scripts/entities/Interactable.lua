@@ -33,5 +33,5 @@ function Interactable:on_interaction()
 end
 
 tdengine.on_interactions.demo = function()
-   tdengine.begin_cutscene('interaction_test')
+   tdengine.do_cutscene_from_name('interaction_test')
 end
