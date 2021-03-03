@@ -18,6 +18,10 @@ function Input:is_down(key)
   return tdengine.is_down(key, self.channel)
 end
 
+function Input:chord(mod, key)
+  return tdengine.was_chord_pressed(mod, key, self.channel)
+end
+
 function Input:set_channel(channel)
   self.channel = channel
 end

@@ -257,8 +257,15 @@ function Editor:handle_input()
   end
 
   input:set_channel(tdengine.InputChannel.All)
-  if input:was_pressed(GLFW.Keys.LEFT_ALT) then
+  if input:chord(GLFW.Keys.ALT, GLFW.Keys.RIGHT_ALT) then
     tdengine.internal.toggle_console()
+  end
+
+  if input:chord(GLFW.Keys.ALT, GLFW.Keys.J) then
+	 tdengine.previous_layout()
+  end
+  if input:chord(GLFW.Keys.ALT, GLFW.Keys.L) then
+	 tdengine.next_layout()
   end
   input:set_channel(tdengine.InputChannel.Editor)
 
@@ -860,7 +867,7 @@ function Editor:dialogue_editor(dt)
   id = '##ded_load'
   if imgui.Button('Load', button_size.x, button_size.y) then
 	-- Because you can still click this and have the grid hidden
-	tdengine.use_layout('ded') 
+	tdengine.layout('ded') 
 
 	self:ded_load(imgui.InputTextContents(id))
 	imgui.InputTextClear(id)
@@ -871,7 +878,7 @@ function Editor:dialogue_editor(dt)
   id = '##ded_new'
   if imgui.Button('New', button_size.x, button_size.y) then
 	-- Because you can still click this and have the grid hidden
-	tdengine.use_layout('ded') 
+	tdengine.layout('ded') 
 
 	self:ded_new(imgui.InputTextContents(id))
 	imgui.InputTextClear(id)
@@ -880,7 +887,7 @@ function Editor:dialogue_editor(dt)
   imgui.InputText(id, 63)
 
   if imgui.Button('Try It!', button_size.x, button_size.y) then
-	 tdengine.use_layout('tiny')
+	 tdengine.layout('tiny')
 
 	 local cutscene = {
 		{

@@ -18,6 +18,10 @@ function tdengine.bootstrap()
    tdengine.loaded_scene = { name = '', path = '' }
    tdengine.active_cutscene = nil
 
+   tdengine.current_layout = 'default'
+   tdengine.layout_stack = { 'default' }
+   tdengine.layout_index = 1
+   
    tdengine.console_pipe = ''
    tdengine.load_console_shortcuts()
 end
@@ -35,14 +39,14 @@ function tdengine.load_console_shortcuts()
 	  ded = {
 		 help = 'load a scene into the dialogue editor',
 		 proc = function(name)
-			tdengine.use_layout('ded')
+			tdengine.layout('ded')
 			local editor = tdengine.find_entity('Editor')
 			editor:ded_load(name)
 		 end
 	  },
 	  layout = {
 		 help = 'use a predefined imgui layout',
-		 proc = tdengine.use_layout
+		 proc = tdengine.layout
 	  },
 	  save_layout = {
 		 help = 'save current imgui configuration as a layout',

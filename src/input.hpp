@@ -62,6 +62,10 @@ struct InputManager {
 			down |= is_down[GLFW_KEY_LEFT_SHIFT];
 			down |= is_down[GLFW_KEY_RIGHT_SHIFT];
 		}
+		if (mod_key == GLFW_KEY_ALT) {
+			down |= is_down[GLFW_KEY_LEFT_ALT];
+			down |= is_down[GLFW_KEY_RIGHT_ALT];
+		}
 
 		return down;
 	}

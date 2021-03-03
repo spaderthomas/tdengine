@@ -57,6 +57,7 @@ typedef int GLFW_KEY_TYPE;
 #define GLFW_KEY_CONTROL 349
 #define GLFW_KEY_SUPER 350
 #define GLFW_KEY_SHIFT 351
+#define GLFW_KEY_ALT 352
 
 #define ASCII_OPAREN     40
 #define ASCII_CPAREN     41

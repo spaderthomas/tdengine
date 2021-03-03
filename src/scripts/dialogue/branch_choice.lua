@@ -1,36 +1,36 @@
 return {
-  ["7d5bf4f0-aacc-499e-ac4b-f7599b39ba73"] = {
+  ["2bb251aa-e505-4cad-aa8f-71a697d30dd8"] = {
     children = {},
     is_entry_point = false,
     kind = "Choice",
-    text = "hell no!",
-    uuid = "7d5bf4f0-aacc-499e-ac4b-f7599b39ba73"
+    text = "heard you sell drugs bro",
+    uuid = "2bb251aa-e505-4cad-aa8f-71a697d30dd8"
   },
-  ["32d7541b-02b1-470b-9cb1-6570db2bc539"] = {
+  ["2ff2c419-25b9-4e89-b41c-15f459fc1d03"] = {
     branch_on = "demo:009:should_display_choice",
     children = {
-      "7d5bf4f0-aacc-499e-ac4b-f7599b39ba73"
+      "2bb251aa-e505-4cad-aa8f-71a697d30dd8"
     },
     is_entry_point = false,
     kind = "Branch",
-    uuid = "32d7541b-02b1-470b-9cb1-6570db2bc539"
+    uuid = "2ff2c419-25b9-4e89-b41c-15f459fc1d03"
   },
-  ["57192446-48b7-4495-84a8-6ce8aad2cbf8"] = {
+  ["a11f80bb-a8d2-4b8b-a812-caf4ca099955"] = {
     children = {},
     is_entry_point = false,
     kind = "Choice",
-    text = "why yes i will!",
-    uuid = "57192446-48b7-4495-84a8-6ce8aad2cbf8"
+    text = "not much man, good to see ya!",
+    uuid = "a11f80bb-a8d2-4b8b-a812-caf4ca099955"
   },
-  ["f1e2138c-79e9-4704-8b5c-05e7d7a103a4"] = {
+  ["b7733ff7-9223-4a8d-9ccb-cb7fb3b525e7"] = {
     children = {
-      "57192446-48b7-4495-84a8-6ce8aad2cbf8",
-      "32d7541b-02b1-470b-9cb1-6570db2bc539"
+      "a11f80bb-a8d2-4b8b-a812-caf4ca099955",
+      "2ff2c419-25b9-4e89-b41c-15f459fc1d03"
     },
-    is_entry_point = true,
+    is_entry_point = false,
     kind = "Text",
-    text = "choose?",
-    uuid = "f1e2138c-79e9-4704-8b5c-05e7d7a103a4",
+    text = "hey, what's up?",
+    uuid = "b7733ff7-9223-4a8d-9ccb-cb7fb3b525e7",
     who = ""
   }
 }
