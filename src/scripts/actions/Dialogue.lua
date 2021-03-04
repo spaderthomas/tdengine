@@ -39,7 +39,7 @@ function Dialogue:find_entry_node()
    return nil
 end
 
-function Dialogue:process(node)
+function Dialogue:process_single(node)
    print('node: ' .. inspect(node))
    if not node then
 	  print('Dialogue:process(): tried to process a nil node')
@@ -51,8 +51,11 @@ function Dialogue:process(node)
    elseif node.kind == 'Empty' then
 	  return
    elseif node.kind == 'Branch' then
-	  self.current = self:evaluate_branch(node)
-	  self:process(self.current)
+	  local branch_result = self:evaluate_branch(node)
+	  assert(branch_result.kind == 'Text', '@branch_did_not_evaluate_to_text')
+	  
+	  self.current = branch_result
+	  self:process_single(self.current)
    end
 end
 
@@ -69,25 +72,27 @@ function Dialogue:process_set(node)
 end
 
 function Dialogue:evaluate_branch(node)
-   --package.loaded['debugger'] = nil
-   --local d = require('debugger')
-   --d.auto_where = 1
-   --d()
-   local child_index = -1
+   -- Evaluate the state to figure out which child we're going to
+   local child_id = -1
    local branch_on = tdengine.branch[node.branch_on]
    if branch_on then
 	  child_index = branch_on()
-	  print('branch on fn')
    else
 	  local state = tdengine.state[node.branch_on]
-	  print('branch on state ' .. tostring(state))
 	  child_index = ternary(state, 1, 2)
    end
 
+   -- Grab the child's data from our list
    local child_id = node.children[child_index]
    local child = self.data[child_id]
+
+   -- A couple things could have happened here:
+   -- 1. Your branch function return an invalid index
+   -- 2. You didn't hook enough children to the branch node
    if not child then return child end
 
+   -- A branch node doesn't have to evaluate immediately. But the only thing it 
+   -- makes sense to do before you evaluate to a Text or Choice is to set variables.
    while child and child.kind == 'Set' do
 	  self:process_set(child)
 	  child = self.data[child.children[1]]
@@ -114,7 +119,7 @@ function Dialogue:advance_until_input_needed()
 	  -- This is only true the first time you call this.
 	  elseif not self.current then
 		 self.current = self:find_entry_node()
-		 self:process(self.current)
+		 self:process_single(self.current)
 		 
 		 is_input_needed = self.current.kind == 'Text'
       -- If the current node has no children, we're done!
@@ -126,7 +131,7 @@ function Dialogue:advance_until_input_needed()
 	  -- until the player hits the space bar)
 	  elseif #self.current.children == 1 then
 		 self.current = self.data[self.current.children[1]]
-		 self:process(self.current)
+		 self:process_single(self.current)
 		 
 		 is_input_needed = self.current and self.current.kind == 'Text'
       -- > 1 child means you hit a choice node

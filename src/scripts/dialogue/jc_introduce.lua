@@ -133,6 +133,7 @@ return {
       "5db89e91-171d-4e3a-9a9c-70cae21f6522",
       "0ff6a15c-a4ba-4e0d-9c35-d6c30278273e"
     },
+    internal_name = "question subtree",
     is_entry_point = false,
     kind = "Empty",
     uuid = "74d87ff1-846a-4a52-afa2-8a9164bce72f"
@@ -148,7 +149,9 @@ return {
     who = "oliver"
   },
   ["3096d626-b69e-4fdd-adc2-2e29b67117cf"] = {
-    children = {},
+    children = {
+      "b49c933d-101f-48d8-a6e1-719c902c0403"
+    },
     is_entry_point = false,
     kind = "Text",
     text = "Well, erm, the Librarian told me, but he told me not to talk about it to anyone. And an Ainsley man keeps his word! I'm sure he'll tell you when we go talk to him...",
@@ -185,7 +188,9 @@ return {
     who = "boon"
   },
   ["88966647-c998-4f73-9723-f471720e3533"] = {
-    children = {},
+    children = {
+      "b49c933d-101f-48d8-a6e1-719c902c0403"
+    },
     is_entry_point = false,
     kind = "Text",
     text = "Oh, he's great! He's much kinder than the headmaster of the school when I was alive. He knows all sorts of stuff about Limbo and the Spiritual Realm. He pretty much runs this place. ",
@@ -212,6 +217,15 @@ return {
     uuid = "b9c87db1-5859-41d5-b373-2195e5817093",
     who = "boon"
   },
+  ["b49c933d-101f-48d8-a6e1-719c902c0403"] = {
+    children = {
+      "74d87ff1-846a-4a52-afa2-8a9164bce72f"
+    },
+    internal_name = "again",
+    is_entry_point = false,
+    kind = "Empty",
+    uuid = "b49c933d-101f-48d8-a6e1-719c902c0403"
+  },
   ["b50bba81-1b9f-421c-af36-a55551917609"] = {
     children = {
       "9a3ead60-af87-4e1a-9809-5750a15333c8"
@@ -226,7 +240,7 @@ return {
     children = {},
     is_entry_point = false,
     kind = "Choice",
-    text = "Did you have any more questions, or are you ready to go?",
+    text = "I'm ready to go.",
     uuid = "c024b206-d30b-4b91-9533-b1e86e092c5d"
   },
   ["c59f1333-2a52-494c-b017-7de3a65ed900"] = {
@@ -250,12 +264,24 @@ return {
     who = "oliver"
   },
   ["dae80dfe-bb76-4b2b-807a-fa76a5fa707e"] = {
-    children = {},
+    children = {
+      "f1a47ee0-ade1-4a3e-91a6-a00f115e5765"
+    },
     is_entry_point = false,
     kind = "Text",
     text = "We'd better bring you to the Librarian to see what he has to say.",
     uuid = "dae80dfe-bb76-4b2b-807a-fa76a5fa707e",
-    who = ""
+    who = "oliver"
+  },
+  ["f1a47ee0-ade1-4a3e-91a6-a00f115e5765"] = {
+    children = {
+      "b49c933d-101f-48d8-a6e1-719c902c0403"
+    },
+    is_entry_point = false,
+    kind = "Set",
+    uuid = "f1a47ee0-ade1-4a3e-91a6-a00f115e5765",
+    value = true,
+    variable = "jc:001:mentioned_librarian"
   },
   ["fd0e8b6a-aae1-49e3-bc78-33801afb8d48"] = {
     children = {

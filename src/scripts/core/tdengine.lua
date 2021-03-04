@@ -492,7 +492,9 @@ function tdengine.load_scene_from_disk(name)
 end
 
 function tdengine.create_action(name, params)
-  ActionType = tdengine.actions[name]
+   ActionType = tdengine.actions[name]
+   print(inspect(tdengine.actions))
+   print(name)
   if ActionType ~= nil then
 	local action = ActionType:new()
 
@@ -830,8 +832,6 @@ function tdengine.next_layout()
    tdengine.layout_index = (index % stack_size) + 1
    
    local layout = tdengine.layout_stack[tdengine.layout_index]
-   print(inspect(tdengine.layout_stack))
-   print(tdengine.layout_index)
    tdengine.use_layout(layout)   
 end
 
@@ -842,7 +842,5 @@ function tdengine.previous_layout()
    tdengine.layout_index = (index % stack_size) + 1
    
    local layout = tdengine.layout_stack[tdengine.layout_index]
-   print(inspect(tdengine.layout_stack))
-   print(tdengine.layout_index)
    tdengine.use_layout(layout)   
 end

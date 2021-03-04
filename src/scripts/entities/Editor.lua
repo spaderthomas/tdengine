@@ -52,9 +52,12 @@ function Editor:init(params)
 	scroll_per_second = 100,
 	window_position = tdengine.vec2(0, 0),
 	input_id = '##ded_editor',
-	set_who_id = '##ded:detail:set_entity',
+	text_who_id = '##ded:detail:set_entity',
+	set_var_id = '##ded:detail:set_var',
+	set_val_id = '##ded:detail:set_val',
 	branch_on_id = '##ded:detail:set_branch_var',
 	branch_val_id = '##ded:detail:set_branch_val',
+	empty_name_id = '##ded:detail:set_empty_name',
   }
   
   -- Stored as screen coordinates, converted to world when we submit the geometry
@@ -676,8 +679,9 @@ function Editor:make_dialogue_node(kind)
 	node.variable = 'buns'
 	node.value = true
   elseif kind == 'Empty' then
+	node.internal_name = 'Empty'
   elseif kind == 'Branch' then
-	 node.branch_on = 'buns'
+	node.branch_on = 'buns'
   end
   
   return node
@@ -789,9 +793,9 @@ function Editor:ded_short_text(node)
 	  return string.sub(node.text, 0, max_size - 3) .. '...'
 	end
   elseif node.kind == 'Set' then
-	 return 'set ' .. node.variable
+	 return node.variable .. ' = ' .. tostring(node.value)
   elseif node.kind == 'Empty' then
-	 return 'empty node'
+	 return node.internal_name
   elseif node.kind == 'Branch' then
 	 return node.branch_on
   else
@@ -810,12 +814,21 @@ end
 function Editor:ded_select(id, node)
   self.ded.selected = id
 
-  if node.who then
-	imgui.InputTextSetContents(self.ded.set_who_id, node.who)
+  if node.kind == 'Empty' then
+	imgui.InputTextSetContents(self.ded.empty_name_id, node.internal_name)
   end
 
+  if node.kind == 'Text' then
+	imgui.InputTextSetContents(self.ded.text_who_id, node.who)
+  end
+  
   if node.kind == 'Branch' then
 	imgui.InputTextSetContents(self.ded.branch_on_id, node.branch_on)
+  end
+  
+  if node.kind == 'Set' then
+	imgui.InputTextSetContents(self.ded.set_var_id, node.variable)
+	imgui.InputTextSetContents(self.ded.set_val_id, tostring(node.value))
   end
 
   local text = ternary(node.text, node.text, node.variable)
@@ -846,7 +859,7 @@ function Editor:dialogue_editor(dt)
   imgui.Begin('dialogue', true)
 
   -- Draw the sidebar
-  imgui.BeginChild('sidebar', 500, 0)
+  imgui.BeginChild('sidebar', 350, 0)
   
   imgui.Text(self:ded_full_path())
 
@@ -889,6 +902,14 @@ function Editor:dialogue_editor(dt)
   if imgui.Button('Try It!', button_size.x, button_size.y) then
 	 tdengine.layout('tiny')
 
+	 -- @hack: This works for this simple cutscene, but there will probably be
+	 -- more complex cutscenes in the future that need proper teardown to be
+	 -- idempotent...
+	 local text_box = tdengine.find_entity('TextBox')
+	 if text_box then
+		tdengine.destroy_entity(text_box.id)
+	 end
+	 
 	 local cutscene = {
 		{
 		   name = 'Dialogue',
@@ -914,24 +935,22 @@ function Editor:dialogue_editor(dt)
 	if selected.kind == 'Text' then
 	  imgui.extensions.VariableName('who')
 	  imgui.SameLine()
-	  imgui.InputText(self.ded.set_who_id, 64)
+	  imgui.InputText(self.ded.text_who_id, 64)
 
-	  selected.who = imgui.InputTextContents(self.ded.set_who_id)
+	  selected.who = imgui.InputTextContents(self.ded.text_who_id)
 	end
 
 	if selected.kind == 'Set' then
-	  imgui.Text('state: ')
+	  imgui.extensions.VariableName('state')
 	  imgui.SameLine()
-	  local unique_id = '##variableinput_' .. selected.uuid
-	  if imgui.InputText(unique_id, 63) then
-		selected.variable = imgui.InputTextContents(unique_id)
+	  if imgui.InputText(self.ded.set_var_id, 64) then
+		selected.variable = imgui.InputTextContents(self.ded.set_var_id)
 	  end
 
-	  imgui.Text('value: ')
+	  imgui.extensions.VariableName('value')
 	  imgui.SameLine()
-	  unique_id = '##valueinput_' .. selected.uuid
-	  if imgui.InputText(unique_id, 63) then
-		local value = imgui.InputTextContents(unique_id)
+	  if imgui.InputText(self.ded.set_val_id, 64) then
+		local value = imgui.InputTextContents(self.ded.set_val_id)
 		if value == 'true' then selected.value = true 
 		elseif value == 'false' then selected.value = false end
 	  end
@@ -946,6 +965,13 @@ function Editor:dialogue_editor(dt)
 	   end
 	end
 
+	if selected.kind == 'Empty' then
+	  imgui.extensions.VariableName('internal name')
+	  imgui.SameLine()
+	  imgui.InputText(self.ded.empty_name_id, 64)
+
+	  selected.internal_name = imgui.InputTextContents(self.ded.empty_name_id)
+	end
 
 	if selected.kind == 'Text' or selected.kind == 'Choice' then
 	  imgui.extensions.VariableName('text')
@@ -1092,18 +1118,8 @@ function Editor:dialogue_editor(dt)
 	imgui.SetCursorScreenPos(node_contents_cursor:unpack())
 	imgui.BeginGroup()
 	imgui.Text(node.kind)
+	imgui.Text(self:ded_short_text(node))
 	
-	if node.kind == 'Text' then
-	  imgui.Text(self:ded_short_text(node))
-	elseif node.kind == 'Set' then
-	  --imgui.extensions.VariableName(node.variable)
-	  --imgui.SameLine()
-	  --imgui.Text(tostring(node.value))
-	elseif node.kind == 'Choice' then
-	  imgui.Text(self:ded_short_text(node))
-	elseif node.kind == 'Branch' then
-	  imgui.Text(self:ded_short_text(node))
-	end	
 	imgui.EndGroup()
 
 	local contents_size = tdengine.vec2(imgui.GetItemRectSize())
@@ -1159,6 +1175,10 @@ function Editor:dialogue_editor(dt)
 	  if imgui.MenuItem('Set as entry point') then
 		node.is_entry_point = true
 	  end
+	  if imgui.MenuItem('Set as temporary entry point') then
+		node.is_entry_point = true
+	  end
+
 	  if imgui.MenuItem('Delete') then
 		self.ded.deleting = id
 	  end
