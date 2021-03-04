@@ -101,7 +101,7 @@ return {
       },
       name = "Door",
       params = {
-        where = "intro"
+        where = "janitor_closet"
       }
     },
     {

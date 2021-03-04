@@ -62,9 +62,9 @@ end
 function Dialogue:process_set(node)
    local value = tdengine.state[node.variable]
    if value == nil then
-	  local message = 'Dialogue:process_set(): @variable_does_not_exist: '
+	  local message = 'dialogue:@variable_does_not_exist:'
 	  message = message .. node.variable
-	  tdengine.log(message, tdengine.log_flags.default)
+	  tdengine.log(message)
 	  return
    end
    

@@ -23,7 +23,7 @@ function Player:handle_movement()
   if input:is_down(GLFW.Keys.L) then
 	movement:move(.5, 0)
   end
-
+  
   local animation = self:get_component('Animation')
   if input:was_pressed(GLFW.Keys.I) then
 	animation:begin('boon_walkup', { loop = true })

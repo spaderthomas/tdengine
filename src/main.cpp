@@ -98,6 +98,8 @@ int main() {
 
 		framerate = 1.f / (glfwGetTime() - frame_start_time);
 		Lua.state["tdengine"]["framerate"] = framerate;
+		Lua.state["tdengine"]["input_mask"] = input_manager.mask;
+		Lua.state["tdengine"]["old_input_mask"] = input_manager.old_mask;
 		while (glfwGetTime() - frame_start_time < seconds_per_update) {}
 	}
 

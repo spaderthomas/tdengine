@@ -12,7 +12,8 @@ struct CollisionInfo {
 };
 
 namespace MoveFlags {
-	constexpr int BypassCollision = 1;
+	constexpr int BypassCollision = 1 << 0;
+	constexpr int AbsolutePosition = 1 << 1;
 }
 	
 struct MoveRequest {

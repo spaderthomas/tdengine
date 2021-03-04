@@ -280,6 +280,17 @@ void API::move_entity(int entity) {
 	physics_engine.requests.push_back(request);
 }
 
+void API::move_entity_absolute(int entity, float x, float y) {
+	MoveRequest request;
+	request.entity = entity;
+	request.flags = MoveFlags::AbsolutePosition;
+	request.wish.x = x;
+	request.wish.y = y;
+		
+	auto& physics_engine = get_physics_engine();
+	physics_engine.requests.push_back(request);
+}
+
 void API::teleport_entity(int entity, float x, float y) {
 	MoveRequest request;
 	request.flags |= MoveFlags::BypassCollision;
@@ -439,7 +450,11 @@ void API::screen(const char* dimension) {
 	else if (!strcmp(dimension, "1440")) use_1440p();
 }
 
-void API::log(const char* message, uint8_t flags) {
+void API::log(const char* message) {
+	tdns_log.write(message);
+}
+
+void API::log_to(const char* message, uint8_t flags) {
 	tdns_log.write(message, flags);
 }
 
@@ -463,6 +478,7 @@ void register_lua_api() {
     state["tdengine"] = state.create_table();
 	state["tdengine"]["alloc_entity"] = &alloc_entity;
 	state["tdengine"]["free_entity"] = &free_entity;
+	state["tdengine"]["move_entity_absolute"] = &move_entity_absolute;
 	state["tdengine"]["entity_name"] = &entity_name;
 	state["tdengine"]["has_component"] = &has_component;
 	state["tdengine"]["get_component"] = &get_component;
@@ -496,6 +512,7 @@ void register_lua_api() {
 	state["tdengine"]["ray_cast"] = &ray_cast;
 	state["tdengine"]["screen"] = &screen;
 	state["tdengine"]["log"] = &API::log;
+	state["tdengine"]["log_to"] = &API::log_to;
 	state["tdengine"]["step_mode"] = &API::use_step_mode;
 	state["tdengine"]["fade_screen"] = &API::fade_screen;
 
@@ -537,6 +554,7 @@ void register_lua_api() {
 	state["tdengine"]["InputChannel"]["ImGui"] = INPUT_MASK_IMGUI;
 	state["tdengine"]["InputChannel"]["Editor"] = INPUT_MASK_EDITOR;
 	state["tdengine"]["InputChannel"]["Game"] = INPUT_MASK_GAME;
+	state["tdengine"]["InputChannel"]["Player"] = INPUT_MASK_PLAYER;
 	state["tdengine"]["InputChannel"]["All"] = INPUT_MASK_ALL;
 
 		

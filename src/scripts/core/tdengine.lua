@@ -518,12 +518,18 @@ function tdengine.create_action(name, params)
   return nil
 end
 
+function tdengine.on_begin_cutscene()
+  tdengine.disable_input_channel(tdengine.InputChannel.Player)
+end
+
 function tdengine.do_cutscene_from_data(data)
-   tdengine.active_cutscene = {
+  tdengine.active_cutscene = {
 	name = 'anonymous_cutscene',
 	actions = {}
-   }
-   
+  }
+
+  tdengine.on_begin_cutscene()
+
   tdengine.load_actions(data)
 end
 
@@ -536,7 +542,9 @@ function tdengine.do_cutscene_from_name(name)
 	name = name,
 	actions = {}
   }
-  
+
+  tdengine.on_begin_cutscene()
+
   tdengine.load_actions(cutscene)
 end
 
@@ -564,15 +572,24 @@ function tdengine.update_actions(dt, actions)
 end
 
 function tdengine.update_cutscene(dt)
-   if tdengine.active_cutscene == nil then
-	  return
-   end
+  if tdengine.active_cutscene == nil then
+	return
+  end
+  
+  local done = tdengine.update_actions(dt, tdengine.active_cutscene.actions)
+  if done then
+	tdengine.log('cutscene:@finished: ' .. tdengine.active_cutscene.name)
+	tdengine.enable_input_channel(tdengine.InputChannel.Player)
+	
+	tdengine.active_cutscene = nil
+  end
+end
 
-   local done = tdengine.update_actions(dt, tdengine.active_cutscene.actions)
-   if done then
-	  print('update_cutscene(): finished ' .. tdengine.active_cutscene.name)
-	  tdengine.active_cutscene = nil
-   end
+function tdengine.terminate_cutscene()
+  tdengine.log('cutscene:@terminated: ' .. tdengine.active_cutscene.name)
+  tdengine.enable_input_channel(tdengine.InputChannel.Player)
+  
+  tdengine.active_cutscene = nil
 end
 
 function tdengine.load_dialogue(name)
@@ -721,6 +738,9 @@ local vec2_mixin = {
    end,
    abs = function(self)
 	  return tdengine.vec2(math.abs(self.x), math.abs(self.y))
+   end,
+   equals = function(self, other)
+	 return double_eq(self.x, other.x) and double_eq(self.y, other.y)
    end
 }
 
@@ -777,6 +797,11 @@ end
 
 function average(a, b)
    return (a + b) / 2
+end
+
+tdengine.deq_epsilon = .00000001
+function double_eq(x, y)
+  return math.abs(x - y) < tdengine.deq_epsilon
 end
 
 function is_newline(c)

@@ -92,7 +92,7 @@ function Editor:update(dt)
   imgui.Begin('engine', true)
   imgui.Text('frame: ' .. tostring(self.frame))
   imgui.Text('fps: ' .. tostring(self.display_framerate))
-  
+
   local screen_size = tdengine.screen_dimensions()
   imgui.extensions.Vec2('screen size', screen_size)
 
@@ -100,6 +100,16 @@ function Editor:update(dt)
   imgui.extensions.Vec2('cursor (screen)', cursor)
   imgui.extensions.Vec2('cursor (world)', tdengine.screen_to_world(cursor))
 
+  local mask = tdengine.input_mask or 0
+  imgui.extensions.VariableName('input mask')
+  imgui.SameLine()
+  imgui.Text(string.format('%x', mask))
+
+  mask = tdengine.old_input_mask or 0
+  imgui.extensions.VariableName('old input mask')
+  imgui.SameLine()
+  imgui.Text(string.format('%x', mask))
+  
   imgui.Text('editor state: ' .. self.state)
 
   if imgui.Button('set up rendering test') then
@@ -710,9 +720,7 @@ function Editor:ded_load(name)
   if not status then
 	self.ded.nodes = {}
 	
-	local message = 'ded_load(): could not find GUI layout. '
-	message = message .. 'dialogue was ' .. filepath
-	tdengine.log(message, tdengine.log_flags.default)
+	tdengine.log('ded:@no_gui_layout:' .. filepath)
 	return
   end
 end
@@ -1436,6 +1444,9 @@ end
 function Editor:cutscene_viewer()
   imgui.Begin('cutscene')
   imgui.Text(self:cutscene_descriptor())
+  if imgui.Button('Terminate') then
+	tdengine.terminate_cutscene()
+  end
 
   if tdengine.active_cutscene then
 	for index, action in pairs(tdengine.active_cutscene.actions) do

@@ -11,6 +11,7 @@ void        free_component(int component);
 std::string component_name(int component);
 void        draw_entity(int component);
 void        move_entity(int entity);
+void        move_entity_absolute(int entity, float x, float y);
 void        teleport_entity(int entity, float x, float y);
 void        register_position(int entity);
 void        register_collider(int entity);
@@ -43,7 +44,8 @@ void        toggle_console();
 void        use_layout(const char* name);
 void        save_layout(const char* name);
 void        screen(const char* dimension);
-void        log(const char* message, uint8_t flags);
+void        log(const char* message);
+void        log_to(const char* message, uint8_t flags);
 void        use_step_mode();
 void        fade_screen(float time);
 }

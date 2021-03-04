@@ -18,13 +18,23 @@ struct InputManager {
 	}
 
 	void enable_channel(int channel) {
-		mask |= channel;
-		old_mask = mask;
+		if (mask & INPUT_MASK_IMGUI) {
+			old_mask |= channel;
+		}
+		else {
+			mask |= channel;
+			old_mask = mask;
+		}
 	}
 	
 	void disable_channel(int channel) {
-		mask &= ~channel;
-		old_mask = mask;
+		if (mask & INPUT_MASK_IMGUI){
+			old_mask &= ~channel;
+		}
+		else {
+			mask &= ~channel;
+			old_mask = mask;
+		}
 	}
 
 	void start_imgui() {

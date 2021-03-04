@@ -142,7 +142,11 @@ void PhysicsEngine::update(float dt) {
 			continue;
 		}
 
-		*mover_position += request.wish;
+		if (request.flags & MoveFlags::AbsolutePosition) {
+			*mover_position = request.wish;
+		} else {
+			*mover_position += request.wish;
+		}
 		auto mover_box = Center_Box::from_entity(request.entity);
 
 		for (auto& [id, other] : collidable) {

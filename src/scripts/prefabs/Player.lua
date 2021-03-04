@@ -43,7 +43,9 @@ return {
 	  offset = { x = 0, y = -.06 },
 	},
 	Movement = {},
-	Input = {},
+	Input = {
+	  channel = tdengine.InputChannel.Player
+	},
 	PlayerVision = {
 	  extents = { x = .03, y = .15 },
 	  offset = { x = 0, y = .04 },
