@@ -3925,3 +3925,14 @@ https://i.redd.it/lolcaujmeuu51.jpg
 ** EdelweissPkmn
 cool, detailed versions that still give off a GBC pokemon vibe
 https://twitter.com/edelweisspkmn?lang=en
+
+* install
+** machine_conf.hpp
+std::string root_dir = "/home/spader/programming/tdengine/";
+** packages
+glfw
+freetype2
+luajit
+python-pip
+which
+gcc
