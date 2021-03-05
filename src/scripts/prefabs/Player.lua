@@ -42,7 +42,6 @@ return {
 	  extents = { x = .04, y = .03 },
 	  offset = { x = 0, y = -.06 },
 	},
-	Movement = {},
 	Input = {
 	  channel = tdengine.InputChannel.Player
 	},

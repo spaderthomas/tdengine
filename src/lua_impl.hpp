@@ -20,14 +20,15 @@ void init_lua() {
 	
 	lua_manager.state.open_libraries(
         sol::lib::base,
-		sol::lib::package,
+        sol::lib::bit32,
 		sol::lib::debug,
-		sol::lib::string,
-		sol::lib::math,
-		sol::lib::table,
-		sol::lib::os,
+		sol::lib::io,
 		sol::lib::jit,
-		sol::lib::io);
+		sol::lib::math,
+		sol::lib::os,
+		sol::lib::package,
+		sol::lib::string,
+		sol::lib::table);
 	
 	lua_manager.prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
 	lua_manager.prepend_to_search_path(absolute_path(path_join({"src", "scripts", "core"})));

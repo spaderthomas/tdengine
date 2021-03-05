@@ -14,6 +14,7 @@ function tdengine.bootstrap()
    tdengine.actions = {}
    tdengine.state = {}
    tdengine.scenes = {}
+   tdengine.triggers = {}
    tdengine.on_interactions = {}
    tdengine.loaded_scene = { name = '', path = '' }
    tdengine.active_cutscene = nil
@@ -30,7 +31,10 @@ function tdengine.load_console_shortcuts()
    local console_shortcuts = {
 	  scene = {
 		 help = 'load a scene from a template located in src/scripts/scenes/templates',
-		 proc = function(...) tdengine.load_scene_from_template(...) end
+		 proc = function(...)
+			--tdengine.terminate_cutscene()
+			tdengine.load_scene_from_template(...)
+		 end
 	  },
 	  cutscene = {
 		 help = 'load and begin a cutscene from a file located in src/scripts/cutscenes',

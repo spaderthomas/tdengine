@@ -5,23 +5,23 @@ Player = tdengine.entity('Player')
 function Player:init(params)
    tdengine.register_collider(self.id)
    tdengine.register_player(self.id)
+   self.speed = tdengine.vec2(.005, .005)
 end
 
 function Player:handle_movement()
   local input = self:get_component('Input')
-  local movement = self:get_component('Movement')
 
   if input:is_down(GLFW.Keys.I) then
-	movement:move(0, .5)
+   tdengine.move_entity_by_offset(self.id, 0, self.speed.y, 0)
   end
   if input:is_down(GLFW.Keys.J) then
-	movement:move(-.5, 0)
+   tdengine.move_entity_by_offset(self.id, -self.speed.x, 0, 0)
   end
   if input:is_down(GLFW.Keys.K) then
-	movement:move(0, -.5)
+   tdengine.move_entity_by_offset(self.id, 0, -self.speed.y, 0)
   end
   if input:is_down(GLFW.Keys.L) then
-	movement:move(.5, 0)
+   tdengine.move_entity_by_offset(self.id, self.speed.x, 0, 0)
   end
   
   local animation = self:get_component('Animation')
@@ -36,10 +36,6 @@ end
 
 function Player:update(dt)
    self:handle_movement()
-
-   local aabb = self:get_component('BoundingBox')
-   local position = self:get_component('Position')
-   aabb:draw()
 
    local input = self:get_component('Input')
    if input:was_pressed(GLFW.Keys.O) then

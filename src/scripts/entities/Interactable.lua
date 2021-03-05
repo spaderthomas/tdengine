@@ -23,8 +23,6 @@ function Interactable:save()
 end
 
 function Interactable:update(dt)
-   local aabb = self:get_component('BoundingBox')
-   aabb:draw()
 end
 
 function Interactable:on_interaction()

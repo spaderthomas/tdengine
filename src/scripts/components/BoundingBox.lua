@@ -15,6 +15,7 @@ function BoundingBox:save()
 end
 
 function BoundingBox:update()
+   self:draw()
 end
 
 function BoundingBox:draw(color)

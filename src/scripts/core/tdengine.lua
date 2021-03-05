@@ -492,9 +492,7 @@ function tdengine.load_scene_from_disk(name)
 end
 
 function tdengine.create_action(name, params)
-   ActionType = tdengine.actions[name]
-   print(inspect(tdengine.actions))
-   print(name)
+  ActionType = tdengine.actions[name]
   if ActionType ~= nil then
 	local action = ActionType:new()
 
@@ -739,8 +737,9 @@ local vec2_mixin = {
    abs = function(self)
 	  return tdengine.vec2(math.abs(self.x), math.abs(self.y))
    end,
-   equals = function(self, other)
-	 return double_eq(self.x, other.x) and double_eq(self.y, other.y)
+   equals = function(self, other, eps)
+	 eps = eps or tdengine.deq_epsilon
+	 return double_eq(self.x, other.x, eps) and double_eq(self.y, other.y, eps)
    end
 }
 
@@ -800,8 +799,9 @@ function average(a, b)
 end
 
 tdengine.deq_epsilon = .00000001
-function double_eq(x, y)
-  return math.abs(x - y) < tdengine.deq_epsilon
+function double_eq(x, y, eps)
+  eps = eps or tdengine.deq_epsilon
+  return math.abs(x - y) < eps
 end
 
 function is_newline(c)
@@ -833,6 +833,10 @@ function bitwise(oper, a, ...)
       r,m = r + m*oper%(s-a-b), m/2
    until m < 1
    return r
+end
+
+function number_as_binary(x)
+   return x
 end
 
 function truncate(float, digits)

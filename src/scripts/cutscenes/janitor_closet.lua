@@ -1,9 +1,5 @@
 return {
   {
-	name = 'DisappearIntoPlayer',
-	entity = 'Oliver'
-  },
-  {
 	name = 'Sound',
 	sound = 'intro_theme_001',
 	loop = true,
@@ -27,6 +23,10 @@ return {
   },
   {
 	name = 'Dialogue',
-	dialogue = 'jc_introduce'
-  }
+	dialogue = 'jc_prod'
+  },
+  {
+	name = 'DisappearIntoPlayer',
+	entity = 'Oliver'
+  },
 }

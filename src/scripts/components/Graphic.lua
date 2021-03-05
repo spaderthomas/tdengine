@@ -10,11 +10,6 @@ end
 function Graphic:update(dt)
   if self.draw then
 	tdengine.draw.entity(self.parent.id)
-
-	if self.parent:has_component('BoundingBox') then
-	  local aabb = self.parent:get_component('BoundingBox')
-	  aabb:draw()
-	end
   end
 end
 

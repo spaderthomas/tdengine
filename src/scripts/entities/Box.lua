@@ -12,6 +12,4 @@ function Box:pre_save()
 end
 
 function Box:update(dt)
-   local aabb = self:get_component('BoundingBox')
-   aabb:draw()
 end

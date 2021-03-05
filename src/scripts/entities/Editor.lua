@@ -270,8 +270,8 @@ function Editor:handle_input()
   end
 
   input:set_channel(tdengine.InputChannel.All)
-  if input:chord(GLFW.Keys.ALT, GLFW.Keys.RIGHT_ALT) then
-    tdengine.internal.toggle_console()
+  if input:was_pressed(GLFW.Keys.RIGHT_ALT) then
+    tdengine.toggle_console()
   end
 
   if input:chord(GLFW.Keys.ALT, GLFW.Keys.J) then
