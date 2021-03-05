@@ -23,7 +23,7 @@ return {
   },
   {
 	name = 'Dialogue',
-	dialogue = 'jc_prod'
+	dialogue = 'jc_introduce'
   },
   {
 	name = 'DisappearIntoPlayer',
