@@ -64,6 +64,8 @@ struct Name_And_ID {
 void create_texture(std::string path);
 void create_texture_atlas(std::string assets_dir);
 void create_all_texture_atlas();
+void destroy_texture(std::string path);
+void add_background(std::string name, std::string path);
 void init_assets();
 
 struct Sprite : Asset {
@@ -81,6 +83,8 @@ struct Sprite : Asset {
 
 	bool is_initialized() const;
 };
+
+void destroy_sprite(std::string name);
 
 // OpenGL 
 GLuint Sprite::vert_buffer;

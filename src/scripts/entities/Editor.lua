@@ -14,9 +14,7 @@ local EditState = {
 }
 
 Editor = tdengine.entity('Editor')
-function Editor:init(params)
-  self:persist()
-  
+function Editor:init(params)  
   self.options = {
 	show_bounding_boxes = false,
 	show_minkowksi = false,
@@ -72,6 +70,9 @@ function Editor:init(params)
   self.frame = 0
 
   self:should_save(false)
+  self:persist()
+
+  tdengine.create_entity('Player', {})
 
   local input = self:get_component('Input')
   input:set_channel(tdengine.InputChannel.Editor)
@@ -100,6 +101,9 @@ function Editor:update(dt)
   imgui.extensions.Vec2('cursor (screen)', cursor)
   imgui.extensions.Vec2('cursor (world)', tdengine.screen_to_world(cursor))
 
+  local camera = tdengine.vec2(tdengine.camera()):truncate(3)
+  imgui.extensions.Vec2('camera', camera)
+  
   local mask = tdengine.input_mask or 0
   imgui.extensions.VariableName('input mask')
   imgui.SameLine()

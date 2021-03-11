@@ -4,11 +4,11 @@ return {
       components = {
         Animation = {
           animations = {
-            classroom_background = {
-              { sprite = "classroom.png", time = 1 }
+            demo = {
+              { sprite = "demo.png", time = 1 }
             }
           },
-          current = "classroom_background"
+          current = "demo"
         },
         Position = {
           world = {
@@ -18,22 +18,6 @@ return {
         }
       },
       name = "Background",
-      params = {}
-    },
-    {
-      components = {
-        Position = {
-          world = {
-            x = 0.14625518023967743,
-            y = 0.45921644568443298
-          }
-        },
-		Animation = {
-		  current = 'boon_stand',
-		  loop = true
-		}
-      },
-      name = "Player",
       params = {}
     },
     {
@@ -101,7 +85,8 @@ return {
       },
       name = "Door",
       params = {
-        where = "janitor_closet"
+		 where = "janitor_closet",
+		 position = { x = .2, y = .11 }
       }
     },
     {

@@ -291,8 +291,6 @@ local entity_mixin = {
   imgui_ignore = {
 	 class = true,
 	 imgui_ignore = true,
-	 tdengine_persist = true,
-	 tdengine__should_save = true,
 	 id = true
   }
 }

@@ -4,8 +4,8 @@ return {
       components = {
         BoundingBox = {
           extents = {
-            x = 0.39958161115646362,
-            y = 0.063953496515750885
+            x = 0.041840940713882446,
+            y = 0.016472846269607544
           },
           offset = {
             x = 0,
@@ -14,33 +14,47 @@ return {
         },
         Position = {
           world = {
-            x = 0.20144352316856384,
-            y = -0.033410836011171341
+            x = 0.12610882520675659,
+            y = -0.0035077333450317383
           }
         }
       },
-      name = "Box",
-      params = {}
+      name = "Door",
+      params = {
+        position = {
+          x = 2.95,
+          y = .6
+        },
+        where = "hub"
+      }
     },
     {
       components = {
-        Animation = {
-          animations = {
-            bg_intro = {
-              { sprite = "bg_intro.png", time = 1 }
-            }
+        BoundingBox = {
+          extents = {
+            x = 0.053586184978485107,
+            y = 0.021584823727607727
           },
-          current = "bg_intro"
+          offset = {
+            x = 0,
+            y = 0
+          }
         },
         Position = {
           world = {
-            x = 3,
-            y = 3
+            x = 0.20615670084953308,
+            y = -0.0051765516400337219
           }
         }
       },
-      name = "Background",
-      params = {}
+      name = "Door",
+      params = {
+        position = {
+          x = 0,
+          y = 0
+        },
+        where = "demo"
+      }
     },
     {
       components = {
@@ -66,22 +80,10 @@ return {
     },
     {
       components = {
-        Position = {
-          world = {
-            x = 0.19429710507392883,
-            y = 0.22746780514717102
-          }
-        }
-      },
-      name = "Oliver",
-      params = {}
-    },
-    {
-      components = {
         BoundingBox = {
           extents = {
-            x = 0.053586184978485107,
-            y = 0.021584823727607727
+            x = 0.39958161115646362,
+            y = 0.063953496515750885
           },
           offset = {
             x = 0,
@@ -90,48 +92,8 @@ return {
         },
         Position = {
           world = {
-            x = 0.20354163646697998,
-            y = 0.011296309530735016
-          }
-        }
-      },
-      name = "Door",
-      params = {
-        where = "demo"
-      }
-    },
-    {
-      components = {
-        Position = {
-          world = {
-            x = 0.18822172284126282,
-            y = 0.38856568932533264
-          }
-        },
-	    Animation = {
-		  current = 'boon_sleep',
-		  loop = true
-		}
-      },
-      name = "Player",
-      params = {}
-    },
-    {
-      components = {
-        BoundingBox = {
-          extents = {
-            x = 0.086192429065704346,
-            y = 0.57966884970664978
-          },
-          offset = {
-            x = 0,
-            y = 0
-          }
-        },
-        Position = {
-          world = {
-            x = 0.34571129083633423,
-            y = 0.28743132948875427
+            x = 0.20092052221298218,
+            y = -0.034379832446575165
           }
         }
       },
@@ -158,6 +120,63 @@ return {
         }
       },
       name = "Box",
+      params = {}
+    },
+    {
+      components = {
+        Animation = {
+          animations = {
+            janitor_closet = {
+              {
+                sprite = "janitor_closet.png",
+                time = 1
+              }
+            }
+          },
+          current = "janitor_closet"
+        },
+        Position = {
+          world = {
+            x = 3,
+            y = 3
+          }
+        }
+      },
+      name = "Background",
+      params = {}
+    },
+    {
+      components = {
+        BoundingBox = {
+          extents = {
+            x = 0.086192429065704346,
+            y = 0.57966884970664978
+          },
+          offset = {
+            x = 0,
+            y = 0
+          }
+        },
+        Position = {
+          world = {
+            x = 0.34571129083633423,
+            y = 0.28743132948875427
+          }
+        }
+      },
+      name = "Box",
+      params = {}
+    },
+    {
+      components = {
+        Position = {
+          world = {
+            x = 0.19429710507392883,
+            y = 0.22746780514717102
+          }
+        }
+      },
+      name = "Oliver",
       params = {}
     }
   }

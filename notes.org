@@ -177,6 +177,8 @@ return 1;
 *** rendering to a texture
 texture = for sampling
 render buffer = no sampling, gpu can optimize it because it knows this
+** linux
+https://linux.die.net/lkmpg/x427.html
 * pin
 ** demo code tasks
 - a fade-in / depixelate shader (for waking up)
@@ -233,10 +235,10 @@ render buffer = no sampling, gpu can optimize it because it knows this
 ** 02/25: design from closet -> library
 - fix animations
 - write closet cutscene
-
 - write closet dialogue
 - make a preliminary list of locales + short descriptions
 - design the hub's layout
+
 - make a background for the hub's layout
 - popup when you leave the closet to give directions
 - cop art assets from another game:
@@ -251,11 +253,13 @@ render buffer = no sampling, gpu can optimize it because it knows this
 * ideas
 ** quests
 *** domestic dispute
+@domestic_dispute
 a total happenstance sidequest that begins with you in an empty room, and if you
 venture to the right place you can hear something interesting through the wall
 -- maybe even a litle knocking/bumping animation around the correct spot, or a
 tiny hum that gets louder the closer you get.
 *** chickenshit larry
+@chickenshit_larry
 chickenshit larry is the guard you meet in the twisted realm in the first
 interlude. he's hiding in a broom closet, because the twisted realm is just so
 twisted. if you kill him, that's it. he's done. you get a nice item in
@@ -267,6 +271,7 @@ larry also has friends in the hub. he was a vet of the korean war. didn't die
 there -- hell, the most action he got was on shore leave in seoul with some
 _kijichon_. 
 *** slowpoke tails
+@slowpoke_tails
 somewhere, there's a guy. he's posted up, leaned back in a chair, half
 lookin around the room real lazy. you walk by him, make a passing
 accidental eye contact, and he lights up. he waves you over real
@@ -383,10 +388,35 @@ hall" is going to be a sticking point past the 6th grade hall. if it
 is, it could be a there-are-many-ways-in situation and this is one of
 them. or i could flesh this out and have it be a more key piece of the
 story. 
+*** split dungeon?
+steal from tables and chairs! i loved the idea of a dungeon that took
+place in two worlds, with some puzzling involved. where the player
+must toggle between worlds in clever ways to beat the level. do a
+dungeon or a part of a dungeon like this!
+*** the immaculate reception
+@immaculate_reception
+
+he's making a way to communicate with the living. he thinks that with
+a few more pieces, he could do it. but material goods (or their
+essence, at least) are hard to come by around here. it's not a fetch
+quest. there will be different ways to get the parts, taking a couple
+paths of people you can talk to. when you bring him the parts, it
+doesn't work. and he turns from a silly, happy old man into something
+downtrodden and broken. not because it didn't work -- but because his
+facade must finally crumble. he can't pretend there is life in
+here. things almost never change, nor people. as he gives his speech,
+he's hit with a bout of senility. his thought trails off, and when he
+comes back he's back to his real self. because in this world, things
+don't change...
+
+(of course, there's a big fun battle when you hook up the receiver and
+pipe into a fucked up dimension. maybe there's an alien, or maybe it's
+bill clinton, or maybe it's your mom and dad as siamese twins).
 ** details
 a man who has nailed himself to the cross like christ, flayed his own skin raw
 because he believes himself to be in the christian version of hell. he can get
-down whenever he wants. 
+down whenever he wants. but don't do this, because this is verbatim
+from sandman. 
 
 souls swarthily introducing themselves by name, date of death, manner of death. 
 "hi, name's ted swanson. nineteen fifty three, wrapped my station wagon around a
@@ -409,6 +439,30 @@ menu: you want it to squirt open or i'm not sure the right word for it. the
 really satisfying animation where you tab onto something, it hangs for a second,
 and then it expands. the menu should be really clear. one of the best parts of
 CSH for me is that it's so easy to see everything that you can do.
+
+book smart = special attack, street smart = physical attack
+
+subverting expectations: 
+- souls are pretty much just normal people
+- souls are afraid of being haunted
+- the places that should be scary are normal, and the places that
+  should be normal are scary
+- double tricks (will be scary -- actually is normal! on closer
+  inspection, is twisted)
+
+normal situations devolving / spinning out of control -- found barbara
+ann -> stuck in endless art room loop, principal's office is lovely ->
+flogging and screaming and damnation.
+
+it would be funny if there were one fully 3D scene in the game. you
+walk up to the toiler, press E, and you are treated to a highly
+pixelated three dimensional scene of you sitting in the toilet
+stall. or maybe you eat some mushrooms and have a little samba...
+
+inconsequential scenes, many of them written, happen randomly --
+different from npc cycling or other random content, because not
+important to the plot, just tiny self contained stories and perhaps
+with a goody at the end. 
 ** worldbuilding
 what if each wing of the school had a particular theme or feeling? it would be
 pretty funny to walk into the seventh grade hall, not knowing what to expect,
@@ -417,18 +471,54 @@ of victorian england.
 
 souls are remarkably like ordinary people just trying to make it through their
 lives (or, well, afterlives)
-** hub
+** locations
+the world is a school. it is laid out with a small but dense central
+area, from which you can gain access to the side-parts of the game
+plus the three main halls.
+
+each of the dungeon halls is locked behind a huge pair of metal double
+doors.
+
+for the rest of the stuff, there is an auxiliary hallway where extra
+classrooms are -- like the art room and the music room. and there are
+a few main rooms that branch directly off of the hub. 
 *** lobby
 the lobby is a small, interstitial area. it seems fairly busy at all
 times. there's a mix of people just posted up here, people stopped in
 conversation, and people walking to and fro. 
 
+activity wise, it has the feeling of a town square. it is not hustle
+and bustle, not like a packed city. it feels like a small town. there
+are always people out, walking, chatting, but you certainly could and
+should get to know everybody that you see on a day to day basis.
+
+it's small, but it feels like the ceilings are huge. they aren't
+really that tall -- but to a fifth grade kid getting his first taste
+of middle school, they seem unimaginably tall. 
+
+the people of the game have a home. there is a main place where they
+hang out. and then, according to some internal logic, sometimes they
+come out. so you could meet someone in the jazz bar, have some
+conversation with them. when the time comes, they're hanging out in
+the lobby. sometimes they have a purpose, sometimes it's just a
+conversation. the npcs track their relationship with you, in a way
+that makes them feel alive. 
+**** people
 an old teacher's soul whose mind has not adjusted to the afterlife, and holds
 raving lessons in the town square
-*** jazz bar
+*** art room
+from barbara ann:
+boon and oliver walk into the art room. it's tucked off in a far corner of the
+hub, and when you walk in it is clear that it has not been occupied in a long
+time. the lights have a low, ominous hum, and they occasionally flicker. there
+are easels and paint supplies lying around. the teacher's desk is in the front
+left corner, and is scattered with papers. there are two rows of three long
+desks, for students to work on, that are covered in half finished drawings. 
+*** jazz +bar
 a jazz bar, located in the old the music room. it's poorly lit, not
 club-loud but loud and seemingly buzzing with people at all
 times. it is laid out like this:
+
 + m   ddd  t  bbbbbb   tt +
 | mm  ddd    tt       t   |
 + m   ddd  tt    x      tt+
@@ -439,12 +529,217 @@ t = table
 b = bar
 x = door
 
-there's a tight and funky groove going at all times. 
-*** shop
-*** cafeteria
-*** li
-*** library
+there's a tight and funky groove going at all times. the lights are
+always dim, and there are different pockets of people hanging
+around. always people tucked into the corner, making moves over
+drinks and whispering conspiratorially. 
+*** computer lab
+it's apparent that this is _not_ just a typical middle school computer
+lab. i mean, in the center of the room there is an island perimetered
+by old workstations. but the sides of the room are strewn with parts,
+half baked inventions, capacitors, resistors, old hardened solder
+stuck to nearly every surface. on the far side of the room on the
+right wall, there's what appears to be a satellite dish, sweeping back
+and forth slowly like a sprinkler. 
 
+on the far left wall, there's a teacher's desk. on the far right wall,
+there's a glass-paned door taunting you with the thought of outside. 
+
+all of the workstations are old, nicotine-yellow things, wheezing and
+grunting their way through yet another agonizing boot cycle, builtin
+CRTs pushing blurry word processors and cad tools straight into your
+eye holes. you can't imagine a time when these computers could have
+ever done something useful. but clearly something useful they are
+indeed doing -- you can practically hear them from outside, and they
+don't stop. 
+
+the lab is headed by one j.c. wearden. he doesn't see you when you
+walk in, because he's nearly blind in both eyes. cataracts. would've
+been convenient if he died before they set in, since such things have
+a tendency to stick around when you're dead, but alas. he's a spry old
+man, like the nail gun man on youtube, but is clearly quite old. he's
+still got a full head of thin white hair, and he is very friendly and
+jovial. he'd love to help you, as long as helping you involved a hot
+soldering gun on cold tin.
+
+and he's a man that loves to reminisce about living. he was a navy
+man, not in the second world war or vietnam, but in those days where a
+man could join the merchant marines and haul keel and drink beer and
+find a little huhu on shore leave and come back with his oats sewn
+ready to find a nice schoolteacher to settle down with. and oats were
+indeed sewn, beer indeed drunk, and he would love to tell young'ns
+about this particular time in korea.....
+
+@immaculate_reception happens here with JC
+*** lost and found
+the lost and found is a small booth, tucked away. it's manned by a
+single person. it's the game's equipment shop. when you first meet the
+shopkeep, it really is a lost and found. but if you chat him up a bit,
+you begin to realize that all things that are lost can be found quite
+quickly for the right price. as the game progresses, you realize that
+even things which are not lost can be found.
+
+it's very small -- not even a proper room. it's more akin to a gas
+station in the hood, where there's a tiny room with a sheet of glass
+between it and the outside world. that room is packed with all kinds
+of shit, hundreds of different brands of cigarettes and condoms and
+dick pills and lotto tickets. metaphorically, of course. and the
+cashier comes up, more or less opens up a slot so you can see his
+eyes, and he growls at you: "whaddya want, kid?"
+
+but the shopkeep is a _businessman_, and business may indeed be done
+with him. he knows what people need and how to get it and how much
+they're willing to pay for it. picturing him as carl from ATHF. 
+*** organic shop
+there's a small, homegrown organic shop. they stock all the usual
+suspects -- kombucha, homebrewed beer, kale, tea tree oil, cloudy
+juice, the whole nine yards. it's an item shop. the woman behind the
+counter is approaching middle age, but still youthful. she has a sweet
+twinkle in her eye. she wraps up her hair in a clean green
+headband. her name is marcia, or mable, or something else quaint and
+endearing. 
+
+it is a quiet place, as most small organic shops are. the market is
+small, but there are enough people who want her goods to keep it
+afloat. 
+
+it's located in what used to be the school's garden. kind of outside,
+kind of inside. it's perpetually spring. there are a few rows of
+raised beds with plants in various states of growth. on the close side
+is a little tent that marcia stays under. she keeps a couple of
+coolers, packed and unpacked every night. she smiles when you walk
+in, and there are a few friendly-looking people milling about, tending
+to the garden, stocking shelves.
+
+marcia was a schoolteacher until she died. cancer, immediate and
+terminal, she went from planning a trip to italy to dead in the span
+of three months. in life, she never figured out how to cope with the
+fact that her death was imminent. she was a sweet and caring woman,
+but her tenderness felt like a heavy weight when it was herself who
+was so badly off. and, well, souls don't change too much when they
+die. no one changes too much when they're alive, either, but a lot
+less than when they die. so she still carries that. but mostly, she's
+just the shopkeeper. always wanted to live a farming, commune kind of
+lifestyle with a whole bundle of sweet kids and people all around
+her. so this was close enough. 
+
+by the by: shops in limbo work similarly to how they work in
+shadesmar. there are no physical goods trading hands, per se, but
+rather the essences of goods that exist in the physical world. how
+they are acquired unknown and unexplained, but the souls of limbo
+clearly find goods useful and enjoyable. 
+*** library
+the library is the de facto base of the game's arch, the librarian. it
+feels more like the private lair of a multi millionaire than a simple
+elementary school library. there are leather chairs, fine wooden
+tables next to them. the bookshelves are made of mahogany carved and
+wrought into patterns like marble. the carpet is a lush deep red, not
+dingy or tacky but refined. the lights are dim but not dark. it's a
+place of focus, a haven.
+
+there are no npcs here. it's just the librarian -- but that's enough,
+because the librarian always has something interesting to say. whether
+it's about what's going on in the world, man, god, law, there are
+plenty of conversations to have with him.
+*** cafeteria
+the cafeteria is a place that feels larger than it really is. on the
+back wall, there is a hot bar. you walk through, get your black eyed
+peas, your chicken nuggets. most of the space is in the middle, which
+is filled with a grid of long lunch tables. they're all one solid
+piece, benches instead of chairs. the tables aren't packed, though. it
+has the feeling of an interstitial place, a place where people come
+when they have time to grab a bite to eat. people are spread out in
+small groups, one to four, throughout the tables. there are six
+tables. 
+
+seedy things don't happen here. seedy things happen in the jazz
+bar. the cafeteria is too quiet, too open to do anything you wouldn't
+want other people knowing about.
+*** principal's office
+the principal's office is a terrible place. it is a haunted place,
+which is stupid, because you're already in the underworld -- and yet
+haunted it is. everyone in limbo is afraid of it. built on some kind
+of indian burial ground. hear of people who went in and never came
+out. some say every limbo (yeah, there are many) has its own portal to
+hell, and principal's office is resident such portal. some say soul of
+every headmaster cum principal cum slavedriver has been exiled to
+eternal damnation there, destined to shuffle paperwork and flay own
+skin et cetera for eternity. 
+
+whatever case may be, it's off limits. restricted. no fly zone, and
+especially not for you. yeah, of course some folks know how to get in
+there -- would be bad if shit went down and no way in, probably
+librarian and other trusted few -- but sure as hell not letting you
+get in there let out evil spirits to haunt our asses.
+
+as to what actually goes on in here, not sure. 
+- could lead to one of the dungeons
+- may need to do a secret heist kind of deal to break in and steal
+  something from here
+- maybe loved one snuck in and has not returned
+- maybe you walk in and it's this totally lovely place
+- maybe you walk in and it's this totally lovely place, but as you go
+  to leave, you're just brought into a slightly warped version of the
+  office. and as you leave that one, a slightly more warped
+  version. circles of hell and whatnot, ends up to get out you have to
+  go through fucked up area of souls nailed to floor, rats under metal
+  buckets, flogging and screaming and all the rest. 
+- maybe it's just a kind of spooky, haunted place where the battles
+  are old headmasters -- some side quest, loot at end. 
+*** bathroom
+the bathroom is not an important place. there's a men's room and a
+women's room -- the latter strictly off limits to young men such as
+yourself, altho the role of gender vis-a-vis the whole being dead
+thing still a bit murky for boon. it's gray, overwhelmingly gray, and
+is nothing more than two stalls in the far left corner, three urinals,
+and a couple of mounted sinks. 
+
+the bathroom is meant for a couple of good and funny scenes, maybe an
+easter egg (not a brown one), and at best a waypoint in a quest.
+
+some ideas:
+people of mixed genders in here, proclaiming that traditional gender
+roles start to devolve when you're, you know, _dead_
+
+walk in on some kids smoking cigarettes in here, boon says, aren't we
+going to get in trouble if someone catches us? one kid says, look,
+kid, i was sixty two when i died. just came back here this
+way. another one says, what're they gonna do, _kill_ us? teacher
+bursts through door, boon's pants are shat. WHAT ARE YOU KIDS DOING IN
+HERE?? then teach cracks a smile, says ...because you told me you'd
+have a smoke with me this afternoon, all light up, good time. 
+
+someone who died pushing a turd and is now eternally convinced that he
+has to drop a big one. any time you come in the bathroom, he's sitting
+in the first stall trying to squeeze one out. 
+*** gym
+walk into the gym. it's shaped just like an L, with the short side
+being an outcropping where the welcome desk is. scan your card, and
+you're in. first thing you see past the welcome desk is two long
+columns of treadmills all the way up the place, almost the whole
+length. on the far end, there are two sectioned-off spots with foam
+mats on the floor. the left has a single dumbbell and bench on it --
+it's labeled:
+
+POWERLIFTING STATION. ABSOLUTELY NO GRUNTING. 
+
+the right side is an instructor running one of those stupid guided
+dance fitness classes. HOLD IT, HOLD IT, JUST THIRTY MORE SECONDS,
+LET'S GO WE'RE AT THE TOP AND HOOOOOOLD IT, etc, etc. when you talk to
+him, the boots and cats cuts out like a scratched record and he goes,
+wait, wait, hold on, man. you saw i was at work. what the hell is
+wrong with you? you wastin all these people's damn time. almost fourth
+wall break.
+
+and the last thing on the far wall is a door, which leads into a
+kickboxing room. there are a couple people kickboxing in here,
+punching bags, stretching. inside here is the battle tower. 
+*** wood shop
+a place where all the deceased dad's dads go? DADS ONLY
+a place for people mawed and mangled in heavy machinery accidents?
+a pseudo-factory which produces all of limbo's goods -- there's a
+station where souls are assembling the idea of wood into the idea of a
+chair, then shipping that idea of a chair down the street...
 ** themes
 when bad things happen to you, you want desperately to return to your old
 life. but you can't -- not even if you solve the bad thing and return your
@@ -456,6 +751,9 @@ people cannot fundamentally change themselves (powerlessness, fate, determinism)
 -- they can become different, but they cannot change their own nature. perhaps
 earth shattering events can change a person's nature, but a person cannot cause
 these events or harness their power. 
+
+the dead go on as if they were living, but all of their plans are
+futile because of the nature of the world they live in.
 ** tangents
 even though gpt-3 is in some sense just recombining human patterns, it is still
 creating art. the strangeness of a genetic algorithm influencing art created by
@@ -537,6 +835,168 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 03/10/2021
+yak shaving call stack:
+- i want to test out the hub background in game
+- because it's not bottom left oriented, i need to teleport the player
+  to the correct position to see it
+- i want to use doors to do this
+- door cannot teleport player when new level is loaded, because player
+  is reloaded
+- cannot just remove player from state file, because may need
+  scene-specific configurations
+
+ok, here's the thing. you should never need to store any player
+specific data in your scenes. the player isn't tied to a scene. what
+you're going to store is:
+- current scene state, for all scenes
+- state table
+- player data (team, inventory, whatever)
+
+the only place you're relying on scene data for player is in the
+janitor's closet, where you use it to give him an initial
+animation. don't do that. 
+
+the player should always exist. just toggle whether hidden. create him
+in the editor for now -- could add him to the bootstrapping code, but
+i think the bootstrap code will stick around for a while (i.e. may not
+want to stick more disparate development specific code in there). when
+you're running the game proper, it will be something like: when you
+choose your load state from the list of entries, load it, create
+player, load player data, run game. 
+
+-- 
+
+update: i shaved the yak! 
+
+now, add hotloading of backgrounds (will be generally useful)
+** 03/09/2021
+here's a very good idea which just struck me: the gym is full of souls
+exercising. all of them getting tha tummy just a little bit
+tighter. sucking a little more flab from their collective asses before
+bikini season. but they're dead. they don't even HAVE a physical
+form. another theme: people sleepwalking through life + being tossed
+around by events and whims beyond their control.
+
+wait, before i go on. check out this game:
+https://store.steampowered.com/app/1508530/Epiphany_City/
+made by the ssbm tutorials guy and friends. look at it -- it doesn't
+look junky, but it looks amateurish. say this not to denigrate game or
+developers, but to say that he is proud enough of this game to put it
+out there to his followers and it is gaining traction. be proud of
+what you're making! it is a good thing. 
+
+also, mango said something along the lines of: why are you thinking
+about forty things when you suck? when you suck, you should just try
+to think about, say, six things. or one thing, but really well. all
+this to say: don't stress too hard over the fine fine details. 
+** 03/07/2021
+the cafeteria + npc cycling. so there are a lot of cases where i want
+the world to be dynamic, with regard to who's in it and where they
+are. cafeteria is one of those places. is this a good idea? is the
+game large enough for this? 
+
+one problem is that there are only going to be four "times" that the
+player is in the hub. before and after each dungeon. so, i can cycle
+people out, but are they really going to be spending 3 hours in the
+hub each in between? probably not -- resolve a few souls, maybe twenty
+minute a pop, maybe do an extra or two, and then onto the next
+dungeon. 
+
+so i guess this to say: this is supposed to be a tight
+experience. every interaction should be meaningful. both from the
+perspective of moving the game forward and saying what you want to
+say. cycling works better in tables and chairs or some such. 
+
+this brings up another question about the world: do npcs always stay
+in the same place all the time? i mean, there will be some walking
+ones, like the ones in the lobby that are passing through. but if
+there is not an explicit cycling of npcs in a location, can they at
+least move around? surely, right? it makes the world feel much more
+alive. i think it should be a bunch of modular mutually exclusive(?)
+configurations, like:
+- is jenny in the room?
+- are mike and sarah standing together?
+- is max standing with mike+sarah or jenny?
+
+and then you can plug these together, either in a fixed way or pseudo
+randomly.
+** 03/06/2021
+i think i figured out how to tie several game mechanics together very
+nicely: resolving souls. the souls are in limbo because they have
+unresolved tension. the second core part of the game is going around
+limbo and resolving these tensions, letting the souls pass on to the
+spiritual realm. 
+
+and the second part of this: when you resolve souls, they break off a
+piece before they go and give it to you to use in battle. so this is
+how you get new creatures. 
+
+simultaneously:
+- solves the problem of getting new creatures in a short game
+- makes exploring world an actual game mechanic
+- built in rewards for exploring the world and talking to people
+- really neat setups for side quests
+
+--
+
+how do i want the cafeteria to be laid out? so obviously, i'm thinking
+of callaway high school. lines around the side, come back out the
+middle, and then you just got a couple rows of tables on each half of
+the main part. but the problem with this is that...there's no
+character to it? there's nothing separating the different tables
+visually. 
+
+i think in most places you want to have, tops, six or seven people
+hanging out there. any more and it becomes too overwhelming. so if the
+cafeteria is just one big area, you can't do that. 
+
+but, i also want to keep with the school theme. so it wouldn't make
+sense if you walk into the "cafeteria" and it's a smokey crust punk
+dive bar. it should feel at least in part like a school. 
+
+another idea: it's a cafeteria, but it's been split up shanty town
+style into a couple of different shops. i'm not sure how this would
+work visually. i feel like any kind of secondary structure / shanty
+town on top of the cafeteria would make it not look like a cafeteria. 
+
+maybe the lobby is really what you want the cafeteria to be. a place
+of milling around, coming and going. even though that's how a
+cafeteria feels moreso than a lobby. or maybe the lobby is just pretty
+much nothing, just a to-and-fro kind of deal. i like the cafeteria
+being more of a hotbed because there is a reason for people to be
+there. i can add little locales and rooms to the cafeteria where
+people hang out. but is that confusing...? would it not be easier if
+every room that comes off of the main hub is its own distinct locale?
+no subrooms? i guess it's not too hard...
+
+ok, think i'm making the call that the cafeteria is just a cantina. 
+** 03/05/2021
+the people of the game have a home. there is a main place where they
+hang out. and then, according to some internal logic, sometimes they
+come out. so you could meet someone in the jazz bar, have some
+conversation with them. when the time comes, they're hanging out in
+the lobby. sometimes they have a purpose, sometimes it's just a
+conversation. the npcs track their relationship with you, in a way
+that makes them feel alive. 
+
+is this a game mechanic? if you want something to be a part of the
+core game loop, you need to incentivize it somehow. like, guide the
+players to the idea that that thing is a thing they can and should
+do. i don't forsee people walking around and talking to people on
+their own accord if it doesn't do something for them. another way to
+put it: you can have this cool + complicated system where npc tracks
+relationship, you have maybe dozens of conversations that are possible
+with them...but why are they going to talk to this one npc twenty
+times? what is compelling them to do so?
+
+never played persona but i think i need to, because i think this is
+what its core gameplay loop is like: do some battling, and then
+explore the world you live in until it is time for more battles. but
+how do they hook you in?
+
+i think that until now i've just pictured the world as people standing
+around waiting for you to talk to them. but no reason to talk. 
 ** 02/28/2021
 who is this kid? 
 
@@ -3444,58 +3904,57 @@ working themselves out." the librarian says
 
  ultimately, boon and oliver take the hint.
 *** the art room
- boon and oliver walk into the art room. it's tucked off in a far corner of the
- hub, and when you walk in it is clear that it has not been occupied in a long
- time. the lights have a low, ominous hum, and they occasionally flicker. there
- are easels and paint supplies lying around. the teacher's desk is in the front
- left corner, and is scattered with papers. there are two rows of three long
- desks, for students to work on, that are covered in half finished drawings. 
+boon and oliver walk into the art room. it's tucked off in a far corner of the
+hub, and when you walk in it is clear that it has not been occupied in a long
+time. the lights have a low, ominous hum, and they occasionally flicker. there
+are easels and paint supplies lying around. the teacher's desk is in the front
+left corner, and is scattered with papers. there are two rows of three long
+desks, for students to work on, that are covered in half finished drawings. 
 
- "something doesn't feel right in here, sir!"
+"something doesn't feel right in here, sir!"
 
- "i'm not even dead and i can feel it," says boon. "and why is this place still
- an art class? the cafeteria here didn't look like the cafeteria in my world."
+"i'm not even dead and i can feel it," says boon. "and why is this place still
+an art class? the cafeteria here didn't look like the cafeteria in my world."
 
- "it's hard for me to remember, but things are different here...some things can
- change very quickly in this realm, but some things kind of, uhm, _push back_
- against change..." oliver replies
+"it's hard for me to remember, but things are different here...some things can
+change very quickly in this realm, but some things kind of, uhm, _push back_
+against change..." oliver replies
 
- "well, this place isn't very big. i can't see where this girl would be
- hiding. and besides, we don't even know if she's who we're looking for. maybe we
- should go back to the cafeteria?"
+"well, this place isn't very big. i can't see where this girl would be
+hiding. and besides, we don't even know if she's who we're looking for. maybe we
+should go back to the cafeteria?"
 
- "i have a funny feeling about this place! when i was alive, my daddy would tell
- me: if you want to have an adventure, keep your eyes open and be patient. well,
- let's keep our eyes open."
+"i have a funny feeling about this place! when i was alive, my daddy would tell
+me: if you want to have an adventure, keep your eyes open and be patient. well,
+let's keep our eyes open."
 
- "okay. well, let's look around then."
+"okay. well, let's look around then."
 
- they look around a bit. inspecting the teacher's desk shows the teacher's
- personal diary. they are dissatisfied with life. their students don't care,
- their parents don't care, they want to dedicate themselves to something real but
- the whole world just feels like bullshit @polish. there are childish and
- innocent drawings scattered around the desks. but overall, nothing sticks out as
- overly strange.
+they look around a bit. inspecting the teacher's desk shows the teacher's
+personal diary. they are dissatisfied with life. their students don't care,
+their parents don't care, they want to dedicate themselves to something real but
+the whole world just feels like bullshit @polish. there are childish and
+innocent drawings scattered around the desks. but overall, nothing sticks out as
+overly strange.
 
- on the back wall, there is a large painting. it's a knot, worked in a finely
- detailed but impressionistic oil painting. the knot is loose, and it looks like
- there is a thread on the knot that would unravel the whole thing if you gave it
- a gentle tug. 
+on the back wall, there is a large painting. it's a knot, worked in a finely
+detailed but impressionistic oil painting. the knot is loose, and it looks like
+there is a thread on the knot that would unravel the whole thing if you gave it
+a gentle tug. 
 
- boon looks at the painting and says to himself, "oh? what's this?"
- he reaches his hand out, half in a trance, and goes as if to pull on the
- knot. "it's almost as if you could undo it..."
+boon looks at the painting and says to himself, "oh? what's this?"
+he reaches his hand out, half in a trance, and goes as if to pull on the
+knot. "it's almost as if you could undo it..."
 
- as he moves his hand down, the room begins to fuzz out. oliver asks him a
- question in passing, but he can't hear it over the growing thrumming and pulsing
- of the room. it pulses in and out like it has a beating heart of its own.
+as he moves his hand down, the room begins to fuzz out. oliver asks him a
+question in passing, but he can't hear it over the growing thrumming and pulsing
+of the room. it pulses in and out like it has a beating heart of its own.
 
- "...boon....wh....you.....ing?" oliver is almost completely inaudible now
+"...boon....wh....you.....ing?" oliver is almost completely inaudible now
 
- boon's hand comes all the way down on the painting. the world warps and turns
- and contracts to a point. boon hears oliver yelling. but it's too late, and as
- quickly as it expanded it contracts back to normal size.
-
+boon's hand comes all the way down on the painting. the world warps and turns
+and contracts to a point. boon hears oliver yelling. but it's too late, and as
+quickly as it expanded it contracts back to normal size.
 *** come take my hand
 when boon and oliver get their bearings, they realize that they are not in the
 room they were just in. they are in a closet of old, forgotten paintings. chief
@@ -3810,6 +4269,13 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
+CLOCK: [2021-03-10 Wed 22:23]
+CLOCK: [2021-03-09 Tue 22:52]--[2021-03-10 Wed 00:08] =>  1:16
+CLOCK: [2021-03-08 Mon 22:44]--[2021-03-08 Mon 23:51] =>  1:07
+CLOCK: [2021-03-07 Sun 21:10]--[2021-03-07 Sun 21:50] =>  0:40
+CLOCK: [2021-03-06 Sat 22:34]--[2021-03-07 Sun 00:09] =>  1:35
+CLOCK: [2021-03-05 Fri 16:24]--[2021-03-05 Fri 16:58] =>  0:34
+CLOCK: [2021-03-05 Fri 14:05]--[2021-03-05 Fri 14:16] =>  0:11
 CLOCK: [2021-03-04 Thu 23:15]--[2021-03-05 Fri 00:38] =>  1:23
 CLOCK: [2021-03-04 Thu 13:44]--[2021-03-04 Thu 15:52] =>  2:08
 CLOCK: [2021-03-03 Wed 23:39]--[2021-03-04 Thu 00:40] =>  1:01
@@ -3937,5 +4403,6 @@ glfw
 freetype2
 luajit
 python-pip
+tdbuild
 which
 gcc

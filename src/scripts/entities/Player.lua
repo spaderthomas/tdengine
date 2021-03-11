@@ -6,6 +6,9 @@ function Player:init(params)
    tdengine.register_collider(self.id)
    tdengine.register_player(self.id)
    self.speed = tdengine.vec2(.005, .005)
+
+   self:persist()
+   self:should_save(false)
 end
 
 function Player:handle_movement()

@@ -74,6 +74,51 @@ void create_texture(std::string path) {
 	}
 }
 
+void destroy_texture(std::string name) {
+	auto& asset_manager = get_asset_manager();
+	auto texture = asset_manager.get_asset<Texture>(name);
+	if (!texture) return;
+
+	auto sprites = asset_manager.get_all<Sprite>();
+	for (auto sprite : sprites) {
+		if (sprite->atlas == texture) {
+			destroy_sprite(sprite->name);
+		}
+	}
+
+	glDeleteTextures(1, &texture->handle);
+	free(texture);
+}
+
+void destroy_sprite(std::string name) {
+	auto& asset_manager = get_asset_manager();
+	auto sprite = asset_manager.get_asset<Sprite>(name);
+	if (!sprite) return;
+
+	free(sprite);
+}
+
+void add_background(std::string name, std::string path) {
+	auto& asset_manager = get_asset_manager();
+	
+	create_texture(path);
+	auto texture = asset_manager.get_asset<Texture>(name);
+
+	Sprite* sprite = new Sprite;
+	sprite->atlas = texture;
+	sprite->height = texture->height;
+	sprite->width = texture->width;
+	sprite->num_channels = texture->num_channels;
+	sprite->tex_coords = {
+		1, 1,
+		1, 0,
+		0, 0,
+		0, 1
+	};
+	
+	asset_manager.add_asset<Sprite>(name, sprite);
+}
+
 void create_texture_atlas(std::string assets_dir) {
 	tdns_log.write("Creating an atlas from files at " + assets_dir, Log_Flags::File);
 	
@@ -205,24 +250,14 @@ void init_assets() {
 	tdns_log.write("Loading backgrounds from " + backgrounds.path, Log_Flags::File);
 	directory_iterator it(backgrounds.path);
 	for (it; it != directory_iterator(); ++it) {
-		create_texture(it->path().string());
-		
-		auto name = name_from_full_path(it->path().string());
-		auto texture = asset_manager.get_asset<Texture>(name);
+		auto path = it->path().string();
+		auto name = name_from_full_path(path);
+		add_background(name, path);
 
-		Sprite* sprite = new Sprite;
-		sprite->atlas = texture;
-		sprite->height = texture->height;
-		sprite->width = texture->width;
-		sprite->num_channels = texture->num_channels;
-		sprite->tex_coords = {
-			1, 1,
-			1, 0,
-			0, 0,
-			0, 1
-		};
-
-		asset_manager.add_asset<Sprite>(name, sprite);
+		file_watcher.watch(path, [name = name, path = path]() {
+			destroy_texture(name);
+			add_background(name, path);
+		});
 	}
 }
 
