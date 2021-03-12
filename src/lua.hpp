@@ -15,6 +15,11 @@ struct LuaState {
 	sol::table get_component(int id);
 	sol::table get_component(Component* component);
 	sol::table get_component(int entity, std::string which);
+
+	std::string scripts;
+	std::string libs;
+	std::string core;
+	std::string animations;
 } Lua;
 
 void init_lua();

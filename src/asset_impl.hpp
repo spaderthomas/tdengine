@@ -42,41 +42,47 @@ void Texture::bind() {
 	glBindTexture(GL_TEXTURE_2D, handle);
 }
 
-void create_texture(std::string path) {
-	std::string texture_name = name_from_full_path(path);
-	if (is_valid_filename(texture_name)) {
-		Texture* texture = new Texture;
+Texture* create_texture(std::filesystem::path path) {
+	if (!path.has_filename()) return nullptr;
+	if (path.extension() != ".png") return nullptr;
 
-		stbi_set_flip_vertically_on_load(true);
-		unsigned char* data = stbi_load(absolute_path(path).c_str(), &texture->width, &texture->height, &texture->num_channels, 0);
-		if (data) {
-			defer { free(data); };
-			// Now, create all the OpenGL internals and point it to the newly created texture
-			glGenTextures(1, &texture->handle);
-			glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
-			glBindTexture(GL_TEXTURE_2D, texture->handle);
+	Texture* texture = new Texture;
 
-			// Some sane defaults
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	stbi_set_flip_vertically_on_load(true);
+	unsigned char* data = stbi_load(path.string().c_str(), &texture->width, &texture->height, &texture->num_channels, 0);
+	if (data) {
+		defer { free(data); };
+		// Now, create all the OpenGL internals and point it to the newly created texture
+		glGenTextures(1, &texture->handle);
+		glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
+		glBindTexture(GL_TEXTURE_2D, texture->handle);
 
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
-			glGenerateMipmap(GL_TEXTURE_2D);
+		// Some sane defaults
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-			auto& asset_manager = get_asset_manager();
-			asset_manager.add_asset<Texture>(texture_name, texture);
-		} else {
-			std::string msg = "stb_image failed to load an image. Path was: " + path;
-			tdns_log.write(msg);
-		}
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, texture->width, texture->height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+
+		auto& asset_manager = get_asset_manager();
+		asset_manager.add_asset<Texture>(path.filename(), texture);
+		return asset_manager.get_asset<Texture>(path.filename());
+	} else {
+		std::string msg = "@stb_image_failure: " + path.string();
+		tdns_log.write(msg);
 	}
+
+	return nullptr;
 }
 
-void destroy_texture(std::string name) {
+void destroy_texture(std::filesystem::path path) {
+	if (!path.has_filename()) return;
+	if (path.extension() != ".png") return;
+
 	auto& asset_manager = get_asset_manager();
-	auto texture = asset_manager.get_asset<Texture>(name);
+	auto texture = asset_manager.get_asset<Texture>(path.filename());
 	if (!texture) return;
 
 	auto sprites = asset_manager.get_all<Sprite>();
@@ -87,6 +93,7 @@ void destroy_texture(std::string name) {
 	}
 
 	glDeleteTextures(1, &texture->handle);
+	asset_manager.assets.erase(path.filename());
 	free(texture);
 }
 
@@ -98,13 +105,18 @@ void destroy_sprite(std::string name) {
 	free(sprite);
 }
 
-void add_background(std::string name, std::string path) {
+void add_background(std::filesystem::path path) {
+	if (!path.has_stem()) return;
+	if (path.extension() != ".png") return;
+
 	auto& asset_manager = get_asset_manager();
-	
-	create_texture(path);
-	auto texture = asset_manager.get_asset<Texture>(name);
+
+	// Backgrounds get their own texture -- too big for an atlas.
+	auto texture = create_texture(path);
+	if (!texture) return;
 
 	Sprite* sprite = new Sprite;
+	sprite->name = path.stem();
 	sprite->atlas = texture;
 	sprite->height = texture->height;
 	sprite->width = texture->width;
@@ -116,7 +128,7 @@ void add_background(std::string name, std::string path) {
 		0, 1
 	};
 	
-	asset_manager.add_asset<Sprite>(name, sprite);
+	asset_manager.add_asset<Sprite>(sprite->name, sprite);
 }
 
 void create_texture_atlas(std::string assets_dir) {
@@ -138,42 +150,46 @@ void create_texture_atlas(std::string assets_dir) {
 	std::vector<stbrp_rect> rects;
 	std::vector<Name_And_ID> sprite_ids;
 	std::vector<unsigned char*> image_data;
+	defer {
+		for (auto stbi_data : image_data) { stbi_image_free(stbi_data); }
+	};
 
 	// Go through each sprite, register it in the asset table, and collect its rect data
 	int rect_id = 0;
 	for (directory_iterator iter(assets_dir); iter != directory_iterator(); ++iter) {
-		std::string asset_path = iter->path().string();
+		const auto& path = iter->path();
 
-		// If it's a regular file, check that it's a PNG and if so, load it
-		if (is_regular_file(iter->status())) {
-			if (!is_png(asset_path)) { continue; }
-
-			auto& asset_manager = get_asset_manager();
+		// Guard against the subdirectories + ensure only PNGs
+		if (!path.has_filename()) continue;
+		if (path.extension() != ".png") continue;
 			
-			Sprite* sprite = new Sprite;
-			sprite->atlas = atlas;
-			sprite->name = name_from_full_path(asset_path);
+		Sprite* sprite = new Sprite;
+		sprite->atlas = atlas;
+		sprite->name = path.stem();
 
-			asset_manager.add_asset<Sprite>(sprite->name, sprite);
+		asset_manager.add_asset<Sprite>(sprite->name, sprite);
 						
-			// Load the image data, create a rectangle for it
-			unsigned char* data = stbi_load(asset_path.c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
-			if (data) {
-				image_data.push_back(data);
-				stbrp_rect rect;
-				rect.id = rect_id++;
-				rect.w = sprite->width;
-				rect.h = sprite->height;
-				rects.push_back(rect);
-				Name_And_ID new_id = { sprite->name, rect.id };
-				sprite_ids.push_back(new_id);
-			}
+		// Load the image data, create a rectangle for it
+		unsigned char* data = stbi_load(path.string().c_str(), &sprite->width, &sprite->height, &sprite->num_channels, 0);
+		if (data) {
+			image_data.push_back(data);
+			
+			stbrp_rect rect;
+			rect.id = rect_id++;
+			rect.w = sprite->width;
+			rect.h = sprite->height;
+			rects.push_back(rect);
+			
+			Name_And_ID new_id = { sprite->name, rect.id };
+			sprite_ids.push_back(new_id);
 		}
 	}
 
 	// Pack the rectangles
-	stbrp_context* context = (stbrp_context*)calloc(1, sizeof(stbrp_context)); defer { free(context); };
-	stbrp_node* nodes = (stbrp_node*)calloc(REGULAR_ATLAS_SIZE, sizeof(stbrp_node)); defer { free(nodes); };
+	stbrp_context* context = (stbrp_context*)calloc(1, sizeof(stbrp_context));
+	defer { free(context); };
+	stbrp_node* nodes = (stbrp_node*)calloc(REGULAR_ATLAS_SIZE, sizeof(stbrp_node));
+	defer { free(nodes); };
 	stbrp_init_target(context, REGULAR_ATLAS_SIZE, REGULAR_ATLAS_SIZE, nodes, REGULAR_ATLAS_SIZE);
 	stbrp_pack_rects(context, rects.data(), rects.size());
 
@@ -250,13 +266,13 @@ void init_assets() {
 	tdns_log.write("Loading backgrounds from " + backgrounds.path, Log_Flags::File);
 	directory_iterator it(backgrounds.path);
 	for (it; it != directory_iterator(); ++it) {
-		auto path = it->path().string();
-		auto name = name_from_full_path(path);
-		add_background(name, path);
+		auto path = it->path();
+		add_background(path);
 
-		file_watcher.watch(path, [name = name, path = path]() {
-			destroy_texture(name);
-			add_background(name, path);
+		file_watcher.watch(path.string(), [path = path]() {
+			std::cout << "updating background: " << path.string() << std::endl;
+			destroy_texture(path);
+			add_background(path);
 		});
 	}
 }

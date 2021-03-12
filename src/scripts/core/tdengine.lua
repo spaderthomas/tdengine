@@ -1,3 +1,5 @@
+inspect = require('inspect')
+
 -- Callbacks
 function update_entities(dt)
    for id, entity in pairs(tdengine.entities) do
@@ -604,6 +606,24 @@ function tdengine.load_dialogue(name)
    
    return dialogue
 end
+
+function tdengine.load_animations()
+   local absolute = tdengine.paths.absolute('src/scripts/animations/')
+   local animations = tdengine.scandir(absolute)
+   for index, file in pairs(animations) do
+	  local name = string.sub(file, 1, -5)
+	  package.loaded[name] = nil
+	  local status, animation = pcall(require, name)
+	  
+	  if not status then
+		 print('@cannot_require_animation: ' .. file)
+		 return
+	  end
+
+	  tdengine.animations[name] = animation
+   end
+end
+
 -- Utilities
 tdengine.colors = {}
 tdengine.colors.red =   { r = 1, g = 0, b = 0, a = 1 }
@@ -667,8 +687,10 @@ function tdengine.scandir(dir)
    local i, t, popen = 0, {}, io.popen
    local pfile = popen(command)
    for filename in pfile:lines() do
-	  i = i + 1
-	  t[i] = filename
+	  if filename ~= '.' and filename ~= '..' then 
+		 i = i + 1
+		 t[i] = filename
+	  end
    end
    pfile:close()
    return t
@@ -870,4 +892,94 @@ function tdengine.previous_layout()
    
    local layout = tdengine.layout_stack[tdengine.layout_index]
    tdengine.use_layout(layout)   
+end
+
+function tdengine.initialize()
+   tdengine.screen('1080')
+   
+   -- Set up globals
+   tdengine.entities = {}
+   tdengine.components = {}
+   tdengine.actions = {}
+   tdengine.state = {}
+   tdengine.scenes = {}
+   tdengine.animations = {}
+   tdengine.triggers = {}
+   tdengine.on_interactions = {}
+   tdengine.loaded_scene = { name = '', path = '' }
+   tdengine.active_cutscene = nil
+
+   tdengine.current_layout = 'default'
+   tdengine.layout_stack = { 'default' }
+   tdengine.layout_index = 1
+   
+   tdengine.console_pipe = ''
+   tdengine.load_console_shortcuts()
+
+   -- Load up static data
+   tdengine.load_animations()
+end
+
+function tdengine.load_console_shortcuts()
+   local console_shortcuts = {
+	  scene = {
+		 help = 'load a scene from a template located in src/scripts/scenes/templates',
+		 proc = function(...)
+			--tdengine.terminate_cutscene()
+			tdengine.load_scene_from_template(...)
+		 end
+	  },
+	  cutscene = {
+		 help = 'load and begin a cutscene from a file located in src/scripts/cutscenes',
+		 proc = function(...) tdengine.do_cutscene_from_name(...) end
+	  },
+	  ded = {
+		 help = 'load a scene into the dialogue editor',
+		 proc = function(name)
+			tdengine.layout('ded')
+			local editor = tdengine.find_entity('Editor')
+			editor:ded_load(name)
+		 end
+	  },
+	  layout = {
+		 help = 'use a predefined imgui layout',
+		 proc = tdengine.layout
+	  },
+	  save_layout = {
+		 help = 'save current imgui configuration as a layout',
+		 proc = tdengine.save_layout
+	  },
+	  q = {
+		 help = 'run a script as defined in src/scripts/layouts/console',
+		 proc = function(name)
+			local module_path = 'layouts/console/' .. name
+			package.loaded[module_path] = nil
+			local status, err = pcall(require, module_path)
+			if not status then
+			   local message = 'q(): error runing quickscript: ' .. name
+			   print(message)
+			   print(err)
+			end
+		 end
+	  }
+   }
+   console_shortcuts.list = {
+	  help = 'list all commands and their help messages',
+	  proc = function()
+		 local message = ''
+		 for name, data in pairs(console_shortcuts) do
+			message = message .. name .. ': ' .. data.help .. '\n'
+		 end
+
+		 tdengine.console_pipe = message
+	  end
+   }
+   
+   for name, data in pairs(console_shortcuts) do
+	  _G[name] = data.proc
+   end
+end
+	
+function tdengine.load_editor()
+   tdengine.create_entity('Editor', {})
 end

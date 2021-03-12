@@ -59,13 +59,11 @@ struct Name_And_ID {
 	int id;
 };
 
-//@leak never free stbi memory
-// @spader This is only used for the text box....kill it!
-void create_texture(std::string path);
+Texture* create_texture(std::filesystem::path path);
 void create_texture_atlas(std::string assets_dir);
 void create_all_texture_atlas();
-void destroy_texture(std::string path);
-void add_background(std::string name, std::string path);
+void destroy_texture(std::filesystem::path path);
+void add_background(std::filesystem::path path);
 void init_assets();
 
 struct Sprite : Asset {

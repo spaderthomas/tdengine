@@ -3,12 +3,7 @@ return {
     {
       components = {
         Animation = {
-          animations = {
-            hub = {
-              { sprite = "hub.png", time = 1 }
-            }
-          },
-          current = "hub"
+          current = "bg_hub"
         },
         Position = {
           world = {

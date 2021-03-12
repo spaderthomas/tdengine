@@ -11,12 +11,10 @@ function Animation:init(params)
    self.time_to_next = 0
    self.loop = true
    self.finished_one_loop = false
+   self.error = false
 
    -- The engine will read from this when you ask it to draw
    self.sprite = ''
-
-   -- All the animation data
-   self.animations = params.animations or {}
 
    self.last_animation = params.current
    self:begin(params.current, params)
@@ -27,13 +25,12 @@ end
 -- that, because that would automatically opt-in the component to serialization
 function Animation:save()
    return {
-	  animations = self.animations,
 	  current = self.current_animation.name
    }
 end
 
 function Animation:update(dt)
-  local data = self.animations[self.current]
+  if self.error then return end
   self.time_to_next = self.time_to_next - dt
   self.finished_this_frame = false
 
@@ -70,17 +67,24 @@ function Animation:update(dt)
 end
 
 function Animation:begin(name, params)
+  if not tdengine.animations[name] then
+	 print('@unknown_animation: ' .. name)
+	 self.error = true
+	 self.sprite = 'unknown'
+	 return
+  end
+  
   params = params or {}
   self.loop = params.loop or false
   self.play_when_finished = params.play_when_finished or nil
   self.played_requested_animation = false
   self.finished_this_frame = false
-  
+
   self.frame = 1
   self.current_animation = {
 	name = name,
-	data = self.animations[name],
-	count = table.getn(self.animations[name])	
+	data = tdengine.animations[name],
+	count = table.getn(tdengine.animations[name])	
   }
   
   self.time_to_next = self.current_animation.data[1].time

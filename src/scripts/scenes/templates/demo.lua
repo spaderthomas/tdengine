@@ -3,12 +3,7 @@ return {
     {
       components = {
         Animation = {
-          animations = {
-            demo = {
-              { sprite = "demo.png", time = 1 }
-            }
-          },
-          current = "demo"
+          current = "bg_demo"
         },
         Position = {
           world = {
@@ -108,12 +103,7 @@ return {
           }
         },
 		Animation = {
-		   animations = {
-			  box16 = {
-				{ sprite = 'box16.png', time = 1 }
-			  }
-		   },
-		   current = 'box16'
+		   current = 'fuck'
 		}
       },
       name = "Interactable",

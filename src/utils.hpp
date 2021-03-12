@@ -324,6 +324,15 @@ void normalize_path(std::string& str) {
 #endif
 
 // Takes in a directory or file -- returns everything after the first slash
+std::string filename_from_path(std::string path) {
+	std::string name;
+	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
+		if (path.at(ichar) == '/' || path.at(ichar) == '\\') { break; }
+		name.insert(name.begin(), path.at(ichar));
+	}
+	
+	return name;
+}
 std::string name_from_full_path(std::string path) {
 	std::string asset_name;
 	for (int ichar = path.size() - 1; ichar > -1; ichar--) {

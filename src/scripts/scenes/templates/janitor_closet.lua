@@ -125,15 +125,7 @@ return {
     {
       components = {
         Animation = {
-          animations = {
-            janitor_closet = {
-              {
-                sprite = "janitor_closet.png",
-                time = 1
-              }
-            }
-          },
-          current = "janitor_closet"
+          current = "bg_janitor_closet"
         },
         Position = {
           world = {

@@ -437,8 +437,9 @@ musical themes for players. barbara ann.
 
 menu: you want it to squirt open or i'm not sure the right word for it. the
 really satisfying animation where you tab onto something, it hangs for a second,
-and then it expands. the menu should be really clear. one of the best parts of
-CSH for me is that it's so easy to see everything that you can do.
+and then it expands. the menu should be really clear. one of the best
+parts of CSH for me is that it's so easy to see everything that you
+can do.
 
 book smart = special attack, street smart = physical attack
 
@@ -463,6 +464,12 @@ inconsequential scenes, many of them written, happen randomly --
 different from npc cycling or other random content, because not
 important to the plot, just tiny self contained stories and perhaps
 with a goody at the end. 
+
+there is a kind of zen in being able to endure bad weeks, months, or
+years of your life and understand that it will not always be this
+way. but i think this adult power comes from the fact that time passes
+more quickly as you grow older, not from mental fortitude. so, too,
+for souls, for whom infinity passes in an instant?
 ** worldbuilding
 what if each wing of the school had a particular theme or feeling? it would be
 pretty funny to walk into the seventh grade hall, not knowing what to expect,
@@ -514,7 +521,7 @@ time. the lights have a low, ominous hum, and they occasionally flicker. there
 are easels and paint supplies lying around. the teacher's desk is in the front
 left corner, and is scattered with papers. there are two rows of three long
 desks, for students to work on, that are covered in half finished drawings. 
-*** jazz +bar
+*** jazz + bar
 a jazz bar, located in the old the music room. it's poorly lit, not
 club-loud but loud and seemingly buzzing with people at all
 times. it is laid out like this:
@@ -764,6 +771,10 @@ express it, we often begin with technology and mold our expression around what
 it allows. 
 
 a scientific phenomenon that cannot be observed
+
+instead of increasing the time we are alive, what if we changed our
+perception of time so it merely felt that we were alive for longer --
+any meaningful difference? time altering drugs already exist.
 * characters
 ** boon
 boon is kind of a shinji figure. he is quiet, and well mannered, and
@@ -835,6 +846,16 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 03/11/2021
+running into a small problem: confusing paths and names for textures
+and sprites. 
+
+| kind    | filename              | asset table entry |
+|---------+-----------------------+-------------------|
+| texture | /backgrounds/demo.png | demo.png          |
+| sprite  | n/a                   | demo              |
+| atlas   | /build/atlas.png      | atlas.png         |
+
 ** 03/10/2021
 yak shaving call stack:
 - i want to test out the hub background in game
@@ -4269,7 +4290,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-03-10 Wed 22:23]
+CLOCK: [2021-03-11 Thu 22:51]
+CLOCK: [2021-03-10 Wed 22:23]--[2021-03-11 Thu 00:06] =>  1:43
 CLOCK: [2021-03-09 Tue 22:52]--[2021-03-10 Wed 00:08] =>  1:16
 CLOCK: [2021-03-08 Mon 22:44]--[2021-03-08 Mon 23:51] =>  1:07
 CLOCK: [2021-03-07 Sun 21:10]--[2021-03-07 Sun 21:50] =>  0:40

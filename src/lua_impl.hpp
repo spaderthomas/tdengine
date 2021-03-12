@@ -29,19 +29,27 @@ void init_lua() {
 		sol::lib::package,
 		sol::lib::string,
 		sol::lib::table);
-	
-	lua_manager.prepend_to_search_path(absolute_path(path_join({"src", "scripts", "libs"})));
-	lua_manager.prepend_to_search_path(absolute_path(path_join({"src", "scripts", "core"})));
-	lua_manager.prepend_to_search_path(absolute_path(path_join({"src", "scripts"})));
 
+	// Set up paths
+	lua_manager.scripts = absolute_path(path_join({"src", "scripts"}));
+	lua_manager.libs = absolute_path(path_join({"src", "scripts", "libs"}));
+	lua_manager.core = absolute_path(path_join({"src", "scripts", "core"}));
+	lua_manager.animations = absolute_path(path_join({"src", "scripts", "animations"}));
+
+	// Give those paths to Lua
+	lua_manager.prepend_to_search_path(lua_manager.scripts);
+	lua_manager.prepend_to_search_path(lua_manager.libs);
+	lua_manager.prepend_to_search_path(lua_manager.core);
+	lua_manager.prepend_to_search_path(lua_manager.animations);
+
+	// Bind all C functions
 	LoadImguiBindings();
-
 	register_lua_api();
 	
 	lua_manager.script_dir(RelativePath("libs"));
 	lua_manager.script_dir(RelativePath("core"));
 
-	lua_manager.state.script("tdengine.bootstrap()");
+	lua_manager.state.script("tdengine.initialize()");
 	
 	lua_manager.script_dir(RelativePath("state"));
 	lua_manager.script_dir(RelativePath("entities"));
