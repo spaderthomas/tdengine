@@ -186,7 +186,6 @@ std::vector<uint> line_indices = {
 	0, 1,
 };
 
-
 GLFWwindow* g_window;
 
 /*

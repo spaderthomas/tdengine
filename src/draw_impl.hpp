@@ -317,9 +317,9 @@ void RenderEngine::render_scene(float dt) {
 			element.sprite->height / internal_resolution_height
 		};
 		transform.translate = gl_from_screen({
-                position->x,
-                position->y
-			});
+            position->x,
+            position->y
+		});
 		if (!has_flag(element.flags, Render_Flags::ScreenPosition)) {
 			transform.translate += camera_translation;
 		}

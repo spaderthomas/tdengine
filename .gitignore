@@ -1,13 +1,9 @@
+.gdb_history
+.venv/
 .vs/
 .vscode/
-
 __pycache__/
-venv/
-.venv/
-
 build/
-src/scripts/__init__.tds
-src/scripts/machine_conf.py
-src/machine_conf.hpp
 log.txt
-src/notes.org
+src/machine_conf.hpp
+venv/

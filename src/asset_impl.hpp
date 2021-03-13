@@ -102,6 +102,7 @@ void destroy_sprite(std::string name) {
 	auto sprite = asset_manager.get_asset<Sprite>(name);
 	if (!sprite) return;
 
+	asset_manager.assets.erase(name);
 	free(sprite);
 }
 
@@ -273,6 +274,10 @@ void init_assets() {
 			std::cout << "updating background: " << path.string() << std::endl;
 			destroy_texture(path);
 			add_background(path);
+			
+			auto& asset_manager = get_asset_manager();
+			auto background = asset_manager.get_asset<Sprite>(path.stem());
+			background->tex_coord_offset = square_tex_coords_offset;
 		});
 	}
 }
