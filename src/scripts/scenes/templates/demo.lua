@@ -103,7 +103,7 @@ return {
           }
         },
 		Animation = {
-		   current = 'fuck'
+		   current = 'box16'
 		}
       },
       name = "Interactable",

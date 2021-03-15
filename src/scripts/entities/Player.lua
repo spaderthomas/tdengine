@@ -29,10 +29,16 @@ function Player:handle_movement()
   
   local animation = self:get_component('Animation')
   if input:was_pressed(GLFW.Keys.I) then
-	animation:begin('boon_walkup', { loop = true })
+	animation:begin('red_walkup', { loop = true })
   end
   if input:was_pressed(GLFW.Keys.K) then
-	animation:begin('boon_walkdown', { loop = true })
+	animation:begin('red_walkdown', { loop = true })
+  end
+  if input:was_pressed(GLFW.Keys.J) then
+	animation:begin('red_walkleft', { loop = true })
+  end
+  if input:was_pressed(GLFW.Keys.L) then
+	animation:begin('red_walkright', { loop = true })
   end
 
 end

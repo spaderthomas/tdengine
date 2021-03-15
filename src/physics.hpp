@@ -91,7 +91,6 @@ struct InteractionSystem {
 	std::map<int, Interactable> interactables;
 	
 	int interacted_with = -1;
-	int player = -1;
 	Collider player_vision;
 	
 	// Game code can flip this flag e.g. when the player presses a key to

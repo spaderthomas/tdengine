@@ -280,6 +280,9 @@ void InteractionSystem::update(float dt) {
 	// Reset shit from the previous frame
 	interacted_with = -1;
 
+	auto& entity_manager = get_entity_manager();
+	int player = entity_manager.player;
+
 	if (player < 0) return;
 	if (!check_for_interactions) return;
 

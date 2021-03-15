@@ -37,13 +37,12 @@ int Entity::next_id = 0;
 
 struct EntityManager {
 	std::map<int, std::unique_ptr<Entity>> entities;
+	int player = -1;
 	
 	Entity* get_entity(int id);
 	bool has_entity(int id);
 	int create_entity(std::string name);
 	void destroy_entity(int id);
-	void update(float dt);
-	void do_paused_update(float dt);
 };
 EntityManager& get_entity_manager();
 
@@ -63,7 +62,6 @@ struct CutsceneManager {
 CutsceneManager& get_cutscene_manager();
 
 struct UpdateSystem {
-	void update(float dt);
 	void run_collision_callbacks(float dt);
 	void run_interaction_callback(float dt);
 	void run_entity_updates(float dt);

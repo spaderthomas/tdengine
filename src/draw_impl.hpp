@@ -244,12 +244,20 @@ void RenderEngine::remove_entity(int entity) {
 }
 
 void RenderEngine::render(float dt) {
+	if (camera.snap_to_player || camera.follow_player) {
+		auto& physics = get_physics_engine();
+		auto& entity_manager = get_entity_manager();
+		
+		auto position = physics.get_position(entity_manager.player);
+		camera.x = -1 * position->x + .5;
+		camera.y = -1 * position->y + .5;
+
+		camera.snap_to_player = false;
+	}
+	
 	render_scene(dt);
 	render_text(dt);
 	render_primitives(dt);
-	
-	//if (fade_time_remaining <= 0) is_fading = false;
-	//is_fading = false;
 }
 
 void RenderEngine::render_scene(float dt) {
@@ -261,8 +269,6 @@ void RenderEngine::render_scene(float dt) {
 	}
 	
 	bind_sprite_buffers();
-	//glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0); // Verts always the same (a square)
-	//glEnableVertexAttribArray(0);
 
 	auto& shaders = get_shader_manager();
 	Shader* shader = shaders.get("textured");

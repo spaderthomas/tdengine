@@ -753,3 +753,18 @@ struct FileWatcher {
 	
 };
 FileWatcher file_watcher;
+
+// This is really stupid and slow. But the only time we use this is when we
+// hotload images, so its performance is meaningless. Reason we have to do this
+// is because when you export with Aseprite, it saves the PNG twice -- first time
+// is invalid, second time is valid. 
+bool dumb_is_valid_png(std::filesystem::path path) {
+	if (!path.has_filename()) return false;
+	if (path.extension() != ".png") return false;
+
+	int x, y, n;
+	auto data = stbi_load(path.string().c_str(), &x, &y, &n, 0);
+	stbi_image_free(data);
+
+	return data != nullptr;
+}

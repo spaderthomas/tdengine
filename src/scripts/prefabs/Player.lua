@@ -2,7 +2,7 @@ return {
   components = {
 	Graphic = {},
     Animation = {
-	  current = 'boon_stand'
+	  current = 'red_stand'
 	},
 	Physics = {},
 	Position = {},

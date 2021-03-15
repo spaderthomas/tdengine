@@ -48,5 +48,7 @@ void        log(const char* message);
 void        log_to(const char* message, uint8_t flags);
 void        use_step_mode();
 void        fade_screen(float time);
+void        snap_to_player();
+void        follow_player(bool follow);
 }
 void register_lua_api();

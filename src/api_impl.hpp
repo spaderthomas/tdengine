@@ -107,10 +107,9 @@ sol::object API::all_components(int id) {
 }
 
 void API::register_player(int entity) {
-	auto& interaction = get_interaction_system();
-	interaction.player = entity;
-
 	auto& entity_manager = get_entity_manager();
+	entity_manager.player = entity;
+	
 	auto vision = Lua.get_component(entity, "PlayerVision");
 	if (!vision) {
 		tdns_log.write("@no_vision_for_player");
@@ -123,6 +122,7 @@ void API::register_player(int entity) {
 	collider.offset.x = vision["offset"]["x"];
 	collider.offset.y = vision["offset"]["y"];
 
+	auto& interaction = get_interaction_system();
 	interaction.player_vision = collider;
 }
 
@@ -467,6 +467,15 @@ void API::fade_screen(float time) {
 	render_engine.fade_time_remaining = time * 2;
 }
 
+void API::snap_to_player() {
+	auto& render_engine = get_render_engine();
+	render_engine.camera.snap_to_player = true;
+}
+
+void API::follow_player(bool follow) {
+	auto& render_engine = get_render_engine();
+	render_engine.camera.follow_player = follow;
+}
 
 void register_lua_api() {
 	auto& state = Lua.state;
@@ -511,9 +520,11 @@ void register_lua_api() {
 	state["tdengine"]["screen"]                = &screen;
 	state["tdengine"]["step_mode"]             = &use_step_mode;
 	state["tdengine"]["fade_screen"]           = &fade_screen;
+	state["tdengine"]["snap_to_player"]        = &snap_to_player;
+	state["tdengine"]["follow_player"]         = &follow_player;
 	state["tdengine"]["log"]                   = &API::log;
 	state["tdengine"]["log_to"]                = &API::log_to;
-	state["tdengine"]["toggle_console"]  = &toggle_console;
+	state["tdengine"]["toggle_console"]        = &toggle_console;
 
 	state["tdengine"]["draw"]                        = state.create_table();
 	state["tdengine"]["draw"]["entity"]              = &draw_entity;	

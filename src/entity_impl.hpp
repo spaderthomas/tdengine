@@ -137,8 +137,6 @@ EntityManager& get_entity_manager() {
 	return manager;
 }
 
-void EntityManager::update(float dt) {}
-
 Entity* EntityManager::get_entity(int id) {
 	return entities[id].get();
 }
@@ -233,13 +231,6 @@ void UpdateSystem::run_entity_updates(float dt) {
 		entity->update(dt);
 	}
 }
-
-void UpdateSystem::update(float dt) {
-	run_collision_callbacks(dt);
-	run_interaction_callback(dt);		
-	run_entity_updates(dt);		
-}
-
 
 void UpdateSystem::do_paused_update(float dt) {
 	auto& entity_manager = get_entity_manager();

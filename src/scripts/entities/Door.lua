@@ -36,6 +36,7 @@ function Door:on_collision(other)
 	   if loader(self.where) then
 		  tdengine.fade_screen(.5)
 		  tdengine.teleport_entity(other.id, self.position.x, self.position.y)
+		  tdengine.snap_to_player()
 		  return
 	   end
 	end

@@ -1,8 +1,8 @@
 struct Camera {
 	float x;
 	float y;
-	EntityID following;
-	bool panning = false;
+	bool snap_to_player = false;
+	bool follow_player = false;
 };
 
 enum class Render_Flags : int {
@@ -34,7 +34,7 @@ struct RenderEngine {
 	std::vector<Render_Element> render_list;
 	std::vector<TextRenderInfo> text_infos;
 	Camera camera;
-
+	
 	bool render_to_frame_buffer = false;
 	uint frame_buffer;
 	uint color_buffer;

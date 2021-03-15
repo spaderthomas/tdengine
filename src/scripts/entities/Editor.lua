@@ -28,6 +28,7 @@ function Editor:init(params)
   self.destroy_selected = false
   self.position_when_selected = tdengine.vec2(0, 0)
   self.hovered = nil
+  self.following_player = false
   
   -- Stuff we use to add an entity to the level
   self.component_input_id = '##add_entity_component_input'
@@ -1473,4 +1474,9 @@ function Editor:cutscene_viewer()
   end
   
   imgui.End()
+end
+
+function Editor:toggle_follow()
+   self.following_player = not self.following_player
+   tdengine.follow_player(self.following_player)
 end

@@ -620,6 +620,7 @@ function tdengine.load_animations()
 		 return
 	  end
 
+	  tdengine.log_to('@load_animation: ' .. file, tdengine.log_flags.file)
 	  tdengine.animations[name] = animation
    end
 end
@@ -922,15 +923,8 @@ end
 
 function tdengine.load_console_shortcuts()
    local console_shortcuts = {
-	  scene = {
-		 help = 'load a scene from a template located in src/scripts/scenes/templates',
-		 proc = function(...)
-			--tdengine.terminate_cutscene()
-			tdengine.load_scene_from_template(...)
-		 end
-	  },
 	  cutscene = {
-		 help = 'load and begin a cutscene from a file located in src/scripts/cutscenes',
+		 help = 'load + begin a cutscene from src/scripts/cutscenes',
 		 proc = function(...) tdengine.do_cutscene_from_name(...) end
 	  },
 	  ded = {
@@ -941,13 +935,16 @@ function tdengine.load_console_shortcuts()
 			editor:ded_load(name)
 		 end
 	  },
+	  follow = {
+		 help = 'toggle whether the camera follows the player',
+		 proc = function()
+			local editor = tdengine.find_entity('Editor')
+			editor:toggle_follow()
+		 end
+	  },
 	  layout = {
 		 help = 'use a predefined imgui layout',
 		 proc = tdengine.layout
-	  },
-	  save_layout = {
-		 help = 'save current imgui configuration as a layout',
-		 proc = tdengine.save_layout
 	  },
 	  q = {
 		 help = 'run a script as defined in src/scripts/layouts/console',
@@ -956,12 +953,35 @@ function tdengine.load_console_shortcuts()
 			package.loaded[module_path] = nil
 			local status, err = pcall(require, module_path)
 			if not status then
-			   local message = 'q(): error runing quickscript: ' .. name
+			   local message = '@quickscript_error: ' .. name
 			   print(message)
 			   print(err)
 			end
 		 end
-	  }
+	  },
+	  save_layout = {
+		 help = 'save current imgui configuration as a layout',
+		 proc = tdengine.save_layout
+	  },
+	  scene = {
+		 help = 'load a scene from src/scripts/scenes/templates',
+		 proc = function(...)
+			--tdengine.terminate_cutscene()
+			tdengine.load_scene_from_template(...)
+		 end
+	  },
+	  snap = {
+		 help = 'snap the camera to center on the player',
+		 proc = tdengine.snap_to_player
+	  },
+	  teleport = {
+		 help = 'teleport the player + snap',
+		 proc = function(x, y)
+			local player = tdengine.find_entity('Player')
+			tdengine.teleport_entity(player.id, x, y)
+			tdengine.snap_to_player()
+		 end
+	  },
    }
    console_shortcuts.list = {
 	  help = 'list all commands and their help messages',

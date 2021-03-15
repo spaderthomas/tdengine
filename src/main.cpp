@@ -80,11 +80,19 @@ int main() {
 		if (show_console) console.Draw("tdengine");
 			
 		if (run_update) {
-			entity_manager.update(seconds_per_update);
+			update_system.run_entity_updates(seconds_per_update);
 			cutscene_manager.update(seconds_per_update);
-			physics_engine.update(seconds_per_update);
 			interaction_system.update(seconds_per_update);
-			update_system.update(seconds_per_update);
+
+			// Callbacks could cause new requests to come into the physics engine.
+			// The way this is written, the engine's collision vector will be cleared
+			// out each iteration, not each frame. So it does not collect all the
+			// collisions for a frame. Might cause a bug in the future?
+			while (!physics_engine.requests.empty()) {
+				physics_engine.update(seconds_per_update);
+				update_system.run_collision_callbacks(seconds_per_update);
+				update_system.run_interaction_callback(seconds_per_update);
+			}
 		} else {
 			update_system.do_paused_update(seconds_per_update);
 		}

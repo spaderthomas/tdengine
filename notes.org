@@ -247,7 +247,7 @@ https://linux.die.net/lkmpg/x427.html
   - bunch of npcs just standing around
 - add a few dumb NPCs to the lobby
 - dialogue when you get to the main lobby area
-- add doors to the other places in the hub
++- add doors to the other places in the hub
 - code to disable the doors
 - update doors to have a location to spawn on the other side
 * ideas
@@ -578,6 +578,65 @@ indeed sewn, beer indeed drunk, and he would love to tell young'ns
 about this particular time in korea.....
 
 @immaculate_reception happens here with JC
+**** flavor npcs
+***** cornerstone linux
+"ah, god damn thing won't work. everybody keeps telling me that
+CORNERSTONE LINUX is the greatest operating system ever conceived, but
+i can't even install the damn thing!"
+
+"you're missing the point, man. it's not about installing the
+operating system"
+
+"so you mean this page called Installation Guide is not about
+installation?"
+
+"nope, not at all. it's about freedom."
+
+"can i use freedom to connect to the network?"
+
+"no -- you can use it to connect to any network, on any machine. look,
+it's hard to set up, but that's because you know nothing. you call
+yourself a hacker, but you've been spoon fed your whole life. you need
+to learn to scrap and scuffle, to figure things out when they get
+hard."
+
+"hey, you're one to talk about being fed from silver spoons mister
+died-in-his-sleep. i think your greatest operating system of all time
+is a load of shit, man. i'm getting out of here."
+
+as the first man walks away, the second man leans on the table
+thoughtfully. he doesn't look at boon or acknowledge his presence in
+the slightest, but boon knows that the man can see him. boon stands
+uncomfortably for a few moments, not sure what to do, and then goes to
+leave. 
+
+"well, did you get it, kid?" the man asks
+
+boon stops awkwardly. he's not sure who the man is talking to -- but
+there's not really anyone else around. "huh, are you talking to me?
+uhm, i don't know much about computers, but it sounded like you
+weren't really talking about computers."
+
+"of course -- that guy was too slow witted to pick up on that. can i
+tell you a secret?"
+
+"sure"
+
+"there's nothing special at all about CORNERSTONE LINUX. any program,
+any layout, any task -- they can all be done on any other
+version. what makes it so great is the process."
+
+"i think that makes sense," boon replies tepidly
+
+"something was wrong with the world when i was around. the more
+information they had access to, the stupider they became. they grew
+soft and lazy. it was a damn shame. the worst part: they forgot how to
+scrap. they forgot how to hustle, to make it through a bad gig. i
+won't ask how your map got eliminated, but did you ever have to scrap
+through some hard times kid?
+
+"uhm, i think, i think i'm doing that right now. it's a long story..."
+
 *** lost and found
 the lost and found is a small booth, tucked away. it's manned by a
 single person. it's the game's equipment shop. when you first meet the
@@ -846,6 +905,15 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 03/14/2021
+- run each entity's update
+- update the cutscene (this should just be an entity...)
+- check + resolve collisions
+- mark interactions
+- run collision callback
+- run interaction callback
+  - these two can cause physics stuff to happen
+- render
 ** 03/11/2021
 running into a small problem: confusing paths and names for textures
 and sprites. 
@@ -4290,7 +4358,9 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-03-13 Sat 10:50]
+CLOCK: [2021-03-14 Sun 22:13]
+CLOCK: [2021-03-14 Sun 00:50]--[2021-03-14 Sun 01:19] =>  0:29
+CLOCK: [2021-03-13 Sat 10:50]--[2021-03-13 Sat 11:36] =>  0:46
 CLOCK: [2021-03-13 Sat 01:40]--[2021-03-13 Sat 02:00] =>  0:20
 CLOCK: [2021-03-12 Fri 23:08]--[2021-03-12 Fri 23:40] =>  0:32
 CLOCK: [2021-03-11 Thu 22:51]--[2021-03-12 Fri 00:48] =>  1:57

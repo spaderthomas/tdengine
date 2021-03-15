@@ -264,14 +264,17 @@ void init_assets() {
 	auto& asset_manager = get_asset_manager();
 		
 	auto backgrounds = AbsolutePath(RelativePath("asset/art/backgrounds"));
-	tdns_log.write("Loading backgrounds from " + backgrounds.path, Log_Flags::File);
+	tdns_log.write("@asset:background:dir: " + backgrounds.path, Log_Flags::File);
 	directory_iterator it(backgrounds.path);
 	for (it; it != directory_iterator(); ++it) {
 		auto path = it->path();
+		tdns_log.write("@asset:background:load: " + path.string(), Log_Flags::File);
 		add_background(path);
 
 		file_watcher.watch(path.string(), [path = path]() {
-			std::cout << "updating background: " << path.string() << std::endl;
+			std::cout << "@asset:background:update: " << path.string() << std::endl;
+			if (!dumb_is_valid_png(path)) return;
+			
 			destroy_texture(path);
 			add_background(path);
 			

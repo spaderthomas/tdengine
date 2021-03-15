@@ -68,9 +68,9 @@ end
 
 function Animation:begin(name, params)
   if not tdengine.animations[name] then
-	 print('@unknown_animation: ' .. name)
+	 print('@unknown_animation: ' .. name .. ', ' .. tostring(self.parent.id))
 	 self.error = true
-	 self.sprite = 'unknown'
+	 self:begin('unknown', { loop = true })
 	 return
   end
   
