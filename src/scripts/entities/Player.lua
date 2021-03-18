@@ -51,3 +51,13 @@ function Player:update(dt)
 	  tdengine.do_interaction_check();
    end
 end
+
+-- Even though the player isn't saved to the scene, we still need to save player data.
+function Player:save()
+  local player = {}
+
+  local position = self:get_component('Position')
+  player.position = position.world
+
+  return player
+end

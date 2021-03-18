@@ -40,7 +40,6 @@ function Dialogue:find_entry_node()
 end
 
 function Dialogue:process_single(node)
-   print('node: ' .. inspect(node))
    if not node then
 	  print('Dialogue:process(): tried to process a nil node')
 	  self.bad_branch = true
@@ -74,7 +73,7 @@ end
 function Dialogue:evaluate_branch(node)
    -- Evaluate the state to figure out which child we're going to
    local child_id = -1
-   local branch_on = tdengine.branch[node.branch_on]
+   local branch_on = tdengine.branches[node.branch_on]
    if branch_on then
 	  child_index = branch_on()
    else

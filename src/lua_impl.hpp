@@ -32,15 +32,19 @@ void init_lua() {
 
 	// Set up paths
 	lua_manager.scripts = absolute_path(path_join({"src", "scripts"}));
-	lua_manager.libs = absolute_path(path_join({"src", "scripts", "libs"}));
-	lua_manager.core = absolute_path(path_join({"src", "scripts", "core"}));
-	lua_manager.animations = absolute_path(path_join({"src", "scripts", "animations"}));
+	lua_manager.libs                  = path_join({lua_manager.scripts, "libs"});
+	lua_manager.core                  = path_join({lua_manager.scripts, "core"});
+	lua_manager.animations            = path_join({lua_manager.scripts, "animations"});
+	lua_manager.branches              = path_join({lua_manager.scripts, "dialogue", "branches"});
+	lua_manager.saves                 = path_join({lua_manager.scripts, "saves"});
 
 	// Give those paths to Lua
 	lua_manager.prepend_to_search_path(lua_manager.scripts);
 	lua_manager.prepend_to_search_path(lua_manager.libs);
 	lua_manager.prepend_to_search_path(lua_manager.core);
 	lua_manager.prepend_to_search_path(lua_manager.animations);
+	lua_manager.prepend_to_search_path(lua_manager.branches);
+	lua_manager.prepend_to_search_path(lua_manager.saves);
 
 	// Bind all C functions
 	LoadImguiBindings();

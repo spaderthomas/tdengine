@@ -39,9 +39,9 @@ end
 
 function line_breaks(text)
    local breaks = {}
-   
+
    -- Calculate the length of the text area, in pixels, for wrapping purposes
-   local content_width = tdengine.sprite_size('text_box.png').x
+   local content_width = tdengine.sprite_size('text_box').x
    local padding = .075
    local screen = tdengine.screen_dimensions()
    content_width = screen.x * (content_width - padding)
@@ -130,7 +130,7 @@ function TextBox:update(dt)
 
    local position = self:get_component('Position').world
    
-   local text_area = tdengine.vec2(tdengine.sprite_size('text_box.png'))
+   local text_area = tdengine.vec2(tdengine.sprite_size('text_box'))
    local extents = text_area:scale(.5)
    local padding = tdengine.vec2(.02, 0.04)
    local text_start = tdengine.vec2(

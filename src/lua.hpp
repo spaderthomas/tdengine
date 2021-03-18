@@ -20,6 +20,8 @@ struct LuaState {
 	std::string libs;
 	std::string core;
 	std::string animations;
+	std::string branches;
+	std::string saves;
 } Lua;
 
 void init_lua();

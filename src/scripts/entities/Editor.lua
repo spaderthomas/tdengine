@@ -514,21 +514,6 @@ function Editor:scene_viewer()
   imgui.SameLine()
   imgui.InputText(id, 63)
 
-  local id = '##scene_viewer:save_to_disk'
-  if imgui.Button('Save To Disk', button_size.x, button_size.y) then
-	tdengine.save_current_scene_to_disk(imgui.InputTextContents(id))
-  end
-  imgui.SameLine()
-  imgui.InputText(id, 63)
-
-  local id = '##scene_viewer:load_from_disk'
-  if imgui.Button('Load From Disk', button_size.x, button_size.y) then
-	tdengine.load_scene_from_disk(imgui.InputTextContents(id))
-	loaded = true
-  end
-  imgui.SameLine()
-  imgui.InputText(id, 63)
-
   if loaded then self.selected = nil end
 
   imgui.Separator()
