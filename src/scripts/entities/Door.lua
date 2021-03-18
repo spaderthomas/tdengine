@@ -2,7 +2,18 @@ Door = tdengine.entity('Door')
 
 function Door:init(params)
   self.where = params.where or ''
-  self.position = params.position or tdengine.vec2(0, 0)
+
+  if type(params.position) == 'string' then
+	 self.shortcut = params.position
+	 self.position = tdengine.locations[params.position]
+  else
+	 self.position = params.position
+  end
+
+  if not self.position then
+	 print('@no_position_for_door: ' .. tostring(self.id))
+	 self.position = self.position or tdengine.vec2(0, 0)
+  end
   
   tdengine.register_collider(self.id)
 end
@@ -18,7 +29,7 @@ end
 function Door:save()
   return {
 	 where = self.where,
-	 position = self.position
+	 position = self.shortcut or self.position
   }
 end
 

@@ -4358,7 +4358,10 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK:
-CLOCK: [2021-03-14 Sun 22:13]
+CLOCK: [2021-03-17 Wed 14:05]--[2021-03-17 Wed 14:30] =>  0:25
+CLOCK: [2021-03-16 Tue 18:39]--[2021-03-16 Tue 19:15] =>  0:36
+CLOCK: [2021-03-15 Mon 23:43]--[2021-03-16 Tue 00:42] =>  0:59
+CLOCK: [2021-03-14 Sun 22:13]--[2021-03-15 Mon 00:16] =>  2:03
 CLOCK: [2021-03-14 Sun 00:50]--[2021-03-14 Sun 01:19] =>  0:29
 CLOCK: [2021-03-13 Sat 10:50]--[2021-03-13 Sat 11:36] =>  0:46
 CLOCK: [2021-03-13 Sat 01:40]--[2021-03-13 Sat 02:00] =>  0:20
@@ -4490,6 +4493,30 @@ https://i.redd.it/lolcaujmeuu51.jpg
 cool, detailed versions that still give off a GBC pokemon vibe
 https://twitter.com/edelweisspkmn?lang=en
 
+** /u/tecnicinismo
+all black and white, one bit stuff. very good "images", have not seen
+any sprite work. few animations
+https://www.reddit.com/user/Tecnicinismo/submitted/?sort=top
+** marcus freire
+worked on a stardew valley clone. 
+https://www.marcosfreireart.com/
+** HIRVIOS
+idk about pixel art but this guy made some dope concept art
+https://twitter.com/HIRVIOS1/status/1366811679682617345/photo/1
+** /u/lijj11i1
+not much stuff on reddit, but very nice detail pieces
+https://www.reddit.com/r/PixelArt/comments/m67bud/salem_noir/
+
+more stuff on twitter -- not seeing a ton of sprite work per se but a
+good amount of pixel art. kind of dark
+https://twitter.com/llll_lijj?lang=en
+
+maybe worked on this?
+https://erderpg.com/
+** glaubits
+uhm, kind of weird colorful goofy animations, but (imo) solid pixel
+art and the style is unique.
+https://twitter.com/i/events/1362128860779839490
 * install
 ** machine_conf.hpp
 std::string root_dir = "/home/spader/programming/tdengine/";

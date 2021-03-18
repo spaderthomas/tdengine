@@ -909,6 +909,7 @@ function tdengine.initialize()
    tdengine.on_interactions = {}
    tdengine.loaded_scene = { name = '', path = '' }
    tdengine.active_cutscene = nil
+   tdengine.locations = {}
 
    tdengine.current_layout = 'default'
    tdengine.layout_stack = { 'default' }
@@ -919,6 +920,7 @@ function tdengine.initialize()
 
    -- Load up static data
    tdengine.load_animations()
+   tdengine.load_locations()
 end
 
 function tdengine.load_console_shortcuts()
@@ -977,8 +979,19 @@ function tdengine.load_console_shortcuts()
 	  teleport = {
 		 help = 'teleport the player + snap',
 		 proc = function(x, y)
+			local dest = { x = x, y = y }
+			if type(x) == 'string' then
+			   local location = tdengine.locations[x]
+			   if not location then
+				  print('@bad_location: ' .. x)
+				  return
+			   end
+			   dest = location
+			end
+
+			print(inspect(dest))
 			local player = tdengine.find_entity('Player')
-			tdengine.teleport_entity(player.id, x, y)
+			tdengine.teleport_entity(player.id, dest.x, dest.y)
 			tdengine.snap_to_player()
 		 end
 	  },
@@ -999,7 +1012,14 @@ function tdengine.load_console_shortcuts()
 	  _G[name] = data.proc
    end
 end
-	
+
+function tdengine.load_locations()
+   tdengine.locations = {
+	  library = tdengine.vec2(2.34, 2.13)
+   }
+end
+
 function tdengine.load_editor()
    tdengine.create_entity('Editor', {})
 end
+
