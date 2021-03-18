@@ -102,11 +102,7 @@ return {
       },
       name = "Door",
       params = {
-        position = {
-          x = 0,
-          y = 0
-        },
-        where = "demo"
+		marker = 'demo'
       }
     },
     {
@@ -130,11 +126,7 @@ return {
       },
       name = "Door",
       params = {
-        position = {
-          x = 2.7999999999999998,
-          y = 2.1499999999999999
-        },
-        where = "hub"
+		marker = 'hub_entrance'
       }
     },
     {

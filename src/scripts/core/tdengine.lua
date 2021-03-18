@@ -440,7 +440,7 @@ function tdengine.load_scene_from_template(name)
   package.loaded[module_name] = nil
   local status, scene = pcall(require, module_name)
   if not status then
-	print('tdengine.load_scene_from_template(): could not require module ' .. module_name)
+	print('@cannot_require_scene_template: ' .. module_name)
 	return false
   end
 
@@ -455,7 +455,6 @@ end
 function tdengine.load_scene_from_memory(name)
   local scene = tdengine.scenes[name]
   if not scene then
-	print('tdengine.load_scene_from_memory(): no entry for scene ' .. name)
 	return false
   end
   
@@ -467,6 +466,12 @@ function tdengine.load_scene_from_memory(name)
   return true
 end
 
+function tdengine.load_scene_from_anywhere(name)
+  if tdengine.load_scene_from_memory(name) then return true end
+  if tdengine.load_scene_from_template(name) then return true end
+  return false
+end
+  
 function tdengine.save(name)
   local player = tdengine.find_entity('Player')
   
@@ -954,7 +959,7 @@ function tdengine.initialize()
   tdengine.on_interactions = {}
   tdengine.loaded_scene = { name = '', path = '' }
   tdengine.active_cutscene = nil
-  tdengine.locations = {}
+  tdengine.markers = {}
 
   tdengine.current_layout = 'default'
   tdengine.layout_stack = { 'default' }
@@ -966,115 +971,149 @@ function tdengine.initialize()
   -- Load up static data
   tdengine.load_animations()
   tdengine.load_branches()
-  tdengine.load_locations()
+  tdengine.load_markers()
 end
 
-function tdengine.load_console_shortcuts()
-  local console_shortcuts = {
-	cutscene = {
-	  help = 'load + begin a cutscene from src/scripts/cutscenes',
-	  proc = function(...) tdengine.do_cutscene_from_name(...) end
-	},
-	ded = {
-	  help = 'load a scene into the dialogue editor',
-	  proc = function(name)
-		tdengine.layout('ded')
-		local editor = tdengine.find_entity('Editor')
-		editor:ded_load(name)
-	  end
-	},
-	follow = {
-	  help = 'toggle whether the camera follows the player',
-	  proc = function()
-		local editor = tdengine.find_entity('Editor')
-		editor:toggle_follow()
-	  end
-	},
-	layout = {
-	  help = 'use a predefined imgui layout',
-	  proc = tdengine.layout
-	},
-	q = {
-	  help = 'run a script as defined in src/scripts/layouts/console',
-	  proc = function(name)
-		local module_path = 'layouts/console/' .. name
-		package.loaded[module_path] = nil
-		local status, err = pcall(require, module_path)
-		if not status then
-		  local message = '@quickscript_error: ' .. name
-		  print(message)
-		  print(err)
-		end
-	  end
-	},
-	save = {
-	  help = 'save all runtime state to a file',
-	  proc = function(...) tdengine.save(...) end
-	},
-	['load'] = {
-	  help = 'load a state file',
-	  proc = function(...) tdengine.load(...) end
-	},
-	save_layout = {
-	  help = 'save current imgui configuration as a layout',
-	  proc = tdengine.save_layout
-	},
-	scene = {
-	  help = 'load a scene from src/scripts/scenes/templates',
-	  proc = function(...)
-		--tdengine.terminate_cutscene()
-		tdengine.load_scene_from_template(...)
-	  end
-	},
-	snap = {
-	  help = 'snap the camera to center on the player',
-	  proc = tdengine.snap_to_player
-	},
-	teleport = {
-	  help = 'teleport the player + snap',
-	  proc = function(x, y)
-		local dest = { x = x, y = y }
-		if type(x) == 'string' then
-		  local location = tdengine.locations[x]
-		  if not location then
-			print('@bad_location: ' .. x)
-			return
-		  end
-		  dest = location
-		end
+local console_shortcuts = {
+  cutscene = {
+	help = 'load + begin a cutscene from src/scripts/cutscenes',
+	proc = function(...) tdengine.do_cutscene_from_name(...) end
+  },
+  ded = {
+	help = 'load a scene into the dialogue editor',
+	proc = function(name)
+	  tdengine.layout('ded')
+	  local editor = tdengine.find_entity('Editor')
+	  editor:ded_load(name)
+	end
+  },
+  follow = {
+	help = 'toggle whether the camera follows the player',
+	proc = function()
+	  local editor = tdengine.find_entity('Editor')
+	  editor:toggle_follow()
+	end
+  },
+  layout = {
+	help = 'use a predefined imgui layout',
+	proc = tdengine.layout
+  },
+  marker = {
+	help = 'add a shortcut that can be teleported to by name',
+	proc = function(name)
+	  local player = tdengine.find_entity('Player')
+	  local position = player:get_component('Position')
+	  local marker = {
+		scene = tdengine.loaded_scene.name,
+		x = position.world.x,
+		y = position.world.y,
+	  }
+	  tdengine.markers[name] = marker
 
-		print(inspect(dest))
+	  local message = '@add_marker: ' .. name .. '(' .. tostring(position.world.x) .. ', '
+	  message = message .. tostring(position.world.y) .. ')'
+	  tdengine.log(message)
+
+	  local marker_filepath = tdengine.paths.absolute('src/scripts/scenes/markers.lua')
+	  tdengine.write_file_to_return_table(marker_filepath, tdengine.markers)
+	end
+  },
+  q = {
+	help = 'run a script as defined in src/scripts/layouts/console',
+	proc = function(name)
+	  local module_path = 'layouts/console/' .. name
+	  package.loaded[module_path] = nil
+	  local status, err = pcall(require, module_path)
+	  if not status then
+		local message = '@quickscript_error: ' .. name
+		print(message)
+		print(err)
+	  end
+	end
+  },
+  save = {
+	help = 'save all runtime state to a file',
+	proc = function(...) tdengine.save(...) end
+  },
+  ['load'] = {
+	help = 'load a state file',
+	proc = function(...) tdengine.load(...) end
+  },
+  save_layout = {
+	help = 'save current imgui configuration as a layout',
+	proc = tdengine.save_layout
+  },
+  scene = {
+	help = 'load a scene from src/scripts/scenes/templates',
+	proc = function(...)
+	  --tdengine.terminate_cutscene()
+	  tdengine.load_scene_from_template(...)
+	end
+  },
+  snap = {
+	help = 'snap the camera to center on the player',
+	proc = tdengine.snap_to_player
+  },
+  teleport = {
+	help = 'teleport the player + snap',
+	proc = function(x, y)
+	  local dest = { x = x, y = y }
+	  if type(x) == 'string' then
+		tdengine.go_to_marker(x)
+	  else
 		local player = tdengine.find_entity('Player')
-		tdengine.teleport_entity(player.id, dest.x, dest.y)
+		tdengine.teleport_entity(player.id, x, y)
 		tdengine.snap_to_player()
 	  end
-	},
-  }
-  console_shortcuts.list = {
-	help = 'list all commands and their help messages',
-	proc = function()
-	  local message = ''
-	  for name, data in pairs(console_shortcuts) do
-		message = message .. name .. ': ' .. data.help .. '\n'
-	  end
 
-	  tdengine.console_pipe = message
 	end
-  }
-  
-  for name, data in pairs(console_shortcuts) do
-	_G[name] = data.proc
+  },
+}
+console_shortcuts.list = {
+  help = 'list all commands and their help messages',
+  proc = function()
+	local message = ''
+	for name, data in pairs(console_shortcuts) do
+	  message = message .. name .. ': ' .. data.help .. '\n'
+	end
+
+	tdengine.console_pipe = message
   end
+}
+
+for name, data in pairs(console_shortcuts) do
+  _G[name] = data.proc
 end
 
-function tdengine.load_locations()
-  tdengine.locations = {
-	library = tdengine.vec2(2.34, 2.13),
-	demo = tdengine.vec2(0.07, 0.32)
-  }
+function tdengine.load_markers()
+  local module_path = 'scenes/markers'
+  package.loaded[module_path] = nil
+  local status, markers = pcall(require, module_path)
+  if not status then
+	local message = '@error_loading_markers: '
+	print(message)
+	print(markers)
+  end
+
+  tdengine.markers = markers
+end
+
+function tdengine.go_to_marker(name)
+  local marker = tdengine.markers[name]
+  if not marker then
+	tdengine.log('@bad_marker: ' .. name)
+	return
+  end
+  
+  if tdengine.loaded_scene.name ~= marker.scene then
+	tdengine.load_scene_from_anywhere(marker.scene)
+  end
+  
+  local player = tdengine.find_entity('Player')
+  tdengine.teleport_entity(player.id, marker.x, marker.y)
+  tdengine.snap_to_player()
 end
 
 function tdengine.load_editor()
   tdengine.create_entity('Editor', {})
 end
-

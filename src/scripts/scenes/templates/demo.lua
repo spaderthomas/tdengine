@@ -80,8 +80,7 @@ return {
       },
       name = "Door",
       params = {
-		 where = "janitor_closet",
-		 position = { x = .2, y = .11 }
+		marker = 'janitor_closet'
       }
     },
     {
@@ -103,12 +102,12 @@ return {
           }
         },
 		Animation = {
-		   current = 'box16'
+		  current = 'box16'
 		}
       },
       name = "Interactable",
       params = {
-		 on_interaction = 'demo'
+		on_interaction = 'demo'
 	  }
     }
   }
