@@ -91,8 +91,10 @@ int main() {
 			while (!physics_engine.requests.empty()) {
 				physics_engine.update(seconds_per_update);
 				update_system.run_collision_callbacks(seconds_per_update);
-				update_system.run_interaction_callback(seconds_per_update);
 			}
+			
+			update_system.run_interaction_callback(seconds_per_update);
+
 		} else {
 			update_system.do_paused_update(seconds_per_update);
 		}

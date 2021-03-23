@@ -30,8 +30,14 @@ function on_collision(id, other)
   local entity = tdengine.entities[id]
   local other = tdengine.entities[other]
 
-  if not entity or not other then
-	print('some entity did not exist for on_collision')
+  if not entity then
+	print('@bad_entity_on_collision: ' .. inspect(entity) .. ', ' .. inspect(other))
+	return
+  end
+
+  if not other then
+	print('@bad_other_on_collision: ' .. inspect(other) .. ', ' .. inspect(entity))
+	return
   end
   
   if entity.on_collision then
@@ -64,7 +70,14 @@ end
 function tdengine.find_entity_by_id(name)
 end
 
-function tdengine.find_entity_by_descriptor(name)
+function tdengine.find_entity_by_tag(tag)
+  for id, entity in pairs(tdengine.entities) do
+	if entity.tag == tag then
+	  return entity
+	end
+  end
+
+  return nil
 end
 
 function tdengine.create_entity(name, data)   
@@ -79,16 +92,12 @@ function tdengine.create_entity(name, data)
   -- Construct the entity with a do-nothing constructor
   entity = EntityType:new()
   entity.id = id
+  entity.tag = data.tag
 
   tdengine.entities[id] = entity
 
   -- Load the prefab to create any default compononents
-  local filepath = 'prefabs/' .. name
-  package.loaded[filepath] = nil
-  local status, prefab = pcall(require, filepath)
-  if not status then
-  end
-
+  local prefab = tdengine.fetch_module_data('prefabs/' .. name, false)
   if prefab then
 	for name, component in pairs(prefab.components) do
 	  local param_components = data.components or {}
@@ -118,6 +127,8 @@ end
 
 function tdengine.destroy_entity(id)
   local entity = tdengine.entities[id]
+  if not entity then return end
+  
   entity.id = -1
   entity.alive = false
   
@@ -366,7 +377,7 @@ function tdengine.serialize_current_scene()
   local save = {
 	entities = {}
   }
-
+  
   for index, entity in pairs(tdengine.entities) do
 	if entity.tdengine__should_save then
 	  -- Insert some basic fields that every entity has
@@ -421,7 +432,6 @@ function tdengine.save_current_scene_to_memory()
   tdengine.scenes[tdengine.loaded_scene.name] = data
 end
 
-
 function tdengine.load_scene(data)
   for id, entity in pairs(tdengine.entities) do
 	persist = entity.tdengine_persist or false
@@ -429,26 +439,22 @@ function tdengine.load_scene(data)
 	  tdengine.destroy_entity(id)
 	end
   end
-  
+
   for index, entity in pairs(data.entities) do
 	tdengine.create_entity(entity.name, entity)
   end
 end
 
 function tdengine.load_scene_from_template(name)
-  local module_name = 'scenes/templates/' .. name
-  package.loaded[module_name] = nil
-  local status, scene = pcall(require, module_name)
-  if not status then
-	print('@cannot_require_scene_template: ' .. module_name)
-	return false
-  end
+  local scene = tdengine.fetch_module_data('scenes/templates/' .. name)
 
+  tdengine.load_scene(scene)
   tdengine.loaded_scene = {
 	name = name,
-	path = module_name
+	path = 'scenes/templates/' .. name,
+	manager = scene.manager
   }
-  tdengine.load_scene(scene)
+  
   return true
 end
 
@@ -457,12 +463,13 @@ function tdengine.load_scene_from_memory(name)
   if not scene then
 	return false
   end
-  
+	
+  tdengine.load_scene(scene)
   tdengine.loaded_scene = {
 	name = name,
 	path = module_name
   }
-  tdengine.load_scene(scene)
+
   return true
 end
 
@@ -470,6 +477,31 @@ function tdengine.load_scene_from_anywhere(name)
   if tdengine.load_scene_from_memory(name) then return true end
   if tdengine.load_scene_from_template(name) then return true end
   return false
+end
+
+function tdengine.change_scene(name)
+  if string.len(tdengine.loaded_scene.name) > 0 then
+	-- 1) Cleanup the current scene by calling into its manager
+	local scene = tdengine.fetch_module_data('scenes/templates/' .. tdengine.loaded_scene.name)
+	if scene.manager then
+	  local manager = tdengine.find_entity(scene.manager)
+	  manager:cleanup()
+	end
+
+	-- 2) Save the current scene to the in-memory table
+	tdengine.save_current_scene_to_memory()
+  end
+  
+  -- 3) Load the new scene
+  tdengine.load_scene_from_anywhere(name)
+  
+  -- 4) Set it up by calling into its manager
+  local scene = tdengine.fetch_module_data('scenes/templates/' .. name)
+  if scene.manager then
+	local manager = tdengine.find_entity(scene.manager)
+	manager:setup()
+  end
+  
 end
   
 function tdengine.save(name)
@@ -607,8 +639,13 @@ function tdengine.update_cutscene(dt)
 end
 
 function tdengine.terminate_cutscene()
-  tdengine.log('cutscene:@terminated: ' .. tdengine.active_cutscene.name)
+  if not tdengine.active_cutscene then return end
+  
+  tdengine.log('@terminated_cutscene: ' .. tdengine.active_cutscene.name)
   tdengine.enable_input_channel(tdengine.InputChannel.Player)
+
+  local text_box = tdengine.find_entity('TextBox')
+  if text_box then tdengine.destroy_entity(text_box.id) end
   
   tdengine.active_cutscene = nil
 end
@@ -639,7 +676,7 @@ function tdengine.load_animations()
 	local status, animation = pcall(require, name)
 	
 	if not status then
-	  print('@cannot_require_animation: ' .. file)
+	  tdengine.log('@cannot_require_animation: ' .. file)
 	  return
 	end
 
@@ -657,7 +694,6 @@ function tdengine.load_branches()
 	package.loaded[branch_module] = nil
 	local status, branches = pcall(require, branch_module)
 
-	print('yep')
 	if not status then
 	  print('@cannot_require_branch: ' .. branches)
 	  return
@@ -676,6 +712,7 @@ tdengine.colors = {}
 tdengine.colors.red =   { r = 1, g = 0, b = 0, a = 1 }
 tdengine.colors.green = { r = 0, g = 1, b = 0, a = 1 }
 tdengine.colors.blue =  { r = 0, g = 0, b = 1, a = 1 }
+tdengine.colors.idk =   { r = 0, g = .75, b = 1, a = 1 }
 tdengine.colors.grid_bg =  { r = .25, g = .25, b = .3, a = .8 }
 
 function table.shallow_copy(t)
@@ -752,6 +789,21 @@ function tdengine.write_file_to_return_table(filepath, t)
   else
 	print('@cannot_open_file: ' .. filepath)
   end
+end
+
+function tdengine.fetch_module_data(module_path, log)
+  log = ternary(log == nil, true, log)
+  package.loaded[module_path] = nil
+  local status, data = pcall(require, module_path)
+  if not status then
+	if log then
+	  tdengine.log('@module_load_failure')
+	  tdengine.log(data)
+	end
+	return nil
+  end
+
+  return data
 end
 
 function tdengine.screen_to_world(screen)
@@ -951,30 +1003,29 @@ function tdengine.initialize()
   tdengine.components = {}
   tdengine.actions = {}
   tdengine.state = {}
-  tdengine.branches = {}
-  tdengine.story = {}
+  tdengine.markers = {}
   tdengine.scenes = {}
   tdengine.animations = {}
+  tdengine.branches = {}
   tdengine.triggers = {}
   tdengine.on_interactions = {}
   tdengine.loaded_scene = { name = '', path = '' }
   tdengine.active_cutscene = nil
-  tdengine.markers = {}
 
   tdengine.current_layout = 'default'
   tdengine.layout_stack = { 'default' }
   tdengine.layout_index = 1
   
   tdengine.console_pipe = ''
-  tdengine.load_console_shortcuts()
 
   -- Load up static data
   tdengine.load_animations()
   tdengine.load_branches()
   tdengine.load_markers()
+  tdengine.load_default_state()
 end
 
-local console_shortcuts = {
+tdengine.console_shortcuts = {
   cutscene = {
 	help = 'load + begin a cutscene from src/scripts/cutscenes',
 	proc = function(...) tdengine.do_cutscene_from_name(...) end
@@ -997,6 +1048,21 @@ local console_shortcuts = {
   layout = {
 	help = 'use a predefined imgui layout',
 	proc = tdengine.layout
+  },
+  list = {
+	help = 'list all commands and their help messages',
+	proc = function()
+	  local message = ''
+	  for name, data in pairs(tdengine.console_shortcuts) do
+		message = message .. name .. ': ' .. data.help .. '\n'
+	  end
+	  
+	  tdengine.console_pipe = message
+	end
+  },
+  ['load'] = {
+	help = 'load a state file',
+	proc = function(...) tdengine.load(...) end
   },
   marker = {
 	help = 'add a shortcut that can be teleported to by name',
@@ -1031,13 +1097,15 @@ local console_shortcuts = {
 	  end
 	end
   },
+  reload = {
+	help = 'hard reload a scene from a template',
+	proc = function()
+	  tdengine.change_scene(tdengine.loaded_scene.name)
+	end
+  },
   save = {
 	help = 'save all runtime state to a file',
 	proc = function(...) tdengine.save(...) end
-  },
-  ['load'] = {
-	help = 'load a state file',
-	proc = function(...) tdengine.load(...) end
   },
   save_layout = {
 	help = 'save current imgui configuration as a layout',
@@ -1045,43 +1113,37 @@ local console_shortcuts = {
   },
   scene = {
 	help = 'load a scene from src/scripts/scenes/templates',
-	proc = function(...)
-	  --tdengine.terminate_cutscene()
-	  tdengine.load_scene_from_template(...)
+	proc = function(name)
+	  tdengine.change_scene(name)
 	end
   },
   snap = {
 	help = 'snap the camera to center on the player',
 	proc = tdengine.snap_to_player
   },
+  story = {
+	help = 'set the story marker',
+	proc = function(story_marker)
+	  tdengine.state['main:story_marker'] = tdengine.story_markers[story_marker]
+	end
+  },
   teleport = {
 	help = 'teleport the player + snap',
 	proc = function(x, y)
-	  local dest = { x = x, y = y }
+	  local player = tdengine.find_entity('Player')
 	  if type(x) == 'string' then
-		tdengine.go_to_marker(x)
+		local marker = x
+		tdengine.go_to_marker(player.id, marker)
 	  else
-		local player = tdengine.find_entity('Player')
 		tdengine.teleport_entity(player.id, x, y)
-		tdengine.snap_to_player()
 	  end
-
+	  
+	  tdengine.snap_to_player()
 	end
-  },
-}
-console_shortcuts.list = {
-  help = 'list all commands and their help messages',
-  proc = function()
-	local message = ''
-	for name, data in pairs(console_shortcuts) do
-	  message = message .. name .. ': ' .. data.help .. '\n'
-	end
-
-	tdengine.console_pipe = message
-  end
+  }
 }
 
-for name, data in pairs(console_shortcuts) do
+for name, data in pairs(tdengine.console_shortcuts) do
   _G[name] = data.proc
 end
 
@@ -1098,22 +1160,31 @@ function tdengine.load_markers()
   tdengine.markers = markers
 end
 
-function tdengine.go_to_marker(name)
+function tdengine.go_to_marker(id, name)
   local marker = tdengine.markers[name]
   if not marker then
 	tdengine.log('@bad_marker: ' .. name)
 	return
   end
   
-  if tdengine.loaded_scene.name ~= marker.scene then
-	tdengine.load_scene_from_anywhere(marker.scene)
-  end
-  
-  local player = tdengine.find_entity('Player')
-  tdengine.teleport_entity(player.id, marker.x, marker.y)
-  tdengine.snap_to_player()
+  tdengine.change_scene(marker.scene)
+  tdengine.teleport_entity(id, marker.x, marker.y)
 end
 
 function tdengine.load_editor()
   tdengine.create_entity('Editor', {})
+end
+
+tdengine.story_markers = {
+  INTRO               = 'intro',
+  LEFT_JANITOR_CLOSET = 'left_janitor_closet'
+}
+
+function tdengine.load_default_state()
+  tdengine.log('@load:state')
+  
+  local state = tdengine.fetch_module_data('state/state')
+  if not state then tdengine.log('@load_default_state_failure'); return end
+  
+  tdengine.state = state
 end

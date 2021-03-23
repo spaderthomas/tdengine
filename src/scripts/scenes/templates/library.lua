@@ -36,7 +36,7 @@ return {
       },
       name = "Door",
       params = {
-		marker = 'hub_entrance'
+		marker = 'library_entrance'
       }
     }
   }

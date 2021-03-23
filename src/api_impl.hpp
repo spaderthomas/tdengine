@@ -223,6 +223,25 @@ void API::register_raycastable(int entity) {
 	physics_engine.add_raycast(entity, collider);
 }
 
+void API::register_trigger(int entity) {
+	auto& entity_manager = get_entity_manager();
+
+	Collider collider;
+	collider.entity = entity;
+
+	auto entity_ptr = entity_manager.get_entity(entity);
+	if (!entity_ptr->has_component("BoundingBox")) return;
+	auto box = Lua.get_component(entity, "BoundingBox");
+	
+	collider.extents.x = box["extents"]["x"];
+	collider.extents.y = box["extents"]["y"];
+	collider.offset.x = box["offset"]["x"];
+	collider.offset.y = box["offset"]["y"];	
+	
+	auto& physics_engine = get_physics_engine();
+	physics_engine.triggers[entity] = collider;
+}
+
 sol::object API::ray_cast(float x, float y) {
 	auto& physics_engine = get_physics_engine();
 
@@ -508,6 +527,7 @@ void register_lua_api() {
 	state["tdengine"]["register_position"]     = &register_position;
 	state["tdengine"]["register_collider"]     = &register_collider;
 	state["tdengine"]["register_raycastable"]  = &register_raycastable;
+	state["tdengine"]["register_trigger"]      = &register_trigger;
 	state["tdengine"]["register_interactable"] = &register_interactable;
 	state["tdengine"]["do_interaction_check"]  = &do_interaction_check;
 	state["tdengine"]["register_player"]       = &register_player;

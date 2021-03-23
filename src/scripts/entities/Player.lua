@@ -3,28 +3,28 @@ local GLFW = require('glfw')
 
 Player = tdengine.entity('Player')
 function Player:init(params)
-   tdengine.register_collider(self.id)
-   tdengine.register_player(self.id)
-   self.speed = tdengine.vec2(.005, .005)
+  tdengine.register_collider(self.id)
+  tdengine.register_player(self.id)
+  self.speed = tdengine.vec2(.005, .005)
 
-   self:persist()
-   self:should_save(false)
+  self:persist()
+  self:should_save(false)
 end
 
 function Player:handle_movement()
   local input = self:get_component('Input')
 
   if input:is_down(GLFW.Keys.I) then
-   tdengine.move_entity_by_offset(self.id, 0, self.speed.y, 0)
+	tdengine.move_entity_by_offset(self.id, 0, self.speed.y, 0)
   end
   if input:is_down(GLFW.Keys.J) then
-   tdengine.move_entity_by_offset(self.id, -self.speed.x, 0, 0)
+	tdengine.move_entity_by_offset(self.id, -self.speed.x, 0, 0)
   end
   if input:is_down(GLFW.Keys.K) then
-   tdengine.move_entity_by_offset(self.id, 0, -self.speed.y, 0)
+	tdengine.move_entity_by_offset(self.id, 0, -self.speed.y, 0)
   end
   if input:is_down(GLFW.Keys.L) then
-   tdengine.move_entity_by_offset(self.id, self.speed.x, 0, 0)
+	tdengine.move_entity_by_offset(self.id, self.speed.x, 0, 0)
   end
   
   local animation = self:get_component('Animation')
@@ -44,12 +44,12 @@ function Player:handle_movement()
 end
 
 function Player:update(dt)
-   self:handle_movement()
+  self:handle_movement()
 
-   local input = self:get_component('Input')
-   if input:was_pressed(GLFW.Keys.O) then
-	  tdengine.do_interaction_check();
-   end
+  local input = self:get_component('Input')
+  if input:was_pressed(GLFW.Keys.O) then
+	tdengine.do_interaction_check();
+  end
 end
 
 -- Even though the player isn't saved to the scene, we still need to save player data.

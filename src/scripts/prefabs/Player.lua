@@ -14,8 +14,8 @@ return {
 	  channel = tdengine.InputChannel.Player
 	},
 	PlayerVision = {
-	  extents = { x = .03, y = .15 },
-	  offset = { x = 0, y = .04 },
+	  extents = { x = .1, y = .15 },
+	  offset = { x = 0, y = 0 },
 	}
   }
 }

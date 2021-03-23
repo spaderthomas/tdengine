@@ -53,6 +53,8 @@ struct PhysicsEngine {
 	std::map<int, Position> positions;
 	std::map<int, Collider> collidable;
 	std::map<int, Collider> raycast;
+	std::map<int, Collider> triggers;
+	
 	std::vector<MoveRequest> requests;
 
 	// These are built up when the engine resolves all physics / collisions.

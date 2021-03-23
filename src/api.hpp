@@ -16,6 +16,7 @@ void        teleport_entity(int entity, float x, float y);
 void        register_position(int entity);
 void        register_collider(int entity);
 void        register_raycastable(int entity);
+void        register_trigger(int entity);
 void        disable_collision_detection(int entity);
 void        register_player(int entity);
 void        do_interaction_check();

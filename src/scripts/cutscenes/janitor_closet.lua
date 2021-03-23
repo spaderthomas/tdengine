@@ -1,5 +1,21 @@
 return {
   {
+	name = 'CreateEntity',
+	entity = 'Oliver',
+	data = {
+	  components = {
+		Position = {
+		  marker = 'oliver_jc_cutscene'
+		}
+	  }
+	}
+  },
+  {
+	name = 'Teleport',
+	entity = 'Player',
+	marker = 'janitor_closet:player'
+  },
+  {
 	name = 'Sound',
 	sound = 'intro_theme_001',
 	loop = true,
@@ -24,9 +40,14 @@ return {
   {
 	name = 'Dialogue',
 	dialogue = 'jc_introduce'
+	--dialogue = 'branch_on_function'
   },
   {
 	name = 'DisappearIntoPlayer',
 	entity = 'Oliver'
   },
+  {
+	name = 'SetStoryMarker',
+	marker = tdengine.story_markers.LEFT_JANITOR_CLOSET
+  }
 }

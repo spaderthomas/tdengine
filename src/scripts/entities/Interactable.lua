@@ -17,19 +17,22 @@ function Interactable:pre_save()
 end
 
 function Interactable:save()
-   return {
-	  on_interaction = self.on_interaction_name
-   }
+  return {
+	on_interaction = self.on_interaction_name
+  }
 end
 
 function Interactable:update(dt)
 end
 
 function Interactable:on_interaction()
-   local on_interaction = tdengine.on_interactions[self.on_interaction_name]
-   on_interaction()
+  print('yes')
+  local on_interaction = tdengine.on_interactions[self.on_interaction_name]
+  print('yesss')
+  on_interaction()
 end
 
 tdengine.on_interactions.demo = function()
-   tdengine.do_cutscene_from_name('interaction_test')
+  print('hi')
+  tdengine.do_cutscene_from_name('dialogue_test')
 end

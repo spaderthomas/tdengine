@@ -220,6 +220,17 @@ int   Console::TextEditCallback(ImGuiInputTextCallbackData* data)
 	}
 	return 0;
 }
+
+sol::protected_function_result on_lua_error(lua_State*, sol::protected_function_result pfr)
+{
+	sol::error error = pfr;
+	tdns_log.write("@console_script_error");
+	tdns_log.write(error.what());
+	
+	return pfr;
+}
+
+
 void  Console::ExecCommand(char* command_line)
 {
 	AddLog("# %s\n", command_line);
@@ -243,15 +254,10 @@ void  Console::ExecCommand(char* command_line)
 		AddLog(message.c_str());
 	}
 
-	try {
-		Lua.state.safe_script(command_line);
-		std::string result = Lua.state["tdengine"]["console_pipe"];
-		if (!result.empty()) {
-			AddLog(result.c_str());
-		}
-		Lua.state["tdengine"]["console_pipe"] = "";
-	} catch (const sol::error& error) {
-		AddLog("Command failed; check the terminal or the log for more information");
-		tdns_log.write(error.what());
+	Lua.state.safe_script(command_line, &on_lua_error);
+	std::string result = Lua.state["tdengine"]["console_pipe"];
+	if (!result.empty()) {
+		AddLog(result.c_str());
 	}
+	Lua.state["tdengine"]["console_pipe"] = "";
 }

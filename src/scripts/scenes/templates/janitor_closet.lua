@@ -4,8 +4,8 @@ return {
       components = {
         BoundingBox = {
           extents = {
-            x = 0.086192429065704346,
-            y = 0.57966884970664978
+            x = 0.14593100547790527,
+            y = 0.080866396427154541
           },
           offset = {
             x = 0,
@@ -14,8 +14,8 @@ return {
         },
         Position = {
           world = {
-            x = 0.34571129083633423,
-            y = 0.28743132948875427
+            x = 0.32447701692581177,
+            y = -0.040293872356414795
           }
         }
       },
@@ -63,28 +63,6 @@ return {
       components = {
         BoundingBox = {
           extents = {
-            x = 0.39958161115646362,
-            y = 0.063953496515750885
-          },
-          offset = {
-            x = 0,
-            y = 0
-          }
-        },
-        Position = {
-          world = {
-            x = 0.20092052221298218,
-            y = -0.034379832446575165
-          }
-        }
-      },
-      name = "Box",
-      params = {}
-    },
-    {
-      components = {
-        BoundingBox = {
-          extents = {
             x = 0.053586184978485107,
             y = 0.021584823727607727
           },
@@ -96,21 +74,21 @@ return {
         Position = {
           world = {
             x = 0.082202732563018799,
-            y = 0.0093583390116691589
+            y = 0.0086363181471824646
           }
         }
       },
       name = "Door",
       params = {
-		marker = 'demo'
+        marker = "demo"
       }
     },
     {
       components = {
         BoundingBox = {
           extents = {
-            x = 0.041840940713882446,
-            y = 0.016472846269607544
+            x = 0.19236576557159424,
+            y = 0.1296851634979248
           },
           offset = {
             x = 0,
@@ -119,26 +97,34 @@ return {
         },
         Position = {
           world = {
-            x = 0.20560669898986816,
-            y = 0.013934135437011719
+            x = 0.061424106359481812,
+            y = -0.064981937408447266
           }
         }
       },
-      name = "Door",
-      params = {
-		marker = 'hub_entrance'
-      }
+      name = "Box",
+      params = {}
     },
     {
       components = {
+        BoundingBox = {
+          extents = {
+            x = 0.086192429065704346,
+            y = 0.57966884970664978
+          },
+          offset = {
+            x = 0,
+            y = 0
+          }
+        },
         Position = {
           world = {
-            x = 0.19429710507392883,
-            y = 0.22746780514717102
+            x = 0.34571129083633423,
+            y = 0.28743132948875427
           }
         }
       },
-      name = "Oliver",
+      name = "Box",
       params = {}
     },
     {
@@ -162,6 +148,30 @@ return {
       },
       name = "Box",
       params = {}
+    },
+    {
+      components = {
+        BoundingBox = {
+          extents = {
+            x = 0.090506613254547119,
+            y = 0.29473751783370972
+          },
+          offset = {
+            x = 0,
+            y = 0
+          }
+        },
+        Position = {
+          world = {
+            x = 0.20365056395530701,
+            y = -0.15935108065605164
+          }
+        }
+      },
+      name = "Door",
+      params = {
+        marker = "jc_entrance"
+      }
     }
   }
 }

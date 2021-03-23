@@ -489,6 +489,11 @@ function Editor:scene_viewer()
 	 tdengine.save_current_scene_to_memory()
   end
 
+  local id = '##scene_viewer:save_to_template'
+  if imgui.Button('Save To Template', button_size.x, button_size.y) then
+	tdengine.save_current_scene_as_template(tdengine.loaded_scene.name)
+  end
+  
   local id = '##scene_viewer:load_from_memory'
   if imgui.Button('Load From Memory', button_size.x, button_size.y) then
 	tdengine.load_scene_from_memory(imgui.InputTextContents(id))
@@ -497,14 +502,6 @@ function Editor:scene_viewer()
   imgui.SameLine()
   imgui.InputText(id, 63)
 
-  local id = '##scene_viewer:save_to_template'
-  if imgui.Button('Save To Template', button_size.x, button_size.y) then
-	local which = imgui.InputTextContents(id)
-	if which:len() == 0 then which = tdengine.loaded_scene.name end
-	tdengine.save_current_scene_as_template(which)
-  end
-  imgui.SameLine()
-  imgui.InputText(id, 63)
 
   local id = '##scene_viewer:load_from_template'
   if imgui.Button('Load From Template', button_size.x, button_size.y) then
@@ -1173,9 +1170,6 @@ function Editor:dialogue_editor(dt)
 	  if imgui.MenuItem('Set as entry point') then
 		node.is_entry_point = true
 	  end
-	  if imgui.MenuItem('Set as temporary entry point') then
-		node.is_entry_point = true
-	  end
 
 	  if imgui.MenuItem('Delete') then
 		self.ded.deleting = id
@@ -1402,21 +1396,25 @@ function Editor:state_viewer()
   table.sort(variables)
   for index, name in pairs(variables) do
 	if self.state_filter:PassFilter(name) then 
-	  imgui.Text(name .. ': ')
+	  imgui.extensions.VariableName(name)
 	  imgui.SameLine()
-	  
+
 	  local value = tdengine.state[name]
-	  local true_color = tdengine.color32(0, 255, 0, 255)
-	  local false_color = tdengine.color32(255, 0, 0, 255)
-	  local color = ternary(value, true_color, false_color)
-	  imgui.PushStyleColor(imgui.constant.Col.Text, color)
+	  if type(value) == 'string' then
+		imgui.Text(value)
+	  elseif type(value) == 'boolean' then
+		local true_color = tdengine.color32(0, 255, 0, 255)
+		local false_color = tdengine.color32(255, 0, 0, 255)
+		local color = ternary(value, true_color, false_color)
+		imgui.PushStyleColor(imgui.constant.Col.Text, color)
+		
+		local label = tostring(tdengine.state[name]) .. '##' .. tostring(index)
+		if imgui.Button(label) then
+		  tdengine.state[name] = not value
+		end
 	  
-	  local label = tostring(tdengine.state[name]) .. '##' .. tostring(index)
-	  if imgui.Button(label) then
-		tdengine.state[name] = not value
+		imgui.PopStyleColor()
 	  end
-	  
-	  imgui.PopStyleColor()
 	end
   end
   imgui.End('state')

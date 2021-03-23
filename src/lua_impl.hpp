@@ -55,7 +55,6 @@ void init_lua() {
 
 	lua_manager.state.script("tdengine.initialize()");
 	
-	lua_manager.script_dir(RelativePath("state"));
 	lua_manager.script_dir(RelativePath("entities"));
 	lua_manager.script_dir(RelativePath("components"));
 	lua_manager.script_dir(RelativePath("scenes"));

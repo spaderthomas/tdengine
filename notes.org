@@ -242,7 +242,7 @@ https://linux.die.net/lkmpg/x427.html
 - write closet dialogue
 - make a preliminary list of locales + short descriptions
 - design the hub's layout
-
+ 
 - make a background for the hub's layout
 - popup when you leave the closet to give directions
 - cop art assets from another game:
@@ -416,6 +416,31 @@ don't change...
 (of course, there's a big fun battle when you hook up the receiver and
 pipe into a fucked up dimension. maybe there's an alien, or maybe it's
 bill clinton, or maybe it's your mom and dad as siamese twins).
+*** crazy eddy
+@crazy_eddy
+everyone in the town talks shit on crazy eddie. he was a homeless guy who, in
+life, liked to hang around the school and (genuinely) befriend the kids and
+sleep out behind the gym.
+
+so he sleeps out behind the gym, and day, crazy eddie just dies. in the way that
+homeless people do sometimes. back in limbo, crazy eddie is being annoying. he's
+been a real spiritual asshole, and wouldn't you go try to talk some sense in to
+him seeing as you're the new kid?
+
+so you go down and talk to crazy eddie and he doesn't really make a lot of sense
+-- but what you can surmise is that his normal haunt is, well, haunted. there
+are some less-than-kind spirits there. you knock 'em out, and then crazy eddie
+says to you:
+
+thank you. you're the first person that's been kind to me in longer than i can
+fathom. do you know hard it is to be crazy? actually -- being crazy is really
+easy. you live in your own personal reality. it's the brief moments where you
+snap back. that doesn't happen for everyone, but it happens for me. every once
+in a while, i'll come to, and i'll look at myself, my unwashed body, my tattered
+clothes, my stench, and i'll feel a self hatred that cuts through me like a hot
+knife. and i'll know that nobody could ever love me, and that i do not deserve
+kindness. and i'll tough it out until i lose myself again in my illness. it
+always comes back, thankfully, because then the hard part is over.
 ** details
 a man who has nailed himself to the cross like christ, flayed his own skin raw
 because he believes himself to be in the christian version of hell. he can get
@@ -824,6 +849,8 @@ these events or harness their power.
 
 the dead go on as if they were living, but all of their plans are
 futile because of the nature of the world they live in.
+
+you are flawed, and you can never understand yourself
 ** tangents
 even though gpt-3 is in some sense just recombining human patterns, it is still
 creating art. the strangeness of a genetic algorithm influencing art created by
@@ -909,6 +936,24 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 03/22/2021
+clean up trigger from physics engine when destroy
+
+** 03/20/2021
+register a scene manager entity? or rather, the entity registers itself as the
+scene manager
+
+define a name for a manager entity in the scene data?
+
+does it need to persist?
+
+so like, enter scene
+create all the shit you need to based on story marker
+set a cleanup function
+...go to another scene
+...when you come back:
+call the cleanup function
+go back to 
 ** 03/17/2021
 #+BEGIN_SRC lua
 local save = {
@@ -3879,15 +3924,24 @@ your school, in fact. but just like the closet, something is off about
 it. moreover, it has a slight resemblance to a shanty town -- a place that's
 been co-opted for something beyond its original purpose. it's not like a favela,
 but it definitely has a thrown together vibe to it. you can tell that the, shall
-we say high class souls are not who resides here. 
+we say high class souls are not who resides here.
 
-from the lobby, you can get to a couple places. the cafeteria has been co-opted
-into the town square. there are shops here, there are spots of congregation (do
-souls need to eat...?). there are a few rooms for the teachers that don't belong
-in any particular grade -- art, music. the principal's office is there, and it
-looks extremely ominous, like how a ten year old imagines the principal's
-office. there's also a secretary's office, and the vice principal's office is
-attached to it. 
+as soon as he leaves the closet, boon is in awe. this is legitimately a bustling
+city of the dead and damned. there are people walking between the different
+floors and buildings, people stopped talking to each other in all different
+places around the lobby, a few small carts and tables set up selling strange
+kinds of baubles, people sitting in a circle in the corner throwing dice and
+being rowdy. it's overwhelming. and the most terrifying part is that it looks
+almost exactly like the school where he's spent his last six years. the tile
+pattern on the floor, the chips on the paint, even the scent of vaguely stale
+air is precisely reminiscent of his school. oliver wasn't kidding. you can hear
+the hum of people through the background mu sic.
+**** script
+- boon pauses for a beat
+- "..."
+- create oliver
+- oliver asks if everything is ok
+- 
 *** the library
 but you're headed to the library. the library isn't small per se, but it's kept
 more like the personal library of a wealthy man than an elementary school
@@ -4371,8 +4425,14 @@ two solid feet and make it in life. they're just grabbing at whatever they can.
 the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
-:LOGBOOK:
-CLOCK: [2021-03-17 Wed 22:25]
+:LOGBOOK: 
+CLOCK: [2021-03-22 Mon 16:50]
+CLOCK: [2021-03-22 Mon 15:17]--[2021-03-22 Mon 16:22] =>  1:05
+CLOCK: [2021-03-21 Sun 16:10]--[2021-03-21 Sun 17:03] =>  0:53
+CLOCK: [2021-03-20 Sat 15:33]--[2021-03-20 Sat 16:13] =>  0:40
+CLOCK: [2021-03-19 Fri 15:40]--[2021-03-19 Fri 16:54] =>  1:14
+CLOCK: [2021-03-18 Thu 20:15]--[2021-03-18 Thu 23:01] =>  2:46
+CLOCK: [2021-03-17 Wed 22:25]--[2021-03-17 Wed 23:59] =>  1:34
 CLOCK: [2021-03-17 Wed 14:05]--[2021-03-17 Wed 14:30] =>  0:25
 CLOCK: [2021-03-16 Tue 18:39]--[2021-03-16 Tue 19:15] =>  0:36
 CLOCK: [2021-03-15 Mon 23:43]--[2021-03-16 Tue 00:42] =>  0:59

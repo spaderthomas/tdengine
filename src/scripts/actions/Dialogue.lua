@@ -3,12 +3,16 @@ local GLFW = require('glfw')
 
 function Dialogue:init(params)
    self.which = params.dialogue
+   if tdengine.state['engine:use_short_dialogue'] then
+	 self.which = 'branch_on_function'
+   end
+	 
    self.data = tdengine.load_dialogue(self.which)
    self.waiting = false
    self.choosing = false
    self.choice = nil
    self.current = nil
-
+   
    -- Error checking
    local message = nil
    local entry = self:find_entry_node()

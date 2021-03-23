@@ -142,13 +142,11 @@ void PhysicsEngine::update(float dt) {
 			continue;
 		}
 
-		if (request.flags & MoveFlags::AbsolutePosition) {
-			*mover_position = request.wish;
-		} else {
-			*mover_position += request.wish;
-		}
+		if (request.flags & MoveFlags::AbsolutePosition) *mover_position = request.wish;
+		else *mover_position += request.wish;
 		auto mover_box = Center_Box::from_entity(request.entity);
 
+		// Handle regular collisions
 		for (auto& [id, other] : collidable) {
 			if (id == request.entity) continue;
 
@@ -164,6 +162,20 @@ void PhysicsEngine::update(float dt) {
 				collisions.push_back(info);
 			}
 		}
+
+		// Handle collisions with triggers
+		for (auto& [id, other] : triggers) {
+			auto other_box = Center_Box::from_entity(id);
+
+			glm::vec2 penetration;
+			if (are_boxes_colliding(mover_box, other_box, penetration)) {
+				CollisionInfo info;
+				info.entity = request.entity;
+				info.other = id;
+				collisions.push_back(info);
+			}
+		}
+
 	}
 
 	for (auto request : requests) {

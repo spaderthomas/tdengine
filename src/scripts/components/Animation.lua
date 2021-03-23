@@ -43,14 +43,19 @@ function Animation:update(dt)
 	  if self.loop then
 		-- @hack: If we kicked this thing off with any other params, they will get lost when
 		-- we start looping. Not a problem now.
-		local params = { loop = true }
-		self:begin(self.current_animation.name, params)
+		self.frame = 1
+		self.time_to_next = self.current_animation.data[1].time
+		self.sprite = self.current_animation.data[1].sprite
+
+		--local params = { loop = true }
+		--self:begin(self.current_animation.name, params)
 	  else
 		-- You can ask to loop an animation after your request is done
 		if self.play_when_finished then
 		  self:begin(self.play_when_finished, { loop = true })
 		-- But if you don't, we're going to stick to the last frame of this animation
 		else
+		  self:loop_last_frame()
 		  return
 		end
 	  end
@@ -64,6 +69,19 @@ function Animation:update(dt)
 	self.sprite = next_frame.sprite
 	self.time_to_next = next_frame.time
   end
+end
+
+function Animation:loop_last_frame()
+  local last_frame = self.current_animation.data[self.current_animation.count]
+  self.current_animation.data = {
+	last_frame
+  }
+  self.current_animation.count = 1
+  
+  self.frame = 1
+  self.loop = true
+  self.time_to_next = self.current_animation.data[1].time
+  self.sprite = self.current_animation.data[1].sprite
 end
 
 function Animation:begin(name, params)

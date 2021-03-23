@@ -17,5 +17,5 @@ function PlayerVision:update()
       origin = tdengine.vec2(position.world):add(self.offset),
 	  extents = self.extents
    }
-   tdengine.draw.rect_outline_world(rect, tdengine.colors.green)
+   tdengine.draw.rect_outline_world(rect, tdengine.colors.idk)
 end

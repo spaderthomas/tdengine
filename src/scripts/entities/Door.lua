@@ -9,6 +9,9 @@ function Door:init(params)
   end
   
   tdengine.register_collider(self.id)
+
+  local aabb = self:get_component('BoundingBox')
+  aabb.color = tdengine.colors.green
 end
 
 function Door:update(dt)
@@ -27,8 +30,10 @@ end
 
 function Door:on_collision(other)
   if other:get_name() == 'Player' then
-	tdengine.save_current_scene_to_memory()
+	local player = tdengine.find_entity('Player')
+	
 	tdengine.fade_screen(.5)
-	tdengine.go_to_marker(self.marker)
+	tdengine.go_to_marker(player.id, self.marker)
+	tdengine.snap_to_player()
   end
 end

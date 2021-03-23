@@ -1,5 +1,11 @@
 return {
+  manager = 'HubManager',
   entities = {
+	{
+	  name = 'HubManager',
+	  params = {},
+	  components = {}
+	},
     {
       components = {
         Animation = {
@@ -37,6 +43,30 @@ return {
       name = "Door",
       params = {
         marker = "library"
+      }
+    },
+    {
+      components = {
+        BoundingBox = {
+          extents = {
+            x = 0.028560250997543335,
+            y = 0.23465701937675476
+          },
+          offset = {
+            x = 0,
+            y = 0
+          }
+        },
+        Position = {
+          world = {
+            x = 2.1952559947967529,
+            y = 2.3697376251220703
+          }
+        }
+      },
+      name = "Door",
+      params = {
+        marker = "janitor_closet"
       }
     }
   }

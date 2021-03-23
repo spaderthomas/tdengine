@@ -1,9 +1,6 @@
-tdengine.story_markers = {
-  LEFT_JANITOR_CLOSET = 'marker:001:left_janitor_closet'
-}
-
-tdengine.state = {
+return {
    ['engine:disable_delay_actions'] = true,
+   ['engine:use_short_dialogue'] = true,
    ['demo:001:heard_about_the_dead'] = false,
    ['demo:002:likes_psychedelic'] = true,
    ['demo:003:likes_americana'] = false,
@@ -13,6 +10,6 @@ tdengine.state = {
    ['demo:007:likes_trigun'] = false,
    ['demo:008:likes_anime'] = false,
    ['demo:009:should_display_choice'] = false,
-   ['jc:001:mentioned_librarian'] = false,
-   ['main:001:story_marker'] = tdengine.story_markers.LEFT_JANITOR_CLOSET
+   ['jc:mentioned_librarian'] = false,
+   ['main:story_marker'] = tdengine.story_markers.INTRO
 }

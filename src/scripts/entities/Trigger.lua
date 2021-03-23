@@ -20,14 +20,15 @@ function Trigger:save()
 end
 
 function Trigger:on_collision(other)
-   if other:get_name() == 'Player' then
-	  local proc = tdengine.triggers[self.on_collision_proc]
-	  if proc then proc() end
-   end
+  if other:get_name() == 'Player' then
+	local proc = tdengine.triggers[self.on_collision_proc]
+	if proc then proc(self) end
+  end
 end
 
 tdengine.triggers = {
-   ['demo:001:fuck_off_randy'] = function(other)
-	  print('fuck off, randy!')
-   end
+  ['main:introduce_hub'] = function(self)
+	tdengine.do_cutscene_from_name('introduce_hub')
+	tdengine.destroy_entity(self.id)
+  end
 }
