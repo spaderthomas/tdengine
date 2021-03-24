@@ -179,10 +179,10 @@ function Dialogue:update(dt)
    end
 
    if self.choosing then
-	  if tdengine.was_pressed(GLFW.Keys.DOWN, tdengine.InputChannel.Game) then
+	  if tdengine.was_pressed(GLFW.Keys.K, tdengine.InputChannel.Game) then
 		 self.choice = math.min(self.choice + 1, #self.current)
 	  end
-	  if tdengine.was_pressed(GLFW.Keys.UP, tdengine.InputChannel.Game) then
+	  if tdengine.was_pressed(GLFW.Keys.I, tdengine.InputChannel.Game) then
 		 self.choice = math.max(self.choice - 1, 1)
 	  end
 	  self.text_box:highlight_choice(self.choice)

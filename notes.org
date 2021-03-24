@@ -242,18 +242,17 @@ https://linux.die.net/lkmpg/x427.html
 - write closet dialogue
 - make a preliminary list of locales + short descriptions
 - design the hub's layout
- 
 - make a background for the hub's layout
 - popup when you leave the closet to give directions
+- dialogue when you get to the main lobby area
+- add doors to the other places in the hub
+- update doors to have a location to spawn on the other side
+  
 - cop art assets from another game:
   - two people facing each other and talking
   - npc walking
   - bunch of npcs just standing around
 - add a few dumb NPCs to the lobby
-- dialogue when you get to the main lobby area
-+- add doors to the other places in the hub
-- code to disable the doors
-- update doors to have a location to spawn on the other side
 * ideas
 ** quests
 *** domestic dispute
@@ -4530,6 +4529,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK: 
+CLOCK: [2021-03-24 Wed 17:45]--[2021-03-24 Wed 19:23] =>  1:38
 CLOCK: [2021-03-24 Wed 16:22]--[2021-03-24 Wed 17:12] =>  0:50
 CLOCK: [2021-03-23 Tue 22:42]--[2021-03-23 Tue 23:43] =>  1:01
 CLOCK: [2021-03-22 Mon 16:50]--[2021-03-22 Mon 17:05] =>  0:15

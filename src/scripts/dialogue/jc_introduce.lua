@@ -10,7 +10,7 @@ return {
     who = "oliver"
   },
   ["0ff6a15c-a4ba-4e0d-9c35-d6c30278273e"] = {
-    branch_on = "jc:001:mentioned_librarian",
+    branch_on = "jc:mentioned_librarian",
     children = {
       "c024b206-d30b-4b91-9533-b1e86e092c5d"
     },
@@ -281,7 +281,7 @@ return {
     kind = "Set",
     uuid = "f1a47ee0-ade1-4a3e-91a6-a00f115e5765",
     value = true,
-    variable = "jc:001:mentioned_librarian"
+    variable = "jc:mentioned_librarian"
   },
   ["fd0e8b6a-aae1-49e3-bc78-33801afb8d48"] = {
     children = {

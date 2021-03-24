@@ -10,7 +10,6 @@ function Animation:init(params)
    self.frame = 1
    self.time_to_next = 0
    self.loop = true
-   self.finished_one_loop = false
    self.error = false
 
    -- The engine will read from this when you ask it to draw

@@ -25,15 +25,13 @@ function PanCamera:init(params)
   local initial_difference = self.target:subtract(start)
   self.per_frame = initial_difference:scale(.01)
 
-  self.last_follow_player = tdengine.is_following_player()
-  tdengine.follow_player(false)
+j  tdengine.follow_player(false)
 end
 
 function PanCamera:update(dt)
   local camera = tdengine.vec2(tdengine.camera())
   if camera:equals(self.target, .001) then
 	self.done = true
-	tdengine.follow_player(self.last_follow_player)
 	return
   end
   

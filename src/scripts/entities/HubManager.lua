@@ -23,6 +23,8 @@ function HubManager:setup()
 end
 
 function HubManager:cleanup()
+  if not self.destroy then return end
+  
   for index, id in pairs(self.destroy) do
 	tdengine.destroy_entity(id)
   end
@@ -46,4 +48,13 @@ HubManager.entities[tdengine.story_markers.LEFT_JANITOR_CLOSET] = {
 	  }
 	}
   },
+  {
+	name = 'Eddy',
+	params = {},
+	components = {
+	  Position = {
+		marker = 'hub:intro:eddy'
+	  }	  
+	}
+  }
 }

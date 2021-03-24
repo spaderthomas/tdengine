@@ -1,12 +1,16 @@
 Position = tdengine.component('Position')
 function Position:init(params)
-  self.world = params.world or { x = 0, y = 0 }
-  if params.marker then
+  if params.world then
+	self.world = params.world or { x = 0, y = 0 }
+  elseif params.marker then
 	local marker = tdengine.markers[params.marker]
 	if marker then
 	  self.world = { x = marker.x, y = marker.y }
 	end
+  else
+	tdengine.log('@bad_position_params: ' .. inspect(self.parent.id))
   end
+  
   tdengine.register_position(self.parent.id)
 end
 

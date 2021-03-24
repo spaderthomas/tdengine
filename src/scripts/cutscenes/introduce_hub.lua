@@ -17,7 +17,7 @@ return {
   },
   {
 	name = 'PanCamera',
-	marker = 'hub:intro:crazy_eddy'
+	marker = 'hub:intro:eddy'
   },
   {
 	name = 'Delay',

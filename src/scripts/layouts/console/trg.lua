@@ -1,3 +1,3 @@
 story('LEFT_JANITOR_CLOSET')
 teleport('hub_entrance')
-follow()
+tdengine.follow_player(true)
