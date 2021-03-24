@@ -201,7 +201,6 @@ void API::register_collider(int entity) {
 	
 	auto& physics_engine = get_physics_engine();
 	physics_engine.add_collider(entity, collider);
-	physics_engine.add_raycast(entity, collider);
 }
 
 void API::register_raycastable(int entity) {
@@ -239,7 +238,7 @@ void API::register_trigger(int entity) {
 	collider.offset.y = box["offset"]["y"];	
 	
 	auto& physics_engine = get_physics_engine();
-	physics_engine.triggers[entity] = collider;
+	physics_engine.add_trigger(entity, collider);
 }
 
 sol::object API::ray_cast(float x, float y) {
@@ -496,6 +495,11 @@ void API::follow_player(bool follow) {
 	render_engine.camera.follow_player = follow;
 }
 
+bool API::is_following_player() {
+	auto& render_engine = get_render_engine();
+	return render_engine.camera.follow_player;
+}
+
 void register_lua_api() {
 	auto& state = Lua.state;
 	
@@ -542,6 +546,7 @@ void register_lua_api() {
 	state["tdengine"]["fade_screen"]           = &fade_screen;
 	state["tdengine"]["snap_to_player"]        = &snap_to_player;
 	state["tdengine"]["follow_player"]         = &follow_player;
+	state["tdengine"]["is_following_player"]   = &is_following_player;
 	state["tdengine"]["log"]                   = &API::log;
 	state["tdengine"]["log_to"]                = &API::log_to;
 	state["tdengine"]["toggle_console"]        = &toggle_console;

@@ -13,7 +13,7 @@ return {
     children = {},
     is_entry_point = false,
     kind = "Text",
-    text = "Do you see that man there, in the corner? Everyone calls him Crazy Eddy. He's been here for almost eighty years. One of the longest. I'm, well, I'm ashamed to say, sir, but I don't think he has it in him to get out.",
+    text = "Do you see that man there, in the corner?",
     uuid = "355b0b5e-40fc-4c48-92c7-a85f5c60b578",
     who = ""
   },

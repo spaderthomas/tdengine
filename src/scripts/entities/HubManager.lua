@@ -39,10 +39,10 @@ HubManager.entities[tdengine.story_markers.LEFT_JANITOR_CLOSET] = {
 	params = { on_collision = 'main:introduce_hub' },
 	components = {
 	  BoundingBox = {
-		extents = { x = .029, y = .235 }
+		extents = { x = .182, y = .361 }
 	  },
 	  Position = {
-		world = { x = 2.22, y = 2.37 }
+		world = { x = 2.292, y = 2.387 }
 	  }
 	}
   },

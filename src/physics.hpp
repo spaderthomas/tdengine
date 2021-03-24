@@ -63,13 +63,20 @@ struct PhysicsEngine {
 	std::vector<CollisionInfo> collisions;
 	
 	void      update(float dt);
+	
 	bool      has_collider(int entity);
-	void      add_collider(int entity, Collider collider);
+
+	
 	Collider* get_collider(int entity);	
-	void      add_raycast(int entity, Collider collider);
 	Collider* get_raycast(int entity);
-	void      add_position(int entity, Position position);
+	Collider* get_trigger(int entity);
 	Position* get_position(int entity);
+	
+	void      add_position(int entity, Position position);
+	void      add_collider(int entity, Collider collider);
+	void      add_raycast(int entity, Collider collider);
+	void      add_trigger(int entity, Collider collider);
+	
 	void      remove_entity(int entity);
 	int       ray_cast(float x, float y);
 };

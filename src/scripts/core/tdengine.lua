@@ -359,6 +359,7 @@ local action_mixin = {
   remove_imgui_ignore = function(self, member_name)
 	self.imgui_ignore[member_name] = false
   end,
+  initted = false,
   imgui_ignore = {
 	class = true,
 	parent = true,
@@ -560,8 +561,9 @@ function tdengine.create_action(name, params)
 	  action.block = params.block
 	end
 
-	-- Run action-specific init code
-	action:init(params)
+	-- action:init() is NOT run here -- we almost always want to init
+	-- the action right before it runs!
+	action.params = params
 	
 	return action
   else
@@ -612,6 +614,12 @@ function tdengine.update_actions(dt, actions)
   local done = true
   for index, action in pairs(actions) do
 	if not action.done then
+	  if not action.initted then
+		local params = action.params
+		action:init(params)
+		action.initted = true
+	  end
+	  
 	  action:update(dt)
 	  done = false
 

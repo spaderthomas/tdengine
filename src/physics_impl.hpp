@@ -151,7 +151,7 @@ void PhysicsEngine::update(float dt) {
 			if (id == request.entity) continue;
 
 			auto other_box = Center_Box::from_entity(id);
-
+			
 			glm::vec2 penetration;
 			if (are_boxes_colliding(mover_box, other_box, penetration)) {
 				*mover_position -= penetration;
@@ -165,7 +165,14 @@ void PhysicsEngine::update(float dt) {
 
 		// Handle collisions with triggers
 		for (auto& [id, other] : triggers) {
-			auto other_box = Center_Box::from_entity(id);
+			Center_Box other_box;
+	
+			auto position = physics.get_position(id);
+			auto collider = physics.get_trigger(id);
+			if (!position || !collider) continue;
+			
+			other_box.origin = *position + collider->offset;
+			other_box.extents = collider->extents;
 
 			glm::vec2 penetration;
 			if (are_boxes_colliding(mover_box, other_box, penetration)) {
@@ -206,6 +213,19 @@ Collider* PhysicsEngine::get_collider(int entity) {
 	}
 
 	return &(it->second);
+}
+
+Collider* PhysicsEngine::get_trigger(int entity) {
+	auto it = triggers.find(entity);
+	if (it == triggers.end()) {
+		return nullptr;
+	}
+
+	return &(it->second);
+}
+
+void PhysicsEngine::add_trigger(int entity, Collider collider) {
+	triggers[entity] = collider;
 }
 
 void PhysicsEngine::add_raycast(int entity, Collider collider) {

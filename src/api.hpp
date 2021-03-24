@@ -51,5 +51,6 @@ void        use_step_mode();
 void        fade_screen(float time);
 void        snap_to_player();
 void        follow_player(bool follow);
+bool        is_following_player();
 }
 void register_lua_api();

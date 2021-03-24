@@ -2,7 +2,7 @@ Trigger = tdengine.entity('Trigger')
 
 function Trigger:init(params)
   self.on_collision_proc = params.on_collision
-  tdengine.register_collider(self.id)
+  tdengine.register_trigger(self.id)
 end
 
 function Trigger:update(dt)
