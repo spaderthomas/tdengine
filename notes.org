@@ -838,7 +838,8 @@ chair, then shipping that idea of a chair down the street...
 ** themes
 when bad things happen to you, you want desperately to return to your old
 life. but you can't -- not even if you solve the bad thing and return your
-external world to the same state as before. it changes you inside, permanently. 
+external world to the same state as before. it changes you inside,
+permanently. 
 
 fate does not choose you, it's just that things have to happen to someone. 
 
@@ -851,6 +852,10 @@ the dead go on as if they were living, but all of their plans are
 futile because of the nature of the world they live in.
 
 you are flawed, and you can never understand yourself
+
+you are being pulled through this world by an invisible current
+
+the nature of the world is fixed
 ** tangents
 even though gpt-3 is in some sense just recombining human patterns, it is still
 creating art. the strangeness of a genetic algorithm influencing art created by
@@ -936,6 +941,105 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 03/23/2021
+okay, here's an idea. instead of barbara ann being what's before the
+first dungeon, you have to resolve N souls where N in (1, 3). what i'm
+worried about now is that there is no punch in the opening act,
+there's nothing of the main story there. in fact, i have no idea what
+the main story is. 
+
+a scene in the game: why am i doing this? you're doing this to
+survive. but i'm not sure if i even want to survive anymore. 
+
+i like the librarian being a mysterious figure who pops in and out of
+the world, offering assistance at the precise time it is needed but no
+sooner. being missing at key times. so they come back from the first
+dungeon to find -- the librarian is gone. maybe a note is left, maybe
+not. what do they discover in the first dungeon that prompts them
+onward?
+
+another thing: instead of the hall idea (hard to give each hall a
+unique personality that is also school themed), what if the location
+of each dungeon is hidden?
+
+boss says we're all sure to resolve when the plan works out
+but i gotta admit, i'm kind of scared. i mean, some of the stuff he's
+shown everyone seems plain unnatural.
+
+battle him, corner him, ask him what the hell is going on. look, man,
+i've been stuck here for thirty three years. i'm too fucked up to pass
+on. but these kids, they came and said they could get _everyone_ in
+limbo resolved. i couldn't help it. what was i supposed to do? i
+sought them out, i signed up, i was sleepwalking the whole time but i
+did it. i don't even know what i am anymore, thirty three years even
+in a place like this where time is fucked up will change you.
+
+what is the symbol of their superweapon? a current of some sort? what
+is a symbol of the arbitrary, of randomness? a pair of laughing bones?
+the villains must sit and roll their loaded dice until it comes up
+snake eyes? a deck of cards, a particular configuration of which
+unlocks overwhelming power? shuffled for eternity? a deck of card that
+is only loaded with the queen of spades?
+
+well, in any case, they have this tool of great power. that can be
+unlocked for further (functionally infinite) power. and you have to
+stop that before it happens. 
+
+what's the deal with your soul being half alive and half dead? i
+suppose this is the crux of the story -- here's it fleshed out a
+bit. the tool of power has the ability to alter fate in the physical
+world. this doesn't directly affect limbo or the spiritual world, but
+it has ripple effects. if something happens in the physical realm that
+shouldn't (or vice versa), that affects what happens (or doesn't) in
+the other realms. their goal is to warp the three realms into one
+using their tool. to do this, they need to convert actions in the
+physical realm into actions in limbo -- while only being able to
+affect the physical realm. so they set up a situation:
+save a human child who would otherwise not have lived
+the human child is sent to limbo
+force the human child to confront you
+if the human child chooses life, his living breaks the timeline and
+[lore lore lore] allows them to merge the realms
+if the human child chooses death, you may try again
+
+kicker here being that of course the human child will choose life. and
+the double kicker being that in choosing death boon can somehow end
+the loop, solve the problem once and for all. 
+
+so the goal is to uncover in three phases what their plan is, how they
+hope to accomplish it, and what you can do to stop it.
+
+final phase is easiest: you know where the bosses & the tool is, and
+you must go to them and destroy them.
+
+first phase is next easiest. you have to figure out what the hell is
+going on. definitely want a scene where you come up on a base or
+outpost, only to tuck yourself behind a convenient wall to hear
+something convenient from a pair of guards. 
+
+maybe you hear a name here that you can use back in the hub? a secret
+passphrase? and this can be the thing that propels you to the next
+dungeon. so you have this passphrase, you go to the lounge or whatever
+and say it, next thing you know you're in this seedy back room where
+you can sneak around to find the key you need or what have you. 
+
+rule of three: first dungeon is split into thirds. you get a little
+intel from one of the lackeys in the art room, a ways in there's a
+decent sized outpost. get past that, and you'll find a secret
+resistance stronghold -- small, and supplies are meager, but it's
+there. and at the end, the henchman. 
+
+the villains cannot help themselves from villainy any more than you
+can stop yourself from heroism. the world is fixed. the two of you
+will play your roles and the story will unfold as it is meant to. in
+fact, this is what the villains want to STOP. they want to unravel the
+very nature of cause and effect. i don't mind telling you any of this
+because it is true. and also because i have no choice in the matter. 
+
+jux of a metaphysical world-saving quest with the people in the hub
+who are just going about their 'lives'. 
+
+boss says we're waiting for someone. we'll know him when we see him. 
 ** 03/22/2021
 clean up trigger from physics engine when destroy
 
@@ -4426,7 +4530,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK: 
-CLOCK: [2021-03-22 Mon 16:50]
+CLOCK: [2021-03-23 Tue 22:42]--[2021-03-23 Tue 23:43] =>  1:01
+CLOCK: [2021-03-22 Mon 16:50]--[2021-03-22 Mon 17:05] =>  0:15
 CLOCK: [2021-03-22 Mon 15:17]--[2021-03-22 Mon 16:22] =>  1:05
 CLOCK: [2021-03-21 Sun 16:10]--[2021-03-21 Sun 17:03] =>  0:53
 CLOCK: [2021-03-20 Sat 15:33]--[2021-03-20 Sat 16:13] =>  0:40
