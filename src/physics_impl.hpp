@@ -282,6 +282,7 @@ Position* PhysicsEngine::get_position(int entity) {
 void PhysicsEngine::remove_entity(int entity) {
 	collidable.erase(entity);
 	raycast.erase(entity);
+	triggers.erase(entity);
 }
 
 PhysicsEngine& get_physics_engine() {

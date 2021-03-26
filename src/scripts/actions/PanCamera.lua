@@ -25,7 +25,7 @@ function PanCamera:init(params)
   local initial_difference = self.target:subtract(start)
   self.per_frame = initial_difference:scale(.01)
 
-j  tdengine.follow_player(false)
+  tdengine.follow_player(false)
 end
 
 function PanCamera:update(dt)
