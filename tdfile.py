@@ -117,8 +117,14 @@ class Builder(tdbuild.base_builder):
         super().run()
         
     def setup(self):
+        super().setup()
+        cwd = os.path.join(os.getcwd(), '')
+        machine_conf = os.path.join(cwd, 'src', 'machine_conf.hpp')
+
+        code = 'std::string root_dir = "{}"'.format(cwd)
+        with open(machine_conf, 'w') as f:
+            f.write(code)
         pass
 
     def prebuild(self):
         pass
-
