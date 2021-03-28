@@ -8,7 +8,8 @@ function Position:init(params)
 	  self.world = { x = marker.x, y = marker.y }
 	end
   else
-	tdengine.log('@bad_position_params: ' .. inspect(self.parent.id))
+	 tdengine.log('@bad_position_params: ' .. inspect(self.parent.id))
+	 self.world = { x = 0, y = 0 }
   end
   
   tdengine.register_position(self.parent.id)

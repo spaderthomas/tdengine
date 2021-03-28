@@ -257,6 +257,10 @@ int PhysicsEngine::ray_cast(float x, float y) {
 	for (auto& [id, collider] : collidable) {
 		if (check_single_entity(id, &collider)) return id;
 	}
+
+	for (auto& [id, collider] : triggers) {
+		if (check_single_entity(id, &collider)) return id;
+	}
 	
 	for (auto& [id, collider] : raycast) {
 		if (check_single_entity(id, &collider)) return id;

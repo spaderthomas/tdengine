@@ -30,5 +30,9 @@ tdengine.triggers = {
   ['main:introduce_hub'] = function(self)
 	tdengine.do_cutscene_from_name('introduce_hub')
 	tdengine.destroy_entity(self.id)
+  end,
+  ['main:introduce_librarian'] = function(self)
+	tdengine.do_cutscene_from_name('librarian_intro')
+	tdengine.destroy_entity(self.id)
   end
 }

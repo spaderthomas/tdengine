@@ -669,7 +669,7 @@ function Editor:make_dialogue_node(kind)
   
   if kind == 'Text' then
 	node.text = ''
-	node.who = ''
+	node.who = 'unknown'
   elseif kind == 'Choice' then
 	node.text = ''
   elseif kind == 'Set' then
@@ -780,7 +780,7 @@ function Editor:ded_new(name)
 end
 
 function Editor:ded_short_text(node)
-  local max_size = 32
+  local max_size = 16
   if node.kind == 'Text' or node.kind == 'Choice' then
 	if string.len(node.text) < max_size then
 	  return string.sub(node.text, 0, max_size)

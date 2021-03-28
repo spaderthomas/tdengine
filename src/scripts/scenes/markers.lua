@@ -59,6 +59,21 @@ return {
     x = 2.3399999141693115,
     y = 2.1099996566772461
   },
+  ["library:intro:waypoint:001"] = {
+    scene = "library",
+    x = 2.26999831199646,
+    y = 3.1250228881835938
+  },
+  ["library:intro:waypoint:002"] = {
+    scene = "library",
+    x = 2.0399930477142334,
+    y = 3.1900243759155273
+  },
+  ["library:introduce:librarian"] = {
+    scene = "library",
+    x = 2.0399930477142334,
+    y = 3.3250274658203125
+  },
   library_entrance = {
     scene = "hub",
     x = 3.6550374031066895,

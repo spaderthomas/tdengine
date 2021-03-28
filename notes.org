@@ -36,28 +36,12 @@ Tags in my notes about code
 
 Tags in the code itself
 @bootstrap: places i can clean up initialization
+@dev: dev code
 @log: places i can improve or even just DO logging
 @maybe_bug: either too lazy to fix now, or not a problem now
 @paths: i hate paths
 @slow: yea
 * code
-** @lua_init
-Stop storing entity classes as part of the global table, e.g:
-Player = tdengine.entity('Player')
-** @layer
-0  :: background
-1  :: default for all entities
-10 :: text box
-** @reload
-- 02/04/21: needed to re-load bootstrap code
-- 02/04/21: spawned a new text box every frame
-- 02/04/21: lua exception caused imgui stack to be uneven
-- 02/04/21: lua exception caused imgui stack to be uneven
-- 03/04/21: missing parameter calling function from lua -> c++
-- 03/17/21: added a global table, but could not call the function to initialize
-  it.
-** @physics
-Needing to register a collider to render something is jank
 ** @editor
 - need a way to stop having messages spam the fuck out of me -- like when
 something is F'd in entity update. maybe reserve console output for prints and
@@ -76,6 +60,13 @@ frame and don't double print them (unless a file is reloaded...?)
     flickering.
 
 CONSOLE SCRIPTS DO NOT LOG ERRORS. FIX THIS YOU SILLY MAN.
+** @lua_init
+Stop storing entity classes as part of the global table, e.g:
+Player = tdengine.entity('Player')
+** @layer
+0  :: background
+1  :: default for all entities
+10 :: text box
 ** @logging
 log channels
 ** @lifetime
@@ -84,6 +75,8 @@ ids might be in the list of things that had a collision and need to be
 processed. pretty sure this can be fixed by just enhancing deallocate_entity or
 whatever it's called to fully remove it from physics engine-
 
+** @physics
+Needing to register a collider to render something is jank
 ** @render_refactor
 - Stop baking texture atlases, texture coordinates, etc on startup. 
 - Stop rendering primitives with vector<std::function> probably
@@ -117,6 +110,15 @@ I know people can't store every mesh they will ever meed to draw in
 the GPU at once. Do people use different VAOs for every object? One
 for the whole game?  Somewhere in the middle, and if so, how do they
 group them?
+** @reload
+- 02/04/21: needed to re-load bootstrap code
+- 02/04/21: spawned a new text box every frame
+- 02/04/21: lua exception caused imgui stack to be uneven
+- 02/04/21: lua exception caused imgui stack to be uneven
+- 03/04/21: missing parameter calling function from lua -> c++
+- 03/17/21: added a global table, but could not call the function to initialize
+  it.
+- 03/28/21: added a new file
 * learn
 ** lua
 *** metamethods
@@ -883,6 +885,8 @@ a scientific phenomenon that cannot be observed
 instead of increasing the time we are alive, what if we changed our
 perception of time so it merely felt that we were alive for longer --
 any meaningful difference? time altering drugs already exist.
+** music
+stocktime (buck dance) - mississippi john hurt
 * characters
 ** boon
 boon is kind of a shinji figure. he is quiet, and well mannered, and
@@ -4603,6 +4607,9 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK: 
+CLOCK: [2021-03-28 Sun 12:17]
+CLOCK: [2021-03-27 Sat 23:18]--[2021-03-27 Sat 23:58] =>  0:40
+CLOCK: [2021-03-26 Fri 19:45]--[2021-03-26 Fri 20:50] =>  1:05
 CLOCK: [2021-03-25 Thu 17:32]--[2021-03-25 Thu 18:47] =>  1:15
 CLOCK: [2021-03-24 Wed 17:45]--[2021-03-24 Wed 19:23] =>  1:38
 CLOCK: [2021-03-24 Wed 16:22]--[2021-03-24 Wed 17:12] =>  0:50

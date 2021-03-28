@@ -67,7 +67,8 @@ function tdengine.find_entity(name)
   return nil
 end
 
-function tdengine.find_entity_by_id(name)
+function tdengine.find_entity_by_id(id)
+   return tdengine.entities[name]
 end
 
 function tdengine.find_entity_by_tag(tag)
@@ -78,6 +79,19 @@ function tdengine.find_entity_by_tag(tag)
   end
 
   return nil
+end
+
+function tdengine.find_entity_by_any(descriptor)
+   if descriptor.id then
+	  return tdengine.find_entity_by_id(descriptor.id)
+   elseif descriptor.tag then
+	  return tdengine.find_entity_by_tag(descriptor.tag)
+   elseif descriptor.entity then
+	  return tdengine.find_entity(descriptor.entity)
+   else
+	  tdengine.log('@no_descriptor_to_find')
+	  return nil
+   end
 end
 
 function tdengine.create_entity(name, data)   
@@ -122,6 +136,13 @@ function tdengine.create_entity(name, data)
   params = data.params or {}
   entity:init(params)
 
+  -- @dev @spader 3/28/2021
+  -- For now, we keep track of all the entities we created during a cutscene
+  -- so the editor can clean them up if we terminate the cutscene.
+  if tdengine.active_cutscene then
+	 table.insert(tdengine.entities_created_during_cutscene, id)
+  end
+  
   return id
 end
 
@@ -614,14 +635,20 @@ function tdengine.update_actions(dt, actions)
   local done = true
   for index, action in pairs(actions) do
 	if not action.done then
+	  -- Initialize
 	  if not action.initted then
 		local params = action.params
 		action:init(params)
 		action.initted = true
 	  end
-	  
-	  action:update(dt)
-	  done = false
+
+	  -- An action can mark itself as done during init. Usually this is an error
+	  -- condition. Forgo the action if this is the case so we don't have to pollute
+	  -- the action code with this check in update()
+	  if not action.done then
+		 action:update(dt)
+		 done = false
+	  end
 
 	  if action.block then
 		break
@@ -652,8 +679,10 @@ function tdengine.terminate_cutscene()
   tdengine.log('@terminated_cutscene: ' .. tdengine.active_cutscene.name)
   tdengine.enable_input_channel(tdengine.InputChannel.Player)
 
-  local text_box = tdengine.find_entity('TextBox')
-  if text_box then tdengine.destroy_entity(text_box.id) end
+  for index, id in pairs(tdengine.entities_created_during_cutscene) do
+	 tdengine.destroy_entity(id)
+  end
+  tdengine.entities_created_during_cutscene = {}
   
   tdengine.active_cutscene = nil
 end
@@ -1019,6 +1048,7 @@ function tdengine.initialize()
   tdengine.on_interactions = {}
   tdengine.loaded_scene = { name = '', path = '' }
   tdengine.active_cutscene = nil
+  tdengine.entities_created_during_cutscene = {}
 
   tdengine.current_layout = 'default'
   tdengine.layout_stack = { 'default' }

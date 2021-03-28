@@ -1,5 +1,11 @@
 return {
-  entities = {
+   manager = 'Library',
+   entities = {
+	{
+	   name = 'Library',
+	   params = {},
+	   components = {}
+	},
     {
       components = {
         Animation = {
