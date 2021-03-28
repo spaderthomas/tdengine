@@ -67,8 +67,8 @@ Texture* create_texture(std::filesystem::path path) {
 		glGenerateMipmap(GL_TEXTURE_2D);
 
 		auto& asset_manager = get_asset_manager();
-		asset_manager.add_asset<Texture>(path.filename(), texture);
-		return asset_manager.get_asset<Texture>(path.filename());
+		asset_manager.add_asset<Texture>(path.filename().string(), texture);
+		return asset_manager.get_asset<Texture>(path.filename().string());
 	} else {
 		std::string msg = "@stb_image_failure: " + path.string();
 		tdns_log.write(msg);
@@ -82,7 +82,7 @@ void destroy_texture(std::filesystem::path path) {
 	if (path.extension() != ".png") return;
 
 	auto& asset_manager = get_asset_manager();
-	auto texture = asset_manager.get_asset<Texture>(path.filename());
+	auto texture = asset_manager.get_asset<Texture>(path.filename().string());
 	if (!texture) return;
 
 	auto sprites = asset_manager.get_all<Sprite>();
@@ -93,7 +93,7 @@ void destroy_texture(std::filesystem::path path) {
 	}
 
 	glDeleteTextures(1, &texture->handle);
-	asset_manager.assets.erase(path.filename());
+	asset_manager.assets.erase(path.filename().string());
 	free(texture);
 }
 
@@ -117,7 +117,7 @@ void add_background(std::filesystem::path path) {
 	if (!texture) return;
 
 	Sprite* sprite = new Sprite;
-	sprite->name = path.stem();
+	sprite->name = path.stem().string();
 	sprite->atlas = texture;
 	sprite->height = texture->height;
 	sprite->width = texture->width;
@@ -166,7 +166,7 @@ void create_texture_atlas(std::string assets_dir) {
 			
 		Sprite* sprite = new Sprite;
 		sprite->atlas = atlas;
-		sprite->name = path.stem();
+		sprite->name = path.stem().string();
 
 		asset_manager.add_asset<Sprite>(sprite->name, sprite);
 						
@@ -279,7 +279,7 @@ void init_assets() {
 			add_background(path);
 			
 			auto& asset_manager = get_asset_manager();
-			auto background = asset_manager.get_asset<Sprite>(path.stem());
+			auto background = asset_manager.get_asset<Sprite>(path.stem().string());
 			background->tex_coord_offset = square_tex_coords_offset;
 		});
 	}
