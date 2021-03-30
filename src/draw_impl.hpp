@@ -340,7 +340,7 @@ void RenderEngine::render_scene(float dt) {
 	render_list.clear();
 
 	if (render_to_frame_buffer) {
-		glViewport(0, 0, screen_x, screen_y);
+		glViewport(0, 0, static_cast<GLsizei>(screen_x), static_cast<GLsizei>(screen_y));
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		
 		glBindTexture(GL_TEXTURE_2D, color_buffer);

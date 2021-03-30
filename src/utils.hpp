@@ -257,8 +257,8 @@ void use_1440p() {
 	glViewport(0, 0, (int)screen_x, (int)screen_y);
 }
 void use_arbitrary_screen_size(int height, int width) {
-	screen_x = width;
-	screen_y = height;
+	screen_x = static_cast<float>(width);
+	screen_y = static_cast<float>(height);
 	glViewport(0, 0, (int)screen_x, (int)screen_y);	
 }
 void change_window_size(std::string size) {

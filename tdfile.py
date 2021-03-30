@@ -118,7 +118,11 @@ class Builder(tdbuild.base_builder):
         
     def setup(self):
         tdbuild.print_info('creating src/machine_conf.hpp')
-        cwd = os.path.join(os.getcwd(), '')
+        cwd = os.path.normpath(os.getcwd())
+        cwd = os.path.join(cwd, '')
+        cwd = cwd.replace('\\', '/')
+        print(cwd)
+        
         machine_conf = os.path.join(cwd, 'src', 'machine_conf.hpp')
 
         code = 'std::string root_dir = "{}";'.format(cwd)

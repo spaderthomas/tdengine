@@ -6,7 +6,8 @@ Console::Console()
 	Commands.push_back("HELP");
 	Commands.push_back("HISTORY");
 	Commands.push_back("CLEAR");
-	AddLog("Welcome to Dear ImGui!");
+	AddLog("controls() to print the basic controls + commands");
+	AddLog("list() to print descriptions of all commands");
 }
 Console::~Console() {}
 int   Console::Stricmp(const char* str1, const char* str2) { int d; while ((d = toupper(*str2) - toupper(*str1)) == 0 && *str1) { str1++; str2++; } return d; }

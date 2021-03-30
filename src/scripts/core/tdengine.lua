@@ -803,7 +803,7 @@ function tdengine.scandir(dir)
   local platform = tdengine.platform()
   local command = ''
   if platform == 'Unix' then command = 'ls -a "' .. dir .. '"' end
-  if platform == 'Windows' then command = 'dir "' .. dir .. '" /b /ad' end
+  if platform == 'Windows' then command = 'dir "' .. dir .. '" /b' end
 
   local i, t, popen = 0, {}, io.popen
   local pfile = popen(command)
@@ -1064,6 +1064,26 @@ function tdengine.initialize()
 end
 
 tdengine.console_shortcuts = {
+  controls = {
+	help = 'print basic controls',
+	proc = function()
+	  local message = ''
+	  message = message .. 'ijkl :: move the player\n'
+	  message = message .. 'wasd :: move the camera\n'
+	  message = message .. 'right alt :: toggle the console\n'
+	  message = message .. 'layout("default") :: use the default gui layout\n'
+	  message = message .. 'ded("some_dialogue") :: load a dialogue + use dialogue editor layout\n'
+	  message = message .. 'scene("some_scene") :: load a scene\n'
+	  message = message .. 'teleport("some_marker") :: load the markers scene and teleport to it\n'
+	  message = message .. '\nthe gui is totally resizeable. put it however the fuck\n'
+	  message = message .. 'you want then call save_layout("name") to save the layout.\n'
+	  message = message .. 'use layout("name") to load it later.'
+	  
+	  
+	  tdengine.console_pipe = message
+
+	end
+  },
   cutscene = {
 	help = 'load + begin a cutscene from src/scripts/cutscenes',
 	proc = function(...) tdengine.do_cutscene_from_name(...) end
@@ -1099,7 +1119,7 @@ tdengine.console_shortcuts = {
 	end
   },
   ['load'] = {
-	help = 'load a state file',
+	help = 'load a state file, as saved in scripts/save',
 	proc = function(...) tdengine.load(...) end
   },
   marker = {

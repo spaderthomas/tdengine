@@ -66,7 +66,7 @@ Center_Box box_from_collider(Position* position, Collider* collider) {
 }
 
 Center_Box Center_Box::from_entity(int entity) {
-	Center_Box box;
+	auto box = Center_Box();
 	
 	auto& physics = get_physics_engine();
 	auto position = physics.get_position(entity);
