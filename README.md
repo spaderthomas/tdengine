@@ -26,4 +26,6 @@ This project uses my simple build tool, [tdbuild](https://github.com/spaderthoma
 
 To build this project, you need to open a Visual Studio command prompt. This command prompt has the C++ linker, compiler, etc. already inserted into the path. If you try to build in a regular command prompt, you will not be able to find the build tools, and it will not work.
 
-To open a VS command prompt, open Visual Studio. Instead of picking a project, select "Continue without code". Then, to to `Tools` -> `Command Line` -> `Developer PowerShell`. You'll use this prompt to build. Change directories into the root of the project, and run `tdbuild setup`. This will generate a few machine-specific files you need to build the project. Then, run `tdbuild` to build the project. You'll get some messages from the build tool. Once it builds, run `tdbuild run` to run the engine.
+To open a VS command prompt, press the Windows key and search for "x64 Native Tools Command Prompt for VS 2019". Selecting it should open a prompt. You'll use this prompt to build.
+
+Change directories into the root of the project, and run `tdbuild setup`. This will generate a few machine-specific files you need to build the project. Then, run `tdbuild` to build the project. You'll get some messages from the build tool. Once it builds, run `tdbuild run` to run the engine.

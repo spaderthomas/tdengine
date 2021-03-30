@@ -121,7 +121,7 @@ class Builder(tdbuild.base_builder):
         cwd = os.path.join(os.getcwd(), '')
         machine_conf = os.path.join(cwd, 'src', 'machine_conf.hpp')
 
-        code = 'std::string root_dir = "{}";'.format(os.path.normpath(cwd))
+        code = 'std::string root_dir = "{}";'.format(cwd)
         with open(machine_conf, 'w') as f:
             f.write(code)
         pass
