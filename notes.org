@@ -874,7 +874,11 @@ you are flawed, and you can never understand yourself
 
 you are being pulled through this world by an invisible current
 
-the world, and its nature, are fixed, and you are powerless to change it
+the world, and its nature, are fixed, and you are powerless to change
+it
+
+fly in the way of the freight train; the absolute banality of events
+that lead up to heartwrenching consequences
 ** tangents
 even though gpt-3 is in some sense just recombining human patterns, it is still
 creating art. the strangeness of a genetic algorithm influencing art created by
@@ -962,6 +966,30 @@ he speaks with an almost-british accent. everything about him screams preparator
 school.
 ** the librarian
 * log
+** 03/31/2021
+ok, updating the task list now that max is on board.
+
+edit the dialogue enough to give max direction on thursday. more
+length, more detail, soften the characters a bit, give boon a little
+more personality. 
+
+lay out rooms:
+- cafeteria
+- upstairs
+- art room
+- first barb room
+- bus station
+
+barbara ann arc:
+- i need to code the door guards.
+- try my hand at a smoke in/out shader?
+
+cafeteria:
+- import assets for NPCs
+- code (flipping state for npcs, adding npcs when game state is right,
+  trigger at the exit to the cafeteria to check that you've actually
+  talked to a few of them)
+- edit cafeteria dialogue
 ** 03/25/2021
 one more thing. get the juices turning, so to speak. this bug where i
 consistently have a null collider. i'm pretty sure that's because
@@ -4611,6 +4639,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK: 
+CLOCK: [2021-03-31 Wed 21:00]--[2021-03-31 Wed 21:54] =>  0:54
+CLOCK: [2021-03-30 Tue 22:57]--[2021-03-31 Wed 00:57] =>  2:00
 CLOCK: [2021-03-29 Mon 21:41]--[2021-03-29 Mon 23:41] =>  2:00
 CLOCK: [2021-03-28 Sun 12:47]--[2021-03-28 Sun 14:25] =>  1:38
 CLOCK: [2021-03-27 Sat 23:18]--[2021-03-27 Sat 23:58] =>  0:40
