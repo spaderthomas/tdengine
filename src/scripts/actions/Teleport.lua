@@ -8,7 +8,7 @@ function Teleport:init(params)
    }
 
    if params.marker then
-	  self.marker = params.marker
+	 self.dest = tdengine.markers[params.marker]
    elseif params.teleport_near_player then
 	  local player = tdengine.find_entity('Player')
 	  local position = player:get_component('Position').world

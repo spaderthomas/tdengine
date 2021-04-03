@@ -1,7 +1,7 @@
 return {
   ["00a50e44-0756-4e0d-93dd-3bf7c668eeb3"] = {
     children = {
-      "d0f91f80-e125-4fd0-8edd-7b7b3538b8b9"
+      "b50bba81-1b9f-421c-af36-a55551917609"
     },
     is_entry_point = false,
     kind = "Text",
@@ -30,22 +30,12 @@ return {
   },
   ["2a599062-57d0-4236-bb8c-0ca21b523857"] = {
     children = {
-      "4ae545f8-d715-4856-b911-031ddf119843"
+      "bd7ed365-830a-455d-acd1-2e02a761ccab"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "It usually means the person had some unresolved tension in their life when they died. We're in the mirrored version of your school now. Souls that end up here usually had hang ups specifically related to school, or their childhood. As for why you're here, well, that's an easy one, sir! You died in this very closet back in the Physical Realm!",
+    text = "When souls end up here, it means the person had some unresolved tension in their life when they died. Limbo exists in many forms, but the form we inhabit is a mirrored version of your school. Souls that end up here usually had hang ups specifically related to school, or their childhood. As for why you're here, well, that's an easy one, sir! You died in this very closet back in the Physical Realm!",
     uuid = "2a599062-57d0-4236-bb8c-0ca21b523857",
-    who = "oliver"
-  },
-  ["2f10f3f8-1035-4191-b403-a3a6bec7e342"] = {
-    children = {
-      "239537cd-78f8-45f4-99c8-1b16b3aa4a30"
-    },
-    is_entry_point = false,
-    kind = "Text",
-    text = "Right, here it is! \"Place your arm through your abdomen, out your stomach, and ask the new soul to shake your hand\". Here goes it, then!",
-    uuid = "2f10f3f8-1035-4191-b403-a3a6bec7e342",
     who = "oliver"
   },
   ["4ae545f8-d715-4856-b911-031ddf119843"] = {
@@ -98,7 +88,7 @@ return {
   },
   ["21c8af02-f22e-4f97-b417-302fe781afc4"] = {
     children = {
-      "a3b9e531-1836-449b-89e1-7decbfa80a92"
+      "2a599062-57d0-4236-bb8c-0ca21b523857"
     },
     is_entry_point = false,
     kind = "Text",
@@ -108,13 +98,23 @@ return {
   },
   ["25b0b9bd-3b5e-4ca9-a1d9-ccaeed4a6f38"] = {
     children = {
-      "2a599062-57d0-4236-bb8c-0ca21b523857"
+      "97675418-cb46-46d2-a35a-7fb17eece297"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "With all due respect, sir, I've already told you! We're both deceased. Normally, when a person dies, their soul fully detaches from their body and ascends to the Spiritual Realm. But sometimes, there's a hitch. ",
+    text = "With all due respect, sir, I've already told you! We're both deceased. Complex mechanics of the living, such as standing, are, well, they're a bit different when you've become incorporeal. But don't worry, everyone has trouble standing at first.",
     uuid = "25b0b9bd-3b5e-4ca9-a1d9-ccaeed4a6f38",
     who = "oliver"
+  },
+  ["32f1dc8c-3ca4-4557-8305-711e240ca0ae"] = {
+    children = {
+      "4ae545f8-d715-4856-b911-031ddf119843"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "If I may say so, you deeply unsettle me, sir!",
+    uuid = "32f1dc8c-3ca4-4557-8305-711e240ca0ae",
+    who = "unknown"
   },
   ["42c57a81-faf5-4480-a952-4cdd7e5285a5"] = {
     children = {
@@ -122,7 +122,7 @@ return {
     },
     is_entry_point = false,
     kind = "Text",
-    text = "I apologize for the bluntness, sir, but a J.A. Ainsley Preparatory and Finishing School lad says what he means and means what he says! You've died, and it's my job to bring you up to speed on the whole state of affairs. Hold on, there's something in the script for if they don't believe you...",
+    text = "I apologize for the bluntness, sir, but there's no other way to say it. You've died, and it's my job to bring you up to speed on the whole state of affairs. Oh dear, I wish they had put something in this manual for belligerence...",
     uuid = "42c57a81-faf5-4480-a952-4cdd7e5285a5",
     who = "oliver"
   },
@@ -138,15 +138,15 @@ return {
     kind = "Empty",
     uuid = "74d87ff1-846a-4a52-afa2-8a9164bce72f"
   },
-  ["626a08a8-5bcb-48b7-b384-3da232370afd"] = {
+  ["0088def9-7717-4ca8-9fd2-34152ff3e16e"] = {
     children = {
-      "b50bba81-1b9f-421c-af36-a55551917609"
+      "c925970c-d086-45de-8e63-5595a1b5a5fe"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "(...I hope I'm reading this script right...)",
-    uuid = "626a08a8-5bcb-48b7-b384-3da232370afd",
-    who = "oliver"
+    text = "...HNNNNGGHHHH....",
+    uuid = "0088def9-7717-4ca8-9fd2-34152ff3e16e",
+    who = "unknown"
   },
   ["3096d626-b69e-4fdd-adc2-2e29b67117cf"] = {
     children = {
@@ -167,23 +167,23 @@ return {
     text = "What's wrong with my soul?",
     uuid = "4117bb6f-3a03-4839-a6e5-233a1d36bb4a"
   },
-  ["239537cd-78f8-45f4-99c8-1b16b3aa4a30"] = {
-    children = {
-      "25b0b9bd-3b5e-4ca9-a1d9-ccaeed4a6f38"
-    },
-    is_entry_point = false,
-    kind = "Text",
-    text = "Ahhhhh! H-how did you do that?",
-    uuid = "239537cd-78f8-45f4-99c8-1b16b3aa4a30",
-    who = "boon"
-  },
-  ["5559629b-77a4-4b59-8941-1f43b2a9da0a"] = {
+  ["60349a86-a705-460f-9871-e7beaaf5b07f"] = {
     children = {
       "42c57a81-faf5-4480-a952-4cdd7e5285a5"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "I don't know who you are, but please don't give me any trouble. I'm gonna miss the bus if you keep me here any longer.",
+    text = "Augh, why do I feel so weird? I can't feel my hands...look, kid, I need to go catch the bus. If Sammy has to leave work to pick me up from school, it's not gonna be good.",
+    uuid = "60349a86-a705-460f-9871-e7beaaf5b07f",
+    who = "boon"
+  },
+  ["5559629b-77a4-4b59-8941-1f43b2a9da0a"] = {
+    children = {
+      "60349a86-a705-460f-9871-e7beaaf5b07f"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "1923? I don't know what kind of joke you're trying to pull on me, but it's not funny.",
     uuid = "5559629b-77a4-4b59-8941-1f43b2a9da0a",
     who = "boon"
   },
@@ -197,13 +197,23 @@ return {
     uuid = "88966647-c998-4f73-9723-f471720e3533",
     who = "oliver"
   },
+  ["97675418-cb46-46d2-a35a-7fb17eece297"] = {
+    children = {
+      "f9948858-8dd9-4272-8ca1-4d96fe181b4d"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "I must say, sir...there is something strange about your being here. ",
+    uuid = "97675418-cb46-46d2-a35a-7fb17eece297",
+    who = "oliver"
+  },
   ["a3b9e531-1836-449b-89e1-7decbfa80a92"] = {
     children = {
       "74d87ff1-846a-4a52-afa2-8a9164bce72f"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "But, well, I'm the lad who makes sure all the new souls get right acquainted with their new situation. I work for the Librarian. I've seen every soul that's come through here for the last ninety-eight years! But something is wrong with your soul. Something that I've never seen before, sir! Things have been strange around here, lately.",
+    text = "As I said, my name is Oliver. I'm the lad who makes sure all the new souls get right acquainted with their new situation. I work for the Librarian. I've seen every soul that's come through here for the last ninety-eight years! But something is wrong with your soul. Something that I've never seen before, sir! Things have been strange around here, lately.",
     uuid = "a3b9e531-1836-449b-89e1-7decbfa80a92",
     who = "oliver"
   },
@@ -228,13 +238,33 @@ return {
   },
   ["b50bba81-1b9f-421c-af36-a55551917609"] = {
     children = {
+      "bc640b81-75df-49d2-ad72-f35f70110d9f"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "I...what are you talking about? The last thing I remember is those idiots pushing me down and kicking me.",
+    uuid = "b50bba81-1b9f-421c-af36-a55551917609",
+    who = "boon"
+  },
+  ["bc640b81-75df-49d2-ad72-f35f70110d9f"] = {
+    children = {
       "9a3ead60-af87-4e1a-9809-5750a15333c8"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "I...what are you talking about? The last thing I remember is those idiots pushing me down and kicking me. Wait, do you even go here?",
-    uuid = "b50bba81-1b9f-421c-af36-a55551917609",
-    who = ""
+    text = "Who are you anyway, kid? And why are you all dressed up like that? Do you even go here?",
+    uuid = "bc640b81-75df-49d2-ad72-f35f70110d9f",
+    who = "boon"
+  },
+  ["bd7ed365-830a-455d-acd1-2e02a761ccab"] = {
+    children = {
+      "c54a4753-a980-4a7e-a12f-eb78827c0a94"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "You mean that those idiots KILLED me?",
+    uuid = "bd7ed365-830a-455d-acd1-2e02a761ccab",
+    who = "boon"
   },
   ["c024b206-d30b-4b91-9533-b1e86e092c5d"] = {
     children = {},
@@ -242,6 +272,16 @@ return {
     kind = "Choice",
     text = "I'm ready to go.",
     uuid = "c024b206-d30b-4b91-9533-b1e86e092c5d"
+  },
+  ["c54a4753-a980-4a7e-a12f-eb78827c0a94"] = {
+    children = {
+      "f3db9500-aaff-428f-80d1-3ddcc9098e75"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "It would appear so, sir. Well, almost. Like I said before, you're not dead and yet not alive. I'm not sure what to make of you.",
+    uuid = "c54a4753-a980-4a7e-a12f-eb78827c0a94",
+    who = "unknown"
   },
   ["c59f1333-2a52-494c-b017-7de3a65ed900"] = {
     children = {
@@ -253,15 +293,15 @@ return {
     uuid = "c59f1333-2a52-494c-b017-7de3a65ed900",
     who = "oliver"
   },
-  ["d0f91f80-e125-4fd0-8edd-7b7b3538b8b9"] = {
+  ["c925970c-d086-45de-8e63-5595a1b5a5fe"] = {
     children = {
-      "626a08a8-5bcb-48b7-b384-3da232370afd"
+      "25b0b9bd-3b5e-4ca9-a1d9-ccaeed4a6f38"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "You living lot never take this too well, so I suppose I'll rip the bandage off: You've, well, um, sir, there's no other way to put it, you've died. The place we're in is called Limbo. It's the interdimensional space between the physical realm that you're from, and the spiritual realm where your soul resides!",
-    uuid = "d0f91f80-e125-4fd0-8edd-7b7b3538b8b9",
-    who = "oliver"
+    text = "Why can't I stand up? What did you DO to me?",
+    uuid = "c925970c-d086-45de-8e63-5595a1b5a5fe",
+    who = "unknown"
   },
   ["dae80dfe-bb76-4b2b-807a-fa76a5fa707e"] = {
     children = {
@@ -283,14 +323,44 @@ return {
     value = true,
     variable = "jc:mentioned_librarian"
   },
-  ["fd0e8b6a-aae1-49e3-bc78-33801afb8d48"] = {
+  ["f3db9500-aaff-428f-80d1-3ddcc9098e75"] = {
     children = {
-      "2f10f3f8-1035-4191-b403-a3a6bec7e342"
+      "a3b9e531-1836-449b-89e1-7decbfa80a92"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "(...rummage...rummage...)",
+    text = "And, uhm, who are you exactly?",
+    uuid = "f3db9500-aaff-428f-80d1-3ddcc9098e75",
+    who = "boon"
+  },
+  ["f9948858-8dd9-4272-8ca1-4d96fe181b4d"] = {
+    children = {
+      "fd2f956a-9c41-475c-8a7a-05e8be2cb0d1"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "Where is \"here\"?",
+    uuid = "f9948858-8dd9-4272-8ca1-4d96fe181b4d",
+    who = "boon"
+  },
+  ["fd0e8b6a-aae1-49e3-bc78-33801afb8d48"] = {
+    children = {
+      "0088def9-7717-4ca8-9fd2-34152ff3e16e"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "If this is a joke, it's not very funny.",
     uuid = "fd0e8b6a-aae1-49e3-bc78-33801afb8d48",
-    who = ""
+    who = "boon"
+  },
+  ["fd2f956a-9c41-475c-8a7a-05e8be2cb0d1"] = {
+    children = {
+      "32f1dc8c-3ca4-4557-8305-711e240ca0ae"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "We are in Limbo! This is a holding ground for spirits who cannot fully pass on to the spiritual realm. But you -- it would appear that you are still alive in some capacity. ",
+    uuid = "fd2f956a-9c41-475c-8a7a-05e8be2cb0d1",
+    who = "oliver"
   }
 }

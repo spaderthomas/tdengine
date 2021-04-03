@@ -6,6 +6,8 @@ function Dialogue:init(params)
    if tdengine.state['engine:use_short_dialogue'] then
 	 self.which = 'branch_on_function'
    end
+   
+   self.dump = ''
 	 
    self.data = tdengine.load_dialogue(self.which)
    self.waiting = false
@@ -48,7 +50,10 @@ function Dialogue:process_single(node)
 	  print('Dialogue:process(): tried to process a nil node')
 	  self.bad_branch = true
    elseif node.kind == 'Text' then
-	  self.text_box:begin(node.text)
+	 self.text_box:begin(node.text)
+	 if tdengine.state['engine:dump_dialogue'] then
+	   self.dump = self.dump .. node.who .. ': ' .. node.text .. '\n'
+	 end
    elseif node.kind == 'Set' then
 	  self:process_set(node)
    elseif node.kind == 'Empty' then
@@ -107,7 +112,16 @@ end
 function Dialogue:finish()
    local text_box = tdengine.find_entity('TextBox')
    tdengine.destroy_entity(text_box:get_id())
-   
+
+   if tdengine.state['engine:dump_dialogue'] then
+	 local filename = tdengine.state['engine:dump_file']
+	 local filepath = tdengine.paths.absolute('src/scripts/dialogue/dumps/') .. filename
+	 local file = assert(io.open(filepath, 'w'))
+	 if file then
+	   file:write(self.dump)
+	   self.dump = ''
+	 end
+   end
    self.done = true
 end
 

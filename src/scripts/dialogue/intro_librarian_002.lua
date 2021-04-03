@@ -1,4 +1,33 @@
 return {
+  ["0ac0eabe-f31a-47ac-b39d-2b2ca8aebbe2"] = {
+    children = {
+      "ba58ff4f-5aae-4957-a338-e0b3648b60b9"
+    },
+    is_entry_point = false,
+    kind = "Choice",
+    text = "What do you mean by a ripple?",
+    uuid = "0ac0eabe-f31a-47ac-b39d-2b2ca8aebbe2"
+  },
+  ["2aa3646a-a6c3-4db1-a688-bb589b83608e"] = {
+    children = {
+      "6fce5378-07b7-4c0d-be56-79706704ea9b"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "But there are many realms, lad. More than you can conceive of. The realms you are comfortable with, the Physical and Spiritual, are but two, and this place is the realm that binds them together.",
+    uuid = "2aa3646a-a6c3-4db1-a688-bb589b83608e",
+    who = "unknown"
+  },
+  ["2e8bd3db-5792-4c90-807d-575e89078858"] = {
+    children = {
+      "04e296f9-ce9d-4599-aacb-01495033c798"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "Yes -- none that a human could comprehend or perceive, but that doesn't make them any less real.",
+    uuid = "2e8bd3db-5792-4c90-807d-575e89078858",
+    who = "librarian"
+  },
   ["4ca8f5d4-c26f-4d2b-90bb-496dbe9d2865"] = {
     children = {
       "837d00a7-c2f3-47e8-9cdc-45862e1417b0"
@@ -15,29 +44,37 @@ return {
     },
     is_entry_point = false,
     kind = "Text",
-    text = "It was the two bullies. I -- I didn't mean to tattle on them. They pushed me in the closet and kept hurting me, kicking me, yelling at me. The next thing I remember is waking up next to Oliver.",
+    text = "It's kind of a long story. I ran away from home, and I got into some trouble. It all came at me too fast, and the next thing I remember is waking up next to Oliver.",
     uuid = "4d4d69c9-4179-4add-acde-99c1233c32b2",
     who = "boon"
   },
-  ["08d44d43-a8c8-489f-935e-e872a0eba5df"] = {
+  ["04e296f9-ce9d-4599-aacb-01495033c798"] = {
     children = {
-      "dcd7c2de-8cb9-483e-bec7-8aebd1013b9c"
+      "df7fd4ee-136e-4b1c-b6c0-f9f6f0ffcd80"
     },
+    internal_name = "Empty",
     is_entry_point = false,
-    kind = "Text",
-    text = "Two souls? Are those the bullies that hurt me?",
-    uuid = "08d44d43-a8c8-489f-935e-e872a0eba5df",
-    who = "boon"
+    kind = "Empty",
+    uuid = "04e296f9-ce9d-4599-aacb-01495033c798"
   },
-  ["0010b14a-9989-4517-86f9-5156694f6f8e"] = {
+  ["5f478b92-bc0f-4abd-87fa-daa8847839d4"] = {
     children = {
-      "361d21b2-3214-4276-a3a1-0056aa6d6d6f"
+      "ece58a6f-f841-4645-9727-29bd7bbb90c2"
+    },
+    is_entry_point = false,
+    kind = "Choice",
+    text = "So what is this place? Is it Hell?",
+    uuid = "5f478b92-bc0f-4abd-87fa-daa8847839d4"
+  },
+  ["6fce5378-07b7-4c0d-be56-79706704ea9b"] = {
+    children = {
+      "df7fd4ee-136e-4b1c-b6c0-f9f6f0ffcd80"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "But, unlike you, these souls had poor intentions. I wouldn't expect you to understand this, lad, but our world is a bridge between your physical world and the pure spiritual world. A bridge -- and a buffer.",
-    uuid = "0010b14a-9989-4517-86f9-5156694f6f8e",
-    who = "librarian"
+    text = "Souls that have passed from the Physical realm come to rest here, temporarily, when something prevents them from passing to the Spiritual realm as is natural. But normally, well -- normally, they are not alive when we receive them!",
+    uuid = "6fce5378-07b7-4c0d-be56-79706704ea9b",
+    who = "unknown"
   },
   ["93df1305-fba6-49b4-b74f-417bc658e996"] = {
     children = {
@@ -59,14 +96,6 @@ return {
     uuid = "306c01a5-2de4-4e88-8cf9-be283765e16d",
     who = "boon"
   },
-  ["361d21b2-3214-4276-a3a1-0056aa6d6d6f"] = {
-    children = {},
-    is_entry_point = false,
-    kind = "Text",
-    text = "It is imperative that the world of ideas and the world of things remain separate. That is the role of this realm. ",
-    uuid = "361d21b2-3214-4276-a3a1-0056aa6d6d6f",
-    who = "librarian"
-  },
   ["363ca7ed-bfbd-4fc7-8d9b-f2938ffbf82a"] = {
     children = {
       "839335fa-7592-4c09-8f7f-e0f6983eac88"
@@ -77,13 +106,23 @@ return {
     uuid = "363ca7ed-bfbd-4fc7-8d9b-f2938ffbf82a",
     who = "librarian"
   },
-  ["837d00a7-c2f3-47e8-9cdc-45862e1417b0"] = {
+  ["580d7e33-1750-4202-8b9e-90b493a54469"] = {
     children = {
-      "08d44d43-a8c8-489f-935e-e872a0eba5df"
+      "e022c79a-eeb2-4f90-8a8b-921f5de6c0eb"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "Oliver, you were right to bring him here. You already know that things are not right in our realm. But it's quickly becoming much worse than I imagined. Those two souls are warping the fabric of the three realities.",
+    text = "But the reason this realm exists as it does is due to its structure, its self consistency. To lose that would be, well, troubling to say the least, my boy!",
+    uuid = "580d7e33-1750-4202-8b9e-90b493a54469",
+    who = "librarian"
+  },
+  ["837d00a7-c2f3-47e8-9cdc-45862e1417b0"] = {
+    children = {
+      "abe56c31-07f5-47af-ba9b-11864c3ae894"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "Oliver, you were right to bring him here. You already know that things are not right in our realm. But it's quickly becoming much worse than I imagined.",
     uuid = "837d00a7-c2f3-47e8-9cdc-45862e1417b0",
     who = "librarian"
   },
@@ -97,6 +136,16 @@ return {
     uuid = "4252fcd0-0b3e-470c-9e29-1a401be696b0",
     who = "boon"
   },
+  ["7927cd56-4e8d-47c8-867b-bde94a3f1e8d"] = {
+    children = {
+      "a8cff476-cf04-47a9-b352-0a38ceb4f10d"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "We're in uncharted waters. We don't even know if you were supposed to die in your realm or not. ",
+    uuid = "7927cd56-4e8d-47c8-867b-bde94a3f1e8d",
+    who = "librarian"
+  },
   ["839335fa-7592-4c09-8f7f-e0f6983eac88"] = {
     children = {
       "306c01a5-2de4-4e88-8cf9-be283765e16d"
@@ -105,6 +154,16 @@ return {
     kind = "Text",
     text = "Alright, open your mouth wide and say 'ahhhhhh'.",
     uuid = "839335fa-7592-4c09-8f7f-e0f6983eac88",
+    who = "librarian"
+  },
+  ["2943021e-bc8d-4761-b074-490be5df222c"] = {
+    children = {
+      "c4ad080c-d4d1-4b6d-8181-bd72f43bda0c"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "And very recently, there have been ripples in the fabric of this realm's reality. ",
+    uuid = "2943021e-bc8d-4761-b074-490be5df222c",
     who = "librarian"
   },
   ["7548922c-09f6-4103-b2ca-cb17aed6833b"] = {
@@ -127,6 +186,101 @@ return {
     uuid = "18139720-eed0-48ed-bdff-666f1262e2d2",
     who = "librarian"
   },
+  ["a1f75f70-618a-4567-b33d-84f98f18c528"] = {
+    children = {
+      "eabf9cc1-d3bb-45c5-bf0d-5a724f003f46"
+    },
+    is_entry_point = false,
+    kind = "Choice",
+    text = "So you don't know why I'm alive? Or if I can go back?",
+    uuid = "a1f75f70-618a-4567-b33d-84f98f18c528"
+  },
+  ["a8cff476-cf04-47a9-b352-0a38ceb4f10d"] = {
+    children = {
+      "df7fd4ee-136e-4b1c-b6c0-f9f6f0ffcd80"
+    },
+    internal_name = "Empty",
+    is_entry_point = false,
+    kind = "Empty",
+    uuid = "a8cff476-cf04-47a9-b352-0a38ceb4f10d"
+  },
+  ["a4159637-364e-4032-9ceb-1d125cbd6279"] = {
+    children = {
+      "cd386fa7-02f0-4363-89f1-15ee28a510c3"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "No, Boon, this is not Hell. You would be surprised -- Hell is actually a rather nice place. That Morningstar fellow certainly knows how to treat a guest.",
+    uuid = "a4159637-364e-4032-9ceb-1d125cbd6279",
+    who = "librarian"
+  },
+  ["aa8e7a5c-c1e3-4cfd-8d43-1b3ff973d021"] = {
+    children = {
+      "c4ad080c-d4d1-4b6d-8181-bd72f43bda0c"
+    },
+    is_entry_point = false,
+    kind = "Choice",
+    text = "Yes.",
+    uuid = "aa8e7a5c-c1e3-4cfd-8d43-1b3ff973d021"
+  },
+  ["abe56c31-07f5-47af-ba9b-11864c3ae894"] = {
+    children = {
+      "2943021e-bc8d-4761-b074-490be5df222c"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "I cannot say for sure from whence came this force, or its true nature. Much of Limbo is free, but the force has taken over the sixth, seventh, and eighth grade halls.",
+    uuid = "abe56c31-07f5-47af-ba9b-11864c3ae894",
+    who = "librarian"
+  },
+  ["b3efcbed-9b31-4bae-b994-a8efb3391767"] = {
+    children = {
+      "7927cd56-4e8d-47c8-867b-bde94a3f1e8d"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "As for whether you can get back...",
+    uuid = "b3efcbed-9b31-4bae-b994-a8efb3391767",
+    who = "librarian"
+  },
+  ["b91041d1-e8f4-4ed9-9c6a-cc342c27f390"] = {
+    children = {},
+    is_entry_point = false,
+    kind = "Choice",
+    text = "No, not for now.",
+    uuid = "b91041d1-e8f4-4ed9-9c6a-cc342c27f390"
+  },
+  ["ba58ff4f-5aae-4957-a338-e0b3648b60b9"] = {
+    children = {
+      "580d7e33-1750-4202-8b9e-90b493a54469"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "Hiccups in cause and effect. The past and future commingling with the present. Our realm is not physical, so of course many of the constraints you are used to in your world already do not apply to us.",
+    uuid = "ba58ff4f-5aae-4957-a338-e0b3648b60b9",
+    who = "librarian"
+  },
+  ["c4ad080c-d4d1-4b6d-8181-bd72f43bda0c"] = {
+    children = {
+      "5f478b92-bc0f-4abd-87fa-daa8847839d4",
+      "0ac0eabe-f31a-47ac-b39d-2b2ca8aebbe2",
+      "a1f75f70-618a-4567-b33d-84f98f18c528"
+    },
+    internal_name = "questions",
+    is_entry_point = false,
+    kind = "Empty",
+    uuid = "c4ad080c-d4d1-4b6d-8181-bd72f43bda0c"
+  },
+  ["c7d3712b-a82e-4aaa-a8b6-9bd970864cca"] = {
+    children = {
+      "e9d3efb7-274f-4669-b201-f7316d4c04fb"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "Of course, he's a popular fellow. But don't call him that to his face, unless you're a fan of eternal damnation.",
+    uuid = "c7d3712b-a82e-4aaa-a8b6-9bd970864cca",
+    who = "librarian"
+  },
   ["c836a350-ba05-4188-aff7-22717d6bbe19"] = {
     children = {
       "4d4d69c9-4179-4add-acde-99c1233c32b2"
@@ -137,15 +291,56 @@ return {
     uuid = "c836a350-ba05-4188-aff7-22717d6bbe19",
     who = "boon"
   },
-  ["dcd7c2de-8cb9-483e-bec7-8aebd1013b9c"] = {
+  ["cd386fa7-02f0-4363-89f1-15ee28a510c3"] = {
     children = {
-      "0010b14a-9989-4517-86f9-5156694f6f8e"
+      "c7d3712b-a82e-4aaa-a8b6-9bd970864cca"
     },
     is_entry_point = false,
     kind = "Text",
-    text = "Would that it were so simple, lad. Two souls, wrong and twisted things, manifested here in a time past. They were, well, they were like you. Their souls not quite passed, yet not quite living.",
-    uuid = "dcd7c2de-8cb9-483e-bec7-8aebd1013b9c",
-    who = "Librarian"
+    text = "You, uhm, you know the Devil?",
+    uuid = "cd386fa7-02f0-4363-89f1-15ee28a510c3",
+    who = "boon"
+  },
+  ["df7fd4ee-136e-4b1c-b6c0-f9f6f0ffcd80"] = {
+    children = {
+      "aa8e7a5c-c1e3-4cfd-8d43-1b3ff973d021",
+      "b91041d1-e8f4-4ed9-9c6a-cc342c27f390"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "Did you have any more questions, my boy?",
+    uuid = "df7fd4ee-136e-4b1c-b6c0-f9f6f0ffcd80",
+    who = "librarian"
+  },
+  ["e9d3efb7-274f-4669-b201-f7316d4c04fb"] = {
+    children = {
+      "2aa3646a-a6c3-4db1-a688-bb589b83608e"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "To your question, my boy: Humans make the world out to be simple. A few realms, damnation, salvation, and you've nearly wrapped the whole thing up.",
+    uuid = "e9d3efb7-274f-4669-b201-f7316d4c04fb",
+    who = "librarian"
+  },
+  ["e022c79a-eeb2-4f90-8a8b-921f5de6c0eb"] = {
+    children = {
+      "2e8bd3db-5792-4c90-807d-575e89078858"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "There are places that don't have cause and effect?",
+    uuid = "e022c79a-eeb2-4f90-8a8b-921f5de6c0eb",
+    who = "boon"
+  },
+  ["eabf9cc1-d3bb-45c5-bf0d-5a724f003f46"] = {
+    children = {
+      "b3efcbed-9b31-4bae-b994-a8efb3391767"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "No, I'm afraid I don't. To be quite frank with you, I'm not sure whether your presence is the cause of the ripples or the effect of something yet unknown.",
+    uuid = "eabf9cc1-d3bb-45c5-bf0d-5a724f003f46",
+    who = "librarian"
   },
   ["eb817040-b535-470d-a386-1a490a5a0f01"] = {
     children = {
@@ -153,8 +348,18 @@ return {
     },
     is_entry_point = false,
     kind = "Text",
-    text = "I...I just, I want to go home! I want everything to be back to the way it was. I don't know what it means that I'm alive, I just want to go back!",
+    text = "I don't know what's going on, I promise. I wish I knew why I was alive right now over all the people that died at the same time as me. I'm sorry to be a burden.",
     uuid = "eb817040-b535-470d-a386-1a490a5a0f01",
     who = "boon"
+  },
+  ["ece58a6f-f841-4645-9727-29bd7bbb90c2"] = {
+    children = {
+      "a4159637-364e-4032-9ceb-1d125cbd6279"
+    },
+    is_entry_point = false,
+    kind = "Text",
+    text = "For all the benefits of you humans, your model of metaphysics has always been rather simplistic.",
+    uuid = "ece58a6f-f841-4645-9727-29bd7bbb90c2",
+    who = "librarian"
   }
 }
