@@ -58,8 +58,6 @@ frame and don't double print them (unless a file is reloaded...?)
   - update: hey, this works, but is a little broken. if current layout
     == next layout, you still try to do it, which gives some screen
     flickering.
-
-CONSOLE SCRIPTS DO NOT LOG ERRORS. FIX THIS YOU SILLY MAN.
 ** @lua_init
 Stop storing entity classes as part of the global table, e.g:
 Player = tdengine.entity('Player')
@@ -1046,6 +1044,66 @@ he speaks tersely, directly, quietly.
  school.
 *** the librarian
 * log
+** 04/02/2021
+it's quite late, couple of beers in, not sure what to work on to put
+my time in for the day. i guess an easy way to start is always to make
+a roadmap of the next couple things you're going to do. 
+
+i'm going to finish the dialogue with the librarian -- i think that's
+turning out very well. then, i'm going to write the cafeteria scene
+where you figure out that you must go to the art room. 
+
+one thing i'm worried about is both that the game happens much too
+quickly and that it happens much too slowly. on the one hand: you open
+the game and you're stuck with a lot of talking before you really get
+down to the battling. on the other hand: you just fucking died, and
+you have two conversations before you're off and exploring the
+world. that just doesn't feel right. but it's a game -- you need to
+play it. i think the answer is to pad out what the world is in the
+first interlude. you shouldn't just go to the cafeteria and then
+resolve barbara and then on to the first dungeon. there should be side
+quests, you should be making yourself familiar with the world. 
+
+does this happen before or after barbara? the thing about the barbara
+quest is that it doesn't really tell you anything about the
+world. it's a self contained story. i feel like i need to add a small
+gate that the player has to pass before they hit barbara, something
+nonlinear that they have to explore the world to reach. ah, but it's
+hard: if you have something nonlinear to start, the player doesn't
+know what to do. they haven't played the game. i feel like any way i
+slice this, i will be unhappy:
+
+- rails, relevant: spoon feeding player the story, plus jumping into
+  the main story too quickly
+- rails, not relevant: confusing -- is this part of the main story?
+- free: player does not know how to play the game yet
+
+maybe barbara should be moved to the middle? between the first and
+second dungeon? before the first dungeon, it should be: find two other
+souls to resolve. this way, you have a team that is reasonably padded
+out before the first dungeon. each of the two stories can be small
+(smaller than barbara), self contained, and tell you something about
+the world. the only thing that's hard about this is:
+- if there are two specific stories that the player will experience,
+  you have to figure out how to get them to talk to the right people
+  to get it going
+- if there are many stories, you have to make sure that the
+  intersection of the information they give is sufficient to carry on
+  the story
+
+scope creep. i don't want to write five stories and only two of them
+get seen. write two stories, but write a dozen ways to get to them --
+that's how it will flow naturally. 
+
+librarian could send boon on a simple fetch quest that goes awry.
+ 
+librarian could send boon just to talk to a person straight up --
+something like the ilyena quest in tables and chairs.
+
+is every / most NPC going to have a dialogue option for "can i resolve
+you"? that sounds like a lot
+
+think that's all i got for tonight. thirty on the nose.
 ** 04/01/2021
 what do i want to express in this scene? 
 
@@ -4751,6 +4809,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK: 
+CLOCK: [2021-04-03 Sat 00:49]--[2021-04-03 Sat 01:19] =>  0:30
 CLOCK: [2021-04-01 Thu 18:23]--[2021-04-01 Thu 20:26] =>  2:03
 CLOCK: [2021-04-01 Thu 12:34]--[2021-04-01 Thu 13:34] =>  1:00
 CLOCK: [2021-03-31 Wed 19:07]--[2021-03-31 Wed 20:30] =>  1:23
