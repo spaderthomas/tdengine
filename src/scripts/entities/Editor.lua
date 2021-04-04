@@ -1111,10 +1111,14 @@ function Editor:dialogue_editor(dt)
 	local old_any_active = imgui.IsAnyItemActive()
 
 	imgui.SetCursorScreenPos(node_contents_cursor:unpack())
-	imgui.BeginGroup()
-	imgui.Text(node.kind)
-	imgui.Text(self:ded_short_text(node))
 	
+	imgui.BeginGroup()
+	if node.kind == 'Text' then
+	  imgui.Text(node.who)
+	else
+	  imgui.Text(node.kind)
+	end
+	imgui.Text(self:ded_short_text(node))
 	imgui.EndGroup()
 
 	local contents_size = tdengine.vec2(imgui.GetItemRectSize())
@@ -1248,17 +1252,50 @@ function Editor:dialogue_editor(dt)
 			input_slot.x, input_slot.y,
 			color, thickness)
 	  else
-		 local color = ternary(use_dc_prompt_color, disconnect_color, link_color)
-		 local cp = tdengine.vec2(50, 0)
-		 imgui.DrawList_AddBezierCurve(
-			output_slot.x, output_slot.y,
-			output_slot.x + cp.x, output_slot.y,
-			input_slot.x - cp.x, input_slot.y,
-			input_slot.x, input_slot.y,
-			color, thickness)
+		local color = ternary(use_dc_prompt_color, disconnect_color, link_color)
+		local cp = tdengine.vec2(50, 0)
+		imgui.DrawList_AddBezierCurve(
+		  output_slot.x, output_slot.y,
+		  output_slot.x + cp.x, output_slot.y,
+		  input_slot.x - cp.x, input_slot.y,
+		  input_slot.x, input_slot.y,
+		  color, thickness)
+	  end
+
+	  -- To keep track of which branch node you will branch to depending on true / false /
+	  -- index returned by branch function, label them.
+	  if node.kind == 'Branch' then
+		local middle = output_slot:add(input_slot):scale(.5)
+		local colors = {
+		  default = tdengine.color32(0, 255, 128, 255),
+		  t = tdengine.color32(0, 255, 128, 255),
+		  f = tdengine.color32(255, 0, 128, 255)
+		}
+
+		-- If there's more than two choices, we want to give it a number matching its index
+		if #children > 2 then
+		  -- Where the top left of the index glyph goes for >2 choices
+		  local index_glyph_offset = tdengine.vec2(10, 15)
+		  local index_glyph = middle:subtract(index_glyph_offset)
+
+		  imgui.SetWindowFontScale(1.5)
+		  imgui.SetCursorScreenPos(index_glyph:unpack())
+		  imgui.PushStyleColor(imgui.constant.Col.Text, colors.default)
+		  imgui.Text(tostring(index))
+		  imgui.PopStyleColor()
+		  imgui.SetWindowFontScale(1)
+		-- If there are only two choices, label them with T/F dots
+		elseif #children == 2 then		
+		  local extents = tdengine.vec2(5, 5)
+		  local min = middle:subtract(extents)
+		  local max = middle:add(extents)
+		  local color = ternary(index == 1, colors.t, colors.f)
+		  local rounding = 50
+		  imgui.DrawList_AddRectFilled(min.x, min.y, max.x, max.y, color, rounding)
+		end
 	  end
 	end
-  end
+end
 
   if self.ded.connecting then
 	local p0 = self:output_slot(self.ded.connecting)

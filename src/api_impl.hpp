@@ -500,6 +500,13 @@ bool API::is_following_player() {
 	return render_engine.camera.follow_player;
 }
 
+void API::pause_updates() {
+	are_updates_paused = true;
+}
+void API::resume_updates() {
+	are_updates_paused = false;
+}
+
 void register_lua_api() {
 	auto& state = Lua.state;
 	
@@ -550,6 +557,8 @@ void register_lua_api() {
 	state["tdengine"]["log"]                   = &API::log;
 	state["tdengine"]["log_to"]                = &API::log_to;
 	state["tdengine"]["toggle_console"]        = &toggle_console;
+	state["tdengine"]["pause_updates"]         = &API::pause_updates;
+	state["tdengine"]["resume_updates"]        = &resume_updates;
 
 	state["tdengine"]["draw"]                        = state.create_table();
 	state["tdengine"]["draw"]["entity"]              = &draw_entity;	

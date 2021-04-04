@@ -1224,8 +1224,10 @@ function tdengine.go_to_marker(id, name)
 	tdengine.log('@bad_marker: ' .. name)
 	return
   end
-  
-  tdengine.change_scene(marker.scene)
+
+  if tdengine.loaded_scene.name ~= marker.scene then
+	tdengine.change_scene(marker.scene)
+  end
   tdengine.teleport_entity(id, marker.x, marker.y)
 end
 

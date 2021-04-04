@@ -481,13 +481,13 @@ const char* default_font_path() {
 
 // Global options
 bool debug_show_aabb = false;
+bool are_updates_paused = false;
+bool print_framerate = false;
 bool show_imgui_demo = false;
 bool show_console = false;
-bool print_framerate = false;
 bool send_kill_signal = false;
 bool step_mode = false;
 const char* layout_to_load = nullptr; // Set this string to pick up a new layout next tick
-
 
 float framerate = 0.f;
 

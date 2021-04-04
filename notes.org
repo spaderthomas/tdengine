@@ -1043,7 +1043,84 @@ he speaks tersely, directly, quietly.
  he speaks with an almost-british accent. everything about him screams preparatory
  school.
 *** the librarian
-* log
+the librarian is kindly and mysterious
+* log 
+** 04/03/2021
+what questions might boon have here?
+
+elaborate on the souls:
+- does every soul fracture eventually?
+- are the souls down here alive in some sense?
+- what makes the souls down here NOT alive?
+- what causes souls to finally break?
+- what happens to souls when they break?
+
+elaborate on the battling:
+- how do i capture a soul fragment?
+- need i tame it?
+- will i harm myself by using myself in battle?
+
+a kind of resigned acceptance to the situation. 
+a sense of powerlessness to what is happening around you. 
+self-doubt, inability to take another punch.
+
+i don't know what you saw, but i'm not whoever you're looking for. 
+i don't think there's any other choice...
+
+--
+
+okay, so i was about to cop some npc sprites from stardew to start fleshing out
+the cafeteria. and i realized something: i've been thinking of these npcs as
+faceless, nameless, anonymous entities. two things about that:
+1. it doesn't make sense. limbo is not a huge place. maybe there are fifty
+   people across the whole thing. it's impossible to be anonymous when the pool
+   of people is fifty deep.
+2. it's not in the spirit of the game. these are all people who lived and died,
+   you want the player to get some sense of them. there aren't really nameless /
+   faceless npcs in this game -- the closest thing i can think of is the
+   grunts. 
+
+but this is scary. this means that i have to start fleshing out the people who
+live there. what's the best way to do this? i guess this means i have to answer
+another question:
+
+how connected is everyone in limbo?
+
+i think it would be excellent to do a cloud atlas kind of situation. everyone is
+connected to everyone else, and the optional C plot is unraveling some sort of
+mystery amongst the citizens of limbo. but i don't want to have a plot spanning
+all of the characters. that's too much. there should be clusters of people, a
+couple different sub plots. 
+
+i want there to be a few subplots that develop over the course of the game --
+not ones that can just be done in one shot as soon as you find em. i don't
+remember vampire as well as i'd like, but i'm thinking of the shit with the
+gang. i also want these to be totally optional. finely crafted things that are
+only there for the curious player. 
+
+what's the aim of these sub plots? is it just to resolve souls? the big ones, i
+mean. the overall goal. each component of them can have a mini dungeon or an
+item or something of the sort. 
+
+hmmm...do i need to design the subplots before the characters? i feel like i
+could just make some fairly broad, interesting characters, and then either:
+- mold the subplots around the characters
+- slot in characters into subplots
+
+--
+
+instead of trying to invent situations first, why don't you have each subplot be
+based around a theme. have some themes, some things you want to express, and
+then build the scenarios around them.
+
+hmm...i'm not sure whether to start writing characters or subplots. 
+
+ah, just pick one. stick characters in there. 
+
+ok, here's the plan:
+- finish the after-first-battle stuff with the librarian
+- then, write the cafeteria dialogue anonymously for now. it doesn't really
+  matter who is saying most of it. 
 ** 04/02/2021
 it's quite late, couple of beers in, not sure what to work on to put
 my time in for the day. i guess an easy way to start is always to make
@@ -1123,7 +1200,7 @@ tell boon about limbo:
   forever, but know that there are many realms, of which the physical and
   spiritual realms are but two. limbo is the glue that binds them.
 
-flavor:
+(**) flavor:
 - i am not the master of this realm. it just holds a special place in my heart.
 - you had eyes, but could not sense this realm. what use are eyes to a being
   such as myself? 
@@ -1136,16 +1213,16 @@ tell boon about the situation in limbo:
 - we don't know what this force is, but we know it's been occupying the
   halls. the power emanating from each hall increases in turn -- if you were to
   try the later two halls, you would almost certainly be destroyed
-- feral souls, battling
+(**) - feral souls, battling
 
 tell boon about his situation:
 - you are not yet dead, but not alive.
 - i am not sure if your presence is a cause or an effect.
-- the only thing you can do right now is try to understand what is going on, and
-  hope that in fixing it you may return to your life.
+(**) - the only thing you can do right now is try to understand what is going on, and
+  hope that in fixing  it you may return to your life.
 
 boon feels:
-- strangely calm -- when questioned about it, he replies that it's not like his
+(**) - strangely calm -- when questioned about it, he replies that it's not like his
   life was anything to holler about before
 - resigned
 
@@ -4809,7 +4886,10 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK: 
-CLOCK: [2021-04-03 Sat 00:49]--[2021-04-03 Sat 01:19] =>  0:30
+CLOCK: [2021-04-03 Sat 23:27]
+CLOCK: [2021-04-03 Sat 20:00]--[2021-04-03 Sat 21:54] =>  1:54
+CLOCK: [2021-04-03 Sat 16:15]--[2021-04-03 Sat 17:15] ->  2:00
+CLOCK: [2021-04-02 Fri 23:49]--[2021-04-03 Sat 00:19] =>  0:30
 CLOCK: [2021-04-01 Thu 18:23]--[2021-04-01 Thu 20:26] =>  2:03
 CLOCK: [2021-04-01 Thu 12:34]--[2021-04-01 Thu 13:34] =>  1:00
 CLOCK: [2021-03-31 Wed 19:07]--[2021-03-31 Wed 20:30] =>  1:23

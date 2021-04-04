@@ -66,8 +66,9 @@ int main() {
 		glfwPollEvents();
 
 		bool run_update = true;
-		run_update = !step_mode || input_manager.was_pressed(GLFW_KEY_SPACE);
-		step_mode = step_mode && !input_manager.was_pressed(GLFW_KEY_ENTER);
+		run_update &= !are_updates_paused;
+		run_update &= !step_mode || input_manager.was_pressed(GLFW_KEY_SPACE);
+		step_mode  &= !input_manager.was_pressed(GLFW_KEY_ENTER);
 
 		fill_imgui_input();
 		load_imgui_layout();
