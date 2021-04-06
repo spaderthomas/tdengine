@@ -432,6 +432,13 @@ hall" is going to be a sticking point past the 6th grade hall. if it
 is, it could be a there-are-many-ways-in situation and this is one of
 them. or i could flesh this out and have it be a more key piece of the
 story. 
+
+--
+
+another idea: maybe to get daniella to talk, you need to find some
+necklace that was lost. tell her it was from rudy, or maybe it ties
+into their backstory, and if you do this, they will get back together
+and you can resolve them
 *** the immaculate reception
 @immaculate_reception
 
@@ -1044,7 +1051,65 @@ he speaks tersely, directly, quietly.
  school.
 *** the librarian
 the librarian is kindly and mysterious
+*** resolvable npc ideas
+- someone has gotten stuck somewhere
+- a credit card ripoff gone awry
+- someone in the garden, stuck as a software engineer in life but
+  desiring to be a farmer, but with a horrible black thumb
+- help the kid in the computer room install cornerstone linux
+- something inspired by the serial killer i read about on the shitter
+  today -- his wife cheated on him, so he started saving the uteruses
+  of the women he operated on (i seem to remember that he was...a
+  doctor some variety? that the uteruses were obtained legitimately?)
+- on that note, resolving a serial killer whose bloodlust has just
+  evaporated completely now that he lacks a nervous system, hormones,
+  etc, etc.
+- a tortured artist who cannot even provide himself with any relief
+  now that the art room is blocked off
+- a sad clown who was deeply affected in life by the lack of
+  appreciation for his art -- a metaphor for how ridiculous all
+  artistic endeavors are at their core
 * log 
+** 04/04/2021
+ideas for the two minor quests that open up the game.
+
+what do i want the player to find out about the anomaly?
+- how to get into the sixth grade hall
+- how ordinary souls are getting recruited into the anomaly, and what
+  role they have
+- what are plans that the big bad has set in motion?
+  - thinking about smaller plans here -- opaque things that can be the
+    cause for discussion later
+- what is set up in the halls that they've occupied? (ties into above)
+
+maybe it's just the mood i'm in, but i want these to be darkly funny
+instead of tragic. 
+
+- someone has gotten stuck somewhere
+- a credit card ripoff gone awry
+- someone in the garden, stuck as a software engineer in life but
+  desiring to be a farmer, but with a horrible black thumb
+- help the kid in the computer room install cornerstone linux
+- something inspired by the serial killer i read about on the shitter
+  today -- his wife cheated on him, so he started saving the uteruses
+  of the women he operated on (i seem to remember that he was...a
+  doctor some variety? that the uteruses were obtained legitimately?)
+- on that note, resolving a serial killer whose bloodlust has just
+  evaporated completely now that he lacks a nervous system, hormones,
+  etc, etc.
+- a tortured artist who cannot even provide himself with any relief
+  now that the art room is blocked off
+- a sad clown
+
+something simple: a couple of thugs guarding a room, and in speaking
+to them you accidentally goad them into battle (you don't goad them
+because that's not who you or oliver are, they read offense in your
+meekness and it is funny)
+
+slowpoke tails would work really well here. he's been getting the
+shipments from someone associated with the anomaly, you can get some
+information out of him -- you can't resolve him yet, though. i want
+that to be a longer running story arc. 
 ** 04/03/2021
 what questions might boon have here?
 
@@ -4886,7 +4951,8 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK: 
-CLOCK: [2021-04-03 Sat 23:27]
+CLOCK: [2021-04-05 Mon 00:02]--[2021-04-05 Mon 00:47] =>  0:45
+CLOCK: [2021-04-03 Sat 23:27]--[2021-04-03 Sat 23:42] =>  0:15
 CLOCK: [2021-04-03 Sat 20:00]--[2021-04-03 Sat 21:54] =>  1:54
 CLOCK: [2021-04-03 Sat 16:15]--[2021-04-03 Sat 17:15] ->  2:00
 CLOCK: [2021-04-02 Fri 23:49]--[2021-04-03 Sat 00:19] =>  0:30
