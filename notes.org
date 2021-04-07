@@ -1070,6 +1070,160 @@ the librarian is kindly and mysterious
   appreciation for his art -- a metaphor for how ridiculous all
   artistic endeavors are at their core
 * log 
+** 04/06/2021
+principal and vice principal are an evil genius pair, but they are just tools
+for an ancient and powerful force that is beyond our comprehension. the ancient
+force instructed them on how to 'corporeally' carry out its wishes.
+
+limbo exists between the physical and spiritual realms. earthly desires and
+fears, plus your body, keep you firmly grounded in the physical realm. when you
+die, your body is released, and normally so are your memories, desires,
+hang-ups, etc. the release of all these things allows you to "ascend" to the
+spiritual realm. but when the hang ups remain after the body has passed, you are
+just bouyant enough to remain stuck in between: limbo. 
+
+when boon almost died, he brushed right up against the edge of limbo. so close
+in fact, that someone could give a quick yank and he'd be there. and they did:
+they yanked out a few of his memories, just from when he had run away, and
+pushed him over the edge of buoyancy.
+
+the being that pulled him in is the big bad. he's more of a law or a process
+than a sentient entity. call him fate, if you'd like. he is bound by things
+unknown to us. he is the enforcer of cause and effect. he is the linearity of
+time. he doesn't act out malice, nor need, nor desire. he acts because it is the
+only thing he can do. can water choose to run uphill? maybe this entity is the
+librarian, or maybe the librarian is just a very powerful entity that has
+knowledge of the big bad. also, the big bad isn't bad. he is a pipelined
+processor. every tick, the whole internal state shifts according to the last
+state. he could not have done anything differently. 
+
+when boon defeats the principal and vice principal, he is set face to face with
+this entity. he is furious for what the entity has put him through. and he tries
+everything: kicking and screaming, withdrawing, brooding, threatening. but of
+course none of it works. 
+
+the last symbol: to return to his home, he has to collect his backpack. his
+backpack symbolizes all the burdens he has that were lifted from him, the
+burdens he has to accept again to return to the world. 
+
+--
+
+- interlude 1
+  - find a way into dungeon 1
+  - hint at the anomaly
+- dungeon 1
+  - 
+  - discover the existence + effects of the anomaly
+- interlude 2
+  - circle back with the librarian
+  - ask around to search for strange anomalous happenings
+  - barbara ann
+  - back door into dungeon 2 is unlocked
+- dungeon 2
+  - ???
+  - defeat vice principal
+  - VP hints that there is something that will change boon's mind about
+    defeating them + the anomaly
+  - VP gives you a name or location to visit once you're back in the hub.
+- interlude 3
+  - ???
+  - discover boon is the problem
+- dungeon 3
+  - go through the principal's office
+  - defeat the principal
+  - encounter with the anomaly
+
+next questions to answer:
+- where is the entrance to dungeon 1?
+- what does the dungeon look like?
+- what kind of things happen there to clue the groop into the anomaly?
+- who is the boss at the end of dungeon 1?
+** 04/05/2021
+the hardest part of planning this game so far has been the main gameplay loop. i
+guess i'll just start typing, more or less. i want there to be lots of different
+small stories going on in the world. maybe interconnected. but i want the player
+to be able to FIND these stories. they have to have some sense of where to go --
+if not where to go, then some sense that exploring the world is expected of
+them, and that good things will come to those who explore the world. 
+
+maybe the solution for the very first part of the game is to give the player
+some general areas to check out. in a SLIGHTLY subtle way -- like you walk out
+of the library and boon goes to oliver, so, uhm...you've been around here for a
+while, what places are there? where would you look? and then oliver gives him a
+quick rundown and highlights the places where you may resolve souls. 
+
+i also think it's fine for oliver to drop a hint like: things are strange here,
+people are more connected than you may think, it might pay off to look around
+and get to know the people here. 
+
+it's also totally fine to just build out the main story line and then slot in
+these different subplots as you start to flesh out the world. alright, i feel
+pretty good about that. 
+
+--
+
+copy and pasted from yesterday:
+what do i want the player to find out about the anomaly?
+- how to get into the sixth grade hall?
+- what is in the sixth grade hall?
+- begin to see the corruption of limbo firsthand
+- reveal a few opaque actions that the big bad has taken, and begin to discuss
+  their motives and ripples
+
+--
+
+ideas for the story:
+the big bad is actually nameless, faceless, wordless. a symbol for fate itself.
+is the big bad trying to Take Over The World? or are the big bad's motives
+inscrutable? i like the inscrutability because that's part of the core message
+that the game is trying to get across to you: the world is not out to get you,
+nor is it here to allow you to revel in its splendor. it just exists as it is,
+immutable and cold, and you have to deal with that. 
+
+so we can think of the big bad as...ice-9 is the first thing that comes to mind,
+i guess because i have vonnegut on the brain. ice-9 destroys the planet, but in
+a purely mechanical way. there is nothing evil about ice-9. it just so happens
+that when you put this crystal in water, the next molecule locks into place,
+which causes the next molecule to lock into place, ad infinitum. the world and
+all events that take place inside it are woven into a pattern. and it just so
+happens that when a thread is misplaced, the next thread is off a bit, which
+causes the next thread to be off a bit, ad infinitum.
+
+even though the big bad is more of an idea than a person, it still has to have
+goals. goals may not be the right word -- goals implies agency. but there needs
+to be something it is DOING that you want to stop. i guess it's hard to write
+these without a reason why. for example, i was about to write:
+"it wants to seal off the physical and spiritual realms"
+but why is this happening? why is this happening over the other infinite things
+that the rift could be doing? i suppose the answer to that question is the
+ultimate core of the game: there is no reason. we live in a world of the random
+and arbitrary. 
+
+okay, but there does need to be a reason. because the big bad is not the only
+entity in its organization. there are a lot of souls participating in its plan
+-- why are they doing so?
+
+- it wants to seal off the physical and spiritual realms
+- it wants to unhinge the relationship between ideas and things (in other words,
+  break the two realms)
+- 
+
+(the process could be given a voice. "i cannot control why i do what i do any
+more than the wind may control whether it blows. such is the nature of your
+reality.") the process reminds me of destiny in sandman.
+
+what role does the librarian play in all this? he can't just be some innocent
+bystander. could he perhaps be the one who sets everything in motion? can this
+tie into his blindness?
+
+the big bad clearly brought boon down on purpose, to induce or further the
+anomaly, so a big theme when boon faces the big bad is: why me? to really hammer
+home the point that there is no reason why.
+
+maybe the bad guys are simply trying to take advantage of a good
+situation. maybe there's nothing to it than that -- fate handed you something
+bad, but handed them something prime. ultimately, if you 
+
 ** 04/04/2021
 ideas for the two minor quests that open up the game.
 
@@ -4951,6 +5105,9 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK: 
+CLOCK: [2021-04-06 Tue 18:29]--[2021-04-06 Tue 19:21] =>  0:52
+CLOCK: [2021-04-06 Tue 14:46]--[2021-04-06 Tue 15:27] =>  0:41
+CLOCK: [2021-04-05 Mon 18:37]--[2021-04-05 Mon 19:33] =>  0:56
 CLOCK: [2021-04-05 Mon 00:02]--[2021-04-05 Mon 00:47] =>  0:45
 CLOCK: [2021-04-03 Sat 23:27]--[2021-04-03 Sat 23:42] =>  0:15
 CLOCK: [2021-04-03 Sat 20:00]--[2021-04-03 Sat 21:54] =>  1:54
