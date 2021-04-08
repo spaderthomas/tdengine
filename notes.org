@@ -1070,6 +1070,29 @@ the librarian is kindly and mysterious
   appreciation for his art -- a metaphor for how ridiculous all
   artistic endeavors are at their core
 * log 
+** 04/07/2021
+- where is the entrance to dungeon 
+there are several entrances to dungeon 1. the different stories that get you
+there are like a criss crossed tree: there are multiple ways to enter, and
+multiple ways to exit, but they meet up at some places in the middle. 
+
+an entrance in the janitor's closet where you woke up -- something that leads to
+an underground storage room that links up to another closet inside the hall. 
+
+another one in the computer room. there are routes carved out in the school for
+the network to run through, and you can wriggle through them to come out in the
+sixth grade.
+
+scratch that, one way to enter, through the janitor's closet
+
+the janitor is big and slow, a gentle giant, a lenny. he's held back in limbo by
+feelings of inadequacy, a lack of love provided through his life, a feeling of
+being invisible in the way that a homeless person may feel invisible. he has
+been taken care of in his life, he has been pitied in his life, but he has never
+been truly loved. he is a character for boon to sympathize with and a foil for
+boon's own life. his story is one of a problem that could be fairly easily
+solved, if only someone just paid attention to him or cared about him. 
+
 ** 04/06/2021
 principal and vice principal are an evil genius pair, but they are just tools
 for an ancient and powerful force that is beyond our comprehension. the ancient
@@ -5105,6 +5128,7 @@ the normals are good at defending. they don't want to be pulled into the world
 of souls -- they enjoy living. so they are built to do that. 
 * clock
 :LOGBOOK: 
+CLOCK: [2021-04-07 Wed 08:45]
 CLOCK: [2021-04-06 Tue 18:29]--[2021-04-06 Tue 19:21] =>  0:52
 CLOCK: [2021-04-06 Tue 14:46]--[2021-04-06 Tue 15:27] =>  0:41
 CLOCK: [2021-04-05 Mon 18:37]--[2021-04-05 Mon 19:33] =>  0:56
