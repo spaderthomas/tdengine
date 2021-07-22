@@ -38,6 +38,12 @@ tdengine.console_shortcuts = {
 	  editor:toggle_follow()
 	end
   },
+  input = {
+	help = 'sometimes stuff gets stuck and player input is locked out. undo that.',
+	proc = function()
+	  tdengine.enable_input_channel(tdengine.InputChannel.Player)
+	end
+  },
   layout = {
 	help = 'use a predefined imgui layout',
 	proc = tdengine.layout
@@ -91,9 +97,9 @@ tdengine.console_shortcuts = {
 	end
   },
   reload = {
-	help = 'hard reload a scene from a template',
+	help = 'reload current scene + overlay',
 	proc = function()
-	  tdengine.change_scene(tdengine.loaded_scene.name)
+	  tdengine.load_scene(tdengine.loaded_scene.name)
 	end
   },
   save = {
@@ -105,9 +111,9 @@ tdengine.console_shortcuts = {
 	proc = tdengine.save_layout
   },
   scene = {
-	help = 'load a scene from src/scripts/scenes/templates',
+	help = 'load a scene + overlay',
 	proc = function(name)
-	  tdengine.change_scene(name)
+	  tdengine.load_scene(name)
 	end
   },
   snap = {

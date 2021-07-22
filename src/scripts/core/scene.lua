@@ -52,12 +52,19 @@ function tdengine.save_current_scene_as_template(name)
   tdengine.write_file_to_return_table(filepath, data)
 end
 
-function tdengine.save_current_scene_to_memory()
-  local data = tdengine.serialize_current_scene()
-  tdengine.scenes[tdengine.loaded_scene.name] = data
+function tdengine.apply_overlay()
+   local overlay_dir = 'scenes/overlays/' .. tdengine.loaded_scene.name .. '/'
+   local overlay = overlay_dir .. tostring(tdengine.state['main:story_marker'])
+   local entities = tdengine.fetch_module_data(overlay)
+   if not entities then return end
+   print('sup')
+   for index, entity in pairs(entities) do
+	tdengine.create_entity(entity.name, entity)
+  end
 end
 
-function tdengine.load_scene(data)
+function tdengine.load_scene_template(name)
+  -- Unload the old scene by destroying nonpersistent entities and calling into the manager
   for id, entity in pairs(tdengine.entities) do
 	persist = entity.tdengine_persist or false
 	if not persist then
@@ -65,50 +72,23 @@ function tdengine.load_scene(data)
 	end
   end
 
+  -- Create everything from new scene's template
+  local data = tdengine.fetch_module_data('scenes/templates/' .. name)
+
   for index, entity in pairs(data.entities) do
 	tdengine.create_entity(entity.name, entity)
   end
-end
 
-function tdengine.load_scene_from_template(name)
-  local scene = tdengine.fetch_module_data('scenes/templates/' .. name)
-
-  tdengine.load_scene(scene)
   tdengine.loaded_scene = {
 	name = name,
 	path = 'scenes/templates/' .. name,
-	manager = scene.manager
+	manager = data.manager
   }
-  
-  return true
 end
 
-function tdengine.load_scene_from_memory(name)
-  local scene = tdengine.scenes[name]
-  if not scene then
-	return false
-  end
-	
-  tdengine.load_scene(scene)
-  tdengine.loaded_scene = {
-	name = name,
-	path = module_name
-  }
-
-  return true
-end
-
-function tdengine.load_scene_from_anywhere(name)
-  if tdengine.load_scene_from_memory(name) then return true end
-  if tdengine.load_scene_from_template(name) then return true end
-  return false
-end
-
-
-
-function tdengine.change_scene(name)  
+function tdengine.load_scene(name)  
+  -- Cleanup the current scene by calling into its manager
   if string.len(tdengine.loaded_scene.name) > 0 then
-	-- 1) Cleanup the current scene by calling into its manager
 	local scene = tdengine.fetch_module_data('scenes/templates/' .. tdengine.loaded_scene.name)
 	if scene.manager then
 	  local manager = tdengine.find_entity(scene.manager)
@@ -117,15 +97,14 @@ function tdengine.change_scene(name)
     else
 	  tdengine.log('@no_manager_specified:' .. name)
     end
-
-	-- 2) Save the current scene to the in-memory table
-	tdengine.save_current_scene_to_memory()
   end
   
-  -- 3) Load the new scene
-  tdengine.load_scene_from_anywhere(name)
+  -- Load the new scene
+  tdengine.load_scene_template(name)
+
+  tdengine.apply_overlay()
   
-  -- 4) Set it up by calling into its manager
+  -- Set it up by calling into its manager
   local scene = tdengine.fetch_module_data('scenes/templates/' .. name)
   if scene.manager then
 	local manager = tdengine.find_entity(scene.manager)
@@ -144,7 +123,6 @@ function tdengine.save(name)
   local save = {
 	state = tdengine.state,
 	loaded_scene = tdengine.loaded_scene,
-	scenes = tdengine.scenes,
 	player = player:save()
   }
 
@@ -154,6 +132,7 @@ function tdengine.save(name)
 end
 
 function tdengine.load(name)
+  -- Grab the save data
   local path = 'saves/' .. name
   tdengine.log('@load: ' .. path)
   package.loaded[path] = nil
@@ -163,6 +142,8 @@ function tdengine.load(name)
 	return
   end
 
+  -- Rehydrate the state. Do this first, so when you load the scene, you have the correct story
+  -- marker (for the overlay), and the rest of the state (for any custom setup code)
   for key, value in pairs(state.state) do
 	if tdengine.state[key] == nil then
 	  tdengine.log('@outdated_state: ' .. key)
@@ -171,8 +152,7 @@ function tdengine.load(name)
 	end
   end
 
-  tdengine.scenes = state.scenes
-  tdengine.load_scene_from_memory(state.loaded_scene.name)
+  tdengine.load_scene(state.loaded_scene.name)
 
   local player = tdengine.find_entity('Player')
   tdengine.teleport_entity(player.id, state.player.position.x, state.player.position.y)
@@ -187,14 +167,8 @@ function tdengine.go_to_marker(id, name)
   end
 
   if tdengine.loaded_scene.name ~= marker.scene then
-	tdengine.change_scene(marker.scene)
+	tdengine.load_scene(marker.scene)
   end
   tdengine.teleport_entity(id, marker.x, marker.y)
 end
 
-function tdengine.apply_overlay()
-   local overlay_dir = 'scenes/overlays/' .. tdengine.loaded_scene.name .. '/'
-   local overlay = overlay_dir .. tostring(tdengine.state['main:story_marker'])
-   local entities = tdengine.fetch_module_data(overlay)
-   print(inspect(entities))
-end

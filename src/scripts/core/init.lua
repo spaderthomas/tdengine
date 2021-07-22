@@ -9,7 +9,6 @@ function tdengine.initialize()
   tdengine.actions = {}
   tdengine.state = {}
   tdengine.markers = {}
-  tdengine.scenes = {}
   tdengine.animations = {}
   tdengine.branches = {}
   tdengine.triggers = {}

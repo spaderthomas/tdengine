@@ -141,7 +141,7 @@ Entity* EntityManager::get_entity(int id) {
 	auto it = entities.find(id);
 	if (it == entities.end()) return nullptr;
 
-	return it->second;
+	return it->second.get();
 }
 
 bool EntityManager::has_entity(int id) {

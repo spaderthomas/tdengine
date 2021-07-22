@@ -494,44 +494,15 @@ function Editor:scene_viewer()
 	tdengine.save_current_scene_as_template(tdengine.loaded_scene.name)
   end
   
-  local id = '##scene_viewer:load_from_memory'
-  if imgui.Button('Load From Memory', button_size.x, button_size.y) then
-	tdengine.load_scene_from_memory(imgui.InputTextContents(id))
-	loaded = true
-  end
-  imgui.SameLine()
-  imgui.InputText(id, 63)
-
-
   local id = '##scene_viewer:load_from_template'
   if imgui.Button('Load From Template', button_size.x, button_size.y) then
-	tdengine.load_scene_from_template(imgui.InputTextContents(id))
+	tdengine.load_scene_template(imgui.InputTextContents(id))
 	loaded = true
   end
   imgui.SameLine()
   imgui.InputText(id, 63)
 
   if loaded then self.selected = nil end
-
-  imgui.Separator()
-
-  if imgui.TreeNode('Scenes in Memory') then
-	for scene_name, scene_data in pairs(tdengine.scenes) do
-	  local scenes_in_memory_id = '##scene_viewer:scenes_in_memory:' .. scene_name
-	  local scene_node_id = scene_name .. scenes_in_memory_id
-	  
-	  if imgui.TreeNode(scene_node_id) then
-		local entities = scene_data.entities
-		for index, entity in pairs(entities) do
-		  local entity_node_id = entity.name .. scenes_in_memory_id .. ':' .. tostring(index)
-		  entity_node_id = entity_node_id .. ':' .. entity.name
-		  imgui.extensions.Table(entity_node_id, entity)
-		end
-		imgui.TreePop()
-	  end
-	end
-	imgui.TreePop()
-  end
 
   imgui.Separator()
 

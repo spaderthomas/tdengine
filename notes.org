@@ -4795,6 +4795,7 @@ The screen fades partially, then fades totally to black.
 ** FINAL BOSS
 * clock
 :LOGBOOK: 
+CLOCK: [2021-07-22 Thu 15:30]--[2021-07-22 Thu 17:53] =>  2:23
 CLOCK: [2021-07-13 Tue 18:39]--[2021-07-13 Tue 20:07] =>  1:28
 CLOCK: [2021-06-19 Sat 14:44]--[2021-06-19 Sat 15:14] =>  0:30
 CLOCK: [2021-04-23 Fri 08:30]--[2021-04-23 Fri 09:11] =>  0:41
