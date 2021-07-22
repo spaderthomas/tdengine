@@ -15,6 +15,6 @@ function Delay:update(dt)
   if self.time <= 0 then
 	self.done = true
   end
-  end
+end
 
 tdengine.actions.Delay = Delay

@@ -32,6 +32,7 @@ void init_lua() {
 
 	// Set up paths
 	lua_manager.scripts = absolute_path(path_join({"src", "scripts"}));
+	
 	lua_manager.libs                  = path_join({lua_manager.scripts, "libs"});
 	lua_manager.core                  = path_join({lua_manager.scripts, "core"});
 	lua_manager.animations            = path_join({lua_manager.scripts, "animations"});

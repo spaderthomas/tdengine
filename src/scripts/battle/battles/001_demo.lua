@@ -1,7 +1,8 @@
 return {
+   tag = '001_demo',
    team = {
 	  {
-		 name = 'Richie',
+		 name = 'Oliver',
 		 essences = {
 			hp = 50,
 			attack = 10,
@@ -11,11 +12,15 @@ return {
 			speed = 15
 		 },
 		 passive = {
-			
+			'cursed_knowledge'
 		 },
 		 moves = {
-			
+			'draco_meteor',
+			'calm_mind',
+			'surf',
+			'recover'
 		 }
 	  }
    }
 }
+x

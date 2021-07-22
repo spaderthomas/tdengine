@@ -20,6 +20,9 @@ return {
 	  'cursed_knowledge'
    },
    moves = {
-	  
+	  'draco_meteor',
+	  'calm_mind',
+	  'surf',
+	  'recover'
    }
 }
