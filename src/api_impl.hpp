@@ -12,7 +12,8 @@ void API::free_entity(int entity) {
 	render_engine.remove_entity(entity);
 	physics_engine.remove_entity(entity);
 	interaction_system.remove_entity(entity);
-	entity_manager.destroy_entity(entity);
+	
+	entity_manager.entities_to_destroy.push_back(entity);
 }
 
 int API::alloc_component(int entity, const char* name) {

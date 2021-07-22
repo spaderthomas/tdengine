@@ -138,7 +138,10 @@ EntityManager& get_entity_manager() {
 }
 
 Entity* EntityManager::get_entity(int id) {
-	return entities[id].get();
+	auto it = entities.find(id);
+	if (it == entities.end()) return nullptr;
+
+	return it->second;
 }
 
 bool EntityManager::has_entity(int id) {
@@ -158,10 +161,8 @@ int EntityManager::create_entity(std::string name) {
 }
 
 void EntityManager::destroy_entity(int id) {
-	bool found = entities.find(id) != entities.end();
-	if (!found) return;
-	
-	auto entity = entities[id].get();
+	auto entity = get_entity(id);
+	if (!entity) return;
 
 	auto& component_manager = get_component_manager();
 	for (auto [name, component] : entity->components) {
@@ -169,6 +170,14 @@ void EntityManager::destroy_entity(int id) {
 	}
 
 	entities.erase(id);
+}
+
+void EntityManager::destroy_flagged_entities() {
+	for (auto id : entities_to_destroy) {
+		destroy_entity(id);
+	}
+
+	entities_to_destroy.clear();
 }
 
 CutsceneManager& get_cutscene_manager() {

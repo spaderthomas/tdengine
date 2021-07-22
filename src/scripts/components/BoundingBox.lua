@@ -16,7 +16,9 @@ function BoundingBox:save()
 end
 
 function BoundingBox:update()
-  self:draw()
+  if tdengine.state['engine:show_aabb'] then
+	self:draw()
+  end
 end
 
 function BoundingBox:draw(color)

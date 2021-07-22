@@ -1,5 +1,6 @@
 return {
    ['engine:disable_delay_actions'] = false,
+   ['engine:show_aabb'] = false,
    ['engine:dump_dialogue'] = false,
    ['engine:dump_file'] = 'dump',
    ['engine:use_short_dialogue'] = false,

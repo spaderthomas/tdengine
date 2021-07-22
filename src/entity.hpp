@@ -37,11 +37,18 @@ int Entity::next_id = 0;
 
 struct EntityManager {
 	std::map<int, std::unique_ptr<Entity>> entities;
+
+	// This gets filled in from game code in Lua, and at the end of the frame each entity is taken
+	// from the list and destroyed. Done this way to prevent nasty ordering stuff where you are
+	// trying to update an entity, but it has already been freed.
+	std::vector<int> entities_to_destroy;
 	int player = -1;
 	
 	Entity* get_entity(int id);
 	bool has_entity(int id);
 	int create_entity(std::string name);
+	
+	void destroy_flagged_entities();
 	void destroy_entity(int id);
 };
 EntityManager& get_entity_manager();

@@ -1,0 +1,1 @@
+teleport('janitor_closet')

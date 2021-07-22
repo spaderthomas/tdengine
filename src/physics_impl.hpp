@@ -129,7 +129,7 @@ bool point_inside_entity(float x, float y, int entity) {
 
 void PhysicsEngine::update(float dt) {
 	collisions.clear();
-	
+
 	for (auto& request : requests) {
 		auto& physics = get_physics_engine();
 

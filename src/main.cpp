@@ -105,6 +105,8 @@ int main() {
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(g_window);
 
+		entity_manager.destroy_flagged_entities();
+
 		input_manager.end_frame();
 
 		framerate = 1.f / (glfwGetTime() - frame_start_time);

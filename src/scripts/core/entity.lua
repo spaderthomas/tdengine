@@ -212,10 +212,7 @@ end
 function tdengine.destroy_entity(id)
   local entity = tdengine.entities[id]
   if not entity then return end
-  
-  entity.id = -1
-  entity.alive = false
-  
+
   tdengine.free_entity(id)
   tdengine.entities[id] = nil
 end
