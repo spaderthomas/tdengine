@@ -179,11 +179,15 @@ function tdengine.load(name)
   tdengine.snap_to_player()
 end
 
-function tdengine.load_default_state()
-  tdengine.log('@load:state')
-  
-  local state = tdengine.fetch_module_data('state/state')
-  if not state then tdengine.log('@load_default_state_failure'); return end
-  
-  tdengine.state = state
+function tdengine.go_to_marker(id, name)
+  local marker = tdengine.markers[name]
+  if not marker then
+	tdengine.log('@bad_marker: ' .. name)
+	return
+  end
+
+  if tdengine.loaded_scene.name ~= marker.scene then
+	tdengine.change_scene(marker.scene)
+  end
+  tdengine.teleport_entity(id, marker.x, marker.y)
 end

@@ -13,5 +13,5 @@ return {
    ['demo:008:likes_anime'] = false,
    ['demo:009:should_display_choice'] = false,
    ['jc:mentioned_librarian'] = false,
-   ['main:story_marker'] = tdengine.story_markers.INTRO
+   ['main:story_marker'] = 'intro'
 }
