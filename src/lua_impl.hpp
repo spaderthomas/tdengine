@@ -32,19 +32,26 @@ void init_lua() {
 
 	// Set up paths
 	lua_manager.scripts = absolute_path(path_join({"src", "scripts"}));
-	
-	lua_manager.libs                  = path_join({lua_manager.scripts, "libs"});
-	lua_manager.core                  = path_join({lua_manager.scripts, "core"});
-	lua_manager.animations            = path_join({lua_manager.scripts, "animations"});
-	lua_manager.branches              = path_join({lua_manager.scripts, "dialogue", "branches"});
-	lua_manager.saves                 = path_join({lua_manager.scripts, "saves"});
+	lua_manager.actions = path_join({lua_manager.scripts, "actions"});
+	lua_manager.animations = path_join({lua_manager.scripts, "animations"});
+	lua_manager.battle = path_join({lua_manager.scripts, "battle"});
+	lua_manager.components = path_join({lua_manager.scripts, "components"});
+	lua_manager.core = path_join({lua_manager.scripts, "core"});
+	lua_manager.cutscenes = path_join({lua_manager.scripts, "cutscenes"});
+	lua_manager.dialogue = path_join({lua_manager.scripts, "dialogue"});
+	lua_manager.entities = path_join({lua_manager.scripts, "entities"});
+	lua_manager.layouts = path_join({lua_manager.scripts, "layouts"});
+	lua_manager.libs = path_join({lua_manager.scripts, "libs"});
+	lua_manager.prefabs = path_join({lua_manager.scripts, "prefabs"});
+	lua_manager.saves = path_join({lua_manager.scripts, "saves"});
+	lua_manager.scenes = path_join({lua_manager.scripts, "scenes"});
+	lua_manager.gstate = path_join({lua_manager.scripts, "state"}); 
 
 	// Give those paths to Lua
 	lua_manager.prepend_to_search_path(lua_manager.scripts);
 	lua_manager.prepend_to_search_path(lua_manager.libs);
 	lua_manager.prepend_to_search_path(lua_manager.core);
 	lua_manager.prepend_to_search_path(lua_manager.animations);
-	lua_manager.prepend_to_search_path(lua_manager.branches);
 	lua_manager.prepend_to_search_path(lua_manager.saves);
 
 	// Bind all C functions

@@ -1451,6 +1451,8 @@ function Editor:state_viewer()
 		end
 	  
 		imgui.PopStyleColor()
+	  elseif type(value) == 'number' then
+		imgui.Text(tostring(value))
 	  end
 	end
   end

@@ -1,4 +1,4 @@
 return {
-  INTRO               = 'intro',
-  LEFT_JANITOR_CLOSET = 'left_janitor_closet'
+  INTRO               = 0,
+  LEFT_JANITOR_CLOSET = 1
 }

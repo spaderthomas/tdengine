@@ -17,11 +17,20 @@ struct LuaState {
 	sol::table get_component(int entity, std::string which);
 
 	std::string scripts;
-	std::string libs;
-	std::string core;
+	std::string actions;
 	std::string animations;
-	std::string branches;
+	std::string battle;
+	std::string components;
+	std::string core;
+	std::string cutscenes;
+	std::string dialogue;
+	std::string entities;
+	std::string layouts;
+	std::string libs;
+	std::string prefabs;
 	std::string saves;
+	std::string scenes;
+	std::string gstate; 
 } Lua;
 
 void init_lua();

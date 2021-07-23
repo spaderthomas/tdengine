@@ -191,3 +191,10 @@ function tdengine.go_to_marker(id, name)
   end
   tdengine.teleport_entity(id, marker.x, marker.y)
 end
+
+function tdengine.apply_overlay()
+   local overlay_dir = 'scenes/overlays/' .. tdengine.loaded_scene.name .. '/'
+   local overlay = overlay_dir .. tostring(tdengine.state['main:story_marker'])
+   local entities = tdengine.fetch_module_data(overlay)
+   print(inspect(entities))
+end

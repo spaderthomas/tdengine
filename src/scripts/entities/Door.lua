@@ -23,6 +23,7 @@ end
 -- You can't change the scene in an update function because you will deallocate yourself.
 -- You need to defer creating / destroying entities anyway...
 function Door:update(dt)
+  return
   if not self.doing_transition then return end
   
   self.time_remaining = self.time_remaining - dt
@@ -39,6 +40,7 @@ function Door:on_collision(other)
   self.time_remaining = self.fade_time / 2
   self.doing_transition = true
   tdengine.fade_screen(self.fade_time)
+  tdengine.go_to_marker(player.id, self.marker)
   tdengine.snap_to_player()  
 end
 

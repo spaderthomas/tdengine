@@ -28,8 +28,8 @@ function tdengine.initialize()
   tdengine.load_animations()
   tdengine.load_branches()
   tdengine.load_markers()
-  tdengine.load_default_state()
   tdengine.load_story_markers()
+  tdengine.load_default_state()
 end
 
 function tdengine.load_editor()
@@ -90,8 +90,6 @@ function tdengine.load_markers()
 end
 
 function tdengine.load_default_state()
-  --tdengine.log('@load:state')
-  
   local state = tdengine.fetch_module_data('state/state')
   if not state then tdengine.log('@load_default_state_failure'); return end
   
@@ -99,11 +97,8 @@ function tdengine.load_default_state()
 end
 
 function tdengine.load_story_markers()
-  --tdengine.log('@load:story_markers')
-  
   local markers = tdengine.fetch_module_data('state/story')
   if not markers then tdengine.log('@load_story_markers_failure'); return end
-  
   tdengine.story_markers = markers
 end
 
