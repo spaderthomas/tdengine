@@ -1009,13 +1009,20 @@ that perspective.
 - play the battle theme
 - fade the screen out then in
 - new background
+- add the menu
+- slide in the two battle platforms + trainer sprites
 - determine teams + leads
 - slide in HUD
-- submit first turn to text box
-- after the text box is finished displaying, play the animation for
-  the creature entering the battlefield
+- submit first text to text box
+- send out leads
 - trigger idle animations
-- open menu
+- loop:
+  - submit description to text box
+  - display menu options
+  - accept user input
+  - process turn
+  - play move and switch animations
+  - update health bar
 
 code it as a state machine. stick it all in the battle entity.
 ** 06/19/2021
@@ -4795,6 +4802,8 @@ The screen fades partially, then fades totally to black.
 ** FINAL BOSS
 * clock
 :LOGBOOK: 
+CLOCK: [2021-07-27 Tue 15:34]
+CLOCK: [2021-07-23 Fri 08:10]--[2021-07-23 Fri 10:42] =>  2:32
 CLOCK: [2021-07-22 Thu 15:30]--[2021-07-22 Thu 17:53] =>  2:23
 CLOCK: [2021-07-13 Tue 18:39]--[2021-07-13 Tue 20:07] =>  1:28
 CLOCK: [2021-06-19 Sat 14:44]--[2021-06-19 Sat 15:14] =>  0:30

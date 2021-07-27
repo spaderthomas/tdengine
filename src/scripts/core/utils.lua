@@ -82,15 +82,26 @@ function tdengine.write_file_to_return_table(filepath, t)
   end
 end
 
-function tdengine.fetch_module_data(module_path, log)
-  log = ternary(log == nil, true, log)
+function tdengine.fetch_module_data_impl(module_path, log)
   package.loaded[module_path] = nil
   local status, data = pcall(require, module_path)
+  return status, data  
+end
+
+function tdengine.fetch_module_data(module_path, log)
+  local status, data = tdengine.fetch_module_data_impl(module_path)
   if not status then
-	if log then
-	  tdengine.log('@module_load_failure')
-	  tdengine.log(data)
-	end
+	tdengine.log('@module_load_failure')
+	tdengine.log(data)
+	return nil
+  end
+
+  return data
+end
+
+function tdengine.fetch_module_data_quiet(module_path)
+  local status, data = tdengine.fetch_module_data_impl(module_path)
+  if not status then
 	return nil
   end
 

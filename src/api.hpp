@@ -54,5 +54,6 @@ void        follow_player(bool follow);
 bool        is_following_player();
 void        pause_updates();
 void        resume_updates();
+void        set_imgui_demo(bool show);
 }
 void register_lua_api();

@@ -55,9 +55,9 @@ end
 function tdengine.apply_overlay()
    local overlay_dir = 'scenes/overlays/' .. tdengine.loaded_scene.name .. '/'
    local overlay = overlay_dir .. tostring(tdengine.state['main:story_marker'])
-   local entities = tdengine.fetch_module_data(overlay)
+   local entities = tdengine.fetch_module_data_quiet(overlay)
    if not entities then return end
-   print('sup')
+   
    for index, entity in pairs(entities) do
 	tdengine.create_entity(entity.name, entity)
   end
@@ -94,8 +94,6 @@ function tdengine.load_scene(name)
 	  local manager = tdengine.find_entity(scene.manager)
 	  assert(manager, '@no_manager_to_cleanup:' .. scene.manager)
 	  manager:cleanup()
-    else
-	  tdengine.log('@no_manager_specified:' .. name)
     end
   end
   
@@ -110,10 +108,7 @@ function tdengine.load_scene(name)
 	local manager = tdengine.find_entity(scene.manager)
 	assert(manager, '@no_manager_to_setup:' .. scene.manager)
 	manager:setup()
-  else
-	 tdengine.log('@no_manager_specified:' .. name)
   end
-  
 end
   
 function tdengine.save(name)

@@ -5,7 +5,9 @@ function tdengine.initialize()
   
   -- Set up globals
   tdengine.entities = {}
+  tdengine.entity_types = {}
   tdengine.components = {}
+  tdengine.component_types = {}
   tdengine.actions = {}
   tdengine.state = {}
   tdengine.markers = {}

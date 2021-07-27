@@ -547,7 +547,7 @@ namespace ImGuiWrapper {
 	bool InputText(const char* label, int buf_size = 255) {
 		add_input_text_buffer(label, buf_size);
 		InputTextBuffer* buffer = get_input_text_buffer(label);
-		return ImGui::InputText(label, buffer->data, buffer->size);
+		return ImGui::InputText(label, buffer->data, buffer->size, ImGuiInputTextFlags_EnterReturnsTrue);
 	}
 
 	const char* InputTextContents(const char* label) {

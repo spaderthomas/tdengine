@@ -1,8 +1,9 @@
 return {
    ['engine:disable_delay_actions'] = false,
-   ['engine:show_aabb'] = true,
    ['engine:dump_dialogue'] = false,
    ['engine:dump_file'] = 'dump',
+   ['engine:show_aabb'] = true,
+   ['engine:imgui_demo'] = false,
    ['engine:use_short_dialogue'] = false,
    ['demo:001:heard_about_the_dead'] = false,
    ['demo:002:likes_psychedelic'] = true,

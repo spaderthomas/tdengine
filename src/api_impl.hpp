@@ -504,8 +504,13 @@ bool API::is_following_player() {
 void API::pause_updates() {
 	are_updates_paused = true;
 }
+
 void API::resume_updates() {
 	are_updates_paused = false;
+}
+
+void API::set_imgui_demo(bool show) {
+	show_imgui_demo = show;
 }
 
 void register_lua_api() {
@@ -560,6 +565,7 @@ void register_lua_api() {
 	state["tdengine"]["toggle_console"]        = &toggle_console;
 	state["tdengine"]["pause_updates"]         = &API::pause_updates;
 	state["tdengine"]["resume_updates"]        = &resume_updates;
+	state["tdengine"]["set_imgui_demo"]        = &set_imgui_demo;
 
 	state["tdengine"]["draw"]                        = state.create_table();
 	state["tdengine"]["draw"]["entity"]              = &draw_entity;	

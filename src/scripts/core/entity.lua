@@ -65,6 +65,10 @@ function tdengine.entity(name)
   local class = tdengine.create_class(name)
   tdengine.add_new_to_class(class, _G)
   class:include(entity_mixin)
+  
+  tdengine.entity_types[name] = class
+  table.sort(tdengine.entity_types, function(a, b) return a.name < b.name end)
+  
   return class
 end
 
@@ -102,6 +106,10 @@ function tdengine.component(name)
   local class = tdengine.create_class(name)
   tdengine.add_new_to_class(class, _G)
   class:include(component_mixin)
+
+  tdengine.component_types[name] = class
+  table.sort(tdengine.component_types, function(a, b) return a.name < b.name end)
+
   return class
 end
 
