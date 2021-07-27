@@ -13,6 +13,7 @@ local EditState = {
   ClickPosition = 'ClickPosition',
 }
 
+
 Editor = tdengine.entity('Editor')
 function Editor:init(params)  
   self.options = {
@@ -55,24 +56,15 @@ function Editor:init(params)
   }
 
   self.entity_creator = {
-	type_cbox_id = '##ec:type_combo_box',
 	entity_cbox_id = '##ec:entity_combo_box',
 	comp_cbox_id = '##ec:component_combo_box',
-	comp_var_id = '##ec:component_variable',
-	comp_val_id = '##ec:component_value',
-	show_error = false,
-	types = {
-	  'number',
-	  'string',
-	  'bool',
-	  'table'
-	},
-	selected_type = '',
 	selected_entity = '',
 	selected_comp = '',
 	components = {},
-	params = {}
+	params = {},
   }
+  self.component_editors = imgui.extensions.TableEditor(self.entity_creator.components)
+  self.param_editor = imgui.extensions.TableEditor(self.entity_creator.params)
   
   -- Stored as screen coordinates, converted to world when we submit the geometry
   self.last_click = { x = 0, y = 0 }
@@ -184,16 +176,10 @@ function Editor:do_geometry()
 	  tdengine.draw.rect_outline_screen(rect, tdengine.colors.red)
 	else
 	  local rect = self:get_mouse_rect()
-	  if not self.entity_creator.components.BoundingBox then
-		self.entity_creator.components.BoundingBox = {}
-	  end
-	  if not self.entity_creator.components.Position then
-		self.entity_creator.components.Position = {}
-	  end
-
-	  self.entity_creator.components.BoundingBox.extents = rect.extents
-	  self.entity_creator.components.BoundingBox.offset = tdengine.vec2(0, 0)
-	  self.entity_creator.components.Position.origin = tdengine.screen_to_world(rect.origin)
+	  self.geometry = {
+		origin = tdengine.screen_to_world(rect.origin),
+		extents = rect.extents
+	  }
 
 	  self.state = EditState.Idle
 	  self.last_click = tdengine.vec2(0, 0)
@@ -374,15 +360,6 @@ function Editor:check_for_new_selection()
 	imgui.EndPopup()
   end
   imgui.PopStyleVar()
-
-  imgui.PushStyleVar_2(imgui.constant.StyleVar.WindowPadding, 8, 8)
-  if imgui.BeginPopup('main_context_menu') then
-	if imgui.MenuItem('Add Entity') then
-	  imgui.OpenPopup('dogdog')
-	end
-	imgui.EndPopup()
-  end
-  imgui.PopStyleVar()
 end
 
 function Editor:entity_viewer()
@@ -424,11 +401,6 @@ end
 
 function Editor:selected_entity()
   if self.selected ~= nil then
-	
-	-- if self.selected ~= nil then
-	-- 	 imgui.extensions.Entity(self.selected, '##editor:selected')
-	-- end
-
 	imgui.extensions.Entity(self.selected)
   end
 end
@@ -485,15 +457,14 @@ function Editor:scene_viewer()
 	loaded = true
   end
   imgui.SameLine()
-  imgui.InputText(id, 63)
+  imgui.InputText(id)
 
   if loaded then self.selected = nil end
 
   imgui.Separator()
-
+  
   -- Entity creator!
-  -- Some combo boxes to choose the entity and components to add
-  imgui.Text('Entity')
+  -- Combo box to choose your entity type
   if imgui.BeginCombo(self.entity_creator.entity_cbox_id, self.entity_creator.selected_entity) then
 	for name, _ in pairs(tdengine.entity_types) do
 	  if imgui.Selectable(name) then
@@ -502,8 +473,13 @@ function Editor:scene_viewer()
 	end
 	imgui.EndCombo()
   end
+
+  if imgui.TreeNode('params') then
+	self.param_editor:draw()
+	imgui.TreePop()
+  end
   
-  imgui.Text('Components')
+  -- Combo box to choose component type + add / remove buttons
   if imgui.BeginCombo(self.entity_creator.comp_cbox_id, self.entity_creator.selected_comp) then
 	for name, _ in pairs(tdengine.component_types) do
 	  if imgui.Selectable(name) then
@@ -515,73 +491,66 @@ function Editor:scene_viewer()
 
   imgui.SameLine()
   if imgui.Button('Add') then
-	self.entity_creator.components[self.entity_creator.selected_comp] = {}
+	local component = {}
+	self.entity_creator.components[self.entity_creator.selected_comp] = component
+	local editor = imgui.extensions.TableEditor(component)
+	self.component_editors[self.entity_creator.selected_comp] = editor
   end
 
   imgui.SameLine()
   if imgui.Button('Remove') then
 	self.entity_creator.components[self.entity_creator.selected_comp] = nil
+	self.component_editors[self.entity_creator.selected_comp] = nil
   end
+
   -- Allow adding custom fields to the component
   for name, component in pairs(self.entity_creator.components) do
+	-- Components can create other components, and can generally come from places besides
+	-- the editor. So make sure they're all in here before we try to draw em.
+	if not self.component_editors[name] then
+	  self.component_editors[name] = imgui.extensions.TableEditor(component)
+	end
+	
 	if imgui.TreeNode(name) then
 	  -- Special, component specific stuff
 	  if name == 'BoundingBox' then
-		if imgui.Button('Autogenerate Bounding Box') then
+		if imgui.Button('Draw Bounding Box') then
 		  self.state = EditState.ReadyToDrawGeometry
 		  self.use_geometry = true
 		end
 	  end
+
+	  -- Then, just draw the component as a editable table
+	  local component_editor = self.component_editors[name]
+	  component_editor:draw()
 	  
-	  -- Input to add a new generic key, value pairs to the component
-	  imgui.extensions.VariableName('type')
-	  imgui.SameLine()
-	  imgui.PushItemWidth(80)
-	  if imgui.BeginCombo(self.entity_creator.type_cbox_id, self.entity_creator.selected_type) then
-		for index, name in pairs(self.entity_creator.types) do
-		  if imgui.Selectable(name) then
-			self.entity_creator.selected_type = name
-		  end
-		end
-		imgui.EndCombo()
-	  end
-
-	  imgui.SameLine()
-	  imgui.extensions.VariableName('key')
-	  imgui.SameLine()
-	  imgui.PushItemWidth(100)
-	  imgui.InputText(self.entity_creator.comp_var_id, 63)
-	  imgui.SameLine()
-	  imgui.extensions.VariableName('value')
-	  imgui.SameLine()
-	  local submit = imgui.InputText(self.entity_creator.comp_val_id, 63) 
-	  imgui.PopItemWidth()
-
-	  if submit then
-		local variable = imgui.InputTextContents(self.entity_creator.comp_var_id)
-		imgui.InputTextSetContents(self.entity_creator.comp_var_id, '')
-		local value = imgui.InputTextContents(self.entity_creator.comp_val_id)
-		imgui.InputTextSetContents(self.entity_creator.comp_val_id, '')
-		if self.entity_creator.selected_type == 'number' then
-		  value = tonumber(value)
-		elseif self.entity_creator.selected_type == 'string' then
-		  value = tostring(value)
-		elseif self.entity_creator.selected_type == 'bool' then
-		  value = (value == 'true')
-		elseif self.entity_creator.selected_type == 'table' then
-		  value = {}
-		end
-
-		component[variable] = value
-		imgui.SetKeyboardFocusHere(-1)
-	  end
-
-	  imgui.extensions.TableMembers(name, component)
 	  imgui.TreePop()
 	end
   end
 
   if imgui.Button('Add Entity') then
+	-- If we drew a bounding box for the entity, pull that data and then reset it
+	if self.use_geometry then
+	  if not self.entity_creator.components.BoundingBox then
+		self.entity_creator.components.BoundingBox = {}
+	  end
+	  self.entity_creator.components.BoundingBox.extents = self.geometry.extents
+	  self.entity_creator.components.BoundingBox.offset = tdengine.vec2(0, 0)
+
+	  -- Only use the position from the box if no other position was specified
+	  if not self.entity_creator.components.Position then
+		self.entity_creator.components.Position = {}
+		self.entity_creator.components.Position.world = self.geometry.origin
+	  end
+
+	  self.use_geometry = false
+	  self.geometry = {
+		origin = tdengine.vec2(0, 0),
+		extents = tdengine.vec2(0, 0)
+	  }
+	end
+
+	-- Build up all the entity's data into one table
 	local data = {
 	  name = self.entity_creator.selected_entity,
 	  components = self.entity_creator.components,
@@ -590,129 +559,25 @@ function Editor:scene_viewer()
 
 	-- Create the entity and load it with the data we just made
 	local id = tdengine.create_entity(data.name, data)
-	if not id then
+	if id then
+	  self.entity_creator.components = {}
+	  self.component_editors = {}
+
+	  self.param_editor:clear()
+	  -- Clear out the params like this so the underlying reference is still the same
+	  -- between the editor and the actual param table
+	  for key, value in pairs(self.entity_creator.params) do
+		self.entity_creator.params[key] = nil
+	  end
+	else
 	  self.entity_creator.show_error = true
 	end
-
-	-- Reset all the geometry drawing stuff
-	self.use_geometry = false
-	self.geometry = {
-	  origin = tdengine.vec2(0, 0),
-	  extents = tdengine.vec2(0, 0)
-	}
   end
   
   if self.entity_creator.show_error then
-	  local bad_color = tdengine.color32(255, 0, 0, 255)
-	  imgui.PushStyleColor(imgui.constant.Col.Text, bad_color)
-	  imgui.Text('Error creating entity! Click to dismiss.')
-	  imgui.PopStyleColor()
-	  return
+	if imgui.Button('Error creating entity! Click to dismiss.') then
+	  self.entity_creator.show_error = false
 	end
-  
-  imgui.Separator()
-
-
-  
-  if imgui.TreeNode('Add Entity') then
-	local name_input = '##add_entity_name_input'
-	imgui.Text('put the entity name here')
-	imgui.InputText(name_input, 63)
-
-	local buffer_size = 512
-	local size = tdengine.vec2(328, 200)
-	
-	imgui.Text('write a table of components to use to load the entity')
-	imgui.InputTextMultiline(self.component_input_id, buffer_size, size.x, size.y)
-
-	imgui.Text('some special tools to autogenerate component data')
-
-	
-	imgui.Text('write a table of parameters to pass to the entity')
-	imgui.InputTextMultiline(self.param_input_id, buffer_size, size.x, size.y)
-
-	local invalid_messages = {}
-	local name = imgui.InputTextContents(name_input)
-	if #name == 0 then
-	  local message = 'You need to specify which entity to create'
-	  table.insert(invalid_messages, message)
-	end
-
-	if #invalid_messages > 0 then
-	  local color = tdengine.color32(255, 0, 0, 255)
-	  imgui.PushStyleColor(imgui.constant.Col.Text, color)
-	else
-	  local color = tdengine.color32(0, 255, 0, 255)
-	  imgui.PushStyleColor(imgui.constant.Col.Text, color)
-	end
-	if imgui.Button('Add Entity') then
-	  -- Load in the text from the component input field as a table
-	  local text = imgui.InputTextContents(self.component_input_id)
-	  text = ternary(text:len() == 0, '{}', text)
-	  text = 'return ' .. text
-	  
-	  load_components, lc_message = loadstring(text)
-
-	  -- Load in the text from the param input field as a table
-	  text = imgui.InputTextContents(self.param_input_id)
-	  text = ternary(text:len() == 0, '{}', text)
-	  text = 'return ' .. text
-	  
-	  load_params, lp_message = loadstring(text)
-
-	  if load_components and load_params then
-		local components = load_components()
-		local params = load_params()
-
-		-- Create a table which we'll use to load the entity. The data in this
-		-- table is the same as any other saved entity. There's nothing special!
-		data = {
-		  name = imgui.InputTextContents(name_input),
-		  components = components,
-		  params = params
-		}
-
-		-- It's more convenient to draw a box and use that for the position and
-		-- AABB, so inject that data if we did that
-		if self.use_geometry then
-		  data.components.BoundingBox = {
-			extents = self.geometry.extents,
-			offset = tdengine.vec2(0, 0)
-		  }
-		  data.components.Position = {
-			world = self.geometry.origin
-		  }
-		end
-
-		-- Create the entity and load it with the data we just made
-		local id = tdengine.create_entity(data.name, data)
-		if not id then
-		  print('something went wrong calling create_entity()')
-		  return
-		end
-		
-		self.use_geometry = false
-		self.geometry = {
-		  origin = tdengine.vec2(0, 0),
-		  extents = tdengine.vec2(0, 0) }
-
-		-- loadstring() returns nil if there's a syntax error
-	  else
-		print('scene_viewer(): syntax error when adding entity:')
-		print(lc_message)
-		print(lp_message)
-		return
-	  end
-
-	end
-	
-	imgui.PopStyleColor()
-
-	for index, message in pairs(invalid_messages) do
-	  imgui.Text(message)
-	end
-
-	imgui.TreePop()
   end
   
   imgui.Separator()
@@ -723,7 +588,6 @@ function Editor:scene_viewer()
   imgui.Separator()
   
   imgui.End() -- scene
-
 end
 
 function Editor:scene_descriptor()
@@ -945,7 +809,7 @@ function Editor:dialogue_editor(dt)
 	self:ded_save(imgui.InputTextContents(id))
   end
   imgui.SameLine()
-  imgui.InputText(id, 63)
+  imgui.InputText(id)
 
   id = '##ded_load'
   if imgui.Button('Load', button_size.x, button_size.y) then
@@ -956,7 +820,7 @@ function Editor:dialogue_editor(dt)
 	imgui.InputTextClear(id)
   end
   imgui.SameLine()
-  imgui.InputText(id, 63)
+  imgui.InputText(id)
 
   id = '##ded_new'
   if imgui.Button('New', button_size.x, button_size.y) then
@@ -967,7 +831,7 @@ function Editor:dialogue_editor(dt)
 	imgui.InputTextClear(id)
   end
   imgui.SameLine()
-  imgui.InputText(id, 63)
+  imgui.InputText(id)
 
   if imgui.Button('Try It!', button_size.x, button_size.y) then
 	 tdengine.layout('tiny')

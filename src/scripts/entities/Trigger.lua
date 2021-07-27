@@ -31,6 +31,9 @@ tdengine.triggers = {
 	tdengine.do_cutscene_from_name('introduce_hub')
 	tdengine.destroy_entity(self.id)
   end,
+  ['demo:say_fuck'] = function(self)
+	print('fuck!')
+  end,
   ['main:introduce_hub'] = function(self)
 	tdengine.do_cutscene_from_name('introduce_hub')
 	tdengine.destroy_entity(self.id)

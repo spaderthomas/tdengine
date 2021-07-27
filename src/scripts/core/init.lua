@@ -2,6 +2,8 @@ inspect = require('inspect')
 
 function tdengine.initialize()
   tdengine.screen('1080')
+
+  tdengine.seed()
   
   -- Set up globals
   tdengine.entities = {}

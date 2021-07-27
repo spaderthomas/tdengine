@@ -544,8 +544,8 @@ namespace ImGuiWrapper {
 		return ImGui::InputTextMultiline(label, buffer->data, buffer->size, size);
 	}
 
-	bool InputText(const char* label, int buf_size = 255) {
-		add_input_text_buffer(label, buf_size);
+	bool InputText(const char* label) {
+		add_input_text_buffer(label, 255);
 		InputTextBuffer* buffer = get_input_text_buffer(label);
 		return ImGui::InputText(label, buffer->data, buffer->size, ImGuiInputTextFlags_EnterReturnsTrue);
 	}
