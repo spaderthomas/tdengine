@@ -4801,8 +4801,8 @@ The screen fades partially, then fades totally to black.
 ** EIGHTH GRADE
 ** FINAL BOSS
 * clock
-:LOGBOOK: 
-CLOCK: [2021-07-27 Tue 15:34]
+:LOGBOO58K: 
+CLOCK: [2021-07-27 Tue 15:34]--[2021-07-27 Tue 18:02] =>  2:28
 CLOCK: [2021-07-23 Fri 08:10]--[2021-07-23 Fri 10:42] =>  2:32
 CLOCK: [2021-07-22 Thu 15:30]--[2021-07-22 Thu 17:53] =>  2:23
 CLOCK: [2021-07-13 Tue 18:39]--[2021-07-13 Tue 20:07] =>  1:28
