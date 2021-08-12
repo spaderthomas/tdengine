@@ -1,14 +1,28 @@
 Position = tdengine.component('Position')
 function Position:init(params)
+  self.world = {}
+  
+  self.params = params
   if params.world then
-	self.world = params.world or { x = 0, y = 0 }
+	-- Shallow copy!
+	self.world.x = params.world.x
+	self.world.y = params.world.y
   elseif params.marker then
 	local marker = tdengine.markers[params.marker]
 	if marker then
 	  self.world = { x = marker.x, y = marker.y }
 	end
-  else
-	 tdengine.log('@bad_position_params: ' .. inspect(self.parent.id))
+  elseif params.tag then
+	local entity = tdengine.find_entity_by_tag(params.tag)
+	if entity then
+	  tdengine.attach_position(self.parent.id, entity.id)
+	  self.world = { x = 0, y = 0 }
+	end
+  end
+
+  -- Did whatever method we picked fail to actually fill in the position?
+  if not self.world.x or not self.world.y then
+	tdengine.log('@bad_position_params: ' .. inspect(self.parent.id) .. inspect(params))
 	 self.world = { x = 0, y = 0 }
   end
   

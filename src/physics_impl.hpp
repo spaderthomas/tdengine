@@ -130,10 +130,13 @@ bool point_inside_entity(float x, float y, int entity) {
 void PhysicsEngine::update(float dt) {
 	collisions.clear();
 
+	// Keep a list of stuff we move, so we know what needs updating in Lua
+	std::vector<int> moved_entities;
+	
 	for (auto& request : requests) {
-		auto& physics = get_physics_engine();
+		moved_entities.push_back(request.entity);
 
-		auto mover_position = physics.get_position(request.entity);
+		auto mover_position = get_position(request.entity);
 
 		// @hack 2020/10/04: Normally, wish describes an offset from where you currently are.
 		// To make teleport_entity() not be complicated, when we don't care about collision we treat it as a position, not an offset
@@ -167,8 +170,8 @@ void PhysicsEngine::update(float dt) {
 		for (auto& [id, other] : triggers) {
 			Center_Box other_box;
 	
-			auto position = physics.get_position(id);
-			auto collider = physics.get_trigger(id);
+			auto position = get_position(id);
+			auto collider = get_trigger(id);
 			if (!position || !collider) continue;
 			
 			other_box.origin = *position + collider->offset;
@@ -182,20 +185,38 @@ void PhysicsEngine::update(float dt) {
 				collisions.push_back(info);
 			}
 		}
-
 	}
 
-	for (auto request : requests) {
-		auto position = get_position(request.entity);
+	requests.clear();
+
+	// Now that all first-level movements have been resolved, let attached entities try to warp to
+	// what they're attached to. Gets picked up next resolve cycle.
+	for (auto& [entity, attached_to] : attached_entities) {
+		auto position = get_position(entity);
+		auto desired = get_position(attached_to);
+
+		// If you don't do this, you'll have an infinite resolve as each resolve cycle submits
+		// another movement to resolve
+		if (vec_almost_equals(*position, *desired)) continue;
+
+		MoveRequest request;
+		request.entity = entity;
+		request.wish = *desired;
+		request.flags = MoveFlags::AbsolutePosition;
+		
+		requests.push_back(request);
+	}
+
+	// Push back what you just changed to Lua
+	for (auto entity : moved_entities) {
+		auto position = get_position(entity);
 		if (!position) continue;
 
-		// Update the positions in Lua
-		auto component = Lua.get_component(request.entity, "Position");
+		auto component = Lua.get_component(entity, "Position");
 		component["world"]["x"] = position->x;
 		component["world"]["y"] = position->y;
 	}
 
-	requests.clear();
 }
 
 void PhysicsEngine::add_collider(int entity, Collider collider) {
@@ -284,9 +305,11 @@ Position* PhysicsEngine::get_position(int entity) {
 }
 
 void PhysicsEngine::remove_entity(int entity) {
+	positions.erase(entity);
 	collidable.erase(entity);
 	raycast.erase(entity);
 	triggers.erase(entity);
+	attached_entities.erase(entity);
 }
 
 PhysicsEngine& get_physics_engine() {

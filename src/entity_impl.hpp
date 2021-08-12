@@ -173,8 +173,17 @@ void EntityManager::destroy_entity(int id) {
 }
 
 void EntityManager::destroy_flagged_entities() {
-	for (auto id : entities_to_destroy) {
-		destroy_entity(id);
+	for (auto entity : entities_to_destroy) {
+		auto& render_engine = get_render_engine();
+		render_engine.remove_entity(entity);
+		
+		auto& physics_engine = get_physics_engine();
+		physics_engine.remove_entity(entity);
+		
+		auto& interaction_system = get_interaction_system();
+		interaction_system.remove_entity(entity);
+
+		destroy_entity(entity);
 	}
 
 	entities_to_destroy.clear();

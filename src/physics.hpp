@@ -54,18 +54,20 @@ struct PhysicsEngine {
 	std::map<int, Collider> collidable;
 	std::map<int, Collider> raycast;
 	std::map<int, Collider> triggers;
+
+	// Keys are entities who are attached. Values are what they are attached to.
+	std::map<int, int> attached_entities;
 	
 	std::vector<MoveRequest> requests;
 
 	// These are built up when the engine resolves all physics / collisions.
-	// The update system reads from these, ruvectorns the appropriate callbacks,
+	// The update system reads from these, runs the appropriate callbacks,
 	// and then this struct clears out the vectorvector on the next frame.
 	std::vector<CollisionInfo> collisions;
 	
 	void      update(float dt);
 	
 	bool      has_collider(int entity);
-
 	
 	Collider* get_collider(int entity);	
 	Collider* get_raycast(int entity);
@@ -79,6 +81,8 @@ struct PhysicsEngine {
 	
 	void      remove_entity(int entity);
 	int       ray_cast(float x, float y);
+
+	void      push_position_to_lua(int entity);
 };
 PhysicsEngine& get_physics_engine();
 

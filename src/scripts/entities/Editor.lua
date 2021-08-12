@@ -574,6 +574,7 @@ function Editor:scene_viewer()
   
   local id = '##scene_viewer:load_from_template'
   if imgui.Button('Load Scene', button_size.x, button_size.y) then
+	tdengine.unload_current_scene()
 	tdengine.load_scene_template(imgui.InputTextContents(id))
 	loaded = true
   end

@@ -79,16 +79,19 @@ int main() {
 		
 		if (show_imgui_demo) ImGui::ShowDemoWindow();
 		if (show_console) console.Draw("tdengine");
-			
+
+		// Update all the systems
 		if (run_update) {
 			update_system.run_entity_updates(seconds_per_update);
 			cutscene_manager.update(seconds_per_update);
 			interaction_system.update(seconds_per_update);
 
-			// Callbacks could cause new requests to come into the physics engine.
-			// The way this is written, the engine's collision vector will be cleared
-			// out each iteration, not each frame. So it does not collect all the
-			// collisions for a frame. Might cause a bug in the future?
+			// First, run the physics engine to at least let attached entities submit requests to
+			// sync to what they're attached to.
+			physics_engine.update(seconds_per_update);
+			update_system.run_collision_callbacks(seconds_per_update);
+
+			// Then, keep running it while positions aren't fully resolved.
 			while (!physics_engine.requests.empty()) {
 				physics_engine.update(seconds_per_update);
 				update_system.run_collision_callbacks(seconds_per_update);
@@ -99,12 +102,14 @@ int main() {
 		} else {
 			update_system.do_paused_update(seconds_per_update);
 		}
-		
+
+		// Render 
 		render_engine.render(seconds_per_update);
 		ImGui::Render();
 		ImGui_ImplGlfwGL3_RenderDrawData(ImGui::GetDrawData());
 		glfwSwapBuffers(g_window);
 
+		// Clean up the frame
 		entity_manager.destroy_flagged_entities();
 
 		input_manager.end_frame();

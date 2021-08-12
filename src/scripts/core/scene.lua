@@ -63,15 +63,26 @@ function tdengine.apply_overlay()
   end
 end
 
-function tdengine.load_scene_template(name)
-  -- Unload the old scene by destroying nonpersistent entities and calling into the manager
+function tdengine.unload_current_scene()
+  -- Cleanup the current scene by calling into its manager and then destroying entities
+  if string.len(tdengine.loaded_scene.name) > 0 then
+	local scene = tdengine.fetch_module_data('scenes/templates/' .. tdengine.loaded_scene.name)
+	if scene.manager then
+	  local manager = tdengine.find_entity(scene.manager)
+	  assert(manager, '@no_manager_to_cleanup:' .. scene.manager)
+	  manager:cleanup()
+    end
+  end
+
   for id, entity in pairs(tdengine.entities) do
 	persist = entity.tdengine.persist or false
 	if not persist then
 	  tdengine.destroy_entity(id)
 	end
   end
+end
 
+function tdengine.load_scene_template(name)  
   -- Create everything from new scene's template
   local data = tdengine.fetch_module_data('scenes/templates/' .. name)
   if not data then
@@ -90,17 +101,8 @@ function tdengine.load_scene_template(name)
 end
 
 function tdengine.load_scene(name)  
-  -- Cleanup the current scene by calling into its manager
-  if string.len(tdengine.loaded_scene.name) > 0 then
-	local scene = tdengine.fetch_module_data('scenes/templates/' .. tdengine.loaded_scene.name)
-	if scene.manager then
-	  local manager = tdengine.find_entity(scene.manager)
-	  assert(manager, '@no_manager_to_cleanup:' .. scene.manager)
-	  manager:cleanup()
-    end
-  end
+  tdengine.unload_current_scene()
   
-  -- Load the new scene
   tdengine.load_scene_template(name)
 
   tdengine.apply_overlay()
@@ -169,4 +171,3 @@ function tdengine.go_to_marker(id, name)
   end
   tdengine.teleport_entity(id, marker.x, marker.y)
 end
-

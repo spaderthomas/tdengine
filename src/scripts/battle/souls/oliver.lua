@@ -1,5 +1,5 @@
 return {
-   name = 'Oliver',
+   name = 'oliver',
    base_essences = {
 	  hp = 60,
 	  attack = 20,

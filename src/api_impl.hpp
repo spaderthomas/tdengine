@@ -5,14 +5,6 @@ int API::alloc_entity(std::string name) {
 
 void API::free_entity(int entity) {
 	auto& entity_manager = get_entity_manager();
-	auto& physics_engine = get_physics_engine();
-	auto& render_engine = get_render_engine();
-	auto& interaction_system = get_interaction_system();
-	
-	render_engine.remove_entity(entity);
-	physics_engine.remove_entity(entity);
-	interaction_system.remove_entity(entity);
-	
 	entity_manager.entities_to_destroy.push_back(entity);
 }
 
@@ -519,6 +511,16 @@ void API::set_imgui_demo(bool show) {
 	show_imgui_demo = show;
 }
 
+void API::attach_position(int entity, int attached_to) {
+	auto& physics_engine = get_physics_engine();
+	physics_engine.attached_entities[entity] = attached_to;
+}
+
+void API::detach_position(int entity) {
+	auto& physics_engine = get_physics_engine();
+	physics_engine.attached_entities.erase(entity);
+}
+
 void register_lua_api() {
 	auto& state = Lua.state;
 	
@@ -573,6 +575,8 @@ void register_lua_api() {
 	state["tdengine"]["pause_updates"]         = &API::pause_updates;
 	state["tdengine"]["resume_updates"]        = &resume_updates;
 	state["tdengine"]["set_imgui_demo"]        = &set_imgui_demo;
+	state["tdengine"]["attach_position"]       = &attach_position;
+	state["tdengine"]["detach_position"]       = &detach_position;
 
 	state["tdengine"]["draw"]                        = state.create_table();
 	state["tdengine"]["draw"]["entity"]              = &draw_entity;	
