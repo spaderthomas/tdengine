@@ -41,8 +41,8 @@ std::string API::entity_name(int id) {
 	auto& entity_manager = get_entity_manager();
 	auto entity = entity_manager.get_entity(id);
 	if (!entity) {
-		tdns_log.write("entity_name(): no such entity: " + std::to_string(id));
-		return nullptr;
+		tdns_log.write("@entity_name: no such entity: " + std::to_string(id));
+		return "@UNKNOWN_NAME_PLEASE_FIX_ME";
 	}
 	return entity->get_name();
 }
@@ -388,6 +388,12 @@ sol::object API::camera() {
 
 void API::move_camera(float x, float y) {
 	auto& render_engine = get_render_engine();
+	render_engine.camera.x = x;
+	render_engine.camera.y = y;
+}
+
+void API::move_camera_by_offset(float x, float y) {
+	auto& render_engine = get_render_engine();
 	render_engine.camera.x += x;
 	render_engine.camera.y += y;
 }
@@ -540,6 +546,7 @@ void register_lua_api() {
 	state["tdengine"]["cursor"]                = &cursor;
 	state["tdengine"]["camera"]                = &camera;
 	state["tdengine"]["move_camera"]           = &move_camera;
+	state["tdengine"]["move_camera_by_offset"] = &move_camera_by_offset;
 	state["tdengine"]["sprite_size"]           = &sprite_size;
 	state["tdengine"]["register_position"]     = &register_position;
 	state["tdengine"]["register_collider"]     = &register_collider;

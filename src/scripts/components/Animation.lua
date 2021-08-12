@@ -15,6 +15,7 @@ function Animation:init(params)
    -- The engine will read from this when you ask it to draw
    self.sprite = ''
 
+   params.current = params.current or 'unknown'
    self.last_animation = params.current
    self:begin(params.current, params)
 end

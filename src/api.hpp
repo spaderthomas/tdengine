@@ -35,6 +35,7 @@ sol::object screen_dimensions();
 sol::object cursor();
 sol::object camera();
 void        move_camera(float x, float y);
+void        move_camera_by_offset(float x, float y);
 bool        draw_sprite_button(std::string sprite, float sx, float sy);
 void        line_screen(sol::table p1, sol::table p2, sol::table color);
 void        rect_filled_screen(sol::table rect, sol::table color);

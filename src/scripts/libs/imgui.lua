@@ -21,25 +21,21 @@ imgui.extensions.Component = function(component)
    imgui.PopID()
 end
 
-imgui.extensions.Entity = function(entity, unique_id)
+imgui.extensions.Entity = function(entity)
    imgui.PushID(entity:get_id())
    local id = entity:get_name()
 
-   if unique_id then id = id .. unique_id end
+   imgui.Text(entity:get_name())
+   imgui.extensions.VariableName('id')
+   imgui.SameLine()
+   imgui.Text(tostring(entity:get_ID()))
 
-   if imgui.TreeNode(id) then
-	  imgui.extensions.VariableName('id')
-	  imgui.SameLine()
-	  imgui.Text(tostring(entity:get_id()))
-
-	  local components = entity:all_components()
-	  for index, component in pairs(components) do
-		 imgui.extensions.Component(component)
-	  end
-
-	  imgui.extensions.TableMembers(entity:get_name(), entity, entity.imgui_ignore)
-	  imgui.TreePop()
+   local components = entity:all_components()
+   for index, component in pairs(components) do
+	 imgui.extensions.Component(component)
    end
+
+   imgui.extensions.TableMembers(entity:get_name(), entity, entity.imgui_ignore)
 
    imgui.PopID()
 end
@@ -81,12 +77,6 @@ imgui.extensions.Table = function(name, t, ignore, imgui_id)
 	  imgui.extensions.TableMembers(name, t, ignore, imgui_id)
 	  imgui.TreePop()
    end
-end
-
-imgui.extensions.EditableTableMembers = function(t, ignore)
-  if not t then return end
-  
-  local ignore = ignore or {}
 end
 
 local types = {
@@ -154,28 +144,39 @@ imgui.internal.draw_table_editor = function(editor)
   end
 
   for key, value in pairs(editor.editing) do
-	if type(value) == 'string' then
-	  imgui.extensions.VariableName(key)
-	  imgui.SameLine()
-	  imgui.Text(value)
-	elseif type(value) == 'number' then
-	  imgui.extensions.VariableName(key)
-	  imgui.SameLine()
-	  imgui.Text(tostring(value))
-	elseif type(value) == 'boolean' then
-	  imgui.extensions.VariableName(key)
-	  imgui.SameLine()
-	  imgui.Text(tostring(value))
-	elseif type(value) == 'table' then
-	  if not editor.children[key] then
-		editor.children[key] = imgui.extensions.TableEditor(value)
-	  end
-	  local child = editor.children[key]
-	  if imgui.TreeNode(key) then
-		child:draw()
-		imgui.TreePop()
+	local display = true
+	local ignore = editor.editing.imgui_ignore
+	if type(ignore) == 'table' then
+	  display = not editor.editing.imgui_ignore[key] 
+	end
+
+	if display then 
+	  if type(value) == 'string' then
+		imgui.extensions.VariableName(key)
+		imgui.SameLine()
+		imgui.Text(value)
+	  elseif type(value) == 'number' then
+		imgui.extensions.VariableName(key)
+		imgui.SameLine()
+		imgui.Text(tostring(value))
+	  elseif type(value) == 'boolean' then
+		imgui.extensions.VariableName(key)
+		imgui.SameLine()
+		imgui.Text(tostring(value))
+	  elseif type(value) == 'table' then
+		if not editor.children[key] then
+		  editor.children[key] = imgui.extensions.TableEditor(value)
+		end
+		local child = editor.children[key]
+		if imgui.TreeNode(key) then
+		  child:draw()
+		  imgui.TreePop()
+		end
 	  end
 	end
+  end
+
+  for name, child in pairs(editor.children) do
   end
 end
 
@@ -199,9 +200,48 @@ imgui.extensions.TableEditor = function(editing)
   }
 
   for key, value in pairs(editing) do
-	if type(value) == 'table' then
+	-- If you have yourself as a member, you will infinitely recurse. Prevent that from
+	-- happening
+	local recurse = type(value) == 'table'
+	recurse = recurse and not value == editing
+	if recurse then
 	  editor.children[key] = imgui.extensions.TableEditor(value)
 	end
+  end
+
+  return editor
+end
+
+-- Components are stored separately from entities. We use the basic table editor for all of the
+-- entity's normal fields, and then go through the editor for each component individually.
+imgui.internal.draw_entity_editor = function(editor)
+  imgui.internal.draw_table_editor(editor)
+
+  for name, component_editor in pairs(editor.components) do
+	if imgui.TreeNode(name) then
+	  component_editor:draw()
+	  imgui.TreePop()
+	end
+  end
+end
+
+imgui.internal.clear_entity_editor = function(editor)
+  imgui.internal.clear_table_editor(editor)
+  editor.components = nil
+end
+
+-- The entity editor is pretty much just a table editor that has all of its components as separate
+-- table editors inside it. 
+imgui.extensions.EntityEditor = function(editing)
+  local editor = imgui.extensions.TableEditor(editing)
+  editor.components = {}
+  editor.draw = function(self) imgui.internal.draw_entity_editor(self) end
+  editor.clear = function(self) imgui.internal.clear_entity_editor(self) end
+  
+  local components = editing:all_components()
+  for index, component in pairs(components) do
+	local name = component:get_name()
+	editor.components[name] = imgui.extensions.TableEditor(component)
   end
 
   return editor
@@ -248,4 +288,10 @@ imgui.extensions.Vec2 = function(name, v)
 	  return
    end
    imgui.Text(name .. ': (' .. tostring(v.x) .. ', ' .. tostring(v.y) .. ')')
+end
+
+imgui.extensions.WhitespaceSeparator = function(whitespace)
+  imgui.Dummy(0, whitespace)
+  imgui.Separator()
+  imgui.Dummy(0, whitespace)
 end

@@ -184,6 +184,50 @@ render buffer = no sampling, gpu can optimize it because it knows this
 ** linux
 https://linux.die.net/lkmpg/x427.html
 * pin
+** elevator pitch
+WHAT IT IS:
+this game is an old-school 2D role playing game about a boy who dies and becomes
+trapped in a spiritual limbo. the player uncovers a plot centered around him to
+take control of this realm, and must undo the damage he has done.
+
+HOW DOES IT FEEL:
+it aims to take the heart, charm, and sense of importance that games like FF6
+and chrono trigger convey. it is heavy on dialogue, with a large cast of minor
+characters, and is darkly funny but also heartfelt and painful.
+
+WHAT DO YOU DO:
+players will always be doing one of two things:
+- the dungeons that are the main story
+- sidequests in which you liberate souls from their limbo
+  
+the battle system is reminiscent of pokemon, with a PVE focus on battles crafted
+like puzzles and a PVP focus on advance-style balance. 
+
+WHAT IS THE MESSAGE
+the game's goal is to explore human suffering: why we do it, the different ways
+we do it, its inevitability, and how we can live in spite of it.
+** details of battle
+AESTHETIC INTRO
+- play the battle theme
+- fade the screen out to black
+- new background
+- concurrently:
+  - unzip the screen
+  - slide in the two battle platforms
+  - display the blank menu
+  
+- determine teams + leads
+- slide in HUD
+- submit first text to text box
+- send out leads
+- trigger idle animations
+- loop:
+  - submit description to text box
+  - display menu options
+  - accept user input
+  - process turn
+  - play move and switch animations
+  - update health bar
 * ideas
 ** quests
 *** slowpoke tails
@@ -982,6 +1026,25 @@ the librarian is kindly and mysterious
   appreciation for his art -- a metaphor for how ridiculous all
   artistic endeavors are at their core
 * log
+** 08/10/2021
+hello, let's become a bit more serious.
+
+a few minutes to figure out the most important stuff, first. as in, a list of
+big ticket items. 
+- implement a first cut of battling (storing battle data, cutscenes, basic mechanics)
+- finish the main plot. minor point a to point b characters can be left out, but
+  you basically want a screenplay or storyboard for all the major scenes.
+
+once those things are done, everything becomes a lot less daunting. you can get
+into the groove of content creation. designing dungeons? easy -- you know how to
+make levels, you know how to fine tune battles. you can have the game able to be
+played start to finish. there are lots of other concerns right now (how do i do
+in-game persistence, how will i do menus, fleshing out level creation, how do i
+boot into the game). but those aren't so bad once the main two things above are
+good. so this is your task. pick it up again you fuck. if you feel like
+programming, work on the battle system. if you feel like writing, work on the
+main story. don't worry about the side characters or the sidequests. 
+
 ** 07/21/2021
 battle system:
 - where do i want to store all the creature data?
@@ -4744,7 +4807,7 @@ resolved or dissolved yet.
   knows the teddy bear is stupid, you say it's not and he riffs off of
   you to explain how he feels
 - bernard resolves, you gain his soul and the teddy as an item
-
+  
 * plot the second
 ** bus stop
 *** notes
@@ -4801,7 +4864,9 @@ The screen fades partially, then fades totally to black.
 ** EIGHTH GRADE
 ** FINAL BOSS
 * clock
-:LOGBOO58K: 
+:LOGBOOK: 
+CLOCK: [2021-08-11 Wed 15:52]--[2021-08-11 Wed 18:22] =>  2:30
+CLOCK: [2021-08-10 Tue 12:32]--[2021-08-10 Tue 15:32] =>  1:00
 CLOCK: [2021-07-27 Tue 15:34]--[2021-07-27 Tue 18:02] =>  2:28
 CLOCK: [2021-07-23 Fri 08:10]--[2021-07-23 Fri 10:42] =>  2:32
 CLOCK: [2021-07-22 Thu 15:30]--[2021-07-22 Thu 17:53] =>  2:23

@@ -2,13 +2,13 @@
 function tdengine.include_mixin(class, mixin)
   assert(type(mixin) == 'table', "mixin must be a table")
 
-  for name, method in pairs(mixin) do
+  for name, member in pairs(mixin) do
     if name ~= "static" then
-	  class[name] = method
+	  class[name] = member
 	end
   end
 
-  for name,method in pairs(mixin.static or {}) do
+  for name, method in pairs(mixin.static or {}) do
     class.static[name] = method
   end
 

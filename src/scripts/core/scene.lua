@@ -4,7 +4,7 @@ function tdengine.serialize_current_scene()
   }
   
   for index, entity in pairs(tdengine.entities) do
-	if entity.tdengine__should_save then
+	if entity.tdengine.should_save then
 	  -- Insert some basic fields that every entity has
 	  local entity_table = {
 		name = entity:get_name(),
@@ -28,7 +28,7 @@ function tdengine.serialize_current_scene()
 	  -- Save out all components
 	  local components = entity:all_components()
 	  for index, component in pairs(components) do
-		if component.save and component.tdengine__should_save then
+		if component.save and component.tdengine.should_save then
 		  entity_table.components[component:get_name()] = component:save()
 		end
 	  end
@@ -66,7 +66,7 @@ end
 function tdengine.load_scene_template(name)
   -- Unload the old scene by destroying nonpersistent entities and calling into the manager
   for id, entity in pairs(tdengine.entities) do
-	persist = entity.tdengine_persist or false
+	persist = entity.tdengine.persist or false
 	if not persist then
 	  tdengine.destroy_entity(id)
 	end
@@ -74,6 +74,9 @@ function tdengine.load_scene_template(name)
 
   -- Create everything from new scene's template
   local data = tdengine.fetch_module_data('scenes/templates/' .. name)
+  if not data then
+	tdengine.log('@scene_load_failure:' .. name)
+  end
 
   for index, entity in pairs(data.entities) do
 	tdengine.create_entity(entity.name, entity)

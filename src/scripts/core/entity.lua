@@ -1,4 +1,5 @@
--- tdengine functions we're injecting in for sugar
+-- tdengine functions we're injecting in for sugar -- only functions can go here. check out how
+-- the class stuff works for more info, anything put here is shared by all instances of the class.
 local entity_mixin = {
   has_component = function(self, kind)
 	return tdengine.has_component(self.id, kind)
@@ -44,21 +45,11 @@ local entity_mixin = {
   end,
   -- Do not destroy this thing when you load a new scene
   persist = function(self)
-	self.tdengine_persist = true
+	self.tdengine.persist = true
   end,
   should_save = function(self, should)
-	self.tdengine__should_save = should
-  end,
-  -- This flag gets flipped when we destroy the entity. We shouldn't be holding
-  -- onto entities between frames...but sometimes we are very naughty boys indeed,
-  -- and this flag will help us not explode.
-  alive = true,
-  tdengine__should_save = true,
-  imgui_ignore = {
-	class = true,
-	imgui_ignore = true,
-	id = true
-  }
+	self.tdengine.should_save = should
+  end
 }
 
 function tdengine.entity(name)
@@ -90,15 +81,8 @@ local component_mixin = {
 	self.imgui_ignore[member_name] = false
   end,
   should_save = function(self, should)
-	self.tdengine__should_save = should
-  end,
-  tdengine__should_save = true,
-  imgui_ignore = {
-	class = true,
-	parent = true,
-	imgui_ignore = true,
-	id = true
-  },
+	self.tdengine.should_save = should
+  end
 }
 
 function tdengine.component(name)
@@ -137,7 +121,7 @@ function tdengine.find_entity(name)
 end
 
 function tdengine.find_entity_by_id(id)
-   return tdengine.entities[name]
+   return tdengine.entities[id]
 end
 
 function tdengine.find_entity_by_tag(tag)
@@ -173,14 +157,27 @@ function tdengine.create_entity(name, data)
   end
   
   -- Construct the entity with a do-nothing constructor
-  entity = EntityType:new()
+  local entity = EntityType:new()
+
+  -- Fill in its identifiers
   entity.id = id
   entity.tag = data.tag
 
+  -- Fill in some internal tdengine data
+  entity.tdengine = {
+	alive = true,
+	persist = false,
+	should_save = true
+  }
+  entity.imgui_ignore = {
+	class = true,
+	imgui_ignore = true
+  }
+  
   tdengine.entities[id] = entity
 
   -- Load the prefab to create any default compononents
-  local prefab = tdengine.fetch_module_data('prefabs/' .. name, false)
+  local prefab = tdengine.fetch_module_data_quiet('prefabs/' .. name)
   if prefab then
 	for name, component in pairs(prefab.components) do
 	  local param_components = data.components or {}
@@ -221,6 +218,7 @@ function tdengine.destroy_entity(id)
 
   tdengine.free_entity(id)
   tdengine.entities[id] = nil
+  entity.tdengine.alive = false
 end
 
 function tdengine.create_component(entity_id, name, params)
@@ -234,8 +232,20 @@ function tdengine.create_component(entity_id, name, params)
   
   component = ComponentType:new()
 
+  -- Add identifiers
   component.id = id
   component.parent = tdengine.entities[entity_id]
+
+  -- Add some engine internal stuff
+  component.tdengine = {
+	should_save = true
+  }
+  component.imgui_ignore = {
+	class = true,
+	parent = true,
+	imgui_ignore = true,
+	id = true
+  }
   
   tdengine.components[id] = component
 

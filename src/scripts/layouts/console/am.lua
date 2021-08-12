@@ -1,3 +1,3 @@
-local player = tdengine.find_entity('Player')
-local animation = player:get_component('Animation')
-animation:begin('red_stand')
+local bg = tdengine.find_entity('Background')
+local animation = bg:get_component('Animation')
+animation:begin('bg_battle_grass')

@@ -63,8 +63,9 @@ function Editor:init(params)
 	components = {},
 	params = {},
   }
-  self.component_editors = imgui.extensions.TableEditor(self.entity_creator.components)
   self.param_editor = imgui.extensions.TableEditor(self.entity_creator.params)
+  self.component_editors = {}
+  self.entity_editor = nil
   
   -- Stored as screen coordinates, converted to world when we submit the geometry
   self.last_click = { x = 0, y = 0 }
@@ -89,8 +90,8 @@ end
 
 function Editor:update(dt)
   -- If we reloaded the scene or something, our handle is invalid
-  if self.selected and not self.selected.alive then
-    self.selected = nil
+  if self.selected and not self.selected.tdengine.alive then
+	self:select_entity(nil)
   end
 
   tdengine.set_imgui_demo(tdengine.state['engine:imgui_demo'])
@@ -157,7 +158,7 @@ function Editor:update(dt)
 
   if self.destroy_selected then
 	tdengine.destroy_entity(self.selected:get_id())
-	self.selected = nil
+	self:select_entity(nil)
 	self.destroy_selected = false
   end
 end
@@ -239,12 +240,12 @@ function Editor:handle_input()
   local input = self:get_component('Input')
   if input:was_pressed(GLFW.Keys.ESCAPE) then
 	if self.selected then
-	  local graphic = self.selected:get_component('Graphic')
-	  if graphic ~= nil then
+	  if self.selected:has_component('Graphic') then
+		local graphic = self.selected:get_component('Graphic')
 		graphic.flags = 0
 	  end
 	end
-	self.selected = nil
+	self:select_entity(nil)
 	
 	self.state = EditState.Idle
   end
@@ -287,7 +288,7 @@ function Editor:adjust_camera()
 	offset.x = offset.x - .02
   end
 
-  tdengine.move_camera(offset.x, offset.y)
+  tdengine.move_camera_by_offset(offset.x, offset.y)
 end
 
 function Editor:check_for_new_selection()
@@ -295,8 +296,8 @@ function Editor:check_for_new_selection()
 
   local set_selected_draw_flags = function(flags)
 	if self.selected ~= nil then
-	  local graphic = self.selected:get_component('Graphic')
-	  if graphic ~= nil then
+	  if self.selected:has_component('Graphic') then
+		local graphic = self.selected:get_component('Graphic')
 		graphic.flags = flags
 	  end
 	end
@@ -310,7 +311,7 @@ function Editor:check_for_new_selection()
 
 	-- Ray cast to see if we clicked anything...
 	local cursor = tdengine.screen_to_world(tdengine.cursor())
-	self.selected = tdengine.ray_cast(cursor.x, cursor.y)
+	self:select_entity(tdengine.ray_cast(cursor.x, cursor.y))
 
 	-- If we didn't, reset
 	if not self.selected then
@@ -362,7 +363,126 @@ function Editor:check_for_new_selection()
   imgui.PopStyleVar()
 end
 
-function Editor:entity_viewer()
+function Editor:draw_entity_creator()
+  -- Entity creator!
+  -- Combo box to choose your entity type
+  if imgui.BeginCombo(self.entity_creator.entity_cbox_id, self.entity_creator.selected_entity) then
+	for name, _ in pairs(tdengine.entity_types) do
+	  if imgui.Selectable(name) then
+		self.entity_creator.selected_entity = name
+	  end
+	end
+	imgui.EndCombo()
+  end
+
+  -- Combo box to choose component type + add / remove buttons
+  if imgui.BeginCombo(self.entity_creator.comp_cbox_id, self.entity_creator.selected_comp) then
+	for name, _ in pairs(tdengine.component_types) do
+	  if imgui.Selectable(name) then
+		self.entity_creator.selected_comp = name
+	  end
+	end
+	imgui.EndCombo()
+  end
+
+  imgui.SameLine()
+  if imgui.Button('Add') then
+	local component = {}
+	self.entity_creator.components[self.entity_creator.selected_comp] = component
+	local editor = imgui.extensions.TableEditor(component)
+	self.component_editors[self.entity_creator.selected_comp] = editor
+  end
+
+  imgui.SameLine()
+  if imgui.Button('Remove') then
+	self.entity_creator.components[self.entity_creator.selected_comp] = nil
+	self.component_editors[self.entity_creator.selected_comp] = nil
+  end
+
+  -- Allow adding custom fields to the component
+  for name, component in pairs(self.entity_creator.components) do
+	-- Components can create other components, and can generally come from places besides
+	-- the editor. So make sure they're all in here before we try to draw em.
+	if not self.component_editors[name] then
+	  self.component_editors[name] = imgui.extensions.TableEditor(component)
+	end
+	
+	if imgui.TreeNode(name) then
+	  -- Special, component specific stuff
+	  if name == 'BoundingBox' then
+		if imgui.Button('Draw Bounding Box') then
+		  self.state = EditState.ReadyToDrawGeometry
+		  self.use_geometry = true
+		end
+	  end
+
+	  -- Then, just draw the component as a editable table
+	  local component_editor = self.component_editors[name]
+	  component_editor:draw()
+	  
+	  imgui.TreePop()
+	end
+  end
+
+  if imgui.TreeNode('params') then
+	self.param_editor:draw()
+	imgui.TreePop()
+  end
+
+  if imgui.Button('Add Entity') then
+	-- If we drew a bounding box for the entity, pull that data and then reset it
+	if self.use_geometry then
+	  if not self.entity_creator.components.BoundingBox then
+		self.entity_creator.components.BoundingBox = {}
+	  end
+	  self.entity_creator.components.BoundingBox.extents = self.geometry.extents
+	  self.entity_creator.components.BoundingBox.offset = tdengine.vec2(0, 0)
+
+	  -- Only use the position from the box if no other position was specified
+	  if not self.entity_creator.components.Position then
+		self.entity_creator.components.Position = {}
+		self.entity_creator.components.Position.world = self.geometry.origin
+	  end
+
+	  self.use_geometry = false
+	  self.geometry = {
+		origin = tdengine.vec2(0, 0),
+		extents = tdengine.vec2(0, 0)
+	  }
+	end
+
+	-- Build up all the entity's data into one table
+	local data = {
+	  name = self.entity_creator.selected_entity,
+	  components = self.entity_creator.components,
+	  params = self.entity_creator.params
+	}
+
+	-- Create the entity and load it with the data we just made
+	local id = tdengine.create_entity(data.name, data)
+	if id then
+	  self.entity_creator.components = {}
+	  self.component_editors = {}
+
+	  self.param_editor:clear()
+	  -- Clear out the params like this so the underlying reference is still the same
+	  -- between the editor and the actual param table
+	  for key, value in pairs(self.entity_creator.params) do
+		self.entity_creator.params[key] = nil
+	  end
+	else
+	  self.entity_creator.show_error = true
+	end
+  end
+  
+  if self.entity_creator.show_error then
+	if imgui.Button('Error creating entity! Click to dismiss.') then
+	  self.entity_creator.show_error = false
+	end
+  end
+end
+
+function Editor:draw_entity_viewer()
   self.filter:Draw("Filter by name")
   local entity_hovered_in_list = nil
 
@@ -382,7 +502,7 @@ function Editor:entity_viewer()
 
 	  -- Display the node, and if clicked select it
 	  if imgui.MenuItem(name) then
-		self.selected = entity
+		self:select_entity(entity)
 	  end
 
 	  -- Pop the color we pushed for the selected node!
@@ -399,9 +519,10 @@ function Editor:entity_viewer()
   end
 end
 
-function Editor:selected_entity()
+function Editor:draw_selected_entity()
   if self.selected ~= nil then
-	imgui.extensions.Entity(self.selected)
+	imgui.Text(self.selected:get_name())
+	self.entity_editor:draw()
   end
 end
 
@@ -459,133 +580,15 @@ function Editor:scene_viewer()
   imgui.SameLine()
   imgui.InputText(id)
 
-  if loaded then self.selected = nil end
+  if loaded then self:select_entity(nil) end
 
-  imgui.Separator()
-  
-  -- Entity creator!
-  -- Combo box to choose your entity type
-  if imgui.BeginCombo(self.entity_creator.entity_cbox_id, self.entity_creator.selected_entity) then
-	for name, _ in pairs(tdengine.entity_types) do
-	  if imgui.Selectable(name) then
-		self.entity_creator.selected_entity = name
-	  end
-	end
-	imgui.EndCombo()
-  end
+  imgui.extensions.WhitespaceSeparator(10)
 
-  if imgui.TreeNode('params') then
-	self.param_editor:draw()
-	imgui.TreePop()
-  end
-  
-  -- Combo box to choose component type + add / remove buttons
-  if imgui.BeginCombo(self.entity_creator.comp_cbox_id, self.entity_creator.selected_comp) then
-	for name, _ in pairs(tdengine.component_types) do
-	  if imgui.Selectable(name) then
-		self.entity_creator.selected_comp = name
-	  end
-	end
-	imgui.EndCombo()
-  end
-
-  imgui.SameLine()
-  if imgui.Button('Add') then
-	local component = {}
-	self.entity_creator.components[self.entity_creator.selected_comp] = component
-	local editor = imgui.extensions.TableEditor(component)
-	self.component_editors[self.entity_creator.selected_comp] = editor
-  end
-
-  imgui.SameLine()
-  if imgui.Button('Remove') then
-	self.entity_creator.components[self.entity_creator.selected_comp] = nil
-	self.component_editors[self.entity_creator.selected_comp] = nil
-  end
-
-  -- Allow adding custom fields to the component
-  for name, component in pairs(self.entity_creator.components) do
-	-- Components can create other components, and can generally come from places besides
-	-- the editor. So make sure they're all in here before we try to draw em.
-	if not self.component_editors[name] then
-	  self.component_editors[name] = imgui.extensions.TableEditor(component)
-	end
-	
-	if imgui.TreeNode(name) then
-	  -- Special, component specific stuff
-	  if name == 'BoundingBox' then
-		if imgui.Button('Draw Bounding Box') then
-		  self.state = EditState.ReadyToDrawGeometry
-		  self.use_geometry = true
-		end
-	  end
-
-	  -- Then, just draw the component as a editable table
-	  local component_editor = self.component_editors[name]
-	  component_editor:draw()
-	  
-	  imgui.TreePop()
-	end
-  end
-
-  if imgui.Button('Add Entity') then
-	-- If we drew a bounding box for the entity, pull that data and then reset it
-	if self.use_geometry then
-	  if not self.entity_creator.components.BoundingBox then
-		self.entity_creator.components.BoundingBox = {}
-	  end
-	  self.entity_creator.components.BoundingBox.extents = self.geometry.extents
-	  self.entity_creator.components.BoundingBox.offset = tdengine.vec2(0, 0)
-
-	  -- Only use the position from the box if no other position was specified
-	  if not self.entity_creator.components.Position then
-		self.entity_creator.components.Position = {}
-		self.entity_creator.components.Position.world = self.geometry.origin
-	  end
-
-	  self.use_geometry = false
-	  self.geometry = {
-		origin = tdengine.vec2(0, 0),
-		extents = tdengine.vec2(0, 0)
-	  }
-	end
-
-	-- Build up all the entity's data into one table
-	local data = {
-	  name = self.entity_creator.selected_entity,
-	  components = self.entity_creator.components,
-	  params = self.entity_creator.params
-	}
-
-	-- Create the entity and load it with the data we just made
-	local id = tdengine.create_entity(data.name, data)
-	if id then
-	  self.entity_creator.components = {}
-	  self.component_editors = {}
-
-	  self.param_editor:clear()
-	  -- Clear out the params like this so the underlying reference is still the same
-	  -- between the editor and the actual param table
-	  for key, value in pairs(self.entity_creator.params) do
-		self.entity_creator.params[key] = nil
-	  end
-	else
-	  self.entity_creator.show_error = true
-	end
-  end
-  
-  if self.entity_creator.show_error then
-	if imgui.Button('Error creating entity! Click to dismiss.') then
-	  self.entity_creator.show_error = false
-	end
-  end
-  
-  imgui.Separator()
-  self:entity_viewer()
-  imgui.Separator()
-  
-  self:selected_entity()
-  imgui.Separator()
+  self:draw_entity_creator()
+  imgui.extensions.WhitespaceSeparator(10)
+  self:draw_entity_viewer()
+  imgui.extensions.WhitespaceSeparator(10)
+  self:draw_selected_entity()
   
   imgui.End() -- scene
 end
@@ -1440,4 +1443,11 @@ end
 function Editor:toggle_follow()
    self.following_player = not self.following_player
    tdengine.follow_player(self.following_player)
+end
+
+function Editor:select_entity(entity)
+  self.selected = entity
+  if entity then
+	self.entity_editor = imgui.extensions.EntityEditor(self.selected)
+  end
 end

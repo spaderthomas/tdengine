@@ -35,7 +35,7 @@ function PanCamera:update(dt)
 	return
   end
   
-  tdengine.move_camera(self.per_frame.x, self.per_frame.y)
+  tdengine.move_camera_by_offset(self.per_frame.x, self.per_frame.y)
 end
 
 tdengine.actions.PanCamera = PanCamera
