@@ -1,7 +1,7 @@
 return {
   tag = 'demo_001',
   background = 'bg_battle_grass',
-  trainer = 'unknown',
+  trainer = 'trainer_swimmer',
   team = {
 	{
 	  name = 'oliver',

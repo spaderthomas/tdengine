@@ -22,6 +22,12 @@ struct MoveRequest {
 	int flags = 0;
 };
 
+struct AttachedPosition {
+	int entity;
+	int attached_to;
+	glm::vec2 offset;
+};
+
 struct Points_Box;
 struct Center_Box {
 	glm::vec2 origin;
@@ -55,8 +61,7 @@ struct PhysicsEngine {
 	std::map<int, Collider> raycast;
 	std::map<int, Collider> triggers;
 
-	// Keys are entities who are attached. Values are what they are attached to.
-	std::map<int, int> attached_entities;
+	std::vector<AttachedPosition> attached_entities;
 	
 	std::vector<MoveRequest> requests;
 
@@ -83,6 +88,7 @@ struct PhysicsEngine {
 	int       ray_cast(float x, float y);
 
 	void      push_position_to_lua(int entity);
+	void      detach_position(int entity);
 };
 PhysicsEngine& get_physics_engine();
 

@@ -13,11 +13,11 @@ local PlatformType = {
 
 local platforms = {}
 platforms[PlatformType.Player] = {
-  name = 'Platform',
+  name = 'Sprite',
   tag = PlatformType.Player,
   components = {
 	Position = {
-	  world = { x = -.25, y = .3 }
+	  world = { x = -.25, y = .355 }
 	},
 	Animation = {
 	  current = 'platform_grass_player'
@@ -25,11 +25,11 @@ platforms[PlatformType.Player] = {
   }
 }
 platforms[PlatformType.Opponent] = {
-  name = 'Platform',
+  name = 'Sprite',
   tag = PlatformType.Opponent,
   components = {
 	Position = {
-	  world = { x = 1.3, y = .6 }
+	  world = { x = 1.3, y = .65 }
 	},
 	Animation = {
 	  current = 'platform_grass_opponent'
@@ -57,43 +57,78 @@ local background = {
 }
 
 -- Trainer sprites
-local opponent_sprite =   {
-  name = 'StaticNpc',
+local opponent_sprite = {
+  name = 'Sprite',
   tag = 'opponent',
   components = {
-	Animation = {
+	Graphic = {
 	  layer = 2
 	},
+	Animation = {
+	},
 	Position = {
-	  tag = PlatformType.Opponent
+	  tag = PlatformType.Opponent,
+	  offset = { x = 0, y = .1 }
 	}
   }
 }
 
+local player_sprite = {
+  name = 'Sprite',
+  tag = 'player',
+  components = {
+	Graphic = {
+	  layer = 2
+	},
+	Animation = {
+	  current = 'boon_back'
+	},
+	Position = {
+	  tag = PlatformType.Player,
+	  offset = { x = .05, y = .07825 }
+	}
+  }
+}
+
+local menu = {
+  name = 'BattleMenu',
+  params = {},
+}
 
 function Battle:init(params)
   self.state = BattleState.MovingPlatforms
   self.platform_time = 1
   self.platform_info = {}
+  tdengine.follow_player(false)
   tdengine.move_camera(0, 0)
 
   self.data = tdengine.fetch_module_data('battle/battles/' .. params.battle)
+end
+
+function Battle:setup()
+  local player = tdengine.find_entity('Player')
+  player:disable_movement()
+
+  local graphic = player:get_component('Graphic')
+  graphic:hide()
   
   background.components.Animation.current = self.data.background
   tdengine.create_entity('Background', background)
 
-end
-
-function Battle:setup()
   self:load_platform(PlatformType.Player)
   self:load_platform(PlatformType.Opponent)
   
   opponent_sprite.components.Animation.current = self.data.trainer
-  tdengine.create_entity('StaticNpc', opponent_sprite)
+  tdengine.create_entity('Sprite', opponent_sprite)
+  
+  tdengine.create_entity('Sprite', player_sprite)
+
+  menu.params = self.data
+  tdengine.create_entity('BattleMenu', menu)
 end
 
 function Battle:load_platform(which)
-  tdengine.create_entity('Platform', platforms[which])
+  tdengine.create_entity('Sprite', platforms[which])
   local platform = tdengine.find_entity_by_tag(which)
   local position = platform:get_component('Position')
   local info = {
@@ -105,6 +140,11 @@ function Battle:load_platform(which)
 end
 
 function Battle:cleanup()
+  local player = tdengine.find_entity('Player')
+  player:enable_movement()
+
+  local graphic = player:get_component('Graphic')
+  graphic:show()
 end
 
 function Battle:advance_platform(which, dt)

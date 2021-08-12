@@ -511,14 +511,18 @@ void API::set_imgui_demo(bool show) {
 	show_imgui_demo = show;
 }
 
-void API::attach_position(int entity, int attached_to) {
+void API::attach_position(int entity, int attached_to, float offset_x, float offset_y) {
 	auto& physics_engine = get_physics_engine();
-	physics_engine.attached_entities[entity] = attached_to;
+	AttachedPosition info;
+	info.entity = entity;
+	info.attached_to = attached_to;
+	info.offset = glm::vec2(offset_x, offset_y);
+	physics_engine.attached_entities.push_back(info);
 }
 
 void API::detach_position(int entity) {
 	auto& physics_engine = get_physics_engine();
-	physics_engine.attached_entities.erase(entity);
+	physics_engine.detach_position(entity);
 }
 
 void register_lua_api() {

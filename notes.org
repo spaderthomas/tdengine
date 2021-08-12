@@ -1027,6 +1027,16 @@ the librarian is kindly and mysterious
   artistic endeavors are at their core
 * log
 ** 08/12/2021
+- menu
+  - skin basic imgui button
+  - menu background
+  - menu entity
+  - submit text to it (how to reuse text box?)
+- switch animation
+  - separate entity to play the sparkles
+  - enable a shader for the pink
+- unzip screen shader
+
 ** 08/10/2021
 hello, let's become a bit more serious.
 
@@ -4866,6 +4876,7 @@ The screen fades partially, then fades totally to black.
 ** FINAL BOSS
 * clock
 :LOGBOOK: 
+CLOCK: [2021-08-12 Thu 17:30]--[2021-08-12 Thu 18:23] =>  0:53
 CLOCK: [2021-08-12 Thu 12:00]--[2021-08-12 Thu 14:29] =>  2:29
 CLOCK: [2021-08-11 Wed 15:52]--[2021-08-11 Wed 18:22] =>  2:30
 CLOCK: [2021-08-10 Tue 12:32]--[2021-08-10 Tue 15:32] =>  1:00

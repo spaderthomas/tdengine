@@ -14,8 +14,10 @@ function Position:init(params)
 	end
   elseif params.tag then
 	local entity = tdengine.find_entity_by_tag(params.tag)
+	local offset = params.offset or tdengine.vec2(0, 0)
+	print(inspect(offset))
 	if entity then
-	  tdengine.attach_position(self.parent.id, entity.id)
+	  tdengine.attach_position(self.parent.id, entity.id, offset.x, offset.y)
 	  self.world = { x = 0, y = 0 }
 	end
   end

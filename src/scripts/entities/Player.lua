@@ -9,9 +9,13 @@ function Player:init(params)
 
   self:persist()
   self:should_save(false)
+  
+  self.movmement_enabled = true
 end
 
 function Player:handle_movement()
+  if not self.movement_enabled then return end
+  
   local input = self:get_component('Input')
 
   if input:is_down(GLFW.Keys.I) then
@@ -60,4 +64,12 @@ function Player:save()
   player.position = position.world
 
   return player
+end
+
+function Player:enable_movement()
+  self.movement_enabled = true
+end
+
+function Player:disable_movement()
+  self.movement_enabled = false
 end

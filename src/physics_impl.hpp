@@ -38,6 +38,7 @@ bool are_boxes_colliding(Center_Box a, Center_Box b, glm::vec2& penetration) {
 	penetration = glm::vec2(0.f);
 	return false;
 }
+
 bool are_boxes_colliding(Points_Box a, Points_Box b, glm::vec2& penetration) {
 	//@hack just write this
 	return are_boxes_colliding(a.as_center_box(), b.as_center_box(), penetration);
@@ -191,18 +192,18 @@ void PhysicsEngine::update(float dt) {
 
 	// Now that all first-level movements have been resolved, let attached entities try to warp to
 	// what they're attached to. Gets picked up next resolve cycle.
-	for (auto& [entity, attached_to] : attached_entities) {
-		auto position = get_position(entity);
-		auto desired = get_position(attached_to);
+	for (auto& info : attached_entities) {
+		auto position = get_position(info.entity);
+		auto desired = get_position(info.attached_to);
 
 		// If you don't do this, you'll have an infinite resolve as each resolve cycle submits
 		// another movement to resolve
-		if (vec_almost_equals(*position, *desired)) continue;
+		if (vec_almost_equals(*position - info.offset, *desired)) continue;
 
 		MoveRequest request;
-		request.entity = entity;
-		request.wish = *desired;
-		request.flags = MoveFlags::AbsolutePosition;
+		request.entity = info.entity;
+		request.wish = *desired + info.offset;
+		request.flags = MoveFlags::AbsolutePosition | MoveFlags::BypassCollision;
 		
 		requests.push_back(request);
 	}
@@ -309,7 +310,16 @@ void PhysicsEngine::remove_entity(int entity) {
 	collidable.erase(entity);
 	raycast.erase(entity);
 	triggers.erase(entity);
-	attached_entities.erase(entity);
+	detach_position(entity);
+}
+
+void PhysicsEngine::detach_position(int entity) {
+	auto& attached = attached_entities;
+	auto it = std::remove_if(attached.begin(), attached.end(), [entity](auto& attachment) {
+		return attachment.entity == entity;
+	});
+	
+	attached.erase(it, attached.end());
 }
 
 PhysicsEngine& get_physics_engine() {

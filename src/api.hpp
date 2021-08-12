@@ -56,7 +56,7 @@ bool        is_following_player();
 void        pause_updates();
 void        resume_updates();
 void        set_imgui_demo(bool show);
-void        attach_position(int entity, int attached_to);
+void        attach_position(int entity, int attached_to, float offset_x, float offset_y);
 void        detach_position(int entity);
 }
 void register_lua_api();
