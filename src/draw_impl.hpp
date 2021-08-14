@@ -206,6 +206,7 @@ void RenderEngine::init() {
 
 	// Generate the color buffer, allocate GPU memory for it, and attach it to the frame buffer
 	glGenTextures(1, &color_buffer);
+	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, color_buffer);	
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, 2560, 1440, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -213,14 +214,6 @@ void RenderEngine::init() {
 	
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, color_buffer, 0);
 	
-	// Ditto for the depth buffer
-	// glGenRenderbuffers(1, &depth_buffer);
-	// glBindRenderbuffer(GL_RENDERB, depth_buffer);
-	// glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, screen_x, screen_y);
-	// glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-	// glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, depth_buffer);
-
 	auto status = glCheckFramebufferStatus(GL_FRAMEBUFFER);
 	if (status != GL_FRAMEBUFFER_COMPLETE) {
 		tdns_log.write("@incomplete_frame_buffer: " + std::to_string(status));
@@ -261,7 +254,8 @@ void RenderEngine::render(float dt) {
 }
 
 void RenderEngine::render_scene(float dt) {
-	if (render_to_frame_buffer) {
+	// If we're applying post processing, make sure to render to a frame buffer
+	if (post_processing_info.type != PostProcessingType::None) {
 		glViewport(0, 0, 2560, 1440);
 		glBindFramebuffer(GL_FRAMEBUFFER, frame_buffer);
 		glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -276,6 +270,7 @@ void RenderEngine::render_scene(float dt) {
 	Shader* textured_shader = shaders.get("textured");
 
 	shader->begin();
+
 	shader->set_int("sampler", 0);
 
 	auto sort_render_list = [](const auto& ra, const auto& rb) {
@@ -309,6 +304,7 @@ void RenderEngine::render_scene(float dt) {
 			}
 		}
 
+		glActiveTexture(GL_TEXTURE0);
 		element.sprite->atlas->bind();
 
 		// Point the texture coordinates to this sprite's texcoords
@@ -339,26 +335,59 @@ void RenderEngine::render_scene(float dt) {
 	shader->end();
 	render_list.clear();
 
-	if (render_to_frame_buffer) {
+	// Now that the scene is rendered, apply any post processing effects
+	if (post_processing_info.type != PostProcessingType::None) {
 		glViewport(0, 0, static_cast<GLsizei>(screen_x), static_cast<GLsizei>(screen_y));
 		glBindFramebuffer(GL_FRAMEBUFFER, 0);
-		
+
+		glActiveTexture(GL_TEXTURE0);
 		glBindTexture(GL_TEXTURE_2D, color_buffer);
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), square_tex_coords_offset);
 		glEnableVertexAttribArray(1);
 
-		shader = shaders.get("fade");
-		shader->begin();
-		shader->set_int("screen", 0);
+		auto& info = post_processing_info;
+		if (info.type == PostProcessingType::FadeScreen) {
+			shader = shaders.get("fade");
+			shader->begin();
+			shader->set_int("screen", GL_TEXTURE0);
 
-		float time = glm::abs((fade_time_remaining - fade_time) / fade_time);
-		shader->set_float("time", time);
-		fade_time_remaining -= dt;
-		render_to_frame_buffer = fade_time_remaining > 0;
+			float distance = glm::abs(info.fade_time_remaining - info.total_fade_time);
+			float darkness = distance / info.total_fade_time;
+			shader->set_float("time", darkness);
+			info.fade_time_remaining -= dt;
+			if (float_almost_equals(info.fade_time_remaining, 0)) {
+				info.type = PostProcessingType::None;
+			}
+		} else if (info.type == PostProcessingType::BattleTransition) {
+			shader = shaders.get("battle_transition");
+			shader->begin();
+			shader->set_int("screen", GL_TEXTURE0);
+
+			// Bind the texture for the effect
+			auto& asset_manager = get_asset_manager();
+			
+			Sprite* effect = nullptr;
+			switch(info.transition_type) {
+			case BattleTransition::Horizontal:
+				effect = asset_manager.get_asset<Sprite>("horizontal_wipe");
+				break;
+			};
+			glActiveTexture(GL_TEXTURE1);
+			effect->atlas->bind();
+			shader->set_int("effect", GL_TEXTURE1);
+
+			shader->set_float("cutoff", info.battle_transition_cutoff / info.battle_transition_time);
+
+			// We're done when the time asked for has elapsed. 
+			if (float_almost_equals(info.battle_transition_cutoff, info.battle_transition_time)) {
+				info.type = PostProcessingType::None;
+			}
+
+			info.battle_transition_cutoff += dt;
+		}
 		
 		shader->check();
 		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-		
 		shader->end();
 	}
 }

@@ -54,7 +54,7 @@ Texture* create_texture(std::filesystem::path path) {
 		defer { free(data); };
 		// Now, create all the OpenGL internals and point it to the newly created texture
 		glGenTextures(1, &texture->handle);
-		glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
+		//glActiveTexture(GL_TEXTURE0); // Note: not all graphics drivers have default 0!
 		glBindTexture(GL_TEXTURE_2D, texture->handle);
 
 		// Some sane defaults
@@ -106,13 +106,12 @@ void destroy_sprite(std::string name) {
 	free(sprite);
 }
 
-void add_background(std::filesystem::path path) {
+void add_single_texture(std::filesystem::path path) {
 	if (!path.has_stem()) return;
 	if (path.extension() != ".png") return;
 
 	auto& asset_manager = get_asset_manager();
 
-	// Backgrounds get their own texture -- too big for an atlas.
 	auto texture = create_texture(path);
 	if (!texture) return;
 
@@ -262,26 +261,35 @@ void init_assets() {
 	create_texture_atlas();
 
 	auto& asset_manager = get_asset_manager();
-		
-	auto backgrounds = AbsolutePath(RelativePath("asset/art/backgrounds"));
-	tdns_log.write("@asset:background:dir: " + backgrounds.path, Log_Flags::File);
-	directory_iterator it(backgrounds.path);
-	for (it; it != directory_iterator(); ++it) {
-		auto path = it->path();
-		tdns_log.write("@asset:background:load: " + path.string(), Log_Flags::File);
-		add_background(path);
 
-		file_watcher.watch(path.string(), [path = path]() {
-			std::cout << "@asset:background:update: " << path.string() << std::endl;
-			if (!dumb_is_valid_png(path)) return;
+
+	auto load_textures_from_directory = [&](auto& path) {
+		directory_iterator it(path);
+		for (it; it != directory_iterator(); ++it) {
+			auto path = it->path();
+			tdns_log.write("@asset:load: " + path.string(), Log_Flags::File);
+			add_single_texture(path);
+
+			file_watcher.watch(path.string(), [path = path]() {
+				std::cout << "@asset:update: " << path.string() << std::endl;
+				if (!dumb_is_valid_png(path)) return;
 			
-			destroy_texture(path);
-			add_background(path);
+				destroy_texture(path);
+				add_single_texture(path);
 			
-			auto& asset_manager = get_asset_manager();
-			auto background = asset_manager.get_asset<Sprite>(path.stem().string());
-			background->tex_coord_offset = square_tex_coords_offset;
-		});
+				auto& asset_manager = get_asset_manager();
+				auto texture = asset_manager.get_asset<Sprite>(path.stem().string());
+				texture->tex_coord_offset = square_tex_coords_offset;
+			});
+		}
+	};
+
+	std::vector<AbsolutePath> texture_directories = {
+		AbsolutePath(RelativePath("asset/art/backgrounds")),
+		AbsolutePath(RelativePath("asset/art/transitions")),
+	};
+	for (auto& directory : texture_directories) {
+		load_textures_from_directory(directory.path);
 	}
 }
 

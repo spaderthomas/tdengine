@@ -10,7 +10,8 @@ enum class Render_Flags : int {
 	Highlighted = 1 << 0,
 	ScreenPosition = 1 << 1
 };
-template <> struct is_flag<Render_Flags> : std::true_type { };
+ENABLE_ENUM_FLAG(Render_Flags)
+
 struct Render_Element {
 	int layer;
 	int entity;
@@ -22,11 +23,33 @@ enum class Text_Flags : int {
 	None        = 0,
 	Highlighted = 1 << 0
 };
-template <> struct is_flag<Text_Flags> : std::true_type { };
+ENABLE_ENUM_FLAG(Text_Flags)
+
 struct TextRenderInfo {
 	std::string text;
 	glm::vec2 point;
 	Text_Flags flags;
+};
+
+enum class PostProcessingType {
+	None = 0,
+	FadeScreen = 1,
+	BattleTransition = 2,
+};
+
+enum class BattleTransition {
+	Horizontal = 1
+};
+
+struct PostProcessingInfo {
+	PostProcessingType type;
+	
+	float total_fade_time;
+	float fade_time_remaining;
+
+	BattleTransition transition_type;
+	float battle_transition_time;
+	float battle_transition_cutoff;
 };
 
 struct RenderEngine {
@@ -34,14 +57,11 @@ struct RenderEngine {
 	std::vector<Render_Element> render_list;
 	std::vector<TextRenderInfo> text_infos;
 	Camera camera;
-	
-	bool render_to_frame_buffer = false;
+
+	PostProcessingInfo post_processing_info;
 	uint frame_buffer;
 	uint color_buffer;
 	
-	float fade_time_remaining = 0.f;
-	float fade_time;
-
 	void init();
 	void remove_entity(int entity);
 	void render(float dt);

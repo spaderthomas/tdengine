@@ -108,6 +108,15 @@ I know people can't store every mesh they will ever meed to draw in
 the GPU at once. Do people use different VAOs for every object? One
 for the whole game?  Somewhere in the middle, and if so, how do they
 group them?
+
+--
+
+update 8/13/2021:
+- i have no idea how the fuck my VAOs are set up lol
+- when do i need sprite vs when do i need straight texture and can i just
+  consolidate those into one class ?_? ok i think the texture is just used for
+  the owning atlas...
+
 ** @reload
 - 02/04/21: needed to re-load bootstrap code
 - 02/04/21: spawned a new text box every frame
