@@ -349,7 +349,7 @@ void RenderEngine::render_scene(float dt) {
 		if (info.type == PostProcessingType::FadeScreen) {
 			shader = shaders.get("fade");
 			shader->begin();
-			shader->set_int("screen", GL_TEXTURE0);
+			shader->set_int("screen", 0);
 
 			float distance = glm::abs(info.fade_time_remaining - info.total_fade_time);
 			float darkness = distance / info.total_fade_time;
@@ -374,12 +374,14 @@ void RenderEngine::render_scene(float dt) {
 			};
 			glActiveTexture(GL_TEXTURE1);
 			effect->atlas->bind();
-			shader->set_int("effect", GL_TEXTURE1);
+			shader->set_int("effect", 1);
 
 			shader->set_float("cutoff", info.battle_transition_cutoff / info.battle_transition_time);
 
-			// We're done when the time asked for has elapsed. 
-			if (float_almost_equals(info.battle_transition_cutoff, info.battle_transition_time)) {
+			// We're done when the time asked for has elapsed.
+			float extra = 1;
+			float time_left = info.battle_transition_cutoff - info.battle_transition_time;
+			if (float_almost_equals(time_left, extra)) {
 				info.type = PostProcessingType::None;
 			}
 
