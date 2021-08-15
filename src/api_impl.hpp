@@ -479,9 +479,9 @@ void API::use_step_mode() {
 
 void API::fade_screen(float time) {
 	auto& render_engine = get_render_engine();
-	render_engine.render_to_frame_buffer = true;
-	render_engine.fade_time = time;
-	render_engine.fade_time_remaining = time * 2;
+	render_engine.post_processing_info.type = PostProcessingType::FadeScreen;
+	render_engine.post_processing_info.fade_time_remaining = time * 2;
+	render_engine.post_processing_info.total_fade_time = time;
 }
 
 void API::snap_to_player() {
@@ -523,6 +523,15 @@ void API::attach_position(int entity, int attached_to, float offset_x, float off
 void API::detach_position(int entity) {
 	auto& physics_engine = get_physics_engine();
 	physics_engine.detach_position(entity);
+}
+
+void API::do_battle_transition(int which, float time) {
+	auto& render_engine = get_render_engine();
+	
+	render_engine.post_processing_info.type = PostProcessingType::BattleTransition;
+	render_engine.post_processing_info.transition_type = static_cast<BattleTransition>(which);
+	render_engine.post_processing_info.battle_transition_time = time;
+	render_engine.post_processing_info.battle_transition_cutoff = 0;
 }
 
 void register_lua_api() {
@@ -581,6 +590,7 @@ void register_lua_api() {
 	state["tdengine"]["set_imgui_demo"]        = &set_imgui_demo;
 	state["tdengine"]["attach_position"]       = &attach_position;
 	state["tdengine"]["detach_position"]       = &detach_position;
+	state["tdengine"]["do_battle_transition"]  = &do_battle_transition;
 
 	state["tdengine"]["draw"]                        = state.create_table();
 	state["tdengine"]["draw"]["entity"]              = &draw_entity;	
@@ -625,6 +635,9 @@ void register_lua_api() {
 	state["tdengine"]["InputChannel"]["Game"] = INPUT_MASK_GAME;
 	state["tdengine"]["InputChannel"]["Player"] = INPUT_MASK_PLAYER;
 	state["tdengine"]["InputChannel"]["All"] = INPUT_MASK_ALL;
+
+	state["tdengine"]["BattleTransition"] = state.create_table();
+	state["tdengine"]["BattleTransition"]["Horizontal"] = BattleTransition::Horizontal;
 
 		
 	state["imgui"]["extensions"] = state.create_table();

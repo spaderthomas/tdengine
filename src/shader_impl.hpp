@@ -150,11 +150,35 @@ void Shader::end() {
 
 void init_shaders() {
 	auto& shaders = get_shader_manager();
-	shaders.add(absolute_path("asset/shaders/textured.vs"), absolute_path("asset/shaders/textured.fs"), "textured");
-	shaders.add(absolute_path("asset/shaders/textured.vs"), absolute_path("asset/shaders/highlighted.fs"), "highlighted");
-	shaders.add(absolute_path("asset/shaders/solid.vs"), absolute_path("asset/shaders/solid.fs"), "solid");
-	shaders.add(absolute_path("asset/shaders/textured.vs"), absolute_path("asset/shaders/text.fs"), "text");
-	shaders.add(absolute_path("asset/shaders/fade.vs"), absolute_path("asset/shaders/fade.fs"), "fade");
+	shaders.add(
+        absolute_path("asset/shaders/textured.vs"),
+	    absolute_path("asset/shaders/textured.fs"),
+	    "textured");
+	
+	shaders.add(
+	    absolute_path("asset/shaders/textured.vs"),
+		absolute_path("asset/shaders/highlighted.fs"),
+		"highlighted");
+	
+	shaders.add(
+		absolute_path("asset/shaders/solid.vs"),
+		absolute_path("asset/shaders/solid.fs"),
+		"solid");
+	
+	shaders.add(
+        absolute_path("asset/shaders/textured.vs"),
+		absolute_path("asset/shaders/text.fs"),
+		"text");
+	
+	shaders.add(
+		absolute_path("asset/shaders/fade.vs"),
+		absolute_path("asset/shaders/fade.fs"),
+		"fade");
+	
+	shaders.add(
+		absolute_path("asset/shaders/battle_transition.vs"),
+		absolute_path("asset/shaders/battle_transition.fs"),
+		"battle_transition");
 }
 
 void ShaderManager::add(std::string vs_path, std::string fs_path, std::string name) {

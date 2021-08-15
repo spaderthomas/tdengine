@@ -58,5 +58,6 @@ void        resume_updates();
 void        set_imgui_demo(bool show);
 void        attach_position(int entity, int attached_to, float offset_x, float offset_y);
 void        detach_position(int entity);
+void        do_battle_transition(int which, float time);
 }
 void register_lua_api();

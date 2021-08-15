@@ -34,6 +34,8 @@ struct is_flag;
 template <typename T>
 struct is_flag<T, true> : std::false_type { };
 
+#define ENABLE_ENUM_FLAG(EnumType) template <> struct is_flag<EnumType> : std::true_type {};
+
 template <typename T, typename std::enable_if<is_flag<T>::value>::type* = nullptr>
 T operator |(T lhs, T rhs) {
     using u_t = typename std::underlying_type<T>::type;

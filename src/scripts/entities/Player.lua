@@ -10,7 +10,7 @@ function Player:init(params)
   self:persist()
   self:should_save(false)
   
-  self.movmement_enabled = true
+  self.movement_enabled = true
 end
 
 function Player:handle_movement()
