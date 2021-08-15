@@ -132,7 +132,7 @@ function TextBox:update(dt)
    
    local text_area = tdengine.vec2(tdengine.sprite_size('text_box'))
    local extents = text_area:scale(.5)
-   local padding = tdengine.vec2(.02, 0.04)
+   local padding = tdengine.vec2(.03, 0.06)
    local text_start = tdengine.vec2(
 	  position.x - extents.x + padding.x,
 	  position.y + extents.y - padding.y)

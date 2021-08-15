@@ -2,9 +2,7 @@ Battle = tdengine.entity('Battle')
 
 local BattleState = {
   MovingPlatforms = 'MovingPlatforms',
-  SlidingHudArrow = 'SlidingHudArrow',
-  SlidingHudBalls = 'SlidingHudBalls',
-  SubmittingIntroText = 'SubmittingIntroText',
+  SlidingHud = 'SlidingHud',
   ShowingIntroText = 'ShowingIntroText',
   WaitingForInput = 'WaitingForInput'
 }
@@ -20,7 +18,7 @@ platforms[PlatformType.Player] = {
   name = 'SlidingSprite',
   tag = PlatformType.Player,
   params = {
-	final_position = tdengine.vec2(.3, .355),
+	final_position = tdengine.vec2(.25, .355),
 	time = 1
   },
   components = {
@@ -104,27 +102,44 @@ local HudTypes = {
   Opponent = 'Opponent'
 }
 
-local hud = {
+local arrows = {
   player = {
-	arrow = {
-	  name = 'SlidingSprite',
-	  tag = 'player_hud_arrow',
-	  params = {
-		final_position = tdengine.vec2(.157, .8),
-		time = 1
-	  },
-	  components = {
-		Graphic = {
-		  layer = 2
-		},
-		Animation = {
-		  current = 'battle_hud_arrow_right'
-		},
-		Position = {
-		  world = { x = -.165, y = .8 }
-		}
-	  }
+	name = 'SlidingSprite',
+	tag = 'player_hud_arrow',
+	params = {
+	  final_position = tdengine.vec2(.157, .8),
+	  time = 1
 	},
+	components = {
+	  Graphic = {
+		layer = 2
+	  },
+	  Animation = {
+		current = 'battle_hud_arrow_right'
+	  },
+	  Position = {
+		world = { x = -.165, y = .8 }
+	  }
+	}
+  },
+  opponent = {
+	name = 'SlidingSprite',
+	tag = 'opponent_hud_arrow',
+	params = {
+	  final_position = tdengine.vec2(.843, .45),
+	  time = 1
+	},
+	components = {
+	  Graphic = {
+		layer = 2
+	  },
+	  Animation = {
+		current = 'battle_hud_arrow_left'
+	  },
+	  Position = {
+		world = { x = 1.1625, y = .45 }
+	  }
+	}
   }
 }
 
@@ -170,8 +185,26 @@ function Battle:setup()
   tdengine.create_entity('Sprite', opponent_sprite)
   tdengine.create_entity('Sprite', player_sprite)
 
-  self:load_hud()
-  
+  -- Load entities for the HUD
+  tdengine.create_entity('SlidingSprite', arrows.player)
+  self.player_arrow = tdengine.find_entity_by_tag(arrows.player.tag)
+
+  tdengine.create_entity('SlidingSprite', arrows.opponent)
+  self.opponent_arrow = tdengine.find_entity_by_tag(arrows.opponent.tag)
+
+  self.hud_balls = {}
+  for i = 0,5 do
+	local ball_data = {}
+	ball_data.tag = 'player_ball_' .. tostring(i)
+	ball_data.params = {
+	  index = i,
+	  time = .2
+	}
+	
+	tdengine.create_entity('BattleHudBall', ball_data)
+	self.hud_balls[i] = tdengine.find_entity_by_tag(ball_data.tag)
+  end
+
   -- Make the menu. And then hide it. We have two menus -- one for displaying
   -- text, because thats what the text box is for. And then one for displaying
   -- choices. This one is the one that does choices.
@@ -207,46 +240,34 @@ function Battle:update(dt)
 	-- Nothing to do but wait for the platforms to slide into place
 	if self.player_platform.done and self.opponent_platform.done then
 	  self.player_arrow.start = true
-	  self.state = BattleState.SlidingHudArrow
-	end
-	
-  elseif self.state == BattleState.SlidingHudArrow then
-	-- Slide the arrow...
-	if self.player_arrow.done then
+	  self.opponent_arrow.start = true
+
 	  self.hud_balls[0].start = true
-	  self.state = BattleState.SlidingHudBalls
+	  self.current_ball = 0
+
+	  self.text_box:begin('BABIDI1998 would like to battle!')
+
+	  self.state = BattleState.SlidingHud
 	end
 	
-  elseif self.state == BattleState.SlidingHudBalls then
-	self.state = BattleState.SubmittingIntroText
-	
-  elseif self.state == BattleState.SubmittingIntroText then
-	self.text_box:begin('someone wants to battle...')
-	self.state = BattleState.ShowingIntroText
-	
+  elseif self.state == BattleState.SlidingHud then
+	local ball = self.hud_balls[self.current_ball]
+	if ball.done then
+	  self.current_ball = self.current_ball + 1
+	  local next_ball = self.hud_balls[self.current_ball]
+	  if next_ball then
+		next_ball.start = true
+	  end
+	end
+
+	local done = true
+	done = done and self.player_arrow.done
+	done = done and self.opponent_arrow.done
+	done = done and self.current_ball == 6
+	done = done and self.text_box.done
+	if done then
+	  self.state = BattleState.ShowingIntroText
+	end
   elseif self.state == BattleState.ShowingIntroText then
-	local text_box = tdengine.find_entity('TextBox')
-	if text_box.done then
-	  self.state = BattleState.WaitingForInput
-	end
-	
-  end
-end
-
-function Battle:load_hud()
-  tdengine.create_entity('SlidingSprite', hud.player.arrow)
-  self.player_arrow = tdengine.find_entity_by_tag('player_hud_arrow')
-
-  self.hud_balls = {}
-  for i = 0,5 do
-	local ball_data = {}
-	ball_data.tag = 'player_ball_' .. tostring(i)
-	ball_data.params = {
-	  index = i,
-	  time = .5
-	}
-	
-	tdengine.create_entity('BattleHudBall', ball_data)
-	self.hud_balls[i] = tdengine.find_entity_by_tag(ball_data.tag)
   end
 end
