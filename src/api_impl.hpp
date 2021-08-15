@@ -301,13 +301,24 @@ void API::move_entity_absolute(int entity, float x, float y, int flags) {
 
 void API::teleport_entity(int entity, float x, float y) {
 	MoveRequest request;
-	request.flags |= MoveFlags::BypassCollision;
+	request.flags = MoveFlags::BypassCollision | MoveFlags::AbsolutePosition;
 	request.entity = entity;
 	request.wish.x = x;
 	request.wish.y = y;
 		
 	auto& physics_engine = get_physics_engine();
 	physics_engine.requests.push_back(request);	
+}
+
+void API::teleport_entity_by_offset(int entity, float x, float y) {
+	MoveRequest request;
+	request.entity = entity;
+	request.flags = MoveFlags::BypassCollision;
+	request.wish.x = x;
+	request.wish.y = y;
+		
+	auto& physics_engine = get_physics_engine();
+	physics_engine.requests.push_back(request);
 }
 
 void API::register_animation(std::string name, std::vector<std::string> frames) {
@@ -538,59 +549,60 @@ void register_lua_api() {
 	auto& state = Lua.state;
 	
 	using namespace API;
-    state["tdengine"]                          = state.create_table();
-	state["tdengine"]["alloc_entity"]          = &alloc_entity;
-	state["tdengine"]["free_entity"]           = &free_entity;
-	state["tdengine"]["move_entity_by_offset"] = &move_entity_by_offset;
-	state["tdengine"]["move_entity_absolute"]  = &move_entity_absolute;
-	state["tdengine"]["entity_name"]           = &entity_name;
-	state["tdengine"]["has_component"]         = &has_component;
-	state["tdengine"]["get_component"]         = &get_component;
-	state["tdengine"]["add_component"]         = &add_component;
-	state["tdengine"]["all_components"]        = &all_components;
-	state["tdengine"]["alloc_component"]       = &alloc_component;
-	state["tdengine"]["free_component"]        = &free_component;
-	state["tdengine"]["component_name"]        = &component_name;
-	state["tdengine"]["register_animation"]    = &register_animation;
-	state["tdengine"]["enable_input_channel"]  = &enable_input_channel;
-	state["tdengine"]["disable_input_channel"] = &disable_input_channel;
-	state["tdengine"]["is_down"]               = &is_down;
-	state["tdengine"]["was_pressed"]           = &was_pressed;
-	state["tdengine"]["was_released"]          = &was_pressed;
-	state["tdengine"]["was_chord_pressed"]     = &was_chord_pressed;
-	state["tdengine"]["cursor"]                = &cursor;
-	state["tdengine"]["camera"]                = &camera;
-	state["tdengine"]["move_camera"]           = &move_camera;
-	state["tdengine"]["move_camera_by_offset"] = &move_camera_by_offset;
-	state["tdengine"]["sprite_size"]           = &sprite_size;
-	state["tdengine"]["register_position"]     = &register_position;
-	state["tdengine"]["register_collider"]     = &register_collider;
-	state["tdengine"]["register_raycastable"]  = &register_raycastable;
-	state["tdengine"]["register_trigger"]      = &register_trigger;
-	state["tdengine"]["register_interactable"] = &register_interactable;
-	state["tdengine"]["do_interaction_check"]  = &do_interaction_check;
-	state["tdengine"]["register_player"]       = &register_player;
-	state["tdengine"]["teleport_entity"]       = &teleport_entity;
-	state["tdengine"]["save_layout"]           = &save_layout;
-	state["tdengine"]["use_layout"]            = &use_layout;
-	state["tdengine"]["frame_time"]            = seconds_per_update;
-	state["tdengine"]["screen_dimensions"]     = &screen_dimensions;
-	state["tdengine"]["ray_cast"]              = &ray_cast;
-	state["tdengine"]["screen"]                = &screen;
-	state["tdengine"]["step_mode"]             = &use_step_mode;
-	state["tdengine"]["fade_screen"]           = &fade_screen;
-	state["tdengine"]["snap_to_player"]        = &snap_to_player;
-	state["tdengine"]["follow_player"]         = &follow_player;
-	state["tdengine"]["is_following_player"]   = &is_following_player;
-	state["tdengine"]["log"]                   = &API::log;
-	state["tdengine"]["log_to"]                = &API::log_to;
-	state["tdengine"]["toggle_console"]        = &toggle_console;
-	state["tdengine"]["pause_updates"]         = &API::pause_updates;
-	state["tdengine"]["resume_updates"]        = &resume_updates;
-	state["tdengine"]["set_imgui_demo"]        = &set_imgui_demo;
-	state["tdengine"]["attach_position"]       = &attach_position;
-	state["tdengine"]["detach_position"]       = &detach_position;
-	state["tdengine"]["do_battle_transition"]  = &do_battle_transition;
+    state["tdengine"]                              = state.create_table();
+	state["tdengine"]["alloc_entity"]              = &alloc_entity;
+	state["tdengine"]["free_entity"]               = &free_entity;
+	state["tdengine"]["move_entity_by_offset"]     = &move_entity_by_offset;
+	state["tdengine"]["move_entity_absolute"]      = &move_entity_absolute;
+	state["tdengine"]["entity_name"]               = &entity_name;
+	state["tdengine"]["has_component"]             = &has_component;
+	state["tdengine"]["get_component"]             = &get_component;
+	state["tdengine"]["add_component"]             = &add_component;
+	state["tdengine"]["all_components"]            = &all_components;
+	state["tdengine"]["alloc_component"]           = &alloc_component;
+	state["tdengine"]["free_component"]            = &free_component;
+	state["tdengine"]["component_name"]            = &component_name;
+	state["tdengine"]["register_animation"]        = &register_animation;
+	state["tdengine"]["enable_input_channel"]      = &enable_input_channel;
+	state["tdengine"]["disable_input_channel"]     = &disable_input_channel;
+	state["tdengine"]["is_down"]                   = &is_down;
+	state["tdengine"]["was_pressed"]               = &was_pressed;
+	state["tdengine"]["was_released"]              = &was_pressed;
+	state["tdengine"]["was_chord_pressed"]         = &was_chord_pressed;
+	state["tdengine"]["cursor"]                    = &cursor;
+	state["tdengine"]["camera"]                    = &camera;
+	state["tdengine"]["move_camera"]               = &move_camera;
+	state["tdengine"]["move_camera_by_offset"]     = &move_camera_by_offset;
+	state["tdengine"]["sprite_size"]               = &sprite_size;
+	state["tdengine"]["register_position"]         = &register_position;
+	state["tdengine"]["register_collider"]         = &register_collider;
+	state["tdengine"]["register_raycastable"]      = &register_raycastable;
+	state["tdengine"]["register_trigger"]          = &register_trigger;
+	state["tdengine"]["register_interactable"]     = &register_interactable;
+	state["tdengine"]["do_interaction_check"]      = &do_interaction_check;
+	state["tdengine"]["register_player"]           = &register_player;
+	state["tdengine"]["teleport_entity"]           = &teleport_entity;
+	state["tdengine"]["teleport_entity_by_offset"] = &teleport_entity_by_offset;
+	state["tdengine"]["save_layout"]               = &save_layout;
+	state["tdengine"]["use_layout"]                = &use_layout;
+	state["tdengine"]["frame_time"]                = seconds_per_update;
+	state["tdengine"]["screen_dimensions"]         = &screen_dimensions;
+	state["tdengine"]["ray_cast"]                  = &ray_cast;
+	state["tdengine"]["screen"]                    = &screen;
+	state["tdengine"]["step_mode"]                 = &use_step_mode;
+	state["tdengine"]["fade_screen"]               = &fade_screen;
+	state["tdengine"]["snap_to_player"]            = &snap_to_player;
+	state["tdengine"]["follow_player"]             = &follow_player;
+	state["tdengine"]["is_following_player"]       = &is_following_player;
+	state["tdengine"]["log"]                       = &API::log;
+	state["tdengine"]["log_to"]                    = &API::log_to;
+	state["tdengine"]["toggle_console"]            = &toggle_console;
+	state["tdengine"]["pause_updates"]             = &API::pause_updates;
+	state["tdengine"]["resume_updates"]            = &resume_updates;
+	state["tdengine"]["set_imgui_demo"]            = &set_imgui_demo;
+	state["tdengine"]["attach_position"]           = &attach_position;
+	state["tdengine"]["detach_position"]           = &detach_position;
+	state["tdengine"]["do_battle_transition"]      = &do_battle_transition;
 
 	state["tdengine"]["draw"]                        = state.create_table();
 	state["tdengine"]["draw"]["entity"]              = &draw_entity;	
@@ -600,7 +612,6 @@ void register_lua_api() {
 	state["tdengine"]["draw"]["rect_outline_world"]  = &rect_outline_world;	
 	state["tdengine"]["draw"]["rect_outline_world"]  = &rect_outline_world;	
 	state["tdengine"]["draw"]["text"]                = &API::draw_text;
-	
 	state["tdengine"]["font"]                        = state.create_table();
 	state["tdengine"]["font"]["advance"]             = &advance;
 
@@ -610,12 +621,9 @@ void register_lua_api() {
 	state["tdengine"]["paths"]["absolute"] = &absolute_path;	
 	
 	state["tdengine"]["flags"] = state.create_table();
-	
 	state["tdengine"]["flags"]["physics"] = state.create_table();
 	state["tdengine"]["flags"]["physics"]["bypass"] = MoveFlags::BypassCollision;
 	state["tdengine"]["flags"]["physics"]["absolute"] = MoveFlags::AbsolutePosition;
-
-	
 	state["tdengine"]["text_flags"] = state.create_table();
 	state["tdengine"]["text_flags"]["none"] = Text_Flags::None;
 	state["tdengine"]["text_flags"]["highlighted"] = Text_Flags::Highlighted;
@@ -639,7 +647,6 @@ void register_lua_api() {
 	state["tdengine"]["BattleTransition"] = state.create_table();
 	state["tdengine"]["BattleTransition"]["Horizontal"] = BattleTransition::Horizontal;
 
-		
 	state["imgui"]["extensions"] = state.create_table();
 	state["imgui"]["extensions"]["SpriteButton"] = &draw_sprite_button;	
 }

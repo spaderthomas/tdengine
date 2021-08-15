@@ -13,6 +13,7 @@ void        draw_entity(int component);
 void        move_entity_absolute(int entity, float x, float y, int flags);
 void        move_entity_by_offset(int entity, float x, float y, int flags);
 void        teleport_entity(int entity, float x, float y);
+void        teleport_entity_by_offset(int entity, float x, float y);
 void        register_position(int entity);
 void        register_collider(int entity);
 void        register_raycastable(int entity);

@@ -1,3 +1,2 @@
 local player = tdengine.find_entity('Player')
-tdengine.teleport_entity(player.id, .2, .2)
-tdengine.snap_to_player()
+tdengine.teleport_entity_by_offset(player.id, .2, .2)

@@ -138,16 +138,16 @@ void PhysicsEngine::update(float dt) {
 		moved_entities.push_back(request.entity);
 
 		auto mover_position = get_position(request.entity);
-
-		// @hack 2020/10/04: Normally, wish describes an offset from where you currently are.
-		// To make teleport_entity() not be complicated, when we don't care about collision we treat it as a position, not an offset
-		if (request.flags & MoveFlags::BypassCollision) {
+		if (request.flags & MoveFlags::AbsolutePosition) {
 			*mover_position = request.wish;
+		} else {
+			*mover_position += request.wish;
+		}
+
+		if (request.flags & MoveFlags::BypassCollision) {
 			continue;
 		}
 
-		if (request.flags & MoveFlags::AbsolutePosition) *mover_position = request.wish;
-		else *mover_position += request.wish;
 		auto mover_box = Center_Box::from_entity(request.entity);
 
 		// Handle regular collisions
