@@ -1,7 +1,7 @@
 return {
    components = {
 	  Graphic = {
-		 layer = 10,
+		 layer = 2,
 		 flags = tdengine.render_flags.screen_position
 	  },
 	  Animation = {

@@ -1037,6 +1037,22 @@ the librarian is kindly and mysterious
   - enable a shader for the pink
 - unzip screen shader
 
+i want to have shared knowledge of the team between entities. which
+just means another entity that stores the team state for the
+opponent. 
+
+i can create that thing in the battle entity.
+
+i can skip the HUD for now.
+
+next thing is once everything is slid in, i need to display the first
+text on the menu.
+
+there are really two "menus": one is a text box, that displays the
+flavor and what's happening in the battle. the second is the true
+menu, for choosing your moves and stuff. i can have entities for
+both, and just hide and show them as appropriate
+
 ** 08/10/2021
 hello, let's become a bit more serious.
 
