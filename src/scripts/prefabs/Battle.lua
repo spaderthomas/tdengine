@@ -1,0 +1,5 @@
+return {
+  components = {
+	Input = {}
+  }
+}

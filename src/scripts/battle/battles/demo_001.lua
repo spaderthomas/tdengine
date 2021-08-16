@@ -2,6 +2,7 @@ return {
   tag = 'demo_001',
   background = 'bg_battle_grass',
   trainer = 'trainer_swimmer',
+  intro_text = 'SWIMMER JARED wants to moisten up!',
   team = {
 	{
 	  name = 'oliver',

@@ -27,7 +27,8 @@ function Position:init(params)
 	tdengine.log('@bad_position_params: ' .. inspect(self.parent.id) .. inspect(params))
 	 self.world = { x = 0, y = 0 }
   end
-  
+
+  self.original_position = self.world
   tdengine.register_position(self.parent.id)
 end
 
@@ -39,6 +40,10 @@ function Position:save()
   return {
 	world = { x = self.world.x, y = self.world.y }
   }
+end
+
+function Position:return_to_original()
+  tdengine.teleport_entity(self.parent.id, self.original_position.x, self.original_position.y)
 end
 
 function Position:update()

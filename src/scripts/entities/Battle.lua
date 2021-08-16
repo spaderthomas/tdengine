@@ -1,9 +1,15 @@
 Battle = tdengine.entity('Battle')
 
+local GLFW = require('glfw')
+
 local BattleState = {
   MovingPlatforms = 'MovingPlatforms',
   SlidingHud = 'SlidingHud',
   ShowingIntroText = 'ShowingIntroText',
+  WaitingForLeadText = 'WaitingForLeadText',
+  WaitingToPlayLeadAnimation = 'WaitingToPlayLeadAnimation',
+  PlayingLeadAnimation = 'PlayingLeadAnimation',
+  SendingOpponentLead = 'SendingOpponentLead',
   WaitingForInput = 'WaitingForInput'
 }
 
@@ -15,34 +21,35 @@ local PlatformType = {
 
 local platforms = {}
 platforms[PlatformType.Player] = {
-  name = 'SlidingSprite',
+  name = 'Sprite',
   tag = PlatformType.Player,
-  params = {
-	final_position = tdengine.vec2(.25, .355),
-	time = 1
-  },
   components = {
 	Position = {
 	  world = { x = -.25, y = .355 }
 	},
 	Animation = {
 	  current = 'platform_grass_player'
+	},
+	Slide = {
+	  waypoints = { tdengine.vec2(.25, .355) },
+	  times = { 1 }
 	}
   }
 }
+
 platforms[PlatformType.Opponent] = {
   name = 'Sprite',
   tag = PlatformType.Opponent,
-  params = {
-	final_position = tdengine.vec2(.65, .65 ),
-	time = 1
-  },
   components = {
 	Position = {
 	  world = { x = 1.3, y = .65 }
 	},
 	Animation = {
 	  current = 'platform_grass_opponent'
+	},
+	Slide = {
+	  waypoints = { tdengine.vec2(.65, .65 ) },
+	  times = { 1 }
 	}
   }
 }
@@ -97,53 +104,7 @@ local player_sprite = {
 }
 
 -- HUD stuff
-local HudTypes = {
-  Player = 'Player',
-  Opponent = 'Opponent'
-}
 
-local arrows = {
-  player = {
-	name = 'SlidingSprite',
-	tag = 'player_hud_arrow',
-	params = {
-	  final_position = tdengine.vec2(.157, .8),
-	  time = 1
-	},
-	components = {
-	  Graphic = {
-		layer = 2
-	  },
-	  Animation = {
-		current = 'battle_hud_arrow_right'
-	  },
-	  Position = {
-		world = { x = -.165, y = .8 }
-	  }
-	}
-  },
-  opponent = {
-	name = 'SlidingSprite',
-	tag = 'opponent_hud_arrow',
-	params = {
-	  final_position = tdengine.vec2(.843, .45),
-	  time = 1
-	},
-	components = {
-	  Graphic = {
-		layer = 2
-	  },
-	  Animation = {
-		current = 'battle_hud_arrow_left'
-	  },
-	  Position = {
-		world = { x = 1.1625, y = .45 }
-	  }
-	}
-  }
-}
-
---
 local menu = {
   name = 'BattleMenu',
   params = {},
@@ -170,40 +131,47 @@ function Battle:setup()
   local graphic = player:get_component('Graphic')
   graphic:hide()
 
+  -- Create entities that store the team state
+  local opponent_team_data = {
+	tag = 'opponent_team',
+	params = self.data.team,
+	components = {}
+  }
+  tdengine.create_entity('Team', opponent_team_data)
+  self.opponent_team = tdengine.find_entity_by_tag(opponent_team_data.tag)
+
+  self.overview_huds = {
+	opponent = {
+	  entity = nil,
+	  data = {
+		tag = 'opponent_overview_hud',
+		params = {
+		  team = self.opponent_team,
+		  kind = OverviewHud.Kind.Opponent
+		}
+	  }
+	}
+  }
+  tdengine.create_entity('OverviewHud', self.overview_huds.opponent.data)
+  local tag = self.overview_huds.opponent.data.tag
+  self.overview_huds.opponent.entity = tdengine.find_entity_by_tag(tag)
+  
   -- Load up that background
   background.components.Animation.current = self.data.background
   tdengine.create_entity('Background', background)
-
+  
   -- Load up them platforms to slide in
   tdengine.create_entity('SlidingSprite', platforms[PlatformType.Player])
   self.player_platform = tdengine.find_entity_by_tag(PlatformType.Player)
   tdengine.create_entity('SlidingSprite', platforms[PlatformType.Opponent])
   self.opponent_platform = tdengine.find_entity_by_tag(PlatformType.Opponent)
 
+  
   -- And the sprites which will be attached to the platforms
   opponent_sprite.components.Animation.current = self.data.trainer
   tdengine.create_entity('Sprite', opponent_sprite)
   tdengine.create_entity('Sprite', player_sprite)
 
-  -- Load entities for the HUD
-  tdengine.create_entity('SlidingSprite', arrows.player)
-  self.player_arrow = tdengine.find_entity_by_tag(arrows.player.tag)
-
-  tdengine.create_entity('SlidingSprite', arrows.opponent)
-  self.opponent_arrow = tdengine.find_entity_by_tag(arrows.opponent.tag)
-
-  self.hud_balls = {}
-  for i = 0,5 do
-	local ball_data = {}
-	ball_data.tag = 'player_ball_' .. tostring(i)
-	ball_data.params = {
-	  index = i,
-	  time = .2
-	}
-	
-	tdengine.create_entity('BattleHudBall', ball_data)
-	self.hud_balls[i] = tdengine.find_entity_by_tag(ball_data.tag)
-  end
 
   -- Make the menu. And then hide it. We have two menus -- one for displaying
   -- text, because thats what the text box is for. And then one for displaying
@@ -229,45 +197,48 @@ function Battle:cleanup()
   graphic:show()
 end
 
+function Battle:build_lead_message()
+  local lead_name = self.opponent_team:get_lead().name
+  local lead = tdengine.fetch_module_data('battle/souls/' .. lead_name)
+  local format = '%s sent out %s!'
+  return string.format(format, self.trainer.flavor_name, lead.flavor_name)
+end
+
 function Battle:update(dt)
   if self.state == BattleState.Start then
 	-- Kick off the platforms moving
-	self.player_platform.start = true
-	self.opponent_platform.start = true
+	self.player_platform:next_waypoint()
+	self.opponent_platform:next_waypoint()
 	self.state = BattleState.MovingPlatforms
 	
   elseif self.state == BattleState.MovingPlatforms then
 	-- Nothing to do but wait for the platforms to slide into place
 	if self.player_platform.done and self.opponent_platform.done then
-	  self.player_arrow.start = true
-	  self.opponent_arrow.start = true
-
-	  self.hud_balls[0].start = true
-	  self.current_ball = 0
-
-	  self.text_box:begin('BABIDI1998 would like to battle!')
-
+	  self.overview_huds.opponent.entity:slide_in()
+	  self.text_box:begin(self.data.intro_text)
 	  self.state = BattleState.SlidingHud
 	end
 	
   elseif self.state == BattleState.SlidingHud then
-	local ball = self.hud_balls[self.current_ball]
-	if ball.done then
-	  self.current_ball = self.current_ball + 1
-	  local next_ball = self.hud_balls[self.current_ball]
-	  if next_ball then
-		next_ball.start = true
-	  end
-	end
-
-	local done = true
-	done = done and self.player_arrow.done
-	done = done and self.opponent_arrow.done
-	done = done and self.current_ball == 6
-	done = done and self.text_box.done
-	if done then
+	if self.overview_huds.opponent.entity.state == OverviewHud.State.FinishedSliding then
 	  self.state = BattleState.ShowingIntroText
 	end
   elseif self.state == BattleState.ShowingIntroText then
+	local input = self:get_component('Input')
+	if input:was_pressed(GLFW.Keys.SPACE) then
+	  self.text_box:begin(self:build_lead_message())
+	  self.state = BattleState.WaitingForLeadText
+	end
+  elseif self.state == BattleState.WaitingForLeadText then
+	if self.text_box.done then
+	  self.state = BattleState.WaitingToPlayLeadAnimation
+	  self.time_until_lead_animation = 1
+	end
+  elseif self.state == BattleState.WaitingToPlayLeadAnimation then
+	self.time_until_lead_animation = self.time_until_lead_animation - dt
+	if double_eq(self.time_until_lead_animation, 0, .0001) then
+	  self.overview_huds.opponent.entity:slide_out()
+	  self.state = BattleState.PlayingLeadAnimation
+	end
   end
 end
