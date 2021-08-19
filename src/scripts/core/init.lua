@@ -33,10 +33,14 @@ function tdengine.initialize()
   tdengine.load_markers()
   tdengine.load_story_markers()
   tdengine.load_default_state()
+
+  tdengine.log('@static_initialization_complete')
 end
 
 function tdengine.load_editor()
+  tdengine.log('@creating_editor')
   tdengine.create_entity('Editor', {})
+  tdengine.log('@created_editor')
 end
 
 function tdengine.load_animations()

@@ -123,6 +123,8 @@ imgui.internal.draw_table_editor = function(editor)
   if submit then
 	local key = imgui.InputTextContents(editor.key_id)
 	imgui.InputTextSetContents(editor.key_id, '')
+	key = tonumber(key) or key
+	
 	local value = imgui.InputTextContents(editor.value_id)
 	imgui.InputTextSetContents(editor.value_id, '')
 	

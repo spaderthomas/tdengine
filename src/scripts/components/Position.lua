@@ -15,17 +15,20 @@ function Position:init(params)
   elseif params.tag then
 	local entity = tdengine.find_entity_by_tag(params.tag)
 	local offset = params.offset or tdengine.vec2(0, 0)
-	print(inspect(offset))
 	if entity then
 	  tdengine.attach_position(self.parent.id, entity.id, offset.x, offset.y)
 	  self.world = { x = 0, y = 0 }
+	else
+	  print('fsdafasdfasd fasdfasdfasdfadsfasdfasdfasdfasdfasdfasd')
 	end
   end
 
   -- Did whatever method we picked fail to actually fill in the position?
   if not self.world.x or not self.world.y then
-	tdengine.log('@bad_position_params: ' .. inspect(self.parent.id) .. inspect(params))
-	 self.world = { x = 0, y = 0 }
+	local entity_string = self.parent:get_name() .. '(' .. inspect(self.parent.id) .. ')'
+	tdengine.log('@bad_position_params: ' .. entity_string)
+	tdengine.log('here are the bad position params: ' .. inspect(params))
+	self.world = { x = 0, y = 0 }
   end
 
   self.original_position = self.world

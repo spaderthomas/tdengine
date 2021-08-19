@@ -1,17 +1,19 @@
-Slide = tdengine.entity('Slide')
+Slide = tdengine.component('Slide')
 
 function Slide:init(params)
   self.waypoints = params.waypoints
   for index, waypoint in pairs(self.waypoints) do
 	self.waypoints[index] = tdengine.vec2(waypoint)
   end
-  self.target_waypoint = 0
   self.times = params.times
-
-  self.position = self.parent:get_component('Position')
+  self.target_waypoint = 0
 
   self.start = false
   self.done = false
+end
+
+function Slide:late_init()
+  self.position = self.parent:get_component('Position')
 end
 
 function Slide:next_waypoint()

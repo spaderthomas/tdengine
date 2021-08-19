@@ -161,9 +161,9 @@ function Battle:setup()
   tdengine.create_entity('Background', background)
   
   -- Load up them platforms to slide in
-  tdengine.create_entity('SlidingSprite', platforms[PlatformType.Player])
+  tdengine.create_entity('Sprite', platforms[PlatformType.Player])
   self.player_platform = tdengine.find_entity_by_tag(PlatformType.Player)
-  tdengine.create_entity('SlidingSprite', platforms[PlatformType.Opponent])
+  tdengine.create_entity('Sprite', platforms[PlatformType.Opponent])
   self.opponent_platform = tdengine.find_entity_by_tag(PlatformType.Opponent)
 
   
@@ -207,8 +207,8 @@ end
 function Battle:update(dt)
   if self.state == BattleState.Start then
 	-- Kick off the platforms moving
-	self.player_platform:next_waypoint()
-	self.opponent_platform:next_waypoint()
+    --self.player_platform:get_component('Slide'):next_waypoint()
+	--self.opponent_platform:get_component('Slide'):next_waypoint()
 	self.state = BattleState.MovingPlatforms
 	
   elseif self.state == BattleState.MovingPlatforms then

@@ -176,18 +176,31 @@ function tdengine.create_entity(name, data)
   
   tdengine.entities[id] = entity
 
+  local merge_component_data = function(prefab, param_data)
+	-- No parameters passed into the component means nothing to merge.
+	if not param_data then return end
+
+	-- Go through each component kind that has extra parameters and either:
+	for component_name, component_data in pairs(param_data) do
+	  local prefab_data = prefab[component_name]
+
+	  -- Make them ALL the params if the prefab doesn't have this component
+	  if not prefab_data then prefab[component_name] = {} end
+
+	  -- Add or override entries from the prefab
+	  for key, value in pairs(component_data) do
+		prefab_data[key] = value
+	  end
+	end
+  end
+  
   -- Load the prefab to create any default compononents
   local prefab = tdengine.fetch_module_data_quiet('prefabs/' .. name)
   if prefab then
+	merge_component_data(prefab.components, data.components)
 	for name, component in pairs(prefab.components) do
-	  local param_components = data.components or {}
-
-	  -- Merge the component data passed in with what's in the prefab
-	  local param_component = param_components[name] or {}
-	  for key, value in pairs(param_component) do
-		component[key] = value
-	  end
-
+	  print('component data for ' .. name .. ' coming in hot:')
+	  print(inspect(component))
 	  entity:add_component(name, component)
 	end
   end
@@ -226,7 +239,7 @@ function tdengine.create_component(entity_id, name, params)
 
   ComponentType = _G[name]
   if not ComponentType then
-	print('create_component(): no such component ' .. name)
+	tdengine.log('create_component(): no such component ' .. name)
 	return
   end
   
