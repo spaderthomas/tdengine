@@ -717,21 +717,36 @@ Defer<F> operator+( defer_dummy, F&& f )
 #define defer auto _defer( __LINE__ ) = defer_dummy( ) + [ & ]( )
 
 using FileChangedCallback = std::function<void()>;
+using FileCreatedCallback = std::function<void(std::string)>;
 struct FileWatcher {
 	std::map<std::string, std::filesystem::file_time_type> time_map;
 	std::map<std::string, FileChangedCallback> action_map;
-
-	void watch(AbsolutePath file, FileChangedCallback on_change) {
-		time_map[file.path] = std::filesystem::last_write_time(file.path);
-		action_map[file.path] = on_change;
-	}
+	std::map<std::string, FileCreatedCallback> dir_watchers;
 
 	void watch(std::string file, FileChangedCallback on_change) {
+		if (file.find('#') != std::string::npos) return;
 		time_map[file] = std::filesystem::last_write_time(file);
 		action_map[file] = on_change;
 	}
 
+	void watch_dir(std::string dir, FileCreatedCallback on_create) {
+		if (!std::filesystem::is_directory(dir)) return;
+
+		tdns_log.write("@watch_dir: " + dir, Log_Flags::File);
+		dir_watchers[dir] = on_create;
+		for (directory_iterator it(dir); it != directory_iterator(); it++) {
+			if (it->is_directory()) {
+				watch_dir(it->path(), on_create);
+			} else {
+				auto file_path = it->path().string();
+				if (file_path.find('#') != std::string::npos) continue;
+				time_map[file_path] = std::filesystem::last_write_time(file_path);
+			}
+		}
+	}
+
 	void update() {
+		// Run through each regular file that we're watching
 		std::error_code error;
 		std::vector<std::string> invalid;
 		for (auto& [path, last_known_write_time] : time_map) {
@@ -751,6 +766,31 @@ struct FileWatcher {
 			time_map.erase(path);
 			action_map.erase(path);
 		}
+
+		// Check watched directories for new files
+		for (auto& [dir, on_create] : dir_watchers) {
+			check_dir_for_new_files(dir);
+		}
+	}
+
+	void check_dir_for_new_files(std::string dir) {
+		std::error_code error;
+		for (directory_iterator it(dir); it != directory_iterator(); it++) {
+			if (it->is_directory()) {
+				check_dir_for_new_files(it->path().string());
+			} else {
+				auto file_path = it->path().string();
+
+				// Fucking emacs autosave files
+				if (file_path.find('#') != std::string::npos) continue;
+				
+				if (!time_map.count(file_path)) {
+					time_map[file_path] = std::filesystem::last_write_time(file_path, error);
+					auto& on_create = dir_watchers[dir];
+					on_create(file_path);
+				}
+			}
+		}			
 	}
 	
 };

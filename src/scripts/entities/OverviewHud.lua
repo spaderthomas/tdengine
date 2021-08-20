@@ -13,53 +13,50 @@ OverviewHud.State = {
 
 local arrows = {
   [OverviewHud.Kind.Opponent] = {
-	name = 'SlidingSprite',
 	tag = 'opponent_hud_arrow',
-	params = {
-	  waypoints = {
-		tdengine.vec2(.157, .8),
-		tdengine.vec2(1.157, .8),
-	  },
-	  times = {
-		1,
-		1
-	  }
-	},
 	components = {
 	  Graphic = {
-		layer = 2
+		layer = 3
 	  },
 	  Animation = {
 		current = 'battle_hud_arrow_right'
 	  },
 	  Position = {
 		world = { x = -.165, y = .8 }
-	  }
+	  },
+	  Slide = {
+		waypoints = {
+		  tdengine.vec2(.157, .8),
+		  tdengine.vec2(1.157, .8),
+		},
+		times = {
+		  1,
+		  1
+		}
+	  },
 	}
   },
   
   [OverviewHud.Kind.Player] = {
-	name = 'SlidingSprite',
 	tag = 'player_hud_arrow',
-	params = {
-	  waypoints = {
-		tdengine.vec2(.843, .45),
-		tdengine.vec2(-.157, .45)
-	  },
-	  times = {
-		1,
-		1
-	  }
-	},
 	components = {
 	  Graphic = {
-		layer = 2
+		layer = 3
 	  },
 	  Animation = {
 		current = 'battle_hud_arrow_left'
 	  },
 	  Position = {
 		world = { x = 1.1625, y = .45 }
+	  },	params = {
+		waypoints = {
+		  tdengine.vec2(.843, .45),
+		  tdengine.vec2(-.157, .45)
+		},
+		times = {
+		  1,
+		  1
+		}
 	  }
 	}
   }
@@ -76,8 +73,8 @@ function OverviewHud:init(params)
   self.state = OverviewHud.State.Idle
 
   local arrow = arrows[self.kind]
-  tdengine.create_entity('SlidingSprite', arrow)
-  self.arrow = tdengine.find_entity_by_tag(arrow.tag)
+  tdengine.create_entity('Sprite', arrow)
+  self.arrow = tdengine.find_entity_by_tag(arrow.tag):get_component('Slide')
 
   self.hud_balls = {}
   for i = 0,5 do

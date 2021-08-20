@@ -72,6 +72,11 @@ void init_lua() {
 }
 
 void LuaState::script_dir(ScriptPath path) {
+	file_watcher.watch_dir(path.path, [&](auto new_script) {
+		tdns_log.write("@load_new_script: " + new_script);
+		this->script_file(new_script);
+	});
+	
 	for (auto it = directory_iterator(path.path); it != directory_iterator(); it++) {
 		std::string next_path = it->path().string();
 		normalize_path(next_path);
@@ -99,8 +104,8 @@ void LuaState::script_file(ScriptPath path) {
 		tdns_log.write(error.what());
 	}
 
-	file_watcher.watch(path, [this, path](){
-		tdns_log.write("Reloaded Lua script: " + path.path);
+	file_watcher.watch(path.path, [this, path](){
+		tdns_log.write("@reload_script: " + path.path);
 		this->script_file(path);
 	});
 }

@@ -13,47 +13,6 @@ local BattleState = {
   WaitingForInput = 'WaitingForInput'
 }
 
--- Trainer platforms
-local PlatformType = {
-  Player = 'player_platform',
-  Opponent = 'opponent_platform'
-}
-
-local platforms = {}
-platforms[PlatformType.Player] = {
-  name = 'Sprite',
-  tag = PlatformType.Player,
-  components = {
-	Position = {
-	  world = { x = -.25, y = .355 }
-	},
-	Animation = {
-	  current = 'platform_grass_player'
-	},
-	Slide = {
-	  waypoints = { tdengine.vec2(.25, .355) },
-	  times = { 1 }
-	}
-  }
-}
-
-platforms[PlatformType.Opponent] = {
-  name = 'Sprite',
-  tag = PlatformType.Opponent,
-  components = {
-	Position = {
-	  world = { x = 1.3, y = .65 }
-	},
-	Animation = {
-	  current = 'platform_grass_opponent'
-	},
-	Slide = {
-	  waypoints = { tdengine.vec2(.65, .65 ) },
-	  times = { 1 }
-	}
-  }
-}
-
 -- Background
 local background = {
   components = {
@@ -67,51 +26,6 @@ local background = {
   },
   name = "Background",
   params = {}
-}
-
--- Trainer sprites
-local opponent_sprite = {
-  name = 'Sprite',
-  tag = 'opponent',
-  components = {
-	Graphic = {
-	  layer = 2
-	},
-	Animation = {
-	},
-	Position = {
-	  tag = PlatformType.Opponent,
-	  offset = { x = 0, y = .1 }
-	}
-  }
-}
-
-local player_sprite = {
-  name = 'Sprite',
-  tag = 'player',
-  components = {
-	Graphic = {
-	  layer = 2
-	},
-	Animation = {
-	  current = 'boon_back'
-	},
-	Position = {
-	  tag = PlatformType.Player,
-	  offset = { x = .05, y = .07825 }
-	}
-  }
-}
-
--- HUD stuff
-
-local menu = {
-  name = 'BattleMenu',
-  params = {},
-}
-
-local text_box = {
-  name = 'TextBox'
 }
 
 function Battle:init(params)
@@ -159,25 +73,20 @@ function Battle:setup()
   -- Load up that background
   background.components.Animation.current = self.data.background
   tdengine.create_entity('Background', background)
+
+  -- Platforms
+  tdengine.create_entity('BattlePlatforms', {})
+  self.platforms = tdengine.find_entity('BattlePlatforms')
+
+  -- Simulator
+  tdengine.create_entity('Simulator', {})
+  self.platforms = tdengine.find_entity('Simulator')
   
-  -- Load up them platforms to slide in
-  tdengine.create_entity('Sprite', platforms[PlatformType.Player])
-  self.player_platform = tdengine.find_entity_by_tag(PlatformType.Player)
-  tdengine.create_entity('Sprite', platforms[PlatformType.Opponent])
-  self.opponent_platform = tdengine.find_entity_by_tag(PlatformType.Opponent)
-
-  
-  -- And the sprites which will be attached to the platforms
-  opponent_sprite.components.Animation.current = self.data.trainer
-  tdengine.create_entity('Sprite', opponent_sprite)
-  tdengine.create_entity('Sprite', player_sprite)
-
-
   -- Make the menu. And then hide it. We have two menus -- one for displaying
   -- text, because thats what the text box is for. And then one for displaying
   -- choices. This one is the one that does choices.
   menu.params = self.data
-  tdengine.create_entity('BattleMenu', menu)
+  tdengine.create_entity('BattleMenu', {})
   self.battle_menu = tdengine.find_entity('BattleMenu')
   local graphic = self.battle_menu:get_component('Graphic')
   graphic:hide()
@@ -207,13 +116,12 @@ end
 function Battle:update(dt)
   if self.state == BattleState.Start then
 	-- Kick off the platforms moving
-    --self.player_platform:get_component('Slide'):next_waypoint()
-	--self.opponent_platform:get_component('Slide'):next_waypoint()
+	self.platforms:next_waypoint()
 	self.state = BattleState.MovingPlatforms
 	
   elseif self.state == BattleState.MovingPlatforms then
 	-- Nothing to do but wait for the platforms to slide into place
-	if self.player_platform.done and self.opponent_platform.done then
+	if self.platforms:done() then
 	  self.overview_huds.opponent.entity:slide_in()
 	  self.text_box:begin(self.data.intro_text)
 	  self.state = BattleState.SlidingHud
@@ -223,22 +131,26 @@ function Battle:update(dt)
 	if self.overview_huds.opponent.entity.state == OverviewHud.State.FinishedSliding then
 	  self.state = BattleState.ShowingIntroText
 	end
+	
   elseif self.state == BattleState.ShowingIntroText then
 	local input = self:get_component('Input')
 	if input:was_pressed(GLFW.Keys.SPACE) then
 	  self.text_box:begin(self:build_lead_message())
 	  self.state = BattleState.WaitingForLeadText
 	end
+	
   elseif self.state == BattleState.WaitingForLeadText then
 	if self.text_box.done then
 	  self.state = BattleState.WaitingToPlayLeadAnimation
 	  self.time_until_lead_animation = 1
 	end
+	
   elseif self.state == BattleState.WaitingToPlayLeadAnimation then
 	self.time_until_lead_animation = self.time_until_lead_animation - dt
 	if double_eq(self.time_until_lead_animation, 0, .0001) then
 	  self.overview_huds.opponent.entity:slide_out()
 	  self.state = BattleState.PlayingLeadAnimation
 	end
+	
   end
 end

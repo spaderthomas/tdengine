@@ -1,7 +1,7 @@
 return {
   components = {
 	Graphic = {
-	  layer = 2
+	  layer = 3
 	},
 	Animation = {
 	  current = 'unknown'

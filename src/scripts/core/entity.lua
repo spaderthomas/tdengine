@@ -182,12 +182,13 @@ function tdengine.create_entity(name, data)
 
 	-- Go through each component kind that has extra parameters and either:
 	for component_name, component_data in pairs(param_data) do
-	  local prefab_data = prefab[component_name]
 
 	  -- Make them ALL the params if the prefab doesn't have this component
-	  if not prefab_data then prefab[component_name] = {} end
+	  if not prefab[component_name] then prefab[component_name] = {} end
+	  
 
 	  -- Add or override entries from the prefab
+	  local prefab_data = prefab[component_name]
 	  for key, value in pairs(component_data) do
 		prefab_data[key] = value
 	  end
@@ -199,8 +200,6 @@ function tdengine.create_entity(name, data)
   if prefab then
 	merge_component_data(prefab.components, data.components)
 	for name, component in pairs(prefab.components) do
-	  print('component data for ' .. name .. ' coming in hot:')
-	  print(inspect(component))
 	  entity:add_component(name, component)
 	end
   end
