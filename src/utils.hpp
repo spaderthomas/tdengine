@@ -736,7 +736,7 @@ struct FileWatcher {
 		dir_watchers[dir] = on_create;
 		for (directory_iterator it(dir); it != directory_iterator(); it++) {
 			if (it->is_directory()) {
-				watch_dir(it->path(), on_create);
+				watch_dir(it->path().string(), on_create);
 			} else {
 				auto file_path = it->path().string();
 				if (file_path.find('#') != std::string::npos) continue;
