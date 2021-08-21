@@ -486,10 +486,36 @@ function Editor:draw_entity_viewer()
   self.filter:Draw("Filter by name")
   local entity_hovered_in_list = nil
 
+  local sorted_ids = {}
   for id, entity in pairs(tdengine.entities) do
+	table.insert(sorted_ids, id)
+  end
+
+  local compare_entity_ids = function(a, b)
+	local entity_a = tdengine.entities[a]
+	local entity_b = tdengine.entities[b]
+
+	local name_a = entity_a:get_name()
+	local name_b = entity_b:get_name()
+	if name_a == name_b then
+	  return entity_a.id < entity_b.id
+	else
+	  return name_a < name_b
+	end
+  end
+  table.sort(sorted_ids, compare_entity_ids)
+  
+  for index, id in pairs(sorted_ids) do
+	local entity = tdengine.entities[id]
 	local name = entity:get_name()
 	local sid = tostring(id)
-	if self.filter:PassFilter(name) or self.filter:PassFilter(sid) then
+	local tag = entity.tag
+
+	local pass = false
+	pass = pass or self.filter:PassFilter(name)
+	pass = pass or self.filter:PassFilter(sid)
+	pass = pass or (tag and self.filter:PassFilter(tag))
+	if pass then
 	  imgui.PushID(id .. '##list_view')
 
 	  -- Write the selected node in a different color

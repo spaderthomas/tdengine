@@ -6,6 +6,7 @@ OverviewHud.Kind = {
 }
 
 OverviewHud.State = {
+  Idle = 'Idle',
   SlidingIn = 'SlidingIn',
   SlidingOut = 'SlidingOut',
   FinishedSliding = 'FinishedSliding',

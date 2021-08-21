@@ -1,7 +1,32 @@
+Player = tdengine.entity('Player')
+
 local inspect = require('inspect')
 local GLFW = require('glfw')
 
-Player = tdengine.entity('Player')
+local team = {
+  tag = 'player_team',
+  params = {
+	name = 'oliver',
+	essences = {
+	  hp = 50,
+	  attack = 10,
+	  defense = 30,
+	  special_attack = 10,
+	  special_defense = 10,
+	  speed = 15
+	},
+	passive = {
+	  'cursed_knowledge'
+	},
+	moves = {
+	  'draco_meteor',
+	  'calm_mind',
+	  'surf',
+	  'recover'
+	}
+  }
+}
+
 function Player:init(params)
   tdengine.register_collider(self.id)
   tdengine.register_player(self.id)
@@ -11,6 +36,10 @@ function Player:init(params)
   self:should_save(false)
   
   self.movement_enabled = true
+
+  local team = tdengine.create_entity('Team', team)
+  self.team = tdengine.find_entity_by_id(team)
+  self.team:persist()
 end
 
 function Player:handle_movement()

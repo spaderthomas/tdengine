@@ -9,6 +9,8 @@ BattleSimulator.ResultKind = {
 }
 
 function BattleSimulator:init(params)
+  self.player = tdengine.find_entity_by_tag('player_team')
+  self.opponent = tdengine.find_entity_by_tag('opponent_team')
 end
 
 function BattleSimulator:update(dt)
@@ -20,7 +22,6 @@ function BattleSimulator:submit(action)
 	  return {
 		{
 		  kind = BattleSimulator.ResultKind.MakeActive,
-		  
 		}
 	  }
 	end

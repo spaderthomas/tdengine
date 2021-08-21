@@ -1,6 +1,6 @@
 return {
    {
 	  name = 'Dialogue',
-	  dialogue = 'test_005'
+	  dialogue = 'introduce_hub_000'
    }
 }

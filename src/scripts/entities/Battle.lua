@@ -7,10 +7,9 @@ local BattleState = {
   SlidingHud = 'SlidingHud',
   ShowingIntroText = 'ShowingIntroText',
   WaitingForLeadText = 'WaitingForLeadText',
-  WaitingToPlayLeadAnimation = 'WaitingToPlayLeadAnimation',
-  PlayingLeadAnimation = 'PlayingLeadAnimation',
-  SendingOpponentLead = 'SendingOpponentLead',
-  WaitingForInput = 'WaitingForInput'
+  WaitingToSlideOutHud = 'WaitingToSlideOutHud',
+  SlidingOutHud = 'SlidingOutHud',
+  SlidingOutOpponentTrainer = 'SlidingOutOpponentTrainer',
 }
 
 -- Background
@@ -79,13 +78,12 @@ function Battle:setup()
   self.platforms = tdengine.find_entity('BattlePlatforms')
 
   -- Simulator
-  tdengine.create_entity('Simulator', {})
-  self.platforms = tdengine.find_entity('Simulator')
+  tdengine.create_entity('BattleSimulator', {})
+  self.simulator = tdengine.find_entity('BattleSimulator')
   
   -- Make the menu. And then hide it. We have two menus -- one for displaying
   -- text, because thats what the text box is for. And then one for displaying
   -- choices. This one is the one that does choices.
-  menu.params = self.data
   tdengine.create_entity('BattleMenu', {})
   self.battle_menu = tdengine.find_entity('BattleMenu')
   local graphic = self.battle_menu:get_component('Graphic')
@@ -141,16 +139,31 @@ function Battle:update(dt)
 	
   elseif self.state == BattleState.WaitingForLeadText then
 	if self.text_box.done then
-	  self.state = BattleState.WaitingToPlayLeadAnimation
-	  self.time_until_lead_animation = 1
+	  self.state = BattleState.WaitingToSlideOutHud
+	  self.time_until_lead_animation = dt
 	end
 	
-  elseif self.state == BattleState.WaitingToPlayLeadAnimation then
+  elseif self.state == BattleState.WaitingToSlideOutHud then
 	self.time_until_lead_animation = self.time_until_lead_animation - dt
 	if double_eq(self.time_until_lead_animation, 0, .0001) then
 	  self.overview_huds.opponent.entity:slide_out()
-	  self.state = BattleState.PlayingLeadAnimation
+	  self.state = BattleState.SlidingOutHud
 	end
+
+  elseif self.state == BattleState.SlidingOutHud then
+	if self.overview_huds.opponent.entity.state == OverviewHud.State.FinishedSliding then
+	  self.platforms:slide_out_opponent_sprite()
+	  self.state = BattleState.SlidingOutOpponentTrainer
+	end
+
+  elseif self.state == BattleState.SlidingOutOpponentTrainer then
+	if self.platforms:done() then
+	  local lead = self.opponent_team:get_lead()
+	  
+	end
+	
+  else
+	self.opponent_team:make_active(1)
 	
   end
 end

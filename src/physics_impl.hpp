@@ -316,7 +316,10 @@ void PhysicsEngine::remove_entity(int entity) {
 void PhysicsEngine::detach_position(int entity) {
 	auto& attached = attached_entities;
 	auto it = std::remove_if(attached.begin(), attached.end(), [entity](auto& attachment) {
-		return attachment.entity == entity;
+		bool uses_entity = false;
+		uses_entity |= attachment.entity == entity;
+		uses_entity |= attachment.attached_to == entity;
+		return uses_entity;
 	});
 	
 	attached.erase(it, attached.end());

@@ -18,8 +18,6 @@ function Position:init(params)
 	if entity then
 	  tdengine.attach_position(self.parent.id, entity.id, offset.x, offset.y)
 	  self.world = { x = 0, y = 0 }
-	else
-	  print('fsdafasdfasd fasdfasdfasdfadsfasdfasdfasdfasdfasdfasd')
 	end
   end
 
