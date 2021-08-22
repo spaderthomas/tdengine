@@ -10,6 +10,8 @@ local BattleState = {
   WaitingToSlideOutHud = 'WaitingToSlideOutHud',
   SlidingOutHud = 'SlidingOutHud',
   SlidingOutOpponentTrainer = 'SlidingOutOpponentTrainer',
+  SlidingOutPlayer = 'SlidingOutPlayer',
+  WaitingForInput = 'WaitingForInput',
 }
 
 -- Background
@@ -52,6 +54,8 @@ function Battle:setup()
   }
   tdengine.create_entity('Team', opponent_team_data)
   self.opponent_team = tdengine.find_entity_by_tag(opponent_team_data.tag)
+  
+  self.player_team = tdengine.find_entity_by_tag('player_team')
 
   self.overview_huds = {
 	opponent = {
@@ -105,8 +109,7 @@ function Battle:cleanup()
 end
 
 function Battle:build_lead_message()
-  local lead_name = self.opponent_team:get_lead().name
-  local lead = tdengine.fetch_module_data('battle/souls/' .. lead_name)
+  local lead = self.opponent_team:get_lead():get_static_data()
   local format = '%s sent out %s!'
   return string.format(format, self.trainer.flavor_name, lead.flavor_name)
 end
@@ -159,11 +162,22 @@ function Battle:update(dt)
   elseif self.state == BattleState.SlidingOutOpponentTrainer then
 	if self.platforms:done() then
 	  local lead = self.opponent_team:get_lead()
-	  
+      self.platforms:enter_opponent_soul(lead)
+      self.platforms:slide_out_player_sprite()
+      self.state = BattleState.SlidingOutPlayer
 	end
-	
-  else
-	self.opponent_team:make_active(1)
-	
+
+  elseif self.state == BattleState.SlidingOutPlayer then
+    if self.platforms:done() then
+      local lead = self.player_team:get_lead()
+      self.platforms:enter_player_soul(lead)
+      self.state = BattleState.WaitingForInput
+	end
+
+  elseif self.state == BattleState.WaitingForInput then
+    self.text_box:reset()
+    local graphic = self.text_box:get_component('Graphic')
+    graphic:hide()
+
   end
 end

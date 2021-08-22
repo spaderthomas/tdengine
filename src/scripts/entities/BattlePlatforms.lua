@@ -5,6 +5,7 @@ BattlePlatforms.State = {
   Idle = 'Idle',
   Sliding = 'Sliding',
   FinishedSliding = 'FinishedSliding',
+  AnimatingLead = 'AnimatingLead'
 }
 
 BattlePlatforms.PlatformType = {
@@ -82,6 +83,11 @@ local player_sprite = {
 	Position = {
 	  tag = BattlePlatforms.PlatformType.Player,
 	  offset = { x = .05, y = .07825 }
+	},
+	Slide = {
+	  waypoints = { },
+	  times = { },
+	  loop = true
 	}
   }
 }
@@ -94,21 +100,32 @@ function BattlePlatforms:init(params)
   -- Create the platform entities. Store the slide for later so we can read / write to it.
   tdengine.create_entity('Sprite', platforms[BattlePlatforms.PlatformType.Player])
   local player_platform = tdengine.find_entity_by_tag(BattlePlatforms.PlatformType.Player)
-  self.player_slide = player_platform:get_component('Slide')
+  self.player_platform = player_platform
+  self.player_platform_slide = player_platform:get_component('Slide')
   
   tdengine.create_entity('Sprite', platforms[BattlePlatforms.PlatformType.Opponent])
   local opponent_platform = tdengine.find_entity_by_tag(BattlePlatforms.PlatformType.Opponent)
-  self.opponent_slide = opponent_platform:get_component('Slide')
+  self.opponent_platform = opponent_platform
+  self.opponent_platform_slide = opponent_platform:get_component('Slide')
 
   -- And the sprites which will be attached to the platforms
   opponent_sprite.components.Animation.current = self.battle.trainer.intro_animation
-  tdengine.create_entity('Sprite', opponent_sprite)
-  tdengine.create_entity('Sprite', player_sprite)
+  local id = tdengine.create_entity('Sprite', opponent_sprite)
+  self.opponent_sprite = tdengine.find_entity_by_id(id)
+  self.opponent_sprite_slide = self.opponent_sprite:get_component('Slide')
+  local id = tdengine.create_entity('Sprite', player_sprite)
+  self.player_sprite = tdengine.find_entity_by_id(id)
+  self.player_sprite_slide = self.player_sprite:get_component('Slide')
 end
 
 function BattlePlatforms:update(dt)
   if self.state == BattlePlatforms.State.Sliding then
-	if self.player_slide.done and self.opponent_slide.done then
+	local done = true
+	done = done and self.player_platform_slide.done
+	done = done and self.opponent_platform_slide.done
+	done = done and self.player_sprite_slide.done
+	done = done and self.opponent_sprite_slide.done
+	if done then
 	  self.state = BattlePlatforms.State.FinishedSliding
 	end
   end
@@ -122,8 +139,8 @@ function BattlePlatforms:done()
 end
 
 function BattlePlatforms:next_waypoint()
-  self.player_slide:next_waypoint()
-  self.opponent_slide:next_waypoint()
+  self.player_platform_slide:next_waypoint()
+  self.opponent_platform_slide:next_waypoint()
   self.state = BattlePlatforms.State.Sliding
 end
 
@@ -131,21 +148,41 @@ function BattlePlatforms:slide_out_sprite(sprite, target)
   tdengine.detach_position(sprite.id)
   local slide = sprite:get_component('Slide')
   local waypoints = { target }
-  local times = { .5 }
+  local times = { 1 }
   slide:set_waypoints(waypoints, times)
   slide:next_waypoint()
 
   self.state = BattlePlatforms.State.Sliding
 end
 
+function BattlePlatforms:slide_out_player_sprite()
+  local sprite = self.player_sprite
+  local position = sprite:get_component('Position')
+  local target = { x = -.2, y = position.world.y }
+  self:slide_out_sprite(sprite, target)
+end
+
 function BattlePlatforms:slide_out_opponent_sprite()
-  local sprite = tdengine.find_entity_by_tag(opponent_sprite.tag)
+  local sprite = self.opponent_sprite
   local position = sprite:get_component('Position')
   local target = { x = 1.2, y = position.world.y }
   self:slide_out_sprite(sprite, target)
 end
 
-function BattlePlatforms:slide_out_player_sprite()
-  local sprite = tdengine.find_entity_by_tag(player_sprite.tag)
-  self:slide_out_sprite(sprite)
+function BattlePlatforms:enter_soul(soul, sprite, platform)
+  local data = soul:get_static_data()
+  local animation = sprite:get_component('Animation')
+  animation:begin(data.front_sprite)
+  
+  local position = sprite:get_component('Position')
+  local offset = position.offset
+  tdengine.attach_position(sprite.id, platform.id, offset.x, offset.y)
+end
+
+function BattlePlatforms:enter_opponent_soul(soul)
+  self:enter_soul(soul, self.opponent_sprite, self.opponent_platform)
+end
+
+function BattlePlatforms:enter_player_soul(soul)
+  self:enter_soul(soul, self.player_sprite, self.player_platform)
 end

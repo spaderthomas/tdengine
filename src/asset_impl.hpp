@@ -262,7 +262,6 @@ void init_assets() {
 
 	auto& asset_manager = get_asset_manager();
 
-
 	auto load_textures_from_directory = [&](auto& path) {
 		directory_iterator it(path);
 		for (it; it != directory_iterator(); ++it) {

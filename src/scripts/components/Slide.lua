@@ -10,7 +10,7 @@ function Slide:init(params)
   self.target_waypoint = 0
 
   self.start = false
-  self.done = false
+  self.done = true
 end
 
 function Slide:late_init()
@@ -43,10 +43,6 @@ function Slide:next_waypoint()
   self.dps = waypoint:subtract(self.position.world):scale(1 / time)
   self.start = true
   self.done = false
-end
-
-function Slide:slide_to_waypoint(waypoint)
-  self.target_waypoint = waypoint
 end
 
 function Slide:set_waypoints(waypoints, times)

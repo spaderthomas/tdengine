@@ -19,6 +19,7 @@ function Position:init(params)
 	  tdengine.attach_position(self.parent.id, entity.id, offset.x, offset.y)
 	  self.world = { x = 0, y = 0 }
 	end
+	self.offset = offset
   end
 
   -- Did whatever method we picked fail to actually fill in the position?
