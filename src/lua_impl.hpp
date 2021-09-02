@@ -45,6 +45,7 @@ void init_lua() {
 	lua_manager.prefabs = path_join({lua_manager.scripts, "prefabs"});
 	lua_manager.saves = path_join({lua_manager.scripts, "saves"});
 	lua_manager.scenes = path_join({lua_manager.scripts, "scenes"});
+	lua_manager.models = path_join({lua_manager.scripts, "models"});
 	lua_manager.gstate = path_join({lua_manager.scripts, "state"}); 
 
 	// Give those paths to Lua
@@ -67,6 +68,7 @@ void init_lua() {
 	lua_manager.script_dir(RelativePath("components"));
 	lua_manager.script_dir(RelativePath("scenes"));
 	lua_manager.script_dir(RelativePath("actions"));
+	lua_manager.script_dir(RelativePath("models"));
 
 	lua_manager.state.script("tdengine.load_editor()");
 }

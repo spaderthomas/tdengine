@@ -113,6 +113,7 @@ function BattlePlatforms:init(params)
   local id = tdengine.create_entity('Sprite', opponent_sprite)
   self.opponent_sprite = tdengine.find_entity_by_id(id)
   self.opponent_sprite_slide = self.opponent_sprite:get_component('Slide')
+  
   local id = tdengine.create_entity('Sprite', player_sprite)
   self.player_sprite = tdengine.find_entity_by_id(id)
   self.player_sprite_slide = self.player_sprite:get_component('Slide')
@@ -170,9 +171,8 @@ function BattlePlatforms:slide_out_opponent_sprite()
 end
 
 function BattlePlatforms:enter_soul(soul, sprite, platform)
-  local data = soul:get_static_data()
   local animation = sprite:get_component('Animation')
-  animation:begin(data.front_sprite)
+  animation:begin(soul:front_sprite())
   
   local position = sprite:get_component('Position')
   local offset = position.offset

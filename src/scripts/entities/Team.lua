@@ -3,12 +3,8 @@ Team = tdengine.entity('Team')
 function Team:init(params)
   self.souls = {}
   for index, soul_data in pairs(params) do
-	soul_data.fainted = false
-	local entity = {
-	  params = soul_data
-	}
-	local id = tdengine.create_entity('Soul', entity)
-	local soul = tdengine.find_entity_by_id(id)
+	local soul = Soul:new()
+	soul:init(soul_data)
 	table.insert(self.souls, soul)
   end
   self.active = 1
@@ -25,7 +21,7 @@ function Team:get_active()
   return self.souls[self.active]
 end
 
-function Team:get_switchable_souls()
+function Team:switchable_souls()
   local souls = {}
   for index, soul in pairs(self.souls) do
 	if not soul.fainted and index ~= self.active then

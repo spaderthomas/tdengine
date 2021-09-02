@@ -30,6 +30,7 @@ struct LuaState {
 	std::string prefabs;
 	std::string saves;
 	std::string scenes;
+	std::string models;
 	std::string gstate; 
 } Lua;
 

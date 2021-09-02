@@ -52,6 +52,7 @@ function Battle:setup()
 	params = self.data.team,
 	components = {}
   }
+
   tdengine.create_entity('Team', opponent_team_data)
   self.opponent_team = tdengine.find_entity_by_tag(opponent_team_data.tag)
   
@@ -90,8 +91,6 @@ function Battle:setup()
   -- choices. This one is the one that does choices.
   tdengine.create_entity('BattleMenu', {})
   self.battle_menu = tdengine.find_entity('BattleMenu')
-  local graphic = self.battle_menu:get_component('Graphic')
-  graphic:hide()
   
   tdengine.create_entity('TextBox', {})
   self.text_box = tdengine.find_entity('TextBox')
@@ -109,9 +108,9 @@ function Battle:cleanup()
 end
 
 function Battle:build_lead_message()
-  local lead = self.opponent_team:get_lead():get_static_data()
+  local lead = self.opponent_team:get_lead()
   local format = '%s sent out %s!'
-  return string.format(format, self.trainer.flavor_name, lead.flavor_name)
+  return string.format(format, self.trainer.flavor_name, lead:flavor_name())
 end
 
 function Battle:update(dt)
@@ -176,8 +175,6 @@ function Battle:update(dt)
 
   elseif self.state == BattleState.WaitingForInput then
     self.text_box:reset()
-    local graphic = self.text_box:get_component('Graphic')
-    graphic:hide()
-
+	self.battle_menu:enable()
   end
 end
