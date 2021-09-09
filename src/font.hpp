@@ -7,15 +7,19 @@ struct Character {
 	glm::ivec2 px_bearing;
 	uint advance;
 	
-	static glm::ivec2 px_largest; // Useful to guarantee characters stay inside an area. 
 };
-glm::ivec2 Character::px_largest;
-std::map<GLchar, Character> characters;
+
+
+struct Font {
+	uint advance(char c);
+	
+	std::map<GLchar, Character> characters;	
+	glm::ivec2 px_largest;
+	std::string name;
+};
 
 FT_Library freetype;
-FT_Face face;
 GLuint font_vao, font_vert_buffer;
-#define PX_FONT_SIZE 20
+std::map<std::string, Font> g_fonts;
 
-uint advance(char c);
 void init_fonts();

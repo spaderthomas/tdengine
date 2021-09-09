@@ -21,36 +21,21 @@ void init_gl() {
 	
 	// Fill GPU sprite buffers
 	glBindVertexArray(Sprite::vao);
-	std::vector<float> vert_data;
 	
-	concat(vert_data, square_verts);
+	load_texture_coordinates();
 	
-	// Fill tex coordinate buffer
-	auto& asset_manager = get_asset_manager();
-	auto sprites = asset_manager.get_all<Sprite>();
-	for (auto sprite : sprites) {
-		sprite->tex_coord_offset = (GLvoid*)(sizeof(float) * vert_data.size());
-		concat(vert_data, sprite->tex_coords);
-	}
-	
-	square_tex_coords_offset = (GLvoid*)(sizeof(float) * vert_data.size());
-	concat(vert_data, square_tex_coords);
-	
-	// Send all the data to OpenGL buffers
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, Sprite::elem_buffer);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, square_indices.size() * sizeof(uint), square_indices.data(), GL_STATIC_DRAW);
 	
-	glBindBuffer(GL_ARRAY_BUFFER, Sprite::vert_buffer);
-	glBufferData(GL_ARRAY_BUFFER, vert_data.size() * sizeof(float), vert_data.data(), GL_STATIC_DRAW);
-
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), 0);
-
-	
 	
 	// Fill GPU mesh buffers
 	glBindVertexArray(Mesh::vao);
+	
+	auto& asset_manager = get_asset_manager();
 	std::vector<Mesh*> all_meshes = asset_manager.get_all<Mesh>();
+	
 	std::vector<float> vert_buffer;
 	std::vector<uint> indx_buffer;
 	
@@ -75,6 +60,29 @@ void init_gl() {
 	
 	glBindBuffer(GL_ARRAY_BUFFER, Mesh::vert_buffer);
 	glBufferData(GL_ARRAY_BUFFER, vert_buffer.size() * sizeof(float), vert_buffer.data(), GL_STATIC_DRAW);
+}
+
+// Pull texture coordinates from sprites into a GPU buffer, and then inform the
+// sprites what their offset into said buffer is. 
+void load_texture_coordinates() {
+	glBindVertexArray(Sprite::vao);
+	std::vector<float> tex_coords;
+	
+	concat(tex_coords, square_verts);
+	
+	// Fill tex coordinate buffer
+	auto& asset_manager = get_asset_manager();
+	auto sprites = asset_manager.get_all<Sprite>();
+	for (auto sprite : sprites) {
+		sprite->tex_coord_offset = (GLvoid*)(sizeof(float) * tex_coords.size());
+		concat(tex_coords, sprite->tex_coords);
+	}
+	
+	square_tex_coords_offset = (GLvoid*)(sizeof(float) * tex_coords.size());
+	concat(tex_coords, square_tex_coords);
+
+	glBindBuffer(GL_ARRAY_BUFFER, Sprite::vert_buffer);
+	glBufferData(GL_ARRAY_BUFFER, tex_coords.size() * sizeof(float), tex_coords.data(), GL_STATIC_DRAW);
 }
 	
 void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color) {
@@ -305,7 +313,7 @@ void RenderEngine::render_scene(float dt) {
 		}
 
 		glActiveTexture(GL_TEXTURE0);
-		element.sprite->atlas->bind();
+		element.sprite->texture->bind();
 
 		// Point the texture coordinates to this sprite's texcoords
 		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), element.sprite->tex_coord_offset);
@@ -373,7 +381,7 @@ void RenderEngine::render_scene(float dt) {
 				break;
 			};
 			glActiveTexture(GL_TEXTURE1);
-			effect->atlas->bind();
+			effect->texture->bind();
 			shader->set_int("effect", 1);
 
 			shader->set_float("cutoff", info.battle_transition_cutoff / info.battle_transition_time);
@@ -399,6 +407,8 @@ void RenderEngine::render_text(float dt) {
 	auto shader = shaders.get("text");
 	shader->begin();
 
+	auto& font = g_fonts[g_dialogue_font];
+
 	// Text is raw 2D, so just use an orthographic projection
 	SRT transform = SRT::no_transform();
 	glm::mat3 mat = mat3_from_transform(transform);
@@ -414,7 +424,7 @@ void RenderEngine::render_text(float dt) {
 
 		auto px_point = px_from_screen(info.point);
 		for (auto c : info.text) {
-			Character freetype_char = characters[c];
+			Character& freetype_char = font.characters[c];
 		
 			GLfloat left = static_cast<float>(px_point.x) + freetype_char.px_bearing.x;
 			GLfloat right = left + freetype_char.px_size.x;

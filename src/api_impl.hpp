@@ -415,7 +415,7 @@ bool API::draw_sprite_button(std::string sprite_name, float sx, float sy) {
 	ImVec2 bottom_left_tex_coords = ImVec2(sprite->tex_coords[6], sprite->tex_coords[7]);
 	ImVec2 button_size = ImVec2(sx, sy);
 
-	return ImGui::ImageButton((ImTextureID)(uintptr_t)sprite->atlas->handle,
+	return ImGui::ImageButton((ImTextureID)(uintptr_t)sprite->texture->handle,
 							  button_size,
 							  bottom_left_tex_coords, top_right_tex_coords);
 }
@@ -545,6 +545,22 @@ void API::do_battle_transition(int which, float time) {
 	render_engine.post_processing_info.battle_transition_cutoff = 0;
 }
 
+int API::font_advance(std::string font_name, char c) {
+	auto& font = g_fonts[font_name];
+	return font.advance(c);
+}
+
+sol::object API::font_info(std::string font_name) {
+	auto& font = g_fonts[font_name];
+	
+	auto info = Lua.state.create_table();
+	info["largest"] = Lua.state.create_table();
+	info["largest"]["x"] = font.px_largest.x;
+	info["largest"]["y"] = font.px_largest.y;
+
+	return info;
+}
+		
 void register_lua_api() {
 	auto& state = Lua.state;
 	
@@ -603,6 +619,8 @@ void register_lua_api() {
 	state["tdengine"]["attach_position"]           = &attach_position;
 	state["tdengine"]["detach_position"]           = &detach_position;
 	state["tdengine"]["do_battle_transition"]      = &do_battle_transition;
+	state["tdengine"]["font_advance"]              = &font_advance;
+	state["tdengine"]["font_info"]                 = &font_info;
 
 	state["tdengine"]["draw"]                        = state.create_table();
 	state["tdengine"]["draw"]["entity"]              = &draw_entity;	
@@ -612,8 +630,6 @@ void register_lua_api() {
 	state["tdengine"]["draw"]["rect_outline_world"]  = &rect_outline_world;	
 	state["tdengine"]["draw"]["rect_outline_world"]  = &rect_outline_world;	
 	state["tdengine"]["draw"]["text"]                = &API::draw_text;
-	state["tdengine"]["font"]                        = state.create_table();
-	state["tdengine"]["font"]["advance"]             = &advance;
 
 	state["tdengine"]["paths"] = state.create_table();
 	state["tdengine"]["paths"]["root"] = root_dir;

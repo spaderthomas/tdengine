@@ -30,6 +30,8 @@
 int main() {
 	tdns_log.init();
 
+	init_lua();
+	
 	EXIT_IF_ERROR(init_glfw());
 	init_imgui();
 
@@ -50,10 +52,10 @@ int main() {
 
 	init_shaders();
 	init_mesh();
-	init_assets();
+	init_sprites();
 	init_fonts();
 	init_gl();
-	init_lua();
+	init_scripts();
 
 	// MAIN LOOP
 	while(!glfwWindowShouldClose(g_window)) {

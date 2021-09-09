@@ -42,22 +42,23 @@ Tags in the code itself
 @paths: i hate paths
 @slow: yea
 * code
+** @done
+- now that i have a pattern for ImGui::InputXXX in lua, i should make
+  the entity's fields editable. 
+- sprite buttons for adding entities?
+- One-button tabbing between ImGui layouts
+  - update: hey, this works, but is a little broken. if current layout
+    == next layout, you still try to do it, which gives some screen
+    flickering.
+
 ** @editor
 - need a way to stop having messages spam the fuck out of me -- like when
 something is F'd in entity update. maybe reserve console output for prints and
 write lua errors to the log? maybe keep a cache of messages we print out every
 frame and don't double print them (unless a file is reloaded...?)
 
-- now that i have a pattern for ImGui::InputXXX in lua, i should make
-  the entity's fields editable. 
-- sprite buttons for adding entities?
 - 02/27/21: caps lock as left control is broken. right control is also
   broken -- may be related?
-
-- One-button tabbing between ImGui layouts
-  - update: hey, this works, but is a little broken. if current layout
-    == next layout, you still try to do it, which gives some screen
-    flickering.
 ** @lua_init
 Stop storing entity classes as part of the global table, e.g:
 Player = tdengine.entity('Player')
@@ -424,6 +425,60 @@ assists in for a few rounds.
 larry also has friends in the hub. he was a vet of the korean war. didn't die
 there -- hell, the most action he got was on shore leave in seoul with some
 _kijichon_. 
+*** when i paint my masterpiece
+there's an artist who hangs around. a typical pretentious. you can
+chat with him. if you show some empathy, he'll start to open up to
+you. i'm not sure why i wear the little thin french mustache. it's
+fake -- he rips it off. i'm not sure why i wear a little rouge on my
+cheeks and lips. he wipes it off. i'm not sure why i'm wearing this
+stupid expensive floral t-shirt. he takes it off, leaving only his
+undershirt underneath. 
+
+ARTIST: "look at me, i'm a pretender through and through. all
+i want is to be an artist, but i'm completely unwilling to do anything
+more than putting on a fake moustache and some makeup."
+
+BOON: "well, have you ever made anything?"
+
+ARTIST: "yes, and a few things of worth even, but i could never paint
+my masterpiece. so to speak. i don't paint. i, uhm, i make video
+games."
+
+BOON: "why do you sound embarassed?"
+
+ARTIST: "video games are not art. can a video game give you a rush of
+naked life like hemingway? can a video game open portals in the mind
+like bosch? can it make you soar through the heavens like a grateful
+dead tune?"
+
+BOON: "of course they can. but that's not what's important. what is
+your finest game about?"
+
+ARTIST: "..."
+
+ARTIST: "it's about a friend of mine who passed before his time"
+
+BOON: "and what are you trying to say with it?"
+
+ARTIST: "a lot of things. too many things to say here. it's easier to
+play it. but mostly, it's about how i felt."
+
+BOON: "that's expression. you are an artist."
+
+there is a pregnant pause before the artist starts to flicker. 
+
+ARTIST: "what's happening to me? i feel so right..."
+
+OLIVER: "i've seen it a million times, i have! you're resolving!"
+
+ARTIST: "i always thought this would happen when i painted my
+masterpiece. but i suppose...i suppose it's not about that. thank you,
+boon"
+
+the artist flickers faster and resolves into a white light, leaving
+behind only a fragment of his soul. his bag is still on the table, and
+inside it you find...some equippable item. a flash drive, a laptop, a
+suicide note. 
 *** domestic dispute
 @domestic_dispute
 a total happenstance sidequest that begins with you in an empty room, and if you
@@ -1035,6 +1090,7 @@ the librarian is kindly and mysterious
   appreciation for his art -- a metaphor for how ridiculous all
   artistic endeavors are at their core
 * log
+** 09/08/2021
 ** 08/12/2021
 - menu
   - skin basic imgui button
@@ -4628,9 +4684,47 @@ ah so yes, there is some power struggle amongst the sixth graders. your first
 task is to become their king -- you don't know that you're to become their king
 of course, but you will progress through their domain until you defeat the
 strongest among them. 
-* plot
-** intro
-*** upon regaining consciousness
+* plot the second
+** bus stop
+*** notes
+*** storyboard
+The game fades in. BOON sits alone, shivering, on a bench at a bus
+stop. It’s raining, because fucking of course it’s raining. Thunder
+flashes.
+
+BOON: *shivers*
+
+A middle-aged man in an overcoat and hat, businesslike, thinning hair,
+walks into the bus station. His glance turns to BOON for just a moment
+as he sits. He takes out a newspaper and pretends to read it for a
+minute. Then, he abruptly folds it up, stands, and walks to BOON.
+
+MAN: You look cold, kid.
+
+BOON: ...
+
+MAN: Do your parents know you’re out here?
+
+BOON: ...
+
+MAN: Hey, look, kid...
+
+The man reaches for BOON’s shoulder. BOON leaps off the bench in alarm.
+
+BOON: Don’t touch me! I- I have a knife!
+
+MAN: What the fuck?
+
+BOON runs away from the bus stop. The camera follows him along the
+sidewalk and into an alleyway. He hurtles into the alleyway and
+crouches beside a dumpster, keeping it between him and the street. If
+it was a movie, we’d go to a wide shot to emphasize his isolation, but
+we can’t do that here so the screen flickers to indicate time passing.
+
+BOON: c-cold...
+
+The screen fades partially, then fades totally to black.
+** the janitor's closet
 when boon comes to, he's in a room that looks exactly like the janitor's closet
 that he blacked out in, but twisted. it's slightly degraded, it looks wrong, the
 music is droning and warbling. 
@@ -4677,7 +4771,7 @@ librarian. he'll know what to do.
 - interactables on the shelves
   - just pop up dialogue with flavor text
 - door
-*** hello, world
+** first walk around the overworld
 you walk out of the janitor's closet into the lobby of a school. the lobby of
 your school, in fact. but just like the closet, something is off about
 it. moreover, it has a slight resemblance to a shanty town -- a place that's
@@ -4695,7 +4789,7 @@ almost exactly like the school where he's spent his last six years. the tile
 pattern on the floor, the chips on the paint, even the scent of vaguely stale
 air is precisely reminiscent of his school. oliver wasn't kidding. you can hear
 the hum of people through the background music.
-*** the library
+** talk with the librarian
 but you're headed to the library. the library isn't small per se, but it's kept
 more like the personal library of a wealthy man than an elementary school
 library. it's cozy, and (just like its keeper) it's refined. as you enter, the
@@ -4771,7 +4865,7 @@ surprised that you're one of the ones who can control fractured souls. mother
 fate has special plans for you, boon."
 
 "i can't say what you need to do, son. i doubt you can return to your old life,
-but it is possible that you could return to your realm. firing out how to get
+but it is possible that you could return to your realm. figuring out how to get
 into the sixth grade hall isn't a bad place to start -- i'm sure if you find out
 what's going on there, you'll have some clue to getting back to your realm." the
 librarian says.
@@ -4792,7 +4886,7 @@ working themselves out." the librarian says
 "..."
 
 (i'm not sure what boon says here. something kind of whimpering)
-*** finding the portal
+** lost and found
 @bernard
 as they leave the library, boon starts to bitch.
 
@@ -4844,54 +4938,12 @@ resolved or dissolved yet.
   you to explain how he feels
 - bernard resolves, you gain his soul and the teddy as an item
   
-* plot the second
-** bus stop
-*** notes
-*** storyboard
-The game fades in. BOON sits alone, shivering, on a bench at a bus
-stop. It’s raining, because fucking of course it’s raining. Thunder
-flashes.
-
-BOON: *shivers*
-
-A middle-aged man in an overcoat and hat, businesslike, thinning hair,
-walks into the bus station. His glance turns to BOON for just a moment
-as he sits. He takes out a newspaper and pretends to read it for a
-minute. Then, he abruptly folds it up, stands, and walks to BOON.
-
-MAN: You look cold, kid.
-
-BOON: ...
-
-MAN: Do your parents know you’re out here?
-
-BOON: ...
-
-MAN: Hey, look, kid...
-
-The man reaches for BOON’s shoulder. BOON leaps off the bench in alarm.
-
-BOON: Don’t touch me! I- I have a knife!
-
-MAN: What the fuck?
-
-BOON runs away from the bus stop. The camera follows him along the
-sidewalk and into an alleyway. He hurtles into the alleyway and
-crouches beside a dumpster, keeping it between him and the street. If
-it was a movie, we’d go to a wide shot to emphasize his isolation, but
-we can’t do that here so the screen flickers to indicate time passing.
-
-BOON: c-cold...
-
-The screen fades partially, then fades totally to black.
-** the janitor's closet
-*** notes
-*** storyboard
-** first walk around the overworld
-** talk with the librarian
-** lost and found
+before bernard resolves, he tells you how to get into the sixth grade
+hall. 
+** DUNGEON: bernard's dungeon
+this is to do.
 ** return to the janitor's closet
-** bernard's dungeon
+
 ** SIXTH GRADE
 ** INTERSTITIAL STUFF
 ** BARBARA ANN
@@ -4901,7 +4953,9 @@ The screen fades partially, then fades totally to black.
 ** FINAL BOSS
 * clock
 :LOGBOOK: 
-CLOCK: [2021-08-22 Sun 12:00]
+CLOCK: [2021-09-08 Wed 08:50]--[2021-09-08 Wed 09:29] =>  0:39
+CLOCK: [2021-09-07 Tue 20:33]--[2021-09-08 Tue 22:33] =>  2:00
+CLOCK: [2021-08-22 Sun 12:00]--[2021-08-22 Sun 14:00] =>  2:00
 CLOCK: [2021-08-21 Mon 16:35]--[2021-08-21 Mon 18:35] =>  2:00
 CLOCK: [2021-08-19 Thu 16:53]--[2021-08-19 Thu 20:53] =>  4:00
 CLOCK: [2021-08-16 Mon 11:03]--[2021-08-16 Mon 13:03] =>  2:00

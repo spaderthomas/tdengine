@@ -56,6 +56,7 @@ bool has_flag(T lhs, T rhs) {
 }
 
 typedef int GLFW_KEY_TYPE;
+typedef GLFW_KEY_TYPE key_t;
 #define GLFW_KEY_CONTROL 349
 #define GLFW_KEY_SUPER 350
 #define GLFW_KEY_SHIFT 351
@@ -470,16 +471,19 @@ bool is_png(std::string& asset_path) {
 }
 
 bool is_lua(std::string& path) {
-	if (path.size() < 5) { return false; } // "x.tds" is the shortest name
+	if (path.size() < 5) { return false; } // "x.lua" is the shortest name
 	std::string should_be_tds_extension = path.substr(path.size() - 4, 4);
 	if (should_be_tds_extension.compare(".lua")) return false;
 	return true;
 }
 
-const char* default_font_path() {
-	static std::string path = absolute_path("asset/fonts/Inconsolata-Regular.ttf");
-	return path.c_str();
-}
+// @hack There is a better way to do this
+std::string g_dialogue_font;
+std::string g_dialogue_font_path;
+int         g_dialogue_font_size;
+std::string g_editor_font;
+std::string g_editor_font_path;
+int         g_editor_font_size;
 
 // Global options
 bool debug_show_aabb = false;
@@ -489,7 +493,17 @@ bool show_imgui_demo = false;
 bool show_console = false;
 bool send_kill_signal = false;
 bool step_mode = false;
-const char* layout_to_load = nullptr; // Set this string to pick up a new layout next tick
+
+// These options are loaded from Lua
+enum class TextureMode {
+	Atlas                = 0,
+	SingleWithHotloading = 1,
+	AtlasWithHotloading  = 2,
+};
+TextureMode g_texture_mode;
+
+// Set this string from a script, and we will pick up a new layout next tick
+const char* layout_to_load = nullptr; 
 
 float framerate = 0.f;
 
@@ -673,7 +687,7 @@ void init_imgui() {
 	imgui.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 	ImGui::StyleColorsDark();
 
-	auto imgui_font = imgui.Fonts->AddFontFromFileTTF(default_font_path(), 16.0);
+	auto imgui_font = imgui.Fonts->AddFontFromFileTTF(g_editor_font_path.c_str(), g_editor_font_size);
 
 	imgui.IniFilename = nullptr;
 
@@ -725,6 +739,7 @@ struct FileWatcher {
 
 	void watch(std::string file, FileChangedCallback on_change) {
 		if (file.find('#') != std::string::npos) return;
+		tdns_log.write("@watch_file: " + file, Log_Flags::File);
 		time_map[file] = std::filesystem::last_write_time(file);
 		action_map[file] = on_change;
 	}

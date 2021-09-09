@@ -87,7 +87,7 @@ void destroy_texture(std::filesystem::path path) {
 
 	auto sprites = asset_manager.get_all<Sprite>();
 	for (auto sprite : sprites) {
-		if (sprite->atlas == texture) {
+		if (sprite->texture == texture) {
 			destroy_sprite(sprite->name);
 		}
 	}
@@ -106,7 +106,33 @@ void destroy_sprite(std::string name) {
 	free(sprite);
 }
 
-void add_single_texture(std::filesystem::path path) {
+void load_sprites_from_directory(std::filesystem::path path) {
+	directory_iterator it(path);
+	for (it; it != directory_iterator(); ++it) {
+		// Add subdirectories manually, because it's less error prone.
+		if (it->is_directory()) continue;
+		
+		auto path = it->path();
+		tdns_log.write("@asset:load: " + path.string(), Log_Flags::File);
+		
+		add_single_sprite(path);
+
+		file_watcher.watch(path.string(), [path = path]() {
+			tdns_log.write("@asset:update: " + path.string(), Log_Flags::File);
+			if (!dumb_is_valid_png(path)) return;
+			
+			destroy_texture(path);
+			add_single_sprite(path);
+			
+			auto& asset_manager = get_asset_manager();
+			auto sprite = asset_manager.get_asset<Sprite>(path.stem().string());
+			sprite->tex_coord_offset = square_tex_coords_offset;
+		});
+	}
+};
+
+
+void add_single_sprite(std::filesystem::path path) {
 	if (!path.has_stem()) return;
 	if (path.extension() != ".png") return;
 
@@ -117,7 +143,7 @@ void add_single_texture(std::filesystem::path path) {
 
 	Sprite* sprite = new Sprite;
 	sprite->name = path.stem().string();
-	sprite->atlas = texture;
+	sprite->texture = texture;
 	sprite->height = texture->height;
 	sprite->width = texture->width;
 	sprite->num_channels = texture->num_channels;
@@ -129,6 +155,11 @@ void add_single_texture(std::filesystem::path path) {
 	};
 	
 	asset_manager.add_asset<Sprite>(sprite->name, sprite);
+}
+
+void reload_texture_atlas() {
+	create_texture_atlas(absolute_path("asset/art"));
+	load_texture_coordinates();
 }
 
 void create_texture_atlas(std::string assets_dir) {
@@ -162,10 +193,20 @@ void create_texture_atlas(std::string assets_dir) {
 		// Guard against the subdirectories + ensure only PNGs
 		if (!path.has_filename()) continue;
 		if (path.extension() != ".png") continue;
-			
+
+		if (g_texture_mode == TextureMode::AtlasWithHotloading) {
+			file_watcher.watch(path.string(), &reload_texture_atlas);
+		}
+
+		auto sprite_name = path.stem().string();
+
+		// This makes this function idempotent
+		destroy_sprite(sprite_name);
+
+		// Add the sprite to the asset manager
 		Sprite* sprite = new Sprite;
-		sprite->atlas = atlas;
-		sprite->name = path.stem().string();
+		sprite->texture = atlas;
+		sprite->name = sprite_name;
 
 		asset_manager.add_asset<Sprite>(sprite->name, sprite);
 						
@@ -252,43 +293,31 @@ void create_texture_atlas(std::string assets_dir) {
 	asset_manager.add_asset<Texture>(atlas->name, atlas);
 }
 
-void create_texture_atlas() {
-	std::string dir = absolute_path("asset/art");
-	create_texture_atlas(dir);
-}
-
-void init_assets() {
-	create_texture_atlas();
-
-	auto& asset_manager = get_asset_manager();
-
-	auto load_textures_from_directory = [&](auto& path) {
-		directory_iterator it(path);
-		for (it; it != directory_iterator(); ++it) {
-			auto path = it->path();
-			tdns_log.write("@asset:load: " + path.string(), Log_Flags::File);
-			add_single_texture(path);
-
-			file_watcher.watch(path.string(), [path = path]() {
-				std::cout << "@asset:update: " << path.string() << std::endl;
-				if (!dumb_is_valid_png(path)) return;
-			
-				destroy_texture(path);
-				add_single_texture(path);
-			
-				auto& asset_manager = get_asset_manager();
-				auto texture = asset_manager.get_asset<Sprite>(path.stem().string());
-				texture->tex_coord_offset = square_tex_coords_offset;
-			});
-		}
-	};
-
-	std::vector<AbsolutePath> texture_directories = {
+void init_sprites() {
+	// These sprites get their own texture -- no atlas.
+	std::vector<AbsolutePath> ignore_atlas_directories = {
 		AbsolutePath(RelativePath("asset/art/backgrounds")),
 		AbsolutePath(RelativePath("asset/art/transitions")),
 	};
-	for (auto& directory : texture_directories) {
-		load_textures_from_directory(directory.path);
+
+	// You can have a startup option to load ALL textures like this. This lets
+	// you hotload textures without the hiccup of building a whole atlas.
+	if (g_texture_mode == TextureMode::Atlas) {
+		std::string dir = absolute_path("asset/art");
+		create_texture_atlas(dir);
+	}
+	else if (g_texture_mode == TextureMode::AtlasWithHotloading) {
+		std::string dir = absolute_path("asset/art");
+		create_texture_atlas(dir);
+	}
+	else {
+		auto art_path = AbsolutePath(RelativePath("asset/art"));
+		ignore_atlas_directories.push_back(art_path);
+	}
+
+	for (auto& directory : ignore_atlas_directories) {
+		auto as_fs_path = directory.path;
+		load_sprites_from_directory(as_fs_path);
 	}
 }
 
@@ -299,7 +328,7 @@ void bind_sprite_buffers() {
 }
 
 bool Sprite::is_initialized() const{
-	return (nullptr != this->atlas);
+	return (nullptr != this->texture);
 }
 
 void Mesh::bind() {

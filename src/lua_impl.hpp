@@ -15,6 +15,9 @@ void LuaState::prepend_to_search_path(std::string directory) {
 	state["package"]["path"] = new_path;
 }
 
+// Basic Lua bootstrapping. Don't load any game scripts here. This is called before
+// we load all the backend systems, because this populates options that those systems
+// might use. 
 void init_lua() {
 	auto& lua_manager = Lua;
 	
@@ -58,18 +61,29 @@ void init_lua() {
 	// Bind all C functions
 	LoadImguiBindings();
 	register_lua_api();
-	
+
+	// Then, script the base packages you need
 	lua_manager.script_dir(RelativePath("libs"));
 	lua_manager.script_dir(RelativePath("core"));
 
+	lua_manager.load_options();
+}
+
+void init_scripts() {
+	auto& lua_manager = Lua;
+
+	// Basic initialization of stuff that needs to exist in Lua before we load
+	// all the actual game scripts
 	lua_manager.state.script("tdengine.initialize()");
 	
+	// Script all of our assets into Lua
 	lua_manager.script_dir(RelativePath("entities"));
 	lua_manager.script_dir(RelativePath("components"));
 	lua_manager.script_dir(RelativePath("scenes"));
 	lua_manager.script_dir(RelativePath("actions"));
 	lua_manager.script_dir(RelativePath("models"));
 
+	// Once everything is set up, we can start up the editor
 	lua_manager.state.script("tdengine.load_editor()");
 }
 
@@ -110,6 +124,21 @@ void LuaState::script_file(ScriptPath path) {
 		tdns_log.write("@reload_script: " + path.path);
 		this->script_file(path);
 	});
+}
+
+void LuaState::load_options() {
+	sol::table options = state["tdengine"]["options"];
+	g_texture_mode = static_cast<TextureMode>(options["use_texture_atlas"]);
+	
+	g_dialogue_font = options["dialogue_font"];
+	g_dialogue_font_path = absolute_path(path_join({"asset", "fonts", g_dialogue_font}));
+	g_dialogue_font_path = g_dialogue_font_path + ".ttf";
+	g_dialogue_font_size = options["dialogue_font_size"];
+
+	g_editor_font = options["editor_font"];
+	g_editor_font_path = absolute_path(path_join({"asset", "fonts", g_editor_font}));
+	g_editor_font_path = g_editor_font_path + ".ttf";
+	g_editor_font_size = options["editor_font_size"];
 }
 
 sol::table LuaState::get_entity(int id) {

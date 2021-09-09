@@ -28,10 +28,10 @@ sol::object sprite_size(std::string name);
 void        register_animation(std::string name, std::vector<std::string> frames);
 void        enable_input_channel(int channel);
 void        disable_input_channel(int channel);
-bool        was_pressed(GLFW_KEY_TYPE id, int mask = INPUT_MASK_NONE);
-bool        was_released(GLFW_KEY_TYPE id, int mask = INPUT_MASK_NONE);
-bool        is_down(GLFW_KEY_TYPE id, int mask = INPUT_MASK_NONE);
-bool        was_chord_pressed(GLFW_KEY_TYPE mod_key, GLFW_KEY_TYPE cmd_key, int mask = INPUT_MASK_NONE);
+bool        was_pressed(key_t id, int mask = INPUT_MASK_NONE);
+bool        was_released(key_t id, int mask = INPUT_MASK_NONE);
+bool        is_down(key_t id, int mask = INPUT_MASK_NONE);
+bool        was_chord_pressed(key_t mod, key_t cmd, int mask = INPUT_MASK_NONE);
 sol::object screen_dimensions();
 sol::object cursor();
 sol::object camera();
@@ -57,8 +57,11 @@ bool        is_following_player();
 void        pause_updates();
 void        resume_updates();
 void        set_imgui_demo(bool show);
-void        attach_position(int entity, int attached_to, float offset_x, float offset_y);
+void        attach_position(int entity, int attached_to, float offx, float offy);
 void        detach_position(int entity);
 void        do_battle_transition(int which, float time);
+int         font_advance(std::string font, char c);
+sol::object font_info(std::string font);
 }
+
 void register_lua_api();

@@ -74,6 +74,7 @@ struct RenderEngine {
 RenderEngine& get_render_engine();
 
 void init_gl();
+void load_texture_coordinates();
 void draw_line_from_points(glm::vec2 p1, glm::vec2 p2, glm::vec4 color);
 void draw_line_from_origin(glm::vec2 basis, glm::vec4 color);
 void draw_rect_filled_screen(glm::vec2 origin, glm::vec2 extents, glm::vec4 color);

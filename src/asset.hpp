@@ -45,33 +45,33 @@ AssetManager& get_asset_manager();
 
 #define REGULAR_ATLAS_SIZE 2048
 
-struct Texture : Asset {
-	GLuint handle;
-
-	int width, height, num_channels;
-
-	void bind();
-};
-
 // We need this struct so we can identify which rectangle goes to which sprite when we pack them
 struct Name_And_ID {
 	std::string name;
 	int id;
 };
 
+struct Texture : Asset {
+	GLuint handle;
+
+	int width;
+	int height;
+	int num_channels;
+
+	void bind();
+};
+
+void reload_texture_atlas();
 Texture* create_texture(std::filesystem::path path);
-void create_texture_atlas(std::string assets_dir);
-void create_all_texture_atlas();
 void destroy_texture(std::filesystem::path path);
-void add_background(std::filesystem::path path);
-void init_assets();
+void create_texture_atlas(std::string assets_dir);
 
 struct Sprite : Asset {
 	int height = 0;
 	int width = 0;
 	int num_channels = 0;
 	
-	Texture* atlas = nullptr;
+	Texture* texture = nullptr;
 	std::vector<float> tex_coords;
 	GLvoid* tex_coord_offset = nullptr;
 
@@ -82,7 +82,10 @@ struct Sprite : Asset {
 	bool is_initialized() const;
 };
 
+void init_sprites();
 void destroy_sprite(std::string name);
+void add_single_sprite(std::filesystem::path path);
+void load_sprites_from_directory(std::filesystem::path path);
 
 // OpenGL 
 GLuint Sprite::vert_buffer;

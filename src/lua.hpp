@@ -10,6 +10,7 @@ struct LuaState {
 	void prepend_to_search_path(std::string directory);
 	void script_dir(ScriptPath path);
 	void script_file(ScriptPath path);
+	void load_options();
 
 	sol::table get_entity(int id);
 	sol::table get_component(int id);
@@ -35,3 +36,4 @@ struct LuaState {
 } Lua;
 
 void init_lua();
+void init_scripts();
