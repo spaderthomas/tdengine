@@ -16,12 +16,13 @@ struct Log {
 };
 Log tdns_log;
 
-void Log::init() {
-	log_stream.open(root_dir + "log.txt", std::ofstream::out | std::ofstream::trunc);
-}
 void Log::write(std::string message, uint8_t flags) {
 	if (flags & Log_Flags::Console)
 		std::cout << message << std::endl;
 	if (flags & Log_Flags::File)
 		log_stream << message << std::endl;
+}
+
+void init_logging() {
+	tdns_log.log_stream.open(root_dir + "log.txt", std::ofstream::out | std::ofstream::trunc);
 }

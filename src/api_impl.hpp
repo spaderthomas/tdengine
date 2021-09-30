@@ -457,10 +457,10 @@ void API::use_layout(const char* name) {
 }
 
 void API::save_layout(const char* name) {
-	auto relative = RelativePath(std::string("layouts/") + name + ".ini");
-	auto layout = ScriptPath(relative);
-	ImGui::SaveIniSettingsToDisk(layout.path.c_str());
-	tdns_log.write("Saved Imgui configuration: " + layout.path, Log_Flags::File);
+	//std::string virtual_path = "layouts
+	//auto path = physfs_file_path("layouts/");
+	//ImGui::SaveIniSettingsToDisk(path.c_str());
+	//tdns_log.write("@save_imgui_configuration::" + path, Log_Flags::File);
 }
 
 void API::draw_text(std::string text, float x, float y, int flags) {

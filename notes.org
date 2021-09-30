@@ -4684,7 +4684,55 @@ ah so yes, there is some power struggle amongst the sixth graders. your first
 task is to become their king -- you don't know that you're to become their king
 of course, but you will progress through their domain until you defeat the
 strongest among them. 
-* plot the second
+* battle
+|         | Dark | Light | Psychic |
+|---------+------+-------+---------|
+| Dark    | 0    | +     | -       |
+| Light   | -    | 0     | +       |
+| Psychic | +    | -     | 0       |
+
+type mechanics:
+types are not as important in this game. every soul, even dual typed
+souls, have a positive, a neutral, and a negative. a positive attack
+does 1.33x, a neutral attack 1x, a negative attack .66x. 
+
+
+type identities:
+dark types are focused on utility, niches, support moves,
+status. think of stuff like adv gengar, bw sableye, bw gliscor, dpp
+froslass, dpp venusaur, dpp rotom, dpp azelf, bw ferrothorn (?), bw
+zam.
+
+light types are focused on walling. adv swampert, adv blissey, adv
+celebi, adv suicune, bw lando. these are not necessarily do-nothing
+souls. 
+
+psychic types are focused on breaking and sweeping. adv zapdos, adv
+mence, dpp latias. these are the most goodstuffsy. 
+
+
+minigames:
+physical attackers vs physical walls
+
+hazards vs hazard removers
+
+status vs status absorbers 
+
+trappers vs trappables
+
+** souls
+*** sand dude
+510 BST
+85 hp / 95 atk / 100 def / 45 satk / 90 sdef / 95 speed
+taunt, earthquake, u-turn, toxic, protect
+
+only thing that gets sand as an ability
+
+utility checks a lot of stuff -- might want to tilt its bulk to one
+end for that purpose. defensively works kind of like a shitty
+swampert. it's not taking as many hits as swampert, but strong
+physical attacks are only shaving around 40% off of it.
+* plot
 ** bus stop
 *** notes
 *** storyboard

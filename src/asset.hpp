@@ -61,11 +61,6 @@ struct Texture : Asset {
 	void bind();
 };
 
-void reload_texture_atlas();
-Texture* create_texture(std::filesystem::path path);
-void destroy_texture(std::filesystem::path path);
-void create_texture_atlas(std::string assets_dir);
-
 struct Sprite : Asset {
 	int height = 0;
 	int width = 0;
@@ -82,21 +77,26 @@ struct Sprite : Asset {
 	bool is_initialized() const;
 };
 
-void init_sprites();
-void destroy_sprite(std::string name);
-void add_single_sprite(std::filesystem::path path);
-void load_sprites_from_directory(std::filesystem::path path);
-
 // OpenGL 
 GLuint Sprite::vert_buffer;
 GLuint Sprite::elem_buffer;
 GLuint Sprite::vao;
 
-void bind_sprite_buffers();
-
+// Animations should live in Lua, and the component should figure out what frame
+// should be submitted to draw.
 struct Animation : Asset {
 	std::vector<std::string> frames;
 	void add_frames(std::vector<std::string>& frames_to_add);
 	void add_frame(std::string& sprite_name);
 	std::string get_frame(int frame);
 };
+
+void init_sprites();
+void bind_sprite_buffers();
+void destroy_sprite(std::string name);
+void reload_texture_atlas();
+void destroy_texture(std::filesystem::path path);
+void create_texture_atlas();
+void load_other_textures(const char* directory);
+void add_single_sprite(const char* texture_file);
+Texture* create_texture(const char* texture_name);

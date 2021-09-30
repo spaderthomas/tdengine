@@ -2,6 +2,7 @@
 
 #include "machine_conf.hpp"
 #include "log.hpp"
+#include "filesystem.hpp"
 #include "utils.hpp"
 #include "input.hpp"
 #include "transform.hpp"
@@ -21,6 +22,7 @@
 #include "console_impl.hpp"
 #include "draw_impl.hpp"
 #include "entity_impl.hpp"
+#include "filesystem_impl.hpp"
 #include "font_impl.hpp"
 #include "lua_impl.hpp"
 #include "physics_impl.hpp"
@@ -28,7 +30,8 @@
 #include "transform_impl.hpp"
 
 int main() {
-	tdns_log.init();
+	init_logging();
+	init_filesystem();
 
 	init_lua();
 	

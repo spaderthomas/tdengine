@@ -655,6 +655,8 @@ function Editor:make_dialogue_node(kind)
 end
 
 function Editor:ded_load(name)
+  if name == nil then return end
+  
   self.ded.loaded = name
   self.ded.selected = nil
   self.ded.connecting = nil

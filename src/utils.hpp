@@ -313,50 +313,6 @@ glm::ivec2 px_from_screen(glm::vec2 screen) {
 }
 
 
-/* Some utilities for dealing with files, directories, and paths */
-// @note @spader 9/4/2019 Realllllllyyyyyyy need a better way of making paths good
-#ifdef WIN32
-void normalize_path(std::string& str) {
-	string_replace(str, "/", "\\");
-}
-#else
-void normalize_path(std::string& str) {
-	return;
-}
-#endif
-
-// Takes in a directory or file -- returns everything after the first slash
-std::string filename_from_path(std::string path) {
-	std::string name;
-	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
-		if (path.at(ichar) == '/' || path.at(ichar) == '\\') { break; }
-		name.insert(name.begin(), path.at(ichar));
-	}
-	
-	return name;
-}
-std::string name_from_full_path(std::string path) {
-	std::string asset_name;
-	for (int ichar = path.size() - 1; ichar > -1; ichar--) {
-		if (path.at(ichar) == '/' || path.at(ichar) == '\\') { break; }
-		asset_name.insert(asset_name.begin(), path.at(ichar));
-	}
-	
-	return asset_name;
-}
-
-// Accepts a filename, not a path. Returns all the characters before the first period.
-std::string strip_extension(std::string filename) {
-	std::string stripped;
-	for (unsigned int ichar = 0; ichar < filename.size(); ichar++) {
-		if (filename.at(ichar) == '.') {
-			return stripped;
-		}
-		stripped.push_back(filename.at(ichar));
-	}
-	
-	return stripped;
-}
 
 bool is_alphanumeric(std::string& str) {
 	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
@@ -369,111 +325,6 @@ bool is_alphanumeric(std::string& str) {
 		}
 	}
 	
-	return true;
-}
-
-// Allowing alphanumerics, underscores, and periods
-bool is_valid_filename(std::string& str) {
-	auto is_numeric = [](char c) -> bool { return c >= '0' && c <= '9'; };
-	auto is_alpha = [](char c) -> bool { return (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'); };
-	auto is_misc = [](char c) -> bool { return (c == '_') || c == '.'; };
-	
-	for (unsigned int ichar = 0; ichar < str.size(); ichar++) {
-		char c = str.at(ichar);
-		if (!(is_numeric(c) || is_alpha(c) || is_misc(c))) {
-			return false;
-		}
-	}
-	
-	return true;
-}
-
-// Don't use a leading slash
-std::string absolute_path(std::string dir_from_project_root) {
-	// Check that we didn't pass this function an absolute path already
-	if (dir_from_project_root.find(root_dir) != std::string::npos) {
-		return dir_from_project_root;
-	}
-	return root_dir + dir_from_project_root;
-}
-
-std::string relative_path(std::string absolute) {
-	string_replace(absolute, root_dir, "");
-	return absolute;
-}
-
-std::string path_join(std::vector<std::string> items) {
-	std::string path = "";
-	for (auto& item : items) {
-		path += item + "/";
-	}
-	
-	// Trim trailing slash
-	return path.substr(0, path.size() - 1);
-}
-
-std::string script_path(std::string script) {
-	auto script_dir = absolute_path(path_join({"src", "scripts"}));
-	auto path = path_join({ script_dir, script });
-	normalize_path(path);
-	return path;
-}
-
-struct RelativePath {
-	RelativePath(std::string path) {
-		normalize_path(path);
-		this->path = path;
-	}
-	
-	std::string path;
-};
-	
-struct ScriptPath {
-	ScriptPath(std::string raw) {
-		normalize_path(raw);
-		this->path = raw;
-	}
-	ScriptPath(RelativePath relative) {
-		std::string absolute = script_path(relative.path);
-		normalize_path(absolute);
-		this->path = absolute;
-	}
-
-	std::string path;
-};
-
-struct AbsolutePath {
-	explicit AbsolutePath(std::string raw) {
-		normalize_path(raw);
-		this->path = raw;
-	}
-	AbsolutePath(RelativePath relative) {
-		std::string absolute = absolute_path(relative.path);
-		normalize_path(absolute);
-		this->path = absolute;
-	}
-
-	// Script paths are stored absolutely, so we can convert for free
-	AbsolutePath(ScriptPath absolute) {
-		this->path = absolute.path;
-	}
-
-	
-	std::string path;
-};
-	
-// @hack I'm sure there are PNG headers I could try parsing, but this works!
-bool is_png(std::string& asset_path) {
-	if (asset_path.size() < 5) { return false; } // "x.png" is the shortest name
-	std::string should_be_png_extension = asset_path.substr(asset_path.size() - 4, 4);
-	if (should_be_png_extension.compare(".png")) return false;
-	return true;
-}
-
-bool is_lua(std::string& path) {
-	if (path.size() < 5) { return false; } // "x.lua" is the shortest name
-	std::string should_be_tds_extension = path.substr(path.size() - 4, 4);
-	if (should_be_tds_extension.compare(".lua")) return false;
 	return true;
 }
 
@@ -696,14 +547,18 @@ void init_imgui() {
 }
 
 void load_imgui_layout() {
-	if (!layout_to_load) return;
+	// if (!layout_to_load) return;
 
-	auto relative = RelativePath(std::string("layouts/") + layout_to_load + ".ini");
-	auto layout = ScriptPath(relative);
-	ImGui::LoadIniSettingsFromDisk(layout.path.c_str());
-	tdns_log.write("Loading Imgui configuration from: " + layout.path, Log_Flags::File);
+	// // Get the platform dependent path to the INI file. You can't use the virtual
+	// // filesystem, because you must pass the path to ImGui
+	// std::string layout;
+	// layout = layout + "layouts/" + layout_to_load + ".ini";
+	// layout = physfs_file_path(layout);
+	
+	// tdns_log.write("@imgui_layout_load::" + layout);
+	// ImGui::LoadIniSettingsFromDisk(layout.c_str());
 
-	layout_to_load = nullptr;
+	// layout_to_load = nullptr;
 }
 
 template <typename F>

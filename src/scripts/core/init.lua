@@ -110,6 +110,8 @@ function tdengine.load_story_markers()
 end
 
 function tdengine.load_dialogue(name)
+  if name == nil or name == '' then return {} end
+  
   -- Load the dialogue data itself
   local filepath = 'dialogue/' .. name
   package.loaded[filepath] = nil

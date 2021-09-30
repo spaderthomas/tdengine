@@ -90,6 +90,9 @@ build_options = {
             'glfw',
             'luajit-5.1'
         ],
+        'local_libs': [
+            'libphysfs.a'
+        ],
         'system_libs':[
             #'z',
             'GL',

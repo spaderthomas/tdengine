@@ -29,6 +29,8 @@ extern "C" {
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw_gl3.hpp"
 
+#include "physfs/physfs.h"
+
 // STL
 #include <stdlib.h>
 #include <iostream>
